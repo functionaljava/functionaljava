@@ -1,0 +1,3 @@
+#!/bin/bash
+ghc Build.hs -e 'tests'
+
