@@ -4,3 +4,6 @@ target
 *.iws
 .deps
 
+.idea/ant.xml
+.idea/workspace.xml
+
