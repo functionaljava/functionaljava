@@ -17,11 +17,7 @@ import static fj.data.List.lookup;
 /**
  * The essence of the visitor design pattern expressed polymorphically.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 404 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:20:19 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Visitor {
   private Visitor() {

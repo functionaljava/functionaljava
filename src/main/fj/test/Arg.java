@@ -9,12 +9,7 @@ import static fj.Show.showS;
 /**
  * An argument used in a property that may have undergone shrinking following falsification.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 406 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:23:15 +1000 (Sat, 05 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Arg<T> {
   private final T value;

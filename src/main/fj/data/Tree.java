@@ -16,12 +16,7 @@ import java.util.Iterator;
 /**
  * Provides a lazy, immutable, non-empty, multi-way tree (a rose tree).
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 412 $</li>
- *          <li>$LastChangedDate: 2010-06-06 16:11:52 +1000 (Sun, 06 Jun 2010) $</li>
- *          <li>Author: runar</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Tree<A> implements Iterable<A> {
   /**

@@ -42,11 +42,7 @@ import static fj.Ordering.LT;
 /**
  * A lazy (not yet evaluated), immutable, singly linked list.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 437 $</li>
- *          <li>$LastChangedDate: 2010-06-24 21:15:44 +1000 (Thu, 24 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class Stream<A> implements Iterable<A> {
   private Stream() {

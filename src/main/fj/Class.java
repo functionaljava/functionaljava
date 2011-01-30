@@ -13,11 +13,7 @@ import java.lang.reflect.Type;
 /**
  * A wrapper for a {@link java.lang.Class} that provides additional methods.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 122 $</li>
- *          <li>$LastChangedDate: 2009-04-25 08:24:38 +1000 (Sat, 25 Apr 2009) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Class<T> {
   private final java.lang.Class<T> c;

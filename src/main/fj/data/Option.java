@@ -38,11 +38,7 @@ import java.util.Iterator;
  * An optional value that may be none (no value) or some (a value). This type is a replacement for
  * the use of <code>null</code> with better type checks.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 437 $</li>
- *          <li>$LastChangedDate: 2010-06-24 21:15:44 +1000 (Thu, 24 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class Option<A> implements Iterable<A> {
   private Option() {

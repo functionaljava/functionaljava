@@ -8,11 +8,7 @@ import java.lang.ref.SoftReference;
 /**
  * A product-1. Also, the identity monad.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 408 $</li>
- *          <li>$LastChangedDate: 2010-06-05 20:45:23 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class P1<A> {
   /**

@@ -9,11 +9,7 @@ import static fj.data.List.fromString;
 /**
  * Functions that convert between data structure types.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 122 $</li>
- *          <li>$LastChangedDate: 2009-04-24 17:24:38 -0500 (Fri, 24 Apr 2009) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Conversions {
   private Conversions() {

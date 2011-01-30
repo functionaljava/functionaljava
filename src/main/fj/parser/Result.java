@@ -10,11 +10,7 @@ import java.util.NoSuchElementException;
 /**
  * A parse result made up of a value (A) and the remainder of the parse input (I).
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 122 $</li>
- *          <li>$LastChangedDate: 2009-04-25 08:24:38 +1000 (Sat, 25 Apr 2009) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Result<I, A> implements Iterable<A> {
   private final I i;

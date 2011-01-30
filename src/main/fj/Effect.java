@@ -5,11 +5,7 @@ import static fj.Unit.unit;
 /**
  * Represents a side-effect.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 411 $</li>
- *          <li>$LastChangedDate: 2010-06-06 09:57:36 +1000 (Sun, 06 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class Effect<A> {
   public abstract void e(A a);

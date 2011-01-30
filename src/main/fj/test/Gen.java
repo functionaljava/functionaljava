@@ -78,12 +78,7 @@ static Arbitrary&lt;Person&gt; personArbitrary() {
 }
 </pre>
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 404 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:20:19 +1000 (Sat, 05 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Gen<A> {
   private final F<Integer, F<Rand, A>> f;

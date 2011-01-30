@@ -11,12 +11,7 @@ import java.util.Random;
 /**
  * A random number generator.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 5 $</li>
- *          <li>$LastChangedDate: 2008-12-06 16:49:43 +1000 (Sat, 06 Dec 2008) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Rand {
   private final F<Option<Long>, F<Integer, F<Integer, Integer>>> f;

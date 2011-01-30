@@ -27,12 +27,7 @@ import java.util.concurrent.FutureTask;
  * can be retrieved at a later time.
  * <p/>
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 161 $</li>
- *          <li>$LastChangedDate: 2009-06-01 17:14:38 +1000 (Mon, 01 Jun 2009) $</li>
- *          <li>Author: runar</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Strategy<A> {
 

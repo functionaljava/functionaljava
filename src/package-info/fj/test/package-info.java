@@ -13,11 +13,6 @@
  * for Random Testing of Haskell Programs by Koen Claassen and John Hughes from Chalmers University
  * of Technology. Reductio also borrows ideas from ScalaCheck by Rickard Nilsson.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 388 $</li>
- *          <li>$LastChangedDate: 2010-06-04 21:53:24 +1000 (Fri, 04 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 package fj.test;

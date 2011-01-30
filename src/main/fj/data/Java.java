@@ -39,11 +39,7 @@ import java.util.concurrent.SynchronousQueue;
 /**
  * Functions that convert between types from the core Java API.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 433 $</li>
- *          <li>$LastChangedDate: 2010-06-24 20:55:55 +1000 (Thu, 24 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Java {
   private Java() {

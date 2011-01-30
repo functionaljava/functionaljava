@@ -14,11 +14,7 @@ import java.util.Iterator;
 /**
  * A mutable hash map providing O(1) lookup.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 404 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:20:19 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  * @see java.util.HashMap
  */
 public final class HashMap<K, V> implements Iterable<K> {

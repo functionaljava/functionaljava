@@ -87,12 +87,7 @@ import java.util.concurrent.SynchronousQueue;
  * a tree structure. This is used in falsification to produce the smallest counter-example, rather
  * than the first counter-example.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 396 $</li>
- *          <li>$LastChangedDate: 2010-06-04 22:10:03 +1000 (Fri, 04 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Shrink<A> {
   private final F<A, Stream<A>> f;

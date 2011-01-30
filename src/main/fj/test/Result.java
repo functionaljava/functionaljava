@@ -10,12 +10,7 @@ import static fj.data.Option.some;
 /**
  * The result of evaluating a property.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 395 $</li>
- *          <li>$LastChangedDate: 2010-06-04 22:06:09 +1000 (Fri, 04 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Result {
   private final Option<List<Arg<?>>> args;

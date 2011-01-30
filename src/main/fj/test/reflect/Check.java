@@ -33,12 +33,7 @@ import static java.lang.reflect.Modifier.isStatic;
  * Functions for checking properties in a class that are found reflectively and according to various
  * annotations.
  * 
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 433 $</li>
- *          <li>$LastChangedDate: 2010-06-24 20:55:55 +1000 (Thu, 24 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Check {
   private Check() {

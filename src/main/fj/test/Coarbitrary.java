@@ -71,12 +71,7 @@ import java.util.concurrent.SynchronousQueue;
  * Transforms a type and a generator to produce a new generator. This function is used to generate
  * {@link Arbitrary arbitrary} functions.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 408 $</li>
- *          <li>$LastChangedDate: 2010-06-05 20:45:23 +1000 (Sat, 05 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class Coarbitrary<A> {
   /**

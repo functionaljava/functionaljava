@@ -7,11 +7,7 @@ import static fj.data.Option.none;
 /**
  * The digits zero to nine.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 386 $</li>
- *          <li>$LastChangedDate: 2010-06-04 21:48:32 +1000 (Fri, 04 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public enum Digit {
   /**

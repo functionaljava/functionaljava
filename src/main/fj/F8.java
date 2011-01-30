@@ -5,11 +5,7 @@ package fj;
  * <code>D</code>, <code>E</code>, <code>F$</code>, <code>G</code> and <code>H</code> to
  * <code>I</code>. This type can be represented using the Java 7 closure syntax.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 413 $</li>
- *          <li>$LastChangedDate: 2010-06-06 16:31:32 +1000 (Sun, 06 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class F8<A, B, C, D, E, F$, G, H, I> {
   /**

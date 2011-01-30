@@ -13,12 +13,7 @@ import java.lang.annotation.Target;
 /**
  * Specifies the check parameters on a {@link Property} property with typical defaults.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 387 $</li>
- *          <li>$LastChangedDate: 2010-06-04 21:52:49 +1000 (Fri, 04 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 @Documented
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})

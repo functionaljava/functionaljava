@@ -34,11 +34,7 @@ import static fj.data.Stream.single;
 /**
  * Renders an object for display.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 406 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:23:15 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Show<A> {
   private final F<A, Stream<Character>> f;

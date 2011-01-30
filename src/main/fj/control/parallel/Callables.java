@@ -18,12 +18,7 @@ import java.util.concurrent.Callable;
 /**
  * Monadic functions and conversion methods for java.util.concurrent.Callable.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 412 $</li>
- *          <li>$LastChangedDate: 2010-06-06 16:11:52 +1000 (Sun, 06 Jun 2010) $</li>
- *          <li>Author: runar</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Callables {
   private Callables() {

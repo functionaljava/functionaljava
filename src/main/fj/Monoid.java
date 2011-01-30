@@ -23,11 +23,7 @@ import java.math.BigDecimal;
  * <li><em>Associativity</em>; forall x. forall y. forall z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 404 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:20:19 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Monoid<A> {
   private final F<A, F<A, A>> sum;

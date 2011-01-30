@@ -25,11 +25,7 @@ import java.util.Iterator;
  * <code>scala.Option</code> where <code>Left</code> represents failure (by convention) and
  * <code>Right</code> is akin to <code>Some</code>.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 440 $</li>
- *          <li>$LastChangedDate: 2010-06-24 21:26:25 +1000 (Thu, 24 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class Either<A, B> {
   private Either() {

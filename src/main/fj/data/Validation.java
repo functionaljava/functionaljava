@@ -28,11 +28,7 @@ import java.util.Iterator;
  * This type also has accumulating functions that accept a {@link Semigroup} for binding computation while keeping error
  * values
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 404 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:20:19 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Validation<E, T> implements Iterable<T> {
   private final Either<E, T> e;

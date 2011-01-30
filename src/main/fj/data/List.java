@@ -39,11 +39,7 @@ import java.util.NoSuchElementException;
 /**
  * Provides an in-memory, immutable, singly linked list.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 438 $</li>
- *          <li>$LastChangedDate: 2010-06-24 21:19:17 +1000 (Thu, 24 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class List<A> implements Iterable<A> {
   private List() {

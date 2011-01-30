@@ -3,11 +3,7 @@ package fj;
 /**
  * A product-3.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 412 $</li>
- *          <li>$LastChangedDate: 2010-06-06 16:11:52 +1000 (Sun, 06 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public abstract class P3<A, B, C> {
   /**

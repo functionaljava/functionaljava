@@ -17,11 +17,7 @@ import static java.lang.Math.abs;
 /**
  * Curried functions over Integers.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 404 $</li>
- *          <li>$LastChangedDate: 2010-06-05 08:20:19 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Integers {
   private Integers() {

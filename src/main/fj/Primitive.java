@@ -3,11 +3,7 @@ package fj;
 /**
  * Functions that convert between Java primitive types.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 382 $</li>
- *          <li>$LastChangedDate: 2010-06-04 21:37:11 +1000 (Fri, 04 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Primitive {
   private Primitive() {

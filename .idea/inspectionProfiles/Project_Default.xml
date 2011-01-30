@@ -66,6 +66,7 @@
     <inspection_tool class="CssUnitlessNumber" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CssUnknownProperty" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="myCustomPropertiesEnabled" value="false" />
+      <option name="myIgnoreVendorSpecificProperties" value="false" />
       <option name="myCustomPropertiesList">
         <value>
           <list size="0" />
@@ -295,7 +296,11 @@
     <inspection_tool class="PhpUndefinedMethodInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpUndefinedVariableInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpUnimplementedMethodsInspection" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="PhpUnusedLocalVariableInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PhpUnusedLocalVariableInspection" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="DONT_REPORT_FOREACH_VALUE" value="false" />
+      <option name="DONT_REPORT_CATCH_EXCEPTION" value="true" />
+      <option name="DONT_REPORT_INSIDE_LIST" value="false" />
+    </inspection_tool>
     <inspection_tool class="PhpUnusedPrivateFieldInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PluginXmlValidity" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PointcutMethodStyleInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -430,7 +435,9 @@
       <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryAnnotationParentheses" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreSwitchBranches" value="false" />
+    </inspection_tool>
     <inspection_tool class="UnnecessaryCallToStringValueOf" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryContinueJS" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -462,20 +469,14 @@
     <inspection_tool class="UnproxyableBeanTypesInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="UnreachableCodeJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnresolvedPropertyKey" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="UnterminatedStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnterminatedStatementJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoreSemicolonAtEndOfBlock" value="true" />
+    </inspection_tool>
     <inspection_tool class="UnusedDeclaration" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="ADD_MAINS_TO_ENTRIES" value="false" />
       <option name="ADD_APPLET_TO_ENTRIES" value="false" />
       <option name="ADD_SERVLET_TO_ENTRIES" value="false" />
       <option name="ADD_NONJAVA_TO_ENTRIES" value="false" />
-      <option name="ADDITIONAL_ANNOTATIONS">
-        <value>
-          <list size="0" />
-        </value>
-      </option>
-      <option name="ADD_EJB_TO_ENTRIES" value="true" />
-      <option name="ADD_TESTNG_TO_ENTRIES" value="true" />
-      <option name="ADD_JUNIT_TO_ENTRIES" value="true" />
     </inspection_tool>
     <inspection_tool class="UnusedImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnusedParameters" enabled="false" level="WARNING" enabled_by_default="false" />

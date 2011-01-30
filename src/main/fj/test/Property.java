@@ -37,12 +37,7 @@ import static java.lang.Math.round;
  * property, proposition or theorem that, when checked, will at least (depending on arguments) fail
  * to be falsified &mdash; since there does not exist a counter-example to this statement.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 396 $</li>
- *          <li>$LastChangedDate: 2010-06-04 22:10:03 +1000 (Fri, 04 Jun 2010) $</li>
- *          <li>$LastChangedBy: tonymorris $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Property {
   private final F<Integer, F<Rand, Result>> f;

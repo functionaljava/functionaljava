@@ -18,11 +18,7 @@ import static fj.Function.curry;
 /**
  * Tests for ordering between two objects.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 412 $</li>
- *          <li>$LastChangedDate: 2010-06-06 16:11:52 +1000 (Sun, 06 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Ord<A> {
   private final F<A, F<A, Ordering>> f;

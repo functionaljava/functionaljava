@@ -27,11 +27,7 @@ import java.util.NoSuchElementException;
 /**
  * Provides an interface to arrays.
  *
- * @version %build.number%<br>
- *          <ul>
- *          <li>$LastChangedRevision: 402 $</li>
- *          <li>$LastChangedDate: 2010-06-05 07:30:08 +1000 (Sat, 05 Jun 2010) $</li>
- *          </ul>
+ * @version %build.number%
  */
 public final class Array<A> implements Iterable<A> {
   private final Object[] a;
