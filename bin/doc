@@ -1,3 +1,0 @@
-#!/bin/bash
-ghc Build.hs -e "javadoc \"$1\""
-
