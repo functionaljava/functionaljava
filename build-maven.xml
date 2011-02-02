@@ -1,10 +1,5 @@
 <?xml version="1.0"?>
 
-<!--
-    $LastChangedRevision: 269 $
-    $LastChangedDate: 2009-07-28 12:05:29 +1000 (Tue, 28 Jul 2009) $
--->
-
 <project name="Functional Java Maven Build" default="maven-deploy" basedir=".">
 
   <import file="buildj.xml" optional="true"/>
