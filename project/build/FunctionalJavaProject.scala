@@ -1,5 +1,6 @@
 import sbt._
 import java.util.jar.Attributes.Name._
+import Process._
 
 final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info) {
   override def compileOptions = target(Target.Java1_5) :: List(CompileOptions.Unchecked,  "-encoding", "UTF-8").map(CompileOption) ++ super.compileOptions
@@ -32,7 +33,17 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   val scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
 
-  override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageSrc, packageTestSrc)
+  override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageSrc, packageTestSrc, packageDocs)
+
+  override protected def docAction = javadocTask(mainLabel, mainSourceRoots, mainSources, mainDocPath, docClasspath).dependsOn(compile) describedAs "Generate Javadoc"
+  
+  def javadocTask(label: String, sourceRoot: PathFinder, sources: PathFinder, outputDirectory: Path, classpath: PathFinder): Task = task {
+    val cmdLine = <x>javadoc -quiet -sourcepath {sourceRoot.get.toList.head} -d {outputDirectory} {sources.getPaths.mkString(" ")}</x>
+    log.debug(cmdLine.toString)
+    cmdLine !
+    
+    None
+  }
 
   override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
 
