@@ -5,6 +5,7 @@ import ArbitraryHashMap._
 import fj.Equal.{intEqual, stringEqual, optionEqual}
 import fj.Hash.{intHash, stringHash}
 import fj.Implicit._
+import fj.Tests
 
 object CheckHashMap {
   implicit val equalInt: fj.Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))

@@ -8,6 +8,7 @@ import Stream.{join}
 import fj.Implicit._
 import fj.Monoid.{intAdditionMonoid}
 import fj.Monoid
+import fj.Tests
 
 object CheckTree {
 

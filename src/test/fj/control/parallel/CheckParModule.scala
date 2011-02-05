@@ -9,9 +9,11 @@ import fj.data.ArbitraryArray.arbitraryArray
 import fj.data.List
 import fj.data.Stream
 import fj.data.Array
-import fj.pre.Equal.{listEqual, stringEqual, streamEqual, arrayEqual}
-import fj.pre.Monoid.stringMonoid
+import fj.Equal.{listEqual, stringEqual, streamEqual, arrayEqual}
+import fj.Monoid.stringMonoid
 import fj.P
+import fj.P1
+import fj.Tests
 
 object CheckParModule {
   def rev = (x: String) => x.reverse: String

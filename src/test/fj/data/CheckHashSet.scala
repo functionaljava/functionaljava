@@ -5,6 +5,7 @@ import ArbitraryHashSet._
 import fj.Equal.intEqual
 import fj.Hash.intHash
 import fj.Implicit._
+import fj.Tests
 
 object CheckHashSet {
   implicit val equalInt: fj.Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))

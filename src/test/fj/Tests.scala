@@ -1,9 +1,7 @@
 package fj
 
-import List.flatten
-
 object Tests {
-  def tests = flatten(List (
+  def tests = List (
     fj.data.CheckArray.tests,
     fj.data.CheckList.tests,
     fj.data.CheckStream.tests,
@@ -15,7 +13,7 @@ object Tests {
     fj.data.CheckTreeMap.tests,
     fj.control.parallel.CheckStrategy.tests,
     fj.control.parallel.CheckParModule.tests
-  ))
+  ).flatten
 
   def main(args: Array[String]) {
     run(tests)

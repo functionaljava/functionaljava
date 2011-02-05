@@ -7,6 +7,7 @@ import fj.Implicit._
 import fj.data.Array.{array, empty, join}
 import fj.Equal.{arrayEqual, stringEqual}
 import fj.Unit.unit
+import fj.Tests
 
 object CheckArray {
   val prop_isEmpty = forAll((a: Array[Int]) =>

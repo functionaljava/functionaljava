@@ -15,6 +15,7 @@ import fj.data.Array
 import fj.data.Array.array
 import fj.Implicit._
 import fj.Equal.{listEqual, stringEqual, arrayEqual}
+import fj.Tests
 
 object CheckStrategy {
 

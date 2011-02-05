@@ -5,6 +5,7 @@ import fj.Ord
 import org.scalacheck.Prop._
 import ArbitraryTreeMap._
 import fj.Implicit._
+import fj.Tests
 
 object CheckTreeMap {
   def idInt(n: Int) = n:java.lang.Integer

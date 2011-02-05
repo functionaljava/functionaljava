@@ -9,6 +9,7 @@ import fj.P1
 import fj.Unit.unit
 import List.{nil, single, join, iterateWhile}
 import fj.Implicit._
+import fj.Tests
 
 object CheckList {
   val prop_isEmpty = forAll((a: List[Int]) =>

@@ -12,6 +12,7 @@ import fj.P.p
 import fj.Unit.unit
 import Set.{empty, single, join, iterableSet}
 import fj.Implicit._
+import fj.Tests
 
 object CheckSet {
 
