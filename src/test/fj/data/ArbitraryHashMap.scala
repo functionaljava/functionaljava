@@ -1,8 +1,8 @@
-package fj.data
+package fj
+package data
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import fj.{Equal, Hash}
 
 object ArbitraryHashMap {
   implicit def arbitraryHashMap[K, V](implicit ak: Arbitrary[K], av: Arbitrary[V], e: Equal[K], h: Hash[K]): Arbitrary[HashMap[K, V]] =

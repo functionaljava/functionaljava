@@ -27,7 +27,7 @@ object Tests {
 
   def run(tests: List[(String, Prop)]) =
     tests foreach { case (name, p) => {
-        val c = check(defaultParams, p, (s, d) => {})
+        val c = check(Test.Params(), p)
         c.status match {
           case Test.Passed => println("Passed " + name)
           case Test.Proved(_) => println("Proved " + name)

@@ -1,15 +1,13 @@
-package fj.data
+package fj
+package data
 
 import org.scalacheck.Prop._
 import ArbitraryList.arbitraryList
-import fj.ArbitraryP.arbitraryP1
-import fj.Equal.{listEqual, stringEqual, p2Equal}
-import fj.P.p
-import fj.P1
-import fj.Unit.unit
+import ArbitraryP.arbitraryP1
+import Equal.{listEqual, stringEqual, p2Equal}
+import P.p
+import Unit.unit
 import List.{nil, single, join, iterateWhile}
-import fj.Implicit._
-import fj.Tests
 
 object CheckList {
   val prop_isEmpty = forAll((a: List[Int]) =>

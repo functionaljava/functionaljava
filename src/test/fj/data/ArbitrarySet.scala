@@ -1,10 +1,10 @@
-package fj.data
+package fj
+package data
 
-import fj.Ord
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import fj.data.Set.{empty}
+import data.Set.{empty}
 
 object ArbitrarySet {
   implicit def arbitrarySet[A](implicit a: Arbitrary[A], o:Ord[A]): Arbitrary[Set[A]] =

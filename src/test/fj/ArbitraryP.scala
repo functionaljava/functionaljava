@@ -8,5 +8,4 @@ object ArbitraryP {
     Arbitrary(arbitrary[A].map(a => new P1[A]{
       def _1 = a
     }))
-
 }

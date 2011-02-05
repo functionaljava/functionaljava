@@ -1,10 +1,10 @@
-package fj.control.parallel
+package fj
+package control
+package parallel
 
 import org.scalacheck.Arbitrary
 import ParModule.parModule
 import org.scalacheck.Arbitrary.arbitrary
-import fj.P1
-import fj.Implicit._
 
 object ArbitraryParModule {
   implicit def arbitraryParModule(implicit s: Arbitrary[Strategy[Unit]]): Arbitrary[ParModule] =

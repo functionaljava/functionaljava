@@ -1,18 +1,16 @@
-package fj.data
+package fj
+package data
 
 import org.scalacheck.Prop._
-import fj.data.ArbitrarySet.arbitrarySet
-import fj.data.ArbitraryList.arbitraryList
-import fj.ArbitraryP.arbitraryP1
-import fj.Equal.{setEqual, stringEqual, listEqual}
-import fj.Ord.intOrd
-import fj.Ord.stringOrd
-import fj.Ord
-import fj.P.p
-import fj.Unit.unit
+import data.ArbitrarySet.arbitrarySet
+import data.ArbitraryList.arbitraryList
+import ArbitraryP.arbitraryP1
+import Equal.{setEqual, stringEqual, listEqual}
+import Ord.intOrd
+import Ord.stringOrd
+import P.p
+import Unit.unit
 import Set.{empty, single, join, iterableSet}
-import fj.Implicit._
-import fj.Tests
 
 object CheckSet {
 

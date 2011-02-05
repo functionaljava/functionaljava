@@ -1,4 +1,5 @@
-package fj.data
+package fj
+package data
 
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary

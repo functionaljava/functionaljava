@@ -1,6 +1,8 @@
-package fj.control.parallel
+package fj
+package control
+package parallel
 
-import fj.control._
+import control._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen.value
 import Strategy.executorStrategy

@@ -1,12 +1,11 @@
-package fj.data
+package fj
+package data
 
-import fj._
 import org.scalacheck.Prop._
 import ArbitraryOption.arbitraryOption
-import fj.ArbitraryP.arbitraryP1
-import fj.Equal.{optionEqual, stringEqual}
-import fj.Implicit._
-import fj.Unit.unit
+import ArbitraryP.arbitraryP1
+import Equal.{optionEqual, stringEqual}
+import Unit.unit
 import Option.{none, some, join}
 
 object CheckOption {

@@ -1,19 +1,17 @@
-package fj.control.parallel
+package fj
+package control
+package parallel
 
 import org.scalacheck.Prop._
-import fj.ArbitraryP.arbitraryP1
-import fj.Implicit._
-import fj.data.ArbitraryList.arbitraryList
-import fj.data.ArbitraryStream.arbitraryStream
-import fj.data.ArbitraryArray.arbitraryArray
-import fj.data.List
-import fj.data.Stream
-import fj.data.Array
-import fj.Equal.{listEqual, stringEqual, streamEqual, arrayEqual}
-import fj.Monoid.stringMonoid
-import fj.P
-import fj.P1
-import fj.Tests
+import ArbitraryP.arbitraryP1
+import data.ArbitraryList.arbitraryList
+import data.ArbitraryStream.arbitraryStream
+import data.ArbitraryArray.arbitraryArray
+import data.List
+import data.Stream
+import data.Array
+import Equal.{listEqual, stringEqual, streamEqual, arrayEqual}
+import Monoid.stringMonoid
 
 object CheckParModule {
   def rev = (x: String) => x.reverse: String

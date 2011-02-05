@@ -1,4 +1,5 @@
-package fj.data
+package fj
+package data
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
@@ -7,8 +8,7 @@ import org.scalacheck.Gen
 import ArbitraryStream.arbitraryStream
 import ArbitraryList.{listOf}
 import Tree.{node, leaf}
-import Math.{round, sqrt}
-import fj.P
+import math.{round, sqrt}
 
 object ArbitraryTree {
   implicit def arbitraryTree[A](implicit a: Arbitrary[A]): Arbitrary[Tree[A]] = {

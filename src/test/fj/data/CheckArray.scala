@@ -1,13 +1,12 @@
-package fj.data
+package fj
+package data
 
 import ArbitraryArray.arbitraryArray
-import fj.ArbitraryP.arbitraryP1
+import ArbitraryP.arbitraryP1
 import org.scalacheck.Prop._
-import fj.Implicit._
-import fj.data.Array.{array, empty, join}
-import fj.Equal.{arrayEqual, stringEqual}
-import fj.Unit.unit
-import fj.Tests
+import data.Array.{array, empty, join}
+import Equal.{arrayEqual, stringEqual}
+import Unit.unit
 
 object CheckArray {
   val prop_isEmpty = forAll((a: Array[Int]) =>

@@ -1,21 +1,19 @@
-package fj.control.parallel
+package fj
+package control
+package parallel
 
 import org.scalacheck.Prop._
-import fj.ArbitraryP.arbitraryP1
-import fj.control.parallel.ArbitraryStrategy.arbitraryStrategy
-import fj.data.ArbitraryList.arbitraryList
-import fj.data.ArbitraryArray.arbitraryArray
+import ArbitraryP.arbitraryP1
+import control.parallel.ArbitraryStrategy.arbitraryStrategy
+import data.ArbitraryList.arbitraryList
+import data.ArbitraryArray.arbitraryArray
 import Strategy.parFlatMap
-import fj.P
-import fj.P1
-import fj.Function.compose
-import fj.data.List.{single}
-import fj.data.List
-import fj.data.Array
-import fj.data.Array.array
-import fj.Implicit._
-import fj.Equal.{listEqual, stringEqual, arrayEqual}
-import fj.Tests
+import Function.compose
+import data.List.{single}
+import data.List
+import data.Array
+import data.Array.array
+import Equal.{listEqual, stringEqual, arrayEqual}
 
 object CheckStrategy {
 
