@@ -7,6 +7,7 @@ import ArbitraryP.arbitraryP1
 import data.ArbitraryList.arbitraryList
 import data.ArbitraryStream.arbitraryStream
 import data.ArbitraryArray.arbitraryArray
+import ArbitraryStrategy._
 import data.List
 import data.Stream
 import data.Array
