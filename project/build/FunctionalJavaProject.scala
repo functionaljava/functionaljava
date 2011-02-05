@@ -36,6 +36,8 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageSrc, packageTestSrc)
 
+  override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
+
   override def consoleInit =
 """
 import fj._

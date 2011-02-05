@@ -2,17 +2,17 @@ package fj
 
 object Tests {
   def tests = List (
-    fj.data.CheckArray.tests,
-    fj.data.CheckList.tests,
-    fj.data.CheckStream.tests,
-    fj.data.CheckOption.tests,
-    fj.data.CheckTree.tests,
-    fj.data.CheckHashMap.tests,
-    fj.data.CheckHashSet.tests,
-    fj.data.CheckSet.tests,
-    fj.data.CheckTreeMap.tests,
-    fj.control.parallel.CheckStrategy.tests,
-    fj.control.parallel.CheckParModule.tests
+    fj.data.CheckArray.properties,
+    fj.data.CheckList.properties,
+    fj.data.CheckStream.properties,
+    fj.data.CheckOption.properties,
+    fj.data.CheckTree.properties,
+    fj.data.CheckHashMap.properties,
+    fj.data.CheckHashSet.properties,
+    fj.data.CheckSet.properties,
+    fj.data.CheckTreeMap.properties,
+    fj.control.parallel.CheckStrategy.properties,
+    fj.control.parallel.CheckParModule.properties
   ).flatten
 
   def main(args: Array[String]) {
