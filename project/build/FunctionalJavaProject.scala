@@ -30,7 +30,7 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   lazy val sourceArtifact = Artifact(artifactID, "src", "jar", Some("sources"), Nil, None)
 
-  val scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8"
+  val scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
 
   override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageSrc, packageTestSrc)
 
