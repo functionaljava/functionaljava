@@ -2,13 +2,13 @@ package fj.data
 
 import org.scalacheck.Prop._
 import ArbitraryHashMap._
-import pre.Equal.{intEqual, stringEqual, optionEqual}
-import pre.Hash.{intHash, stringHash}
-import fjs.F._
+import fj.Equal.{intEqual, stringEqual, optionEqual}
+import fj.Hash.{intHash, stringHash}
+import fj.Implicit._
 
 object CheckHashMap {
-  implicit val equalInt: pre.Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
-  implicit val hashInt: pre.Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
+  implicit val equalInt: fj.Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
+  implicit val hashInt: fj.Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
 
   val prop_eq = forAll((m: HashMap[Int, String], x: Int, y: Int) => m.eq(x, y) == equalInt.eq(x, y))
 

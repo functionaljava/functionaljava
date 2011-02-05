@@ -4,13 +4,13 @@ import fj._
 import control.parallel.Strategy
 import org.scalacheck.Prop._
 import ArbitraryStream.arbitraryStream
-import control.parallel.ArbitraryStrategy.arbitraryStrategy
-import ArbitraryP.arbitraryP1
-import fj.pre.Equal.{streamEqual, stringEqual}
+import fj.control.parallel.ArbitraryStrategy.arbitraryStrategy
+import fj.ArbitraryP.arbitraryP1
+import fj.Equal.{streamEqual, stringEqual}
 import Implicit._
 import fj.Unit.unit
 import Stream.{nil, single, join, iterableStream}
-import fj.pre.Ord.stringOrd
+import fj.Ord.stringOrd
 
 object CheckStream {
   val prop_isEmpty = forAll((a: Stream[Int]) =>

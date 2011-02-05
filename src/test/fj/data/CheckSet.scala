@@ -4,10 +4,10 @@ import org.scalacheck.Prop._
 import fj.data.ArbitrarySet.arbitrarySet
 import fj.data.ArbitraryList.arbitraryList
 import fj.ArbitraryP.arbitraryP1
-import fj.pre.Equal.{setEqual, stringEqual, listEqual}
-import fj.pre.Ord.intOrd
-import fj.pre.Ord.stringOrd
-import fj.pre.Ord
+import fj.Equal.{setEqual, stringEqual, listEqual}
+import fj.Ord.intOrd
+import fj.Ord.stringOrd
+import fj.Ord
 import fj.P.p
 import fj.Unit.unit
 import Set.{empty, single, join, iterableSet}

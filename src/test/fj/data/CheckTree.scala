@@ -2,12 +2,12 @@ package fj.data
 
 import org.scalacheck.Prop._
 import ArbitraryTree.arbitraryTree
-import fj.pre.Equal.{treeEqual, streamEqual, stringEqual, p1Equal}
+import fj.Equal.{treeEqual, streamEqual, stringEqual, p1Equal}
 import Tree.{root_, subForest_}
 import Stream.{join}
-import Implicit._
-import fj.pre.Monoid.{intAdditionMonoid}
-import fj.pre.Monoid
+import fj.Implicit._
+import fj.Monoid.{intAdditionMonoid}
+import fj.Monoid
 
 object CheckTree {
 

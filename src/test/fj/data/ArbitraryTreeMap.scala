@@ -1,7 +1,7 @@
 package fj.data
 
-import _root_.org.scalacheck.{Arbitrary, Gen}
-import pre.Ord
+import org.scalacheck.{Arbitrary, Gen}
+import fj.Ord
 import TreeMap.empty;
 import org.scalacheck.Arbitrary.arbitrary
 

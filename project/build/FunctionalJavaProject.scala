@@ -20,7 +20,7 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   override def mainJavaSourcePath = "src" / "main"
 
-  override def testJavaSourcePath = "src" / "test"
+  override def testScalaSourcePath = "src" / "test"
 
   override def managedStyle = ManagedStyle.Maven
 

@@ -2,12 +2,13 @@ package fj.data
 
 import org.scalacheck.Prop._
 import ArbitraryList.arbitraryList
-import ArbitraryP.arbitraryP1
-import fj.pre.Equal.{listEqual, stringEqual, p2Equal}
+import fj.ArbitraryP.arbitraryP1
+import fj.Equal.{listEqual, stringEqual, p2Equal}
 import fj.P.p
+import fj.P1
 import fj.Unit.unit
 import List.{nil, single, join, iterateWhile}
-import Implicit._
+import fj.Implicit._
 
 object CheckList {
   val prop_isEmpty = forAll((a: List[Int]) =>
@@ -148,7 +149,7 @@ object CheckList {
 
   val prop_sort = forAll((a: List[String]) =>
     {
-      val s = a.sort(fj.pre.Ord.stringOrd)
+      val s = a.sort(fj.Ord.stringOrd)
       s.isEmpty || s.tail.isEmpty || s.head.compareTo(s.tail.head) <= 0
     })
 

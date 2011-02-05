@@ -1,10 +1,10 @@
 package fj.data
 
-import pre.Ord.{intOrd, stringOrd}
-import pre.Ord
+import fj.Ord.{intOrd, stringOrd}
+import fj.Ord
 import org.scalacheck.Prop._
 import ArbitraryTreeMap._
-import fjs.F._
+import fj.Implicit._
 
 object CheckTreeMap {
   def idInt(n: Int) = n:java.lang.Integer

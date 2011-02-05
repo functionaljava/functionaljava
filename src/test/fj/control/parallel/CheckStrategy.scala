@@ -7,13 +7,14 @@ import fj.data.ArbitraryList.arbitraryList
 import fj.data.ArbitraryArray.arbitraryArray
 import Strategy.parFlatMap
 import fj.P
+import fj.P1
 import fj.Function.compose
 import fj.data.List.{single}
 import fj.data.List
 import fj.data.Array
 import fj.data.Array.array
 import fj.Implicit._
-import fj.pre.Equal.{listEqual, stringEqual, arrayEqual}
+import fj.Equal.{listEqual, stringEqual, arrayEqual}
 
 object CheckStrategy {
 

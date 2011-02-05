@@ -2,7 +2,7 @@ package fj.data
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pre.{Equal, Hash}
+import fj.{Equal, Hash}
 
 object ArbitraryHashSet {
   implicit def arbitraryHashSet[A](implicit aa: Arbitrary[A], e: Equal[A], h: Hash[A]): Arbitrary[HashSet[A]] =

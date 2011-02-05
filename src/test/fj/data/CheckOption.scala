@@ -3,9 +3,9 @@ package fj.data
 import fj._
 import org.scalacheck.Prop._
 import ArbitraryOption.arbitraryOption
-import ArbitraryP.arbitraryP1
-import fj.pre.Equal.{optionEqual, stringEqual}
-import Implicit._
+import fj.ArbitraryP.arbitraryP1
+import fj.Equal.{optionEqual, stringEqual}
+import fj.Implicit._
 import fj.Unit.unit
 import Option.{none, some, join}
 

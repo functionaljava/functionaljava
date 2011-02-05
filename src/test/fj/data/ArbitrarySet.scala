@@ -1,6 +1,6 @@
 package fj.data
 
-import pre.Ord
+import fj.Ord
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary

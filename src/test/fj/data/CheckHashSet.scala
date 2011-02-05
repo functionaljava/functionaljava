@@ -2,13 +2,13 @@ package fj.data
 
 import org.scalacheck.Prop._
 import ArbitraryHashSet._
-import pre.Equal.intEqual
-import pre.Hash.intHash
-import fjs.F._
+import fj.Equal.intEqual
+import fj.Hash.intHash
+import fj.Implicit._
 
 object CheckHashSet {
-  implicit val equalInt: pre.Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
-  implicit val hashInt: pre.Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
+  implicit val equalInt: fj.Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
+  implicit val hashInt: fj.Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
 
   val prop_eq = forAll((s: HashSet[Int], x: Int, y: Int) => s.eq(x, y) == equalInt.eq(x, y))
 

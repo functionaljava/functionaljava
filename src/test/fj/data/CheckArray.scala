@@ -1,11 +1,11 @@
 package fj.data
 
 import ArbitraryArray.arbitraryArray
-import ArbitraryP.arbitraryP1
+import fj.ArbitraryP.arbitraryP1
 import org.scalacheck.Prop._
-import Implicit._
+import fj.Implicit._
 import fj.data.Array.{array, empty, join}
-import fj.pre.Equal.{arrayEqual, stringEqual}
+import fj.Equal.{arrayEqual, stringEqual}
 import fj.Unit.unit
 
 object CheckArray {
