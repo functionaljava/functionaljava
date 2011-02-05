@@ -6,9 +6,6 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
 
-  override def javaCompileOptions =
-    JavaCompileOption("-Xlint:unchecked") :: super.javaCompileOptions.toList
-
   override def packageOptions =
     ManifestAttributes(
                         (IMPLEMENTATION_TITLE, "Functional Java")
