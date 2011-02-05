@@ -2,26 +2,20 @@ import sbt._
 import java.util.jar.Attributes.Name._
 import Process._
 
-final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info) {
+final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info) with JavaDocProject {
   override def compileOptions = target(Target.Java1_5) :: List(CompileOptions.Unchecked,  "-encoding", "UTF-8").map(CompileOption) ++ super.compileOptions
 
   override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
-
-  override def packageOptions =
-    ManifestAttributes(
-                        (IMPLEMENTATION_TITLE, "Functional Java")
-                      , (IMPLEMENTATION_URL, "http://functionaljava.org/")
-                      , (IMPLEMENTATION_VENDOR, "Tony Morris, Runar Bjarnason, Tom Adams, Brad Clow, Ricky Clarkson, Jason Zaugg")
-                      , (SEALED, "true")
-                      ) :: Nil
-
-  override protected def disableCrossPaths = true
 
   override def mainJavaSourcePath = "src" / "main"
 
   override def testScalaSourcePath = "src" / "test"
 
-  override def managedStyle = ManagedStyle.Maven
+  val scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
+
+  override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
+
+  override protected def disableCrossPaths = true
 
   override def packageSrcJar = defaultJarPath("-sources.jar")
 
@@ -31,21 +25,29 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   lazy val sourceArtifact = Artifact(artifactID, "src", "jar", Some("sources"), Nil, None)
 
-  val scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
+  override def managedStyle = ManagedStyle.Maven
+
+  val authors = "Tony Morris, Runar Bjarnason, Tom Adams, Brad Clow, Ricky Clarkson, Jason Zaugg"
+
+  val projectNameFull = "Functional Java"
+  val projectUrl = "http://functionaljava.org/"
+
+  override def packageOptions =
+        ManifestAttributes(
+          (IMPLEMENTATION_TITLE, projectNameFull)
+          , (IMPLEMENTATION_URL, projectUrl)
+          , (IMPLEMENTATION_VENDOR, authors)
+          , (SEALED, "true")
+        ) :: Nil
 
   override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageSrc, packageTestSrc, packageDocs)
 
-  override protected def docAction = javadocTask(mainLabel, mainSourceRoots, mainSources, mainDocPath, docClasspath).dependsOn(compile) describedAs "Generate Javadoc"
-  
-  def javadocTask(label: String, sourceRoot: PathFinder, sources: PathFinder, outputDirectory: Path, classpath: PathFinder): Task = task {
-    val cmdLine = <x>javadoc -quiet -sourcepath {sourceRoot.get.toList.head} -d {outputDirectory} {sources.getPaths.mkString(" ")}</x>
-    log.debug(cmdLine.toString)
-    cmdLine !
-    
-    None
-  }
+  override protected def docAction = javadocAction
 
-  override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
+  override def javadocOptions = Seq(
+    WindowTitle(projectNameFull + " " + version.toString)
+    , DocTitle(<div><a href={projectUrl} target="_blank">{projectNameFull}</a> {version.toString} API Specification</div>.toString)
+    , Header(<div><p><em>Copyright 2008 - 2010 {authors}</em></p>This software is released under an open source BSD licence.</div>.toString))
 
   override def consoleInit =
 """
@@ -55,4 +57,33 @@ import org.scalacheck._
 import org.scalacheck.Prop._
 """
 
+}
+
+trait JavaDocProject {
+  self: DefaultProject =>
+
+  sealed abstract class JavadocOption
+
+  case class WindowTitle(t: String) extends JavadocOption
+
+  case class DocTitle(t: String) extends JavadocOption
+
+  case class Header(html: String) extends JavadocOption
+
+  def javadocOptions = Seq[JavadocOption]()
+
+  def javadocAction = javadocTask(mainLabel, mainSourceRoots, mainSources, mainDocPath, docClasspath, javadocOptions).dependsOn(compile) describedAs "Generate Javadoc"
+
+  def javadocTask(label: String, sourceRoot: PathFinder, sources: PathFinder, outputDirectory: Path, classpath: PathFinder, options: Seq[JavadocOption]): Task = task {
+    val os = options flatMap {
+      case WindowTitle(t) => Seq("-windowtitle", t)
+      case DocTitle(t) => Seq("-doctitle", t)
+      case Header(html) => Seq("-header", html)
+    }
+    val proc = Process(Seq("javadoc", "-quiet", "-sourcepath", sourceRoot.get.toList.head.toString, "-d", outputDirectory.toString) ++ os ++ sources.getPaths)
+    log.debug(proc.toString)
+    proc !
+
+    None
+  }
 }
