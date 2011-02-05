@@ -21,7 +21,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="defScala" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -32,35 +31,7 @@
         <jarDirectory url="file://$MODULE_DIR$/boot/scala-2.7.7/org.scala-tools.sbt/sbt/0.7.4" recursive="true" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/plugins/target/scala_2.7.7/plugin-classes" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/build/lib" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/build/lib" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/plugins/lib_managed/scala_2.7.7" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/plugins/lib_managed/scala_2.7.7" recursive="false" />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="scala-2.8.1" level="project" />
   </component>
 </module>
 
