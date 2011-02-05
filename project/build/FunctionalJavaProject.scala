@@ -2,11 +2,9 @@ import sbt._
 import java.util.jar.Attributes.Name._
 
 final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info) {
-  private val encodingUtf8 = List("-encoding", "UTF-8")
+  override def compileOptions = target(Target.Java1_5) :: List(CompileOptions.Unchecked,  "-encoding", "UTF-8").map(CompileOption) ++ super.compileOptions
 
-  override def compileOptions =
-    encodingUtf8.map(CompileOption(_)) :::
-            target(Target.Java1_5) :: Unchecked :: super.compileOptions.toList
+  override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
 
   override def javaCompileOptions =
     JavaCompileOption("-Xlint:unchecked") :: super.javaCompileOptions.toList
@@ -18,8 +16,6 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
                       , (IMPLEMENTATION_VENDOR, "Tony Morris, Runar Bjarnason, Tom Adams, Brad Clow, Ricky Clarkson, Jason Zaugg")
                       , (SEALED, "true")
                       ) :: Nil
-
-  override def documentOptions = encodingUtf8.map(SimpleDocOption(_)): List[ScaladocOption]
 
   override def mainJavaSourcePath = "src" / "main"
 
