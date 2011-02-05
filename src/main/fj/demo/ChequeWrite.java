@@ -177,6 +177,7 @@ public final class ChequeWrite {
         System.out.println(asString(write(fromString(a))));
   }
 
+  @SuppressWarnings("unchecked")
   public static void tests() {
     // show
     for (final P2<String, String> t : list(
