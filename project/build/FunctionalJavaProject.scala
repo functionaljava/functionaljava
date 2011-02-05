@@ -12,7 +12,7 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
     ManifestAttributes(
                         (IMPLEMENTATION_TITLE, "Functional Java")
                       , (IMPLEMENTATION_URL, "http://functionaljava.org/")
-                      , (IMPLEMENTATION_VENDOR, "Functional Java")
+                      , (IMPLEMENTATION_VENDOR, "Tony Morris, Runar Bjarnason, Tom Adams, Brad Clow, Ricky Clarkson, Jason Zaugg")
                       , (SEALED, "true")
                       ) :: Nil
 
