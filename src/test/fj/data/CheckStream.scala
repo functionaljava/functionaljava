@@ -143,12 +143,12 @@ object CheckStream extends Properties("Stream") {
     e.eq(d, a.toList.sort(stringOrd).toStream)
   })
 
-  // TODO Reinstate: java.lang.NullPointerException at fj.data.Stream$21.f(Stream.java:841)
-  /*property("parallel_sort") = forAll((a: Stream[String], s: Strategy[Unit]) => {
+  // TODO Broken: java.lang.NullPointerException at fj.data.Stream$21.f(Stream.java:841)
+  property("parallel_sort") = forAll((a: Stream[String], s: Strategy[Unit]) => {
     val d = a.sort(stringOrd, s)
     val e = streamEqual(stringEqual)
     e.eq(d, a.sort(stringOrd))
-  })*/
+  })
 
   property("iterable") = forAll((a: Stream[String]) => {
     val e = streamEqual(stringEqual)
