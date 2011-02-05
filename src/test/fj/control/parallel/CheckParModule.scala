@@ -17,7 +17,7 @@ import Monoid.stringMonoid
 object CheckParModule {
   def rev = (x: String) => x.reverse: String
 
-  implicit val strategy = ArbitraryStrategy.arbitraryStrategy[Unit]
+  implicit val strategy = ArbitraryStrategy.arbitraryStrategy[fj.Unit]
   implicit val parmodule = ArbitraryParModule.arbitraryParModule
 
   val prop_promise = forAll((a: P1[Int], p: ParModule) => p.promise(a).claim == a._1)
