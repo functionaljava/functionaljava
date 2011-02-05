@@ -14,6 +14,8 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
                       , (SEALED, "true")
                       ) :: Nil
 
+  override protected def disableCrossPaths = false
+
   override def mainJavaSourcePath = "src" / "main"
 
   override def testScalaSourcePath = "src" / "test"
