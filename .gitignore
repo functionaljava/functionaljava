@@ -1,7 +1,5 @@
-build
-classes
-out
 target
+lib_managed
 *.iws
 .deps
 
