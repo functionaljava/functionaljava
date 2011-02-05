@@ -14,8 +14,8 @@
   <url>http://functionaljava.org/</url>
   <licenses>
     <license>
-      <name>The BSD License</name>
-      <url>http://functionaljava.googlecode.com/svn/artifacts/latest/LICENCE</url>
+      <name>The BSD3 License</name>
+      <url>https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
