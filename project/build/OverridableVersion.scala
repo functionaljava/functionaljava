@@ -17,3 +17,4 @@ trait OverridableVersion extends Project {
     }
   }
 }
+
