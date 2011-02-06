@@ -5,7 +5,7 @@ import Process._
 abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(info) with JavaDocProject with OverridableVersion {
   private val encodingUtf8 = List("-encoding", "UTF-8")
 
-  override def compileOptions = target(Target.Java1_5) :: List(CompileOptions.Unchecked, "-encoding", "UTF-8").map(CompileOption) ++ super.compileOptions
+  override def compileOptions = target(Target.Java1_5) :: (CompileOptions.Unchecked :: encodingUtf8).map(CompileOption) ++ super.compileOptions
 
   override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
 
