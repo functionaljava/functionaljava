@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="scala-2.7.7 (build)">
+  <library name="scala-2.7.7">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/project/boot/scala-2.7.7/lib/scala-library.jar!/" />
       <root url="jar://$PROJECT_DIR$/project/boot/scala-2.7.7/lib/scala-compiler.jar!/" />
