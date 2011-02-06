@@ -64,12 +64,17 @@ import org.scalacheck.Prop._
 
 final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info) with OverridableVersion {
   lazy val core = project("core", "functionaljava-core", new Core(_))
+  lazy val fjscala = project("fjscala", "functionaljava-scala", new FJScala(_))
 
   class Core(info: ProjectInfo) extends FunctionalJavaDefaults(info) {
-      val scalacheck = scalacheckDependency
+    val scalacheck = scalacheckDependency
 
-      override def documentOptions = documentTitle("Functional Java") :: super.documentOptions
-    }
+    override def documentOptions = documentTitle("Functional Java") :: super.documentOptions
+  }
+
+  class FJScala(info: ProjectInfo) extends FunctionalJavaDefaults(info) {
+    override def documentOptions = documentTitle("Functional Java for Scala") :: super.documentOptions
+  }
 
 }
 
