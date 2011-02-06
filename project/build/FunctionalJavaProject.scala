@@ -2,8 +2,10 @@ import sbt._
 import java.util.jar.Attributes.Name._
 import Process._
 
-final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info) with JavaDocProject {
-  override def compileOptions = target(Target.Java1_5) :: List(CompileOptions.Unchecked,  "-encoding", "UTF-8").map(CompileOption) ++ super.compileOptions
+abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(info) with JavaDocProject with OverridableVersion {
+  private val encodingUtf8 = List("-encoding", "UTF-8")
+
+  override def compileOptions = target(Target.Java1_5) :: List(CompileOptions.Unchecked, "-encoding", "UTF-8").map(CompileOption) ++ super.compileOptions
 
   override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
 
@@ -11,7 +13,7 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
 
   override def testScalaSourcePath = "src" / "test"
 
-  val scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
+  def scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
 
   override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
 
@@ -24,6 +26,8 @@ final class FunctionalJavaProject(info: ProjectInfo) extends DefaultProject(info
   override def outputPattern = "[conf]/[type]/[artifact](-[revision])(-[classifier]).[ext]"
 
   lazy val sourceArtifact = Artifact(artifactID, "src", "jar", Some("sources"), Nil, None)
+
+  override def documentOptions = encodingUtf8.map(SimpleDocOption(_)): List[ScaladocOption]
 
   override def managedStyle = ManagedStyle.Maven
 
@@ -56,6 +60,16 @@ import fj.data._
 import org.scalacheck._
 import org.scalacheck.Prop._
 """
+}
+
+final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info) with OverridableVersion {
+  lazy val core = project("core", "functionaljava-core", new Core(_))
+
+  class Core(info: ProjectInfo) extends FunctionalJavaDefaults(info) {
+      val scalacheck = scalacheckDependency
+
+      override def documentOptions = documentTitle("Functional Java") :: super.documentOptions
+    }
 
 }
 
