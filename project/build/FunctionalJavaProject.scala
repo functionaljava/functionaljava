@@ -51,7 +51,7 @@ abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(
   override def javadocOptions = Seq(
     WindowTitle(projectNameFull + " " + version.toString)
     , DocTitle(<div><a href={projectUrl} target="_blank">{projectNameFull}</a> {version.toString} API Specification</div>.toString)
-    , Header(<div><p><em>Copyright 2008 - 2010 {authors}</em></p>This software is released under an open source BSD licence.</div>.toString))
+    , Header(<div><p><em>Copyright 2008 - 2011 {authors}</em></p>This software is released under an open source BSD licence.</div>.toString))
 
   override def consoleInit =
 """
@@ -64,8 +64,8 @@ import org.scalacheck.Prop._
 
 final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info) with OverridableVersion {
   lazy val core = project("core", "functionaljava-core", new Core(_))
-  lazy val demo = project("demo", "functionaljava-demo", new Demo(_))
-  lazy val fjscala = project("fjscala", "functionaljava-scala", new FJScala(_))
+  lazy val demo = project("demo", "functionaljava-demo", new Demo(_), core)
+  lazy val fjscala = project("fjscala", "functionaljava-scala", new FJScala(_), core)
 
   class Core(info: ProjectInfo) extends FunctionalJavaDefaults(info) {
     val scalacheck = scalacheckDependency

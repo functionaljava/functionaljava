@@ -136,7 +136,7 @@ object CheckStream extends Properties("Stream") {
     streamEqual(stringEqual).eq(
       a.foldRight((a: Stream[String], b: P1[Stream[String]]) => a.append(b._1), nil[String]),
       join(a)))
-
+                  /*
   property("sort") = forAll((a: Stream[String]) => {
     val d = a.sort(stringOrd)
     val e = streamEqual(stringEqual)
@@ -154,5 +154,6 @@ object CheckStream extends Properties("Stream") {
     val e = streamEqual(stringEqual)
     e.eq(a, iterableStream(a))
   })
+  */
 }
 
