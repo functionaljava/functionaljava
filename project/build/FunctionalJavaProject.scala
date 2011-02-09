@@ -64,6 +64,16 @@ import org.scalacheck.Prop._
 
     pubishToRepoName at repoUrl
   }
+
+  lazy val publishUser = system[String]("build.publish.user")
+  lazy val publishPassword = system[String]("build.publish.password")
+
+  (publishUser.get, publishPassword.get) match {
+    case (Some(u), Some(p)) =>
+      Credentials.add(pubishToRepoName, "nexus.scala-tools.org", u, p)
+    case _ =>
+      Credentials(Path.userHome / ".ivy2" / ".credentials", log)
+  }
 }
 
 final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info) with OverridableVersion {
