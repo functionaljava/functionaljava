@@ -60,6 +60,15 @@ import fj.data._
 import org.scalacheck._
 import org.scalacheck.Prop._
 """
+
+  val publishTo = {
+    val repoUrl = "http://nexus.scala-tools.org/content/repositories/" + (if (version.toString.endsWith("-SNAPSHOT"))
+      "snapshots"
+    else
+      "releases")
+
+    pubishToRepoName at repoUrl
+  }
 }
 
 final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info) with OverridableVersion {
