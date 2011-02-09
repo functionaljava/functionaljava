@@ -2,7 +2,7 @@ import sbt._
 import java.util.jar.Attributes.Name._
 import Process._
 
-abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(info) with JavaDocProject with OverridableVersion {
+abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(info) with OverridableVersion {
   private val encodingUtf8 = List("-encoding", "UTF-8")
 
   override def compileOptions = target(Target.Java1_5) :: (CompileOptions.Unchecked :: encodingUtf8).map(CompileOption) ++ super.compileOptions
@@ -46,13 +46,6 @@ abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(
 
   override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageSrc, packageTestSrc, packageDocs)
 
-  override protected def docAction = javadocAction
-
-  override def javadocOptions = Seq(
-    WindowTitle(projectNameFull + " " + version.toString)
-    , DocTitle(<div><a href={projectUrl} target="_blank">{projectNameFull}</a> {version.toString} API Specification</div>.toString)
-    , Header(<div><p><em>Copyright 2008 - 2011 {authors}</em></p>This software is released under an open source BSD licence.</div>.toString))
-
   override def consoleInit =
 """
 import fj._
@@ -60,6 +53,8 @@ import fj.data._
 import org.scalacheck._
 import org.scalacheck.Prop._
 """
+
+  val pubishToRepoName = "Sonatype Nexus Repository Manager"
 
   val publishTo = {
     val repoUrl = "http://nexus.scala-tools.org/content/repositories/" + (if (version.toString.endsWith("-SNAPSHOT"))
@@ -76,8 +71,15 @@ final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info)
   lazy val demo = project("demo", "functionaljava-demo", new Demo(_), core)
   lazy val fjscala = project("fjscala", "functionaljava-scala", new FJScala(_), core)
 
-  class Core(info: ProjectInfo) extends FunctionalJavaDefaults(info) {
+  class Core(info: ProjectInfo) extends FunctionalJavaDefaults(info) with JavaDocProject {
     val scalacheck = scalacheckDependency
+
+    override protected def docAction = javadocAction
+
+    override def javadocOptions = Seq(
+      WindowTitle(projectNameFull + " " + version.toString)
+      , DocTitle(<div><a href={projectUrl} target="_blank">{projectNameFull}</a> {version.toString} API Specification</div>.toString)
+      , Header(<div><p><em>Copyright 2008 - 2011 {authors}</em></p>This software is released under an open source BSD licence.</div>.toString))
 
     override def documentOptions = documentTitle("Functional Java") :: super.documentOptions
   }
