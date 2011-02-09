@@ -92,6 +92,8 @@ final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info)
       , Header(<div><p><em>Copyright 2008 - 2011 {authors}</em></p>This software is released under an open source BSD licence.</div>.toString))
 
     override def documentOptions = documentTitle("Functional Java") :: super.documentOptions
+
+    override def moduleID = "functionaljava"
   }
 
   class Demo(info: ProjectInfo) extends FunctionalJavaDefaults(info) {
