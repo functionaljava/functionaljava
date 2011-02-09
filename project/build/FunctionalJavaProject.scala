@@ -102,6 +102,13 @@ final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info)
     override def documentOptions = documentTitle("Functional Java for Scala") :: super.documentOptions
   }
 
+  private def noAction = task {None}
+
+  override def deliverLocalAction = noAction
+
+  override def publishLocalAction = noAction
+
+  override def publishAction = task {None}
 }
 
 trait JavaDocProject {
