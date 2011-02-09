@@ -108,7 +108,7 @@ final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info)
 
   override def publishLocalAction = noAction
 
-  override def publishAction = task {None}
+  override def publishAction = noAction
 }
 
 trait JavaDocProject {
