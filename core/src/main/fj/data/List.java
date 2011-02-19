@@ -1169,6 +1169,16 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Returns whether or not all elements in the list are equal according to the given equality test.
+   *
+   * @param eq The equality test.
+   * @return Whether or not all elements in the list are equal according to the given equality test.
+   */
+  public boolean allEqual(final Equal<A> eq) {
+    return isEmpty() || tail().isEmpty() || eq.eq(head(), tail().head()) && tail().allEqual(eq);
+  }
+
+  /**
    * First-class length.
    *
    * @return A function that gets the length of a given list.
