@@ -1078,6 +1078,28 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Maps the given function across this list by binding through the Option monad.
+   *
+   * @param f Thefunction to apply through the this list.
+   * @return A possible list of values after binding through the Option monad.
+   */
+  public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
+    return foldRight(new F2<A, Option<List<B>>, Option<List<B>>>() {
+      public Option<List<B>> f(final A a, final Option<List<B>> bs) {
+        return f.f(a).bind(new F<B, Option<List<B>>>() {
+          public Option<List<B>> f(final B b) {
+            return bs.map(new F<List<B>, List<B>>() {
+              public List<B> f(final List<B> bbs) {
+                return bbs.cons(b);
+              }
+            });
+          }
+        });
+      }
+    }, Option.<List<B>>some(List.<B>nil()));
+  }
+
+  /**
    * Returns the index of the first element in this list which is equal (by the given equality) to the
    * query element, or None if there is no such element.
    *
