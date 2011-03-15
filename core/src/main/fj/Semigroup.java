@@ -88,11 +88,29 @@ public final class Semigroup<A> {
   });
 
   /**
+   * A semigroup that adds doubles.
+   */
+  public static final Semigroup<Double> doubleAdditionSemigroup = semigroup(new F2<Double, Double, Double>() {
+    public Double f(final Double d1, final Double d2) {
+      return d1 + d2;
+    }
+  });
+
+  /**
    * A semigroup that multiplies integers.
    */
   public static final Semigroup<Integer> intMultiplicationSemigroup = semigroup(new F2<Integer, Integer, Integer>() {
     public Integer f(final Integer i1, final Integer i2) {
       return i1 * i2;
+    }
+  });
+
+  /**
+   * A semigroup that multiplies doubles.
+   */
+  public static final Semigroup<Double> doubleMultiplicationSemigroup = semigroup(new F2<Double, Double, Double>() {
+    public Double f(final Double d1, final Double d2) {
+      return d1 * d2;
     }
   });
 
