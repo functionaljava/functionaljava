@@ -345,4 +345,34 @@ public final class Tree<A> implements Iterable<A> {
   public <B, C> Tree<C> zipWith(final Tree<B> bs, final F<A, F<B, C>> f) {
     return zipWith(bs, uncurryF2(f));
   }
+  
+  /**
+   * Folds a Tree<A> into a Tree<B> by applying the function f from the bottom of the Tree to the top
+   *
+   * @param t A tree to fold from the bottom to the top.
+   * @param f  A function transforming the current node and a stream of already transformed nodes (its children) into a new node
+   * @return The folded tree
+   */
+  public static <A, B> Tree<B> bottomUp(Tree<A> t, final F<P2<A, Stream<B>>, B> f) {
+    final F<Tree<A>, Tree<B>> recursiveCall = new F<Tree<A>, Tree<B>>() {
+      @Override public Tree<B> f(Tree<A> a) {
+        return bottomUp(a, f);
+      }
+    };
+ 
+    final Stream<Tree<B>> tbs = t.subForest()._1().map(recursiveCall);
+    return Tree.node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
+   }
+ 
+   /**
+    * @return a function getting the root of a Tree 
+	*/
+   private static <A> F<Tree<A>, A> getRoot() {
+     return new F<Tree<A>, A>() {
+       @Override public A f(Tree<A> a) {
+         return a.root();
+       }
+     };
+   }
+
 }
