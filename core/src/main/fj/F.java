@@ -38,7 +38,7 @@ import static fj.data.Zipper.fromStream;
  *
  * @version %build.number%
  */
-public abstract class F<A, B> {
+public abstract class F<A, B> implements IF<A, B> {
   /**
    * Transform <code>A</code> to <code>B</code>.
    *

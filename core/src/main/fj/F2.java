@@ -25,7 +25,7 @@ import static fj.data.Zipper.zipper;
  *
  * @version %build.number%
  */
-public abstract class F2<A, B, C> {
+public abstract class F2<A, B, C> implements IF2<A, B, C> {
   /**
    * Transform <code>A</code> and <code>B</code> to <code>C</code>.
    *

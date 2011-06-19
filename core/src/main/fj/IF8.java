@@ -1,16 +1,16 @@
 package fj;
 
 /**
- * A transformation function of arity-7 from <code>A</code>, <code>B</code>, <code>C</code>,
- * <code>D</code>, <code>E</code>, <code>F$</code> and <code>G</code> to <code>H</code>. This type
- * can be represented using the Java 7 closure syntax.
+ * A transformation function of arity-8 from <code>A</code>, <code>B</code>, <code>C</code>,
+ * <code>D</code>, <code>E</code>, <code>F$</code>, <code>G</code> and <code>H</code> to
+ * <code>I</code>. This type can be represented using the Java 7 closure syntax.
  *
  * @version %build.number%
  */
-public abstract class F7<A, B, C, D, E, F$, G, H> implements IF7<A, B, C, D, E, F$, G, H> {
+public interface IF8<A, B, C, D, E, F$, G, H, I> {
   /**
    * Transform <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code>,
-   * <code>F$</code> and <code>G</code> to <code>H</code>.
+   * <code>F$</code>, <code>G</code> and <code>H</code> to <code>I</code>.
    *
    * @param a The <code>A</code> to transform.
    * @param b The <code>B</code> to transform.
@@ -19,7 +19,8 @@ public abstract class F7<A, B, C, D, E, F$, G, H> implements IF7<A, B, C, D, E, 
    * @param e The <code>E</code> to transform.
    * @param f The <code>F$</code> to transform.
    * @param g The <code>G</code> to transform.
+   * @param h The <code>H</code> to transform.
    * @return The result of the transformation.
    */
-  public abstract H f(A a, B b, C c, D d, E e, F$ f, G g);
+  I f(A a, B b, C c, D d, E e, F$ f, G g, H h);
 }
