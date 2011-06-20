@@ -7,7 +7,7 @@ package fj;
  *
  * @version %build.number%
  */
-public abstract class F8<A, B, C, D, E, F$, G, H, I> {
+public abstract class F8<A, B, C, D, E, F$, G, H, I> implements IF8<A, B, C, D, E, F$, G, H, I> {
   /**
    * Transform <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code>,
    * <code>F$</code>, <code>G</code> and <code>H</code> to <code>I</code>.
