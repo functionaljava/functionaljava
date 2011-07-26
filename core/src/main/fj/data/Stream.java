@@ -1338,7 +1338,11 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a stream of the prefixes of this stream, starting with the stream itself.
    */
   public final Stream<Stream<A>> inits() {
-    final Stream<Stream<A>> nil = nil();
+    final Stream<Stream<A>> nil = Stream.cons(nil(), new P1<Stream<Stream<A>>>() {
+      public Stream<Stream<A>> _1() {
+        return nil();
+      }
+    });
     return isEmpty() ? nil : nil.append(new P1<Stream<Stream<A>>>() {
       public Stream<Stream<A>> _1() {
         return tail()._1().inits().map(Stream.<A>cons_().f(head()));
