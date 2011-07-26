@@ -225,6 +225,16 @@ public final class Monoid<A> {
   public static final Monoid<Integer> intMultiplicationMonoid = monoid(Semigroup.intMultiplicationSemigroup, 1);
 
   /**
+   * A monoid that adds doubles.
+   */
+  public static final Monoid<Double> doubleAdditionMonoid = monoid(Semigroup.doubleAdditionSemigroup, 0.0);
+
+  /**
+   * A monoid that multiplies doubles.
+   */
+  public static final Monoid<Double> doubleMultiplicationMonoid = monoid(Semigroup.doubleMultiplicationSemigroup, 1.0);
+
+  /**
    * A monoid that adds big integers.
    */
   public static final Monoid<BigInteger> bigintAdditionMonoid = monoid(Semigroup.bigintAdditionSemigroup, BigInteger.ZERO);
