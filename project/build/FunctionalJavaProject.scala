@@ -9,10 +9,6 @@ abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(
 
   override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
 
-  override def mainJavaSourcePath = "src" / "main"
-
-  override def testScalaSourcePath = "src" / "test"
-
   def scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
 
   override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
