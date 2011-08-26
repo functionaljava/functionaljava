@@ -637,4 +637,25 @@ public final class Ord<A> {
       }
     });
   }
+
+  /**
+   * An order instance that uses {@link Object#hashCode()} for computing the order.
+   *
+   * @return An order instance that is based on {@link Object#hashCode()}.
+   */
+  public static <A> Ord<A> hashOrd() {
+    return Ord.<A> ord(new F<A, F<A, Ordering>>() {
+      @Override
+      public F<A, Ordering> f(final A a) {
+        return new F<A, Ordering>() {
+          @Override
+          public Ordering f(final A a2) {
+            final int x = a.hashCode() - a2.hashCode();
+            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
+          }
+        };
+      }
+    });
+  }
+
 }
