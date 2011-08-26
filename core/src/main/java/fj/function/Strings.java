@@ -15,6 +15,16 @@ public final class Strings {
   }
 
   /**
+   * This function checks if a given String is neither <code>null</code> nor empty.
+   */
+  public static final F<String, Boolean> isNotNullOrEmpty = new F<String, Boolean>() {
+    @Override
+    public Boolean f(final String a) {
+      return a != null && a.length() > 0;
+    }
+  };
+
+  /**
    * A curried version of {@link String#isEmpty()}.
    */
   public static final F<String, Boolean> isEmpty = new F<String, Boolean>() {
