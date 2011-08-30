@@ -454,4 +454,18 @@ public abstract class Set<A> implements Iterable<A> {
     return s;
   }
 
+  /**
+   * Constructs a set from the given elements.
+   *
+   * @param o  An order for the elements of the new set.
+   * @param as The elements to add to a set.
+   * @return A new set containing the elements of the given iterable.
+   */
+  public static <A> Set<A> set(final Ord<A> o, final A ... as) {
+    Set<A> s = empty(o);
+    for (final A a : as)
+      s = s.insert(a);
+    return s;
+  }
+
 }
