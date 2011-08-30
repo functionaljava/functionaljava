@@ -318,6 +318,20 @@ public abstract class Set<A> implements Iterable<A> {
   public final Set<A> union(final Set<A> s) {
     return iterableSet(ord, s.toStream().append(toStream()));
   }
+  
+  /**
+   * A first class function for {@link #union(Set)}.
+   * 
+   * @return A function that adds all the elements of one set to another set.
+   * @see #union(Set)
+   */
+  public static <A> F<Set<A>, F<Set<A>, Set<A>>> union() {
+    return curry(new F2<Set<A>, Set<A>, Set<A>>() {
+      public Set<A> f(final Set<A> s1, final Set<A> s2) {
+        return s1.union(s2);
+      }
+    });
+  }
 
   /**
    * Filters elements from this set by returning only elements which produce <code>true</code>
@@ -362,6 +376,20 @@ public abstract class Set<A> implements Iterable<A> {
   public final Set<A> intersect(final Set<A> s) {
     return filter(Set.<A>member().f(s));
   }
+  
+  /**
+   * A first class function for {@link #intersect(Set)}.
+   * 
+   * @return A function that intersects two given sets.
+   * @see #intersect(Set)
+   */
+  public static <A> F<Set<A>, F<Set<A>, Set<A>>> intersect() {
+    return curry(new F2<Set<A>, Set<A>, Set<A>>() {
+      public Set<A> f(final Set<A> s1, final Set<A> s2) {
+        return s1.intersect(s2);
+      }
+    });
+  }
 
   /**
    * Remove all elements from this set that occur in the given set.
@@ -371,6 +399,20 @@ public abstract class Set<A> implements Iterable<A> {
    */
   public final Set<A> minus(final Set<A> s) {
     return filter(compose(not, Set.<A>member().f(s)));
+  }
+  
+  /**
+   * A first class function for {@link #minus(Set)}.
+   * 
+   * @return A function that removes all elements of one set from another set.
+   * @see #minus(Set)
+   */
+  public static <A> F<Set<A>, F<Set<A>, Set<A>>> minus() {
+    return curry(new F2<Set<A>, Set<A>, Set<A>>() {
+      public Set<A> f(final Set<A> s1, final Set<A> s2) {
+        return s1.minus(s2);
+      }
+    });
   }
 
   /**
