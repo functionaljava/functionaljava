@@ -639,9 +639,12 @@ public final class Ord<A> {
   }
 
   /**
-   * An order instance that uses {@link Object#hashCode()} for computing the order.
+   * An order instance that uses {@link Object#hashCode()} for computing the order and equality,
+   * thus objects returning the same hashCode are considered to be equals (check {@link #hashEqualsOrd()}
+   * for an additional check on {@link Object#equals(Object)}).
    *
    * @return An order instance that is based on {@link Object#hashCode()}.
+   * @see #hashEqualsOrd()
    */
   public static <A> Ord<A> hashOrd() {
     return Ord.<A> ord(new F<A, F<A, Ordering>>() {
@@ -652,6 +655,28 @@ public final class Ord<A> {
           public Ordering f(final A a2) {
             final int x = a.hashCode() - a2.hashCode();
             return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
+          }
+        };
+      }
+    });
+  }
+
+  /**
+   * An order instance that uses {@link Object#hashCode()} and {@link Object#equals()} for computing
+   * the order and equality. First the hashCode is compared, if this is equal, objects are compared
+   * using {@link Object#equals()}.
+   *
+   * @return An order instance that is based on {@link Object#hashCode()} and {@link Object#equals()}.
+   */
+  public static <A> Ord<A> hashEqualsOrd() {
+    return Ord.<A> ord(new F<A, F<A, Ordering>>() {
+      @Override
+      public F<A, Ordering> f(final A a) {
+        return new F<A, Ordering>() {
+          @Override
+          public Ordering f(final A a2) {
+            final int x = a.hashCode() - a2.hashCode();
+            return x < 0 ? Ordering.LT : x == 0 && a.equals(a2) ? Ordering.EQ : Ordering.GT;
           }
         };
       }
