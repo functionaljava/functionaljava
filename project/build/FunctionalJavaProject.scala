@@ -78,7 +78,10 @@ final class FunctionalJavaProject(info: ProjectInfo) extends ParentProject(info)
   lazy val fjscala = project("fjscala", "functionaljava-scala", new FJScala(_), core)
 
   class Core(info: ProjectInfo) extends FunctionalJavaDefaults(info) with JavaDocProject {
+
     val scalacheck = scalacheckDependency
+
+    override def testScalaSourcePath = "src" / "test"
 
     override protected def docAction = javadocAction
 
