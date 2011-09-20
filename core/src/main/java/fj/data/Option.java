@@ -594,6 +594,22 @@ public abstract class Option<A> implements Iterable<A> {
     public A some() {
       throw error("some on None");
     }
+
+    @Override
+    public int hashCode() {
+       return 31;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (this == obj)
+          return true;
+       if (obj == null)
+          return false;
+       if (getClass() != obj.getClass())
+          return false;
+       return true;
+    }
   }
 
   private static final class Some<A> extends Option<A> {
@@ -606,6 +622,32 @@ public abstract class Option<A> implements Iterable<A> {
     public A some() {
       return a;
     }
+
+    @Override
+    public int hashCode() {
+       final int prime = 31;
+       int result = 1;
+       result = prime * result + ((a == null) ? 0 : a.hashCode());
+       return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (this == obj)
+          return true;
+       if (obj == null)
+          return false;
+       if (getClass() != obj.getClass())
+          return false;
+       Some<?> other = (Some<?>) obj;
+       if (a == null) {
+          if (other.a != null)
+             return false;
+       } else if (!a.equals(other.a))
+          return false;
+       return true;
+    }
+
   }
 
   public static <T> F<T, Option<T>> some_() {

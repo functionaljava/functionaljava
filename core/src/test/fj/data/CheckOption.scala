@@ -16,6 +16,12 @@ object CheckOption extends Properties("Option") {
   property("orSome") = forAll((a: Option[Int], n: P1[Int]) =>
     a.orSome(n) == (if(a.isNone) n._1 else a.some))
 
+  property("hashCode") = forAll((a: Option[Int]) =>
+    if(a.isNone) a.hashCode == none.hashCode else a.hashCode == some(a.some).hashCode)
+
+  property("equals") = forAll((a: Option[Int]) =>
+    if(a.isNone) a == none else a == some(a.some))
+
   property("mapId") = forAll((a: Option[String]) =>
     optionEqual(stringEqual).eq(a.map((x: String) => x), a))
 
