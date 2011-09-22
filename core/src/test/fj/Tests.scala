@@ -3,6 +3,8 @@ package fj
 object Tests {
   def tests = List (
     fj.data.CheckArray.properties,
+    fj.data.CheckIO.properties,
+    fj.data.CheckIteratee.properties,
     fj.data.CheckList.properties,
     fj.data.CheckStream.properties,
     fj.data.CheckOption.properties,
