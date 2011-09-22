@@ -1239,7 +1239,15 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The length of this stream.
    */
   public final int length() {
-    return toList().length();
+    // we're using an iterative approach here as the previous implementation (toList().length()) took
+    // very long even for some 10000 elements.
+    Stream<A> xs = this;
+    int i = 0;
+    while (!xs.isEmpty()) {
+      xs = xs.tail()._1();
+      i += 1;
+    }
+    return i;
   }
 
   /**
@@ -1338,7 +1346,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a stream of the prefixes of this stream, starting with the stream itself.
    */
   public final Stream<Stream<A>> inits() {
-    final Stream<Stream<A>> nil = Stream.cons(nil(), new P1<Stream<Stream<A>>>() {
+    final Stream<Stream<A>> nil = Stream.cons(Stream.<A>nil(), new P1<Stream<Stream<A>>>() {
       public Stream<Stream<A>> _1() {
         return nil();
       }

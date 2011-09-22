@@ -317,6 +317,16 @@ public final class LazyString implements CharSequence {
       };
 
   /**
+   * First-class conversion from lazy strings to String.
+   */
+  public static final F<LazyString, String> toString =
+      new F<LazyString, String>() {
+        public String f(final LazyString string) {
+          return string.toString();
+        }
+      };
+
+  /**
    * First-class conversion from character streams to lazy strings.
    */
   public static final F<Stream<Character>, LazyString> fromStream =
