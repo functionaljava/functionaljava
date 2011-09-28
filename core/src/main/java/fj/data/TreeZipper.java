@@ -550,9 +550,9 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
   public Option<TreeZipper<A>> delete() {
     Option<TreeZipper<A>> r = none();
     if (rights.isNotEmpty())
-      r = some(treeZipper(rights.head(), rights.tail()._1(), lefts, parents));
+      r = some(treeZipper(rights.head(), lefts, rights.tail()._1(), parents));
     else if (lefts.isNotEmpty())
-      r = some(treeZipper(lefts.head(), rights, lefts.tail()._1(), parents));
+      r = some(treeZipper(lefts.head(), lefts.tail()._1(), rights, parents));
     else for (final TreeZipper<A> loc : parent())
         r = some(loc.modifyTree(new F<Tree<A>, Tree<A>>() {
           public Tree<A> f(final Tree<A> t) {
