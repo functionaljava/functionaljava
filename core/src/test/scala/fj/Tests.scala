@@ -1,6 +1,8 @@
 package fj
 
-object Tests {
+import junit.framework.TestCase
+
+class Tests extends TestCase {
   def tests = List (
     fj.data.CheckArray.properties,
     fj.data.CheckIO.properties,
@@ -20,6 +22,10 @@ object Tests {
   def main(args: Array[String]) {
     run(tests)
     System.exit(0)
+  }
+
+  def testAll() {
+    run(tests)
   }
 
   import org.scalacheck.Prop
