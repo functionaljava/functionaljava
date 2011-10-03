@@ -300,10 +300,10 @@ public final class Show<A> {
   }
 
   /**
-   * A show instance for the {@link Stream} type.
+   * A show instance for the {@link List} type.
    *
-   * @param sa Show for the elements of the Stream.
-   * @return A show instance for the {@link Stream} type.
+   * @param sa Show for the elements of the List.
+   * @return A show instance for the {@link List} type.
    */
   public static <A> Show<List<A>> listShow(final Show<A> sa) {
     return new Show<List<A>>(new F<List<A>, Stream<Character>>() {
