@@ -1,10 +1,12 @@
 package fj.control;
 
+import fj.Bottom;
 import fj.F;
 import fj.F2;
 import fj.P1;
 import fj.data.Either;
 
+import static fj.Function.andThen;
 import static fj.Function.curry;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -305,5 +307,43 @@ public abstract class Trampoline<A> {
     });
   }
 
-
+  @SuppressWarnings("LoopStatementThatDoesntLoop")
+  public <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
+    final Either<P1<Trampoline<A>>, A> ea = resume();
+    final Either<P1<Trampoline<B>>, B> eb = b.resume();
+    Trampoline<C> r;
+    for (final P1<Trampoline<A>> x : ea.left()) {
+      for (final P1<Trampoline<B>> y: eb.left()) {
+        return suspend(P1.bind(x, y, new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
+          public Trampoline<C> f(final Trampoline<A> ta, final Trampoline<B> tb) {
+            return ta.bind(tb, new F2<A, B, C>() {
+              public C f(final A a, final B b) {
+                return f.f(a, b);
+              }
+            }.curry());
+          }
+        }.curry()));
+      }
+      for (final B y: eb.right()) {
+        return suspend(x.map(new F<Trampoline<A>, Trampoline<C>>() {
+          public Trampoline<C> f(final Trampoline<A> ta) {
+            return ta.map(f.flip().f(y));
+          }
+        }));
+      }
+    }
+    for (final A x: ea.right()) {
+      for (final B y: eb.right()) {
+        return suspend(new P1<Trampoline<C>>() {
+          public Trampoline<C> _1() {
+            return pure(f.f(x, y));
+          }
+        });
+      }
+      for (final P1<Trampoline<B>> y: eb.left()) {
+        return suspend(y.map(liftM2(f.curry()).f(pure(x))));
+      }
+    }
+    throw Bottom.error("Match error: Trampoline is neither done nor suspended.");
+  }
 }
