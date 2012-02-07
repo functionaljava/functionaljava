@@ -5,9 +5,6 @@ import fj.F2;
 import fj.P1;
 import fj.data.Either;
 
-import java.util.Iterator;
-
-import static fj.Function.constant;
 import static fj.Function.curry;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
