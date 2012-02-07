@@ -20,7 +20,6 @@ import static fj.Function.compose;
 import static fj.P.p;
 import static fj.P.p2;
 import static fj.Unit.unit;
-import static fj.data.Array.array;
 import static fj.data.Array.mkArray;
 import static fj.data.List.Buffer.*;
 import static fj.data.Option.none;
@@ -30,6 +29,7 @@ import static fj.Ordering.GT;
 import static fj.Ord.intOrd;
 
 import fj.Ordering;
+import fj.control.Trampoline;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -458,7 +458,7 @@ public abstract class List<A> implements Iterable<A> {
   /**
    * Promotes the given function of arity-2 to a function on lists.
    *
-   * @param f The functio to promote to a function on lists.
+   * @param f The function to promote to a function on lists.
    * @return The given function, promoted to operate on lists.
    */
   public static <A, B, C> F<List<A>, F<List<B>, List<C>>> liftM2(final F<A, F<B, C>> f) {
@@ -624,6 +624,20 @@ public abstract class List<A> implements Iterable<A> {
    */
   public final <B> B foldRight(final F2<A, B, B> f, final B b) {
     return foldRight(curry(f), b);
+  }
+
+  /**
+   * Performs a right-fold reduction across this list in O(1) stack space.
+   * @param f The function to apply on each element of the list.
+   * @param b The beginning value to start the application from.
+   * @return A Trampoline containing the final result after the right-fold reduction.
+   */
+  public final <B> Trampoline<B> foldRightC(final F2<A, B, B> f, final B b) {
+    return Trampoline.suspend(new P1<Trampoline<B>>() {
+      public Trampoline<B> _1() {
+        return isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(f.f(head()));
+      }
+    });
   }
 
   /**
@@ -1080,7 +1094,7 @@ public abstract class List<A> implements Iterable<A> {
   /**
    * Maps the given function across this list by binding through the Option monad.
    *
-   * @param f Thefunction to apply through the this list.
+   * @param f The function to apply through the this list.
    * @return A possible list of values after binding through the Option monad.
    */
   public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
@@ -1097,6 +1111,28 @@ public abstract class List<A> implements Iterable<A> {
         });
       }
     }, Option.<List<B>>some(List.<B>nil()));
+  }
+
+  /**
+   * Maps the given function across this list by binding through the Trampoline monad.
+   *
+   * @param f The function to apply through the this list.
+   * @return A list of values in the Trampoline monad.
+   */
+  public final <B> Trampoline<List<B>> mapMTrampoline(final F<A, Trampoline<B>> f) {
+    return foldRight(new F2<A, Trampoline<List<B>>, Trampoline<List<B>>>() {
+      public Trampoline<List<B>> f(final A a, final Trampoline<List<B>> bs) {
+        return f.f(a).bind(new F<B, Trampoline<List<B>>>() {
+          public Trampoline<List<B>> f(final B b) {
+            return bs.map(new F<List<B>, List<B>>() {
+              public List<B> f(final List<B> bbs) {
+                return bbs.cons(b);
+              }
+            });
+          }
+        });
+      }
+    }, Trampoline.<List<B>>pure(List.<B>nil()));
   }
 
   /**

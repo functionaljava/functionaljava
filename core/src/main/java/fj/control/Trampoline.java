@@ -1,9 +1,14 @@
 package fj.control;
 
 import fj.F;
+import fj.F2;
 import fj.P1;
 import fj.data.Either;
 
+import java.util.Iterator;
+
+import static fj.Function.constant;
+import static fj.Function.curry;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
 
@@ -256,4 +261,46 @@ public abstract class Trampoline<A> {
       }
     }
   }
+
+  /**
+   * Performs function application within a Trampoline (applicative functor pattern).
+   *
+   * @param lf A Trampoline resulting in the function to apply.
+   * @return A new Trampoline after applying the given function through this Trampoline.
+   */
+  public final <B> Trampoline<B> apply(final Trampoline<F<A, B>> lf) {
+    return lf.bind(new F<F<A, B>, Trampoline<B>>() {
+      public Trampoline<B> f(final F<A, B> f) {
+        return map(f);
+      }
+    });
+  }
+  
+  /**
+   * Binds the given function across the result of this Trampoline and the given Trampoline.
+   *
+   * @param lb A given Trampoline to bind the given function with.
+   * @param f  The function to combine the results of this Trampoline and the given Trampoline.
+   * @return A new Trampoline combining the results of the two trampolines with the given function.
+   */
+  public final <B, C> Trampoline<C> bind(final Trampoline<B> lb, final F<A, F<B, C>> f) {
+    return lb.apply(map(f));
+  }
+  
+
+  /**
+   * Promotes the given function of arity-2 to a function on Trampolines.
+   *
+   * @param f The function to promote to a function on Trampolines.
+   * @return The given function, promoted to operate on Trampolines.
+   */
+  public static <A, B, C> F<Trampoline<A>, F<Trampoline<B>, Trampoline<C>>> liftM2(final F<A, F<B, C>> f) {
+    return curry(new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
+      public Trampoline<C> f(final Trampoline<A> as, final Trampoline<B> bs) {
+        return as.bind(bs, f);
+      }
+    });
+  }
+  
+
 }
