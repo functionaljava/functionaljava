@@ -6,15 +6,18 @@ import fj.F2;
 import fj.P1;
 import fj.data.Either;
 
-import static fj.Function.andThen;
 import static fj.Function.curry;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
 
 /**
  * A Trampoline is a potentially branching computation that can be stepped through and executed in constant stack.
+ * It represent suspendable coroutines with subroutine calls, reified as a data structure.
  */
 public abstract class Trampoline<A> {
+
+  // A Normal Trampoline is either done or suspended, and is allowed to be a subcomputation of a Codense.
+  // This is the pointed functor part of the Trampoline monad.
   private static abstract class Normal<A> extends Trampoline<A> {
     public abstract <R> R foldNormal(final F<A, R> pure, final F<P1<Trampoline<A>>, R> k);
 
@@ -23,8 +26,14 @@ public abstract class Trampoline<A> {
     }
   }
 
+  // A Codense Trampoline delimits a subcomputation and tracks its current continuation. Subcomputations are only
+  // allowed to be Normal, so all of the continuations accumulate on the right.
   private static final class Codense<A> extends Trampoline<A> {
+
+    // The Normal subcomputation
     private final Normal<Object> sub;
+
+    // The current continuation
     private final F<Object, Trampoline<A>> cont;
 
     private Codense(final Normal<Object> t, final F<Object, Trampoline<A>> k) {
@@ -37,6 +46,8 @@ public abstract class Trampoline<A> {
       return gs.f(this);
     }
 
+    // The monadic bind constructs a new Codense whose subcomputation is still `sub`, and Kleisli-composes the
+    // continuations.
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
       return codense(sub, new F<Object, Trampoline<B>>() {
         public Trampoline<B> f(final Object o) {
@@ -49,6 +60,8 @@ public abstract class Trampoline<A> {
       });
     }
 
+    // The resumption of a Codense is the resumption of its subcomputation. If that computation is done, its result
+    // gets shifted into the continuation.
     public Either<P1<Trampoline<A>>, A> resume() {
       return left(sub.resume().either(new F<P1<Trampoline<Object>>, P1<Trampoline<A>>>() {
             public P1<Trampoline<A>> f(final P1<Trampoline<Object>> p) {
@@ -93,7 +106,9 @@ public abstract class Trampoline<A> {
     }
   }
 
+  // A suspended computation that can be resumed.
   private static final class Suspend<A> extends Normal<A> {
+
     private final P1<Trampoline<A>> suspension;
 
     private Suspend(final P1<Trampoline<A>> s) {
@@ -113,6 +128,7 @@ public abstract class Trampoline<A> {
     }
   }
 
+  // A pure value at the leaf of a computation.
   private static final class Pure<A> extends Normal<A> {
     private final A value;
 
@@ -150,7 +166,7 @@ public abstract class Trampoline<A> {
   }
 
   /**
-   * Constructs a leaf computation that results in the given value.
+   * Constructs a pure computation that results in the given value.
    *
    * @param a The value of the result.
    * @return A trampoline that results in the given value.
@@ -307,13 +323,20 @@ public abstract class Trampoline<A> {
     });
   }
 
+  /**
+   * Combines two trampolines so they run cooperatively. The results are combined with the given function.
+   *
+   * @param b Another trampoline to combine with this trampoline.
+   * @param f A function to combine the results of the two trampolines.
+   * @return A new trampoline that runs this trampoline and the given trampoline simultaneously.
+   */
   @SuppressWarnings("LoopStatementThatDoesntLoop")
   public <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
     final Either<P1<Trampoline<A>>, A> ea = resume();
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     Trampoline<C> r;
     for (final P1<Trampoline<A>> x : ea.left()) {
-      for (final P1<Trampoline<B>> y: eb.left()) {
+      for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(P1.bind(x, y, new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta, final Trampoline<B> tb) {
             return ta.bind(tb, new F2<A, B, C>() {
@@ -324,7 +347,7 @@ public abstract class Trampoline<A> {
           }
         }.curry()));
       }
-      for (final B y: eb.right()) {
+      for (final B y : eb.right()) {
         return suspend(x.map(new F<Trampoline<A>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta) {
             return ta.map(f.flip().f(y));
@@ -332,15 +355,15 @@ public abstract class Trampoline<A> {
         }));
       }
     }
-    for (final A x: ea.right()) {
-      for (final B y: eb.right()) {
+    for (final A x : ea.right()) {
+      for (final B y : eb.right()) {
         return suspend(new P1<Trampoline<C>>() {
           public Trampoline<C> _1() {
             return pure(f.f(x, y));
           }
         });
       }
-      for (final P1<Trampoline<B>> y: eb.left()) {
+      for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(y.map(liftM2(f.curry()).f(pure(x))));
       }
     }
