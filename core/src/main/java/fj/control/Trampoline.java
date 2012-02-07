@@ -334,7 +334,6 @@ public abstract class Trampoline<A> {
   public <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
     final Either<P1<Trampoline<A>>, A> ea = resume();
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
-    Trampoline<C> r;
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(P1.bind(x, y, new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
