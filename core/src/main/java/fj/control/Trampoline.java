@@ -189,7 +189,7 @@ public abstract class Trampoline<A> {
   public abstract <B> Trampoline<B> bind(final F<A, Trampoline<B>> f);
 
   /**
-   * Maps the given function across the result of this trampoline. Monadic bind.
+   * Maps the given function across the result of this trampoline.
    *
    * @param f A function that gets applied to the result of this trampoline.
    * @return A new trampoline that runs this trampoline, then applies the given function to the result.
