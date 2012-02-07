@@ -339,11 +339,11 @@ public abstract class Trampoline<A> {
       for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(P1.bind(x, y, new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta, final Trampoline<B> tb) {
-            return ta.bind(tb, new F2<A, B, C>() {
-              public C f(final A a, final B b) {
-                return f.f(a, b);
+            return suspend(new P1<Trampoline<C>>() {
+              public Trampoline<C> _1() {
+                return ta.zipWith(tb, f);
               }
-            }.curry());
+            });
           }
         }.curry()));
       }
