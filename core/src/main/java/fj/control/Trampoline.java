@@ -149,6 +149,7 @@ public abstract class Trampoline<A> {
 
   /**
    * Constructs a leaf computation that results in the given value.
+   *
    * @param a The value of the result.
    * @return A trampoline that results in the given value.
    */
@@ -158,6 +159,7 @@ public abstract class Trampoline<A> {
 
   /**
    * Suspends the given computation in a thunk.
+   *
    * @param a A trampoline suspended in a thunk.
    * @return A trampoline whose next step runs the given thunk.
    */
@@ -180,6 +182,7 @@ public abstract class Trampoline<A> {
 
   /**
    * Binds the given continuation to the result of this trampoline.
+   *
    * @param f A function that constructs a trampoline from the result of this trampoline.
    * @return A new trampoline that runs this trampoline, then continues with the given function.
    */
@@ -187,6 +190,7 @@ public abstract class Trampoline<A> {
 
   /**
    * Maps the given function across the result of this trampoline. Monadic bind.
+   *
    * @param f A function that gets applied to the result of this trampoline.
    * @return A new trampoline that runs this trampoline, then applies the given function to the result.
    */
@@ -237,12 +241,14 @@ public abstract class Trampoline<A> {
 
   /**
    * Runs a single step of this computation.
+   *
    * @return The next step of this compuation.
    */
   public abstract Either<P1<Trampoline<A>>, A> resume();
 
   /**
    * Runs this computation all the way to the end, in constant stack.
+   *
    * @return The end result of this computation.
    */
   @SuppressWarnings("LoopStatementThatDoesntLoop")
@@ -250,10 +256,10 @@ public abstract class Trampoline<A> {
     Trampoline<A> current = this;
     while (true) {
       final Either<P1<Trampoline<A>>, A> x = current.resume();
-      for (final P1<Trampoline<A>> t: x.left()) {
+      for (final P1<Trampoline<A>> t : x.left()) {
         current = t._1();
       }
-      for (final A a: x.right()) {
+      for (final A a : x.right()) {
         return a;
       }
     }
@@ -272,7 +278,7 @@ public abstract class Trampoline<A> {
       }
     });
   }
-  
+
   /**
    * Binds the given function across the result of this Trampoline and the given Trampoline.
    *
@@ -283,7 +289,7 @@ public abstract class Trampoline<A> {
   public final <B, C> Trampoline<C> bind(final Trampoline<B> lb, final F<A, F<B, C>> f) {
     return lb.apply(map(f));
   }
-  
+
 
   /**
    * Promotes the given function of arity-2 to a function on Trampolines.
@@ -298,6 +304,6 @@ public abstract class Trampoline<A> {
       }
     });
   }
-  
+
 
 }
