@@ -7,11 +7,13 @@ import fj.F;
 import fj.F2;
 import fj.F3;
 import fj.Function;
+import fj.Hash;
 import fj.Monoid;
 import fj.Ord;
 import fj.P;
 import fj.P1;
 import fj.P2;
+import fj.Show;
 import fj.Unit;
 import static fj.Function.curry;
 import static fj.Function.constant;
@@ -1828,4 +1830,45 @@ public abstract class List<A> implements Iterable<A> {
         snoc(t.head());
     }
   }
+
+    /**
+     * Perform an equality test on this list which delegates to the .equals() method of the member instances.
+     * This is implemented with Equal.listEqual using the anyEqual rule.
+     *
+     * @param obj the other object to check for equality against.
+     * @return true if this list is equal to the provided argument
+     */
+    //Suppress the warning for cast to <code>List<A></code> because the type is checked in the previous line.
+    @SuppressWarnings({ "unchecked" })
+    @Override public boolean equals( final Object obj ) {
+        if ( obj == null || !( obj instanceof List ) ) { return false; }
+
+        //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
+        //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
+        return Equal.listEqual( Equal.<A>anyEqual() ).eq( this, (List<A>) obj );
+    }
+
+    /**
+     * Compute the hash code from this list as a function of the hash codes of its members.
+     * Delegates to Hash.listHash, using the anyHash() rule, which uses the hash codes of the contents.
+     *
+     * @return the hash code for this list.
+     */
+    @Override public int hashCode() {
+        return Hash.listHash( Hash.<A>anyHash() ).hash( this );
+    }
+
+    /**
+     * Obtain a string representation of this list using the toString implementations of the members.  Uses Show.listShow with F2 argument and may
+     * not be very performant.
+     *
+     * @return a String representation of the list
+     */
+    @Override public String toString() {
+        return Show.listShow( Show.<A>anyShow() ).show( this ).foldLeft( new F2<String, Character, String>() {
+            @Override public String f( final String s, final Character c ) {
+                return s + c;
+            }
+        }, "" );
+    }
 }
