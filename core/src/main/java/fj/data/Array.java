@@ -337,6 +337,7 @@ public final class Array<A> implements Iterable<A> {
   public Array<A> scanLeft1(final F<A, F<A, A>> f) {
     final Object[] bs = new Object[a.length];
     A x = get(0);
+	bs[0] = x;
 
     for (int i = 1; i < a.length; i++) {
       x = f.f(x).f((A) a[i]);
@@ -405,6 +406,7 @@ public final class Array<A> implements Iterable<A> {
   public Array<A> scanRight1(final F<A, F<A, A>>f) {
     final Object[] bs = new Object[a.length];
     A x = get(length() - 1);
+	bs[length() - 1] = x;
 
     for (int i = a.length - 2; i >= 0; i--) {
       x = f.f((A) a[i]).f(x);
