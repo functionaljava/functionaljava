@@ -615,7 +615,7 @@ public final class Ord<A> {
   }
 
   /**
-   * An order instance for the <code>long</code> type.
+   * An order instance for the <code>Natural</code> type.
    */
   public static final Ord<Natural> naturalOrd = bigintOrd.comap(Natural.bigIntegerValue);
 
