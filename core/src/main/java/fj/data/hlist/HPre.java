@@ -265,7 +265,7 @@ public final class HPre {
      */
     public static <N extends HNat<N>, NN extends HNat<NN>, B extends HBool, E extends HEq<N, NN, B>>
     HEq<HSucc<N>, HSucc<NN>, B> eq(final HSucc<N> a, final HSucc<NN> b, final E e) {
-      return new HEq<HSucc<N>, HSucc<NN>, B>(e.v);
+      return new HEq<HSucc<N>, HSucc<NN>, B>(e.v());
     }
 
   }
@@ -278,6 +278,10 @@ public final class HPre {
 
     private HAdd(final C sum) {
       this.sum = sum;
+    }
+
+    public C sum() {
+      return this.sum;
     }
 
     /**
@@ -299,7 +303,7 @@ public final class HPre {
      */
     public static <N extends HNat<N>, M extends HNat<M>, R extends HNat<R>, H extends HAdd<N, HSucc<M>, R>>
     HAdd<HSucc<N>, HSucc<M>, HSucc<R>> add(final HSucc<N> a, final HSucc<M> b, final H h) {
-      return new HAdd<HSucc<N>, HSucc<M>, HSucc<R>>(HNat.hSucc(h.sum));
+      return new HAdd<HSucc<N>, HSucc<M>, HSucc<R>>(HNat.hSucc(h.sum()));
     }
   }
 
