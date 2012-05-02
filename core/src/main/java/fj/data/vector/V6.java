@@ -338,9 +338,9 @@ public final class V6<A> implements Iterable<A> {
   }
 
   /**
-   * A first-class function to get the third element of a vector.
+   * A first-class function to get the fourth element of a vector.
    *
-   * @return a function that gets the third element of a given vector.
+   * @return a function that gets the fourth element of a given vector.
    */
   public static <A> F<V6<A>, A> __4() {
     return new F<V6<A>, A>() {
@@ -351,9 +351,9 @@ public final class V6<A> implements Iterable<A> {
   }
 
   /**
-   * A first-class function to get the third element of a vector.
+   * A first-class function to get the fifth element of a vector.
    *
-   * @return a function that gets the third element of a given vector.
+   * @return a function that gets the fifth element of a given vector.
    */
   public static <A> F<V6<A>, A> __5() {
     return new F<V6<A>, A>() {
@@ -364,9 +364,9 @@ public final class V6<A> implements Iterable<A> {
   }
 
   /**
-   * A first-class function to get the third element of a vector.
+   * A first-class function to get the sixth element of a vector.
    *
-   * @return a function that gets the third element of a given vector.
+   * @return a function that gets the sixth element of a given vector.
    */
   public static <A> F<V6<A>, A> __6() {
     return new F<V6<A>, A>() {
