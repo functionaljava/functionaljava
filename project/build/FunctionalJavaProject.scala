@@ -7,9 +7,9 @@ abstract class FunctionalJavaDefaults(info: ProjectInfo) extends DefaultProject(
 
   override def compileOptions = target(Target.Java1_5) :: (CompileOptions.Unchecked :: encodingUtf8).map(CompileOption) ++ super.compileOptions
 
-  override def javaCompileOptions = List("-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
+  override def javaCompileOptions = List("-source", "1.5", "-target", "1.5", "-encoding", "UTF-8", "-Xlint:unchecked").map(JavaCompileOption) ++ super.javaCompileOptions
 
-  def scalacheckDependency = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
+  def scalacheckDependency = "org.scalacheck" %% "scalacheck" % "1.8" % "test"
 
   override def testFrameworks = Seq(new TestFramework("org.scalacheck.ScalaCheckFramework"))
 
@@ -53,10 +53,10 @@ import org.scalacheck.Prop._
   val pubishToRepoName = "Sonatype Nexus Repository Manager"
 
   val publishTo = {
-    val repoUrl = "http://nexus.scala-tools.org/content/repositories/" + (if (version.toString.endsWith("-SNAPSHOT"))
-      "snapshots"
+    val repoUrl = "https://oss.sonatype.org/" + (if (version.toString.endsWith("-SNAPSHOT"))
+      "content/repositories/snapshots"
     else
-      "releases")
+      "service/local/staging/deploy/maven2")
 
     pubishToRepoName at repoUrl
   }
