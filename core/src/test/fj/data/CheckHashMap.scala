@@ -6,6 +6,8 @@ import ArbitraryHashMap._
 import Equal.{intEqual, stringEqual, optionEqual}
 import Hash.{intHash, stringHash}
 import org.scalacheck.Properties
+import fj.Equal._
+import fj.data.Option._
 
 object CheckHashMap extends Properties("HashMap") {
   implicit val equalInt: Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
@@ -38,6 +40,12 @@ object CheckHashMap extends Properties("HashMap") {
   property("delete") = forAll((m: HashMap[Int, String], k: Int) => {
     m.delete(k)
     m.get(k).isNone
+  })
+
+  property("toList") = forAll((m: HashMap[Int, String]) => {
+    val list = m.toList
+    list.length() == m.keys().length() && list.forall((entry: P2[Int, String]) =>
+        optionEqual(stringEqual).eq(m.get(entry._1()), some(entry._2())).asInstanceOf[java.lang.Boolean])
   })
 
   property("getDelete") = forAll((m: HashMap[Int, String], k: Int) => {
