@@ -3,13 +3,15 @@ package data
 
 import org.scalacheck.Prop._
 import ArbitraryHashMap._
-import Equal.{intEqual, stringEqual, optionEqual}
-import Hash.{intHash, stringHash}
+import Equal._
+import Hash._
+import Ord._
 import fj.data.Option._
 import scala.collection.JavaConversions._
 import org.scalacheck.{Arbitrary, Properties}
 import data.ArbitraryList._
 import org.scalacheck.Arbitrary._
+import java.util.Map
 
 object CheckHashMap extends Properties("HashMap") {
   implicit val equalInt: Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
@@ -82,5 +84,23 @@ object CheckHashMap extends Properties("HashMap") {
     })
 
     keysAreEqual && appliedFunctionsToKeysAndValues
+  })
+
+  property("toMap") = forAll((m: HashMap[Int, String]) => {
+    val toMap: Map[Int, String] = m.toMap
+    m.keys().forall((key: Int) => m.get(key).some() == toMap.get(key))
+  })
+
+  property("fromMap") = forAll((m: HashMap[Int, String]) => {
+    val map = new java.util.HashMap[Int, String]()
+    m.keys().foreach((key: Int) => {
+      map.put(key, m.get(key).some())
+      Unit.unit()
+    })
+    val fromMap: HashMap[Int, String] = new HashMap[Int, String](map)
+    val keysAreEqual = m.keys.toSet == fromMap.keys.toSet
+    val valuesAreEqual = m.keys().forall((key: Int) =>
+      optionEqual(stringEqual).eq(m.get(key), fromMap.get(key)))
+    keysAreEqual && valuesAreEqual
   })
 }

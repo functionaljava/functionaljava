@@ -66,6 +66,13 @@ public final class HashMap<K, V> implements Iterable<K> {
     this.h = h;
   }
 
+  public HashMap(java.util.Map<K, V> map, final Equal<K> e, final Hash<K> h) {
+    this(e, h);
+    for (K key : map.keySet()) {
+      set(key, map.get(key));
+    }
+  }
+
   /**
    * Construct a hash map with the given equality and hashing strategy.
    *
@@ -79,7 +86,11 @@ public final class HashMap<K, V> implements Iterable<K> {
     this.h = h;
   }
 
-  /**
+    public HashMap(java.util.Map<K, V> map) {
+        this(map, Equal.<K>anyEqual(), Hash.<K>anyHash());
+    }
+
+    /**
    * Construct a hash map with the given equality and hashing strategy.
    *
    * @param e               The equality strategy.
@@ -304,6 +315,14 @@ public final class HashMap<K, V> implements Iterable<K> {
 
   public Array<P2<K, V>> toArray() {
     return toList().toArray();
+  }
+
+  public java.util.Map<K, V> toMap() {
+    final java.util.HashMap<K,V> result = new java.util.HashMap<K, V>();
+    for (K key : keys()) {
+      result.put(key, get(key).some());
+    }
+    return result;
   }
 
   public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries) {
