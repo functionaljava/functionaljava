@@ -243,6 +243,18 @@ public final class HashMap<K, V> implements Iterable<K> {
     return fromNull(m.remove(new Key<K>(k, e, h)));
   }
 
+  public <A, B> HashMap<A, B> map(F<K, A> keyFunction,
+                                              F<V, B> valueFunction,
+                                              Equal<A> equal, Hash<A> hash) {
+      final HashMap hashMap = new HashMap(equal, hash);
+      for (K key : keys()) {
+          final A newKey = keyFunction.f(key);
+          final B newValue = valueFunction.f(get(key).some());
+          hashMap.set(newKey, newValue);
+      }
+      return hashMap;
+  }
+
   public List<P2<K, V>> toList() {
     return keys().map(new F<K, P2<K, V>>() {
       public P2<K, V> f(final K k) {

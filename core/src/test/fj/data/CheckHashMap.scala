@@ -4,7 +4,7 @@ package data
 import org.scalacheck.Prop._
 import ArbitraryHashMap._
 import Equal.{intEqual, stringEqual, optionEqual}
-import Hash.intHash
+import Hash.{intHash, stringHash}
 import fj.data.Option._
 import scala.collection.JavaConversions._
 import org.scalacheck.{Arbitrary, Properties}
@@ -68,5 +68,19 @@ object CheckHashMap extends Properties("HashMap") {
     entries.groupBy(_._1)
       .forall((e: (Int, Iterable[P2[Int, String]])) => e._2
       .exists((elem: P2[Int, String]) => optionEqual(stringEqual).eq(map.get(e._1), Option.some(elem._2))))
+  })
+
+  property("map") = forAll((m: HashMap[Int, String]) => {
+    val keyFunction: F[Int, String] = (i: Int) => i.toString
+    val valueFunction: (String) => String = (s: String) => s + "a"
+    val mapped = m.map(keyFunction, valueFunction, stringEqual, stringHash)
+    val keysAreEqual = m.keys().map(keyFunction).toSet == mapped.keys.toSet
+    val appliedFunctionsToKeysAndValues: Boolean = m.keys().forall((key: Int) => {
+      val mappedValue = mapped.get(keyFunction.f(key))
+      val oldValueMapped = some(valueFunction.f(m.get(key).some()))
+      Equal.optionEqual(stringEqual).eq(mappedValue, oldValueMapped)
+    })
+
+    keysAreEqual && appliedFunctionsToKeysAndValues
   })
 }
