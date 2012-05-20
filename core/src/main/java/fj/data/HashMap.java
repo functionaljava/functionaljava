@@ -271,4 +271,16 @@ public final class HashMap<K, V> implements Iterable<K> {
   public Array<P2<K, V>> toArray() {
     return toList().toArray();
   }
+
+  public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries) {
+    return from(entries, Equal.<K>anyEqual(), Hash.<K>anyHash());
+  }
+
+  public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries, Equal<K> equal, Hash<K> hash) {
+    final HashMap<K, V> map = new HashMap<K, V>(equal, hash);
+    for (P2<K, V> entry : entries) {
+        map.set(entry._1(), entry._2());
+    }
+    return map;
+  }
 }
