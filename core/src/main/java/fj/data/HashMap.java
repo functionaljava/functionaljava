@@ -1,15 +1,15 @@
 package fj.data;
 
+import fj.Equal;
 import fj.F;
-import static fj.P.p;
-
 import fj.Hash;
 import fj.P2;
-import static fj.data.Option.fromNull;
-import fj.Equal;
 
 import java.util.Collection;
 import java.util.Iterator;
+
+import static fj.P.p;
+import static fj.data.Option.fromNull;
 
 /**
  * A mutable hash map providing O(1) lookup.
@@ -243,16 +243,44 @@ public final class HashMap<K, V> implements Iterable<K> {
     return fromNull(m.remove(new Key<K>(k, e, h)));
   }
 
+  public List<P2<K, V>> toList() {
+    return keys().map(new F<K, P2<K, V>>() {
+      public P2<K, V> f(final K k) {
+        return p(k, get(k).some());
+      }
+    });
+  }
+
   /**
    * Projects an immutable collection of this hash map.
    *
    * @return An immutable collection of this hash map.
    */
   public Collection<P2<K, V>> toCollection() {
-    return keys().map(new F<K, P2<K, V>>() {
-      public P2<K, V> f(final K k) {
-        return p(k, get(k).some());
-      }
-    }).toCollection();
+    return toList().toCollection();
+  }
+
+  public Stream<P2<K, V>> toStream() {
+    return toList().toStream();
+  }
+
+  public Option<P2<K, V>> toOption() {
+    return toList().toOption();
+  }
+
+  public Array<P2<K, V>> toArray() {
+    return toList().toArray();
+  }
+
+  public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries) {
+    return from(entries, Equal.<K>anyEqual(), Hash.<K>anyHash());
+  }
+
+  public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries, Equal<K> equal, Hash<K> hash) {
+    final HashMap<K, V> map = new HashMap<K, V>(equal, hash);
+    for (P2<K, V> entry : entries) {
+        map.set(entry._1(), entry._2());
+    }
+    return map;
   }
 }
