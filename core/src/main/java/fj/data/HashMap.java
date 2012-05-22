@@ -292,6 +292,10 @@ public final class HashMap<K, V> implements Iterable<K> {
     toStream().foreach(effect);
   }
 
+  public void foreach(F<P2<K, V>, Unit> function) {
+    toStream().foreach(function);
+  }
+
   public List<P2<K, V>> toList() {
     return keys().map(new F<K, P2<K, V>>() {
       public P2<K, V> f(final K k) {
