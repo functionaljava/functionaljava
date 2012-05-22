@@ -288,6 +288,10 @@ public final class HashMap<K, V> implements Iterable<K> {
     return map(Function.<K>identity(), function, e, h);
   }
 
+  public void foreach(Effect<P2<K, V>> effect) {
+    toStream().foreach(effect);
+  }
+
   public List<P2<K, V>> toList() {
     return keys().map(new F<K, P2<K, V>>() {
       public P2<K, V> f(final K k) {
