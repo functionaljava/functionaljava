@@ -1732,20 +1732,6 @@ public final class Java {
 
   // END ArrayList ->
 
-  /**
-   * A function that converts Java lists to lists.
-   *
-   * @return A function that converts Java lists to lists.
-   */
-  public static <A> F<java.util.List<A>, List<A>> JUList_List() {
-    return new F<java.util.List<A>, List<A>>() {
-      @SuppressWarnings({"unchecked"})
-      public List<A> f(final java.util.List<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
-      }
-    };
-  }
-  
   // BEGIN BitSet ->
 
   /**
