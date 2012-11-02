@@ -229,7 +229,9 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @param v The value to insert.
    */
   public void set(final K k, final V v) {
-    m.put(new Key<K>(k, e, h), v);
+    if (v != null) {
+        m.put(new Key<K>(k, e, h), v);
+    }
   }
 
   /**

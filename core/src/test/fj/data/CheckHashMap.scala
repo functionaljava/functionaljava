@@ -103,4 +103,16 @@ object CheckHashMap extends Properties("HashMap") {
       optionEqual(stringEqual).eq(m.get(key), fromMap.get(key)))
     keysAreEqual && valuesAreEqual
   })
+
+  property("No null values") = forAll((m: List[Int]) => {
+    val map = HashMap.hashMap[Int, Int]()
+    m.foreach(new Effect[Int] {
+      def e(a: Int) {
+        map.set(a, null.asInstanceOf[Int])
+      }
+    })
+    m.forall(new F[Int, java.lang.Boolean]() {
+      def f(a: Int) = map.contains(a) == false
+    })
+  })
 }
