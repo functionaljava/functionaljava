@@ -401,7 +401,16 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after performing the map, then final join.
    */
   public final <B> Stream<B> bind(final F<A, Stream<B>> f) {
-    return join(map(f));
+    return map(f).foldLeft(new F2<Stream<B>, Stream<B>, Stream<B>>() {
+        @Override
+        public Stream<B> f(Stream<B> accumulator, Stream<B> element) {
+            Stream<B> result = accumulator;
+            for (B single : element) {
+                result = result.cons(single);
+            }
+            return result;
+        }
+    }, Stream.<B>nil()).reverse();
   }
 
   /**

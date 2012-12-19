@@ -10,7 +10,8 @@ import Equal.{streamEqual, stringEqual}
 import Unit.unit
 import Stream.{nil, single, join, iterableStream}
 import Ord.stringOrd
-import org.scalacheck.Properties
+import org.scalacheck.{Gen, Properties}
+import collection.JavaConversions
 
 object CheckStream extends Properties("Stream") {
   property("isEmpty") = forAll((a: Stream[Int]) =>
@@ -46,6 +47,18 @@ object CheckStream extends Properties("Stream") {
     def f(s: String) = s.toLowerCase
     def g(s: String) = s.toUpperCase
     streamEqual(stringEqual).eq(a.map((x: String) => f(g(x))), a.map((x: String) => g(x)).map((x: String) => f(x)))})
+
+  val length = Gen.choose(0, 3000)
+
+  property("bindStackOverflow") = forAll(length)(size => {
+    val stream = iterableStream(JavaConversions.asJavaIterable((1 to size)))
+    val bound: Stream[Int] = stream.bind(new F[Int, Stream[Int]] {
+      def f(a: Int) = single(a)
+    })
+    stream.zip(bound).forall(new F[P2[Int, Int], java.lang.Boolean] {
+      def f(a: P2[Int, Int]) = a._1() == a._2()
+    })
+  })
 
   property("foreach") = forAll((a: Stream[Int]) => {
     var i = 0
