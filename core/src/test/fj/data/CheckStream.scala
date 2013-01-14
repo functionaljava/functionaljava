@@ -48,7 +48,7 @@ object CheckStream extends Properties("Stream") {
     def g(s: String) = s.toUpperCase
     streamEqual(stringEqual).eq(a.map((x: String) => f(g(x))), a.map((x: String) => g(x)).map((x: String) => f(x)))})
 
-  val length = Gen.choose(0, 3000)
+  val length = Gen.choose(0, 5000)
 
   property("bindStackOverflow") = forAll(length)(size => {
     val stream = iterableStream(JavaConversions.asJavaIterable((1 to size)))
