@@ -3,13 +3,15 @@ package data
 
 import org.scalacheck.Prop._
 import ArbitraryHashMap._
-import Equal.{intEqual, stringEqual, optionEqual}
-import Hash.intHash
+import Equal._
+import Hash._
+import Ord._
 import fj.data.Option._
 import scala.collection.JavaConversions._
 import org.scalacheck.{Arbitrary, Properties}
 import data.ArbitraryList._
 import org.scalacheck.Arbitrary._
+import java.util.Map
 
 object CheckHashMap extends Properties("HashMap") {
   implicit val equalInt: Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
@@ -68,5 +70,49 @@ object CheckHashMap extends Properties("HashMap") {
     entries.groupBy(_._1)
       .forall((e: (Int, Iterable[P2[Int, String]])) => e._2
       .exists((elem: P2[Int, String]) => optionEqual(stringEqual).eq(map.get(e._1), Option.some(elem._2))))
+  })
+
+  property("map") = forAll((m: HashMap[Int, String]) => {
+    val keyFunction: F[Int, String] = (i: Int) => i.toString
+    val valueFunction: (String) => String = (s: String) => s + "a"
+    val mapped = m.map(keyFunction, valueFunction, stringEqual, stringHash)
+    val keysAreEqual = m.keys().map(keyFunction).toSet == mapped.keys.toSet
+    val appliedFunctionsToKeysAndValues: Boolean = m.keys().forall((key: Int) => {
+      val mappedValue = mapped.get(keyFunction.f(key))
+      val oldValueMapped = some(valueFunction.f(m.get(key).some()))
+      Equal.optionEqual(stringEqual).eq(mappedValue, oldValueMapped)
+    })
+
+    keysAreEqual && appliedFunctionsToKeysAndValues
+  })
+
+  property("toMap") = forAll((m: HashMap[Int, String]) => {
+    val toMap: Map[Int, String] = m.toMap
+    m.keys().forall((key: Int) => m.get(key).some() == toMap.get(key))
+  })
+
+  property("fromMap") = forAll((m: HashMap[Int, String]) => {
+    val map = new java.util.HashMap[Int, String]()
+    m.keys().foreach((key: Int) => {
+      map.put(key, m.get(key).some())
+      Unit.unit()
+    })
+    val fromMap: HashMap[Int, String] = new HashMap[Int, String](map)
+    val keysAreEqual = m.keys.toSet == fromMap.keys.toSet
+    val valuesAreEqual = m.keys().forall((key: Int) =>
+      optionEqual(stringEqual).eq(m.get(key), fromMap.get(key)))
+    keysAreEqual && valuesAreEqual
+  })
+
+  property("No null values") = forAll((m: List[Int]) => {
+    val map = HashMap.hashMap[Int, Int]()
+    m.foreach(new Effect[Int] {
+      def e(a: Int) {
+        map.set(a, null.asInstanceOf[Int])
+      }
+    })
+    m.forall(new F[Int, java.lang.Boolean]() {
+      def f(a: Int) = map.contains(a) == false
+    })
   })
 }
