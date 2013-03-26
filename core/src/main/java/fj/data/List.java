@@ -839,14 +839,33 @@ public abstract class List<A> implements Iterable<A> {
       return this;
     else {
       final class Merge<A> {
-        List<A> merge(final List<A> xs, final List<A> ys, final Ord<A> o) {
-          return xs.isEmpty() ?
-                 ys :
-                 ys.isEmpty() ?
-                 xs :
-                 o.isLessThan(xs.head(), ys.head()) ?
-                 cons(xs.head(), merge(xs.tail(), ys, o)) :
-                 cons(ys.head(), merge(xs, ys.tail(), o));
+        List<A> merge(List<A> xs, List<A> ys, final Ord<A> o) {
+          final Buffer<A> buf = empty();
+
+          while (true) {
+            if (xs.isEmpty()) {
+              buf.append(ys);
+              break;
+            }
+
+            if (ys.isEmpty()) {
+              buf.append(xs);
+              break;
+            }
+
+            final A x = xs.head();
+            final A y = ys.head();
+
+            if (o.isLessThan(x, y)) {
+              buf.snoc(x);
+              xs = xs.tail();
+            } else {
+              buf.snoc(y);
+              ys = ys.tail();
+            }
+          }
+
+          return buf.toList();
         }
       }
 
@@ -864,8 +883,17 @@ public abstract class List<A> implements Iterable<A> {
    * @param f  The function to zip this list and the given list with.
    * @return A new list with a length the same as the shortest of this list and the given list.
    */
-  public final <B, C> List<C> zipWith(final List<B> bs, final F<A, F<B, C>> f) {
-    return isEmpty() || bs.isEmpty() ? List.<C>nil() : cons(f.f(head()).f(bs.head()), tail().zipWith(bs.tail(), f));
+  public final <B, C> List<C> zipWith(List<B> bs, final F<A, F<B, C>> f) {
+    final Buffer<C> buf = empty();
+    List<A> as = this;
+
+    while (as.isNotEmpty() && bs.isNotEmpty()) {
+      buf.snoc(f.f(as.head()).f(bs.head()));
+      as = as.tail();
+      bs = bs.tail();
+    }
+
+    return buf.toList();
   }
 
   /**
