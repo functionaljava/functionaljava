@@ -1,6 +1,6 @@
 package fj
 
-object Tests {
+/*object Tests {
   def tests = List (
     fj.data.CheckArray.properties,
     fj.data.CheckIO.properties,
@@ -46,4 +46,4 @@ object Tests {
         }
       }
     }
-}
+}*/
