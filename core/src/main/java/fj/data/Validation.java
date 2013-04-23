@@ -11,6 +11,7 @@ import fj.F7;
 import fj.F8;
 
 import static fj.Function.curry;
+import static fj.Function.identity;
 import static fj.P.p;
 
 import fj.Function;
@@ -1049,6 +1050,17 @@ public final class Validation<E, T> implements Iterable<T> {
     return c ? Validation.<E, T>success(t) : Validation.<E, T>fail(e);
   }
 
+  /**
+   * Joins the given validation with the containing validation using a bind.
+   *
+   * @param v The validation with a containing validation to join.
+   * @return A new validation that is a join of the given validation.
+   */
+
+  public static <E,T> Validation<E,T> join(final Validation<E, Validation<E,T>> v) {
+    final F<Validation<E,T>, Validation<E,T>> id = identity();
+    return v.bind(id);
+  }
   /**
    * Parses the given string into a byte.
    *
