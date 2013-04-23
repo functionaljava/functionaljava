@@ -1,5 +1,0 @@
-package fj
-
-object Implicit {
-
-}

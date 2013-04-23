@@ -2,7 +2,7 @@ package fj
 package control
 package parallel
 
-import org.scalacheck.Prop._
+import org.scalacheck._
 import ArbitraryP.arbitraryP1
 import data.ArbitraryList.arbitraryList
 import data.ArbitraryStream.arbitraryStream
@@ -16,6 +16,8 @@ import Monoid.stringMonoid
 import org.scalacheck.Properties
 
 object CheckParModule extends Properties("ParModule") {
+  import Prop.forAll
+
   def rev = (x: String) => x.reverse: String
 
   implicit val strategy = ArbitraryStrategy.arbitraryStrategy[fj.Unit]

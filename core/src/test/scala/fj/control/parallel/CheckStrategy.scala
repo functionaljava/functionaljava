@@ -2,6 +2,7 @@ package fj
 package control
 package parallel
 
+import org.scalacheck._
 import org.scalacheck.Prop._
 import ArbitraryP.arbitraryP1
 import control.parallel.ArbitraryStrategy.arbitraryStrategy
