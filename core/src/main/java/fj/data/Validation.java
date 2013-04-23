@@ -1061,6 +1061,7 @@ public final class Validation<E, T> implements Iterable<T> {
     final F<Validation<E,T>, Validation<E,T>> id = identity();
     return v.bind(id);
   }
+
   /**
    * Parses the given string into a byte.
    *
