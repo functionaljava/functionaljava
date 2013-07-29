@@ -33,15 +33,15 @@ object Tests {
         c.status match {
           case Test.Passed => println("Passed " + name)
           case Test.Proved(_) => println("Proved " + name)
-          case f @ Test.Failed(_, _) => error(name + ": " + f)
+          case f @ Test.Failed(_, _) => sys.error(name + ": " + f)
           case Test.Exhausted => println("Exhausted " + name)
           case f @ Test.GenException(e) => {
             e.printStackTrace
-            error(name + ": " + f)
+            sys.error(name + ": " + f)
           }
           case f @ Test.PropException(_, e, _) => {
             e.printStackTrace
-            error(name + ": " + f)
+            sys.error(name + ": " + f)
           }
         }
       }
