@@ -25,11 +25,11 @@ object Tests {
   import org.scalacheck.Prop
   import org.scalacheck.ConsoleReporter._
   import org.scalacheck.Test
-  import org.scalacheck.Test.{check, defaultParams}
+  import org.scalacheck.Test.check
 
   def run(tests: List[(String, Prop)]) =
     tests foreach { case (name, p) => {
-        val c = check(Test.Params(), p)
+        val c = check(new Test.Parameters.Default { }, p)
         c.status match {
           case Test.Passed => println("Passed " + name)
           case Test.Proved(_) => println("Proved " + name)
