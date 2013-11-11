@@ -1721,7 +1721,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param i The iterable to take to a list.
    * @return A list from the given iterable.
    */
-  public static <A> List<A> iterableList(final Iterable<A> i) {
+  public static <A> List<A> iterableList(final Iterable<? extends A> i) {
     final Buffer<A> bs = empty();
 
     for (final A a : i)
@@ -1819,10 +1819,10 @@ public abstract class List<A> implements Iterable<A> {
      * @param as The list to construct a buffer with.
      * @return A buffer from the given list.
      */
-    public static <A> Buffer<A> fromList(final List<A> as) {
+    public static <A> Buffer<A> fromList(final List<? extends A> as) {
       final Buffer<A> b = new Buffer<A>();
 
-      for (List<A> xs = as; xs.isNotEmpty(); xs = xs.tail())
+      for (List<? extends A> xs = as; xs.isNotEmpty(); xs = xs.tail())
         b.snoc(xs.head());
 
       return b;
@@ -1834,7 +1834,7 @@ public abstract class List<A> implements Iterable<A> {
      * @param i The iterable to take to a buffer.
      * @return A buffer from the given iterable.
      */
-    public static <A> Buffer<A> iterableBuffer(final Iterable<A> i) {
+    public static <A> Buffer<A> iterableBuffer(final Iterable<? extends A> i) {
       final Buffer<A> b = empty();
 
       for (final A a : i)
