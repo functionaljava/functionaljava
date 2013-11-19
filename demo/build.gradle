@@ -14,7 +14,8 @@ apply plugin: 'application'
 
 defaultTasks 'build'
 
-mainClassName = "fj.demo.Array_forall"
+//mainClassName = "fj.demo.Array_forall"
+mainClassName = "fj.demo.euler.Problem2"
 //mainClassName = "fj.demo.Primes2"
 
 ext {
