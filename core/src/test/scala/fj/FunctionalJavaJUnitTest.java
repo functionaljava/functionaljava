@@ -10,12 +10,14 @@ import org.junit.Test;
  * Time: 12:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JavaTest {
+public class FunctionalJavaJUnitTest {
 
 	@Test
-	public void test1() {
-		System.out.println("Hello world");
+	public void runScalacheckTests() {
+//		System.out.println("Hello world");
 		Assert.assertTrue(true);
+//		new Tests$().main(null);
+		Tests.main(null);
 	}
 
 }

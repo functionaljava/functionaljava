@@ -19,7 +19,7 @@ object Tests {
 
   def main(args: Array[String]) {
     run(tests)
-    System.exit(0)
+//    System.exit(0)
   }
 
   import org.scalacheck.Prop
