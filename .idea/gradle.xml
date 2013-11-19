@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="gradleHome" value="D:\gradle-1.8" />
+    <option name="linkedProjectPath" value="$PROJECT_DIR$/build.gradle" />
+    <option name="preferLocalInstallationToWrapper" value="true" />
+  </component>
+</project>
+
