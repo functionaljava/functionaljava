@@ -23,6 +23,14 @@ ext {
 }
 
 
+tasks.withType(ScalaCompile) {
+	scalaCompileOptions.useAnt = false
+}
+
+test {
+	scanForTestClasses = false
+	include '**/*Test.*'
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {

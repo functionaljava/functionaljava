@@ -30,13 +30,13 @@ public class HList_foldRight {
       comp0 = Apply.comp();
     final HFoldr<Unit, F<Integer, Integer>, HList.HNil, F<Integer, Integer>>
       fold0 = HFoldr.hFoldr();
-    final HFoldr<Unit, F<Integer, Integer>, HList.HCons<F<String, Integer>,
-          HList.HCons<F<Integer, Integer>, HList.HCons<F<Integer, Integer>, HList.HNil>>>, F<String, Integer>>
-      fold2 = HFoldr.hFoldr(comp1, HFoldr.hFoldr(comp0, HFoldr.hFoldr(comp0, fold0)));
+//    final HFoldr<Unit, F<Integer, Integer>, HList.HCons<F<String, Integer>,
+//          HList.HCons<F<Integer, Integer>, HList.HCons<F<Integer, Integer>, HList.HNil>>>, F<String, Integer>>
+//      fold2 = HFoldr.hFoldr(comp1, HFoldr.hFoldr(comp0, HFoldr.hFoldr(comp0, fold0)));
     final F<Integer, Integer> id = identity();
 
     // Compose the list and apply the resulting function to a value.
     // Unit is used because composition has only one possible implementation.
-    out.println(fold2.foldRight(unit(), id, functions).f("abc")); // 7
+//    out.println(fold2.foldRight(unit(), id, functions).f("abc")); // 7
   }
 }
