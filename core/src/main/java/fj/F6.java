@@ -7,7 +7,7 @@ package fj;
  *
  * @version %build.number%
  */
-public abstract class F6<A, B, C, D, E, F$, G> {
+public interface F6<A, B, C, D, E, F$, G> {
   /**
    * Transform <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code> and
    * <code>F$</code> to <code>G</code>.
@@ -20,5 +20,5 @@ public abstract class F6<A, B, C, D, E, F$, G> {
    * @param f The <code>F$</code> to transform.
    * @return The result of the transformation.
    */
-  public abstract G f(A a, B b, C c, D d, E e, F$ f);
+  public G f(A a, B b, C c, D d, E e, F$ f);
 }
