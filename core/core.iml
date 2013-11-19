@@ -3,7 +3,6 @@
   <component name="FacetManager">
     <facet type="scala" name="Scala">
       <configuration>
-        <option name="compileOrder" value="ScalaThenJava" />
         <option name="compilerLibraryLevel" value="Global" />
         <option name="compilerLibraryName" value="scala-compiler-2.10.1" />
       </configuration>
@@ -29,7 +28,7 @@
     <orderEntry type="library" scope="TEST" name="scalacheck_2.10-1.10.1" level="project" />
     <orderEntry type="library" scope="TEST" name="scala-actors-2.10.1" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.5" level="project" />
-    <orderEntry type="library" name="scala-library-2.10.1" level="application" />
+    <orderEntry type="library" scope="TEST" name="scala-library-2.10.3" level="project" />
   </component>
 </module>
 
