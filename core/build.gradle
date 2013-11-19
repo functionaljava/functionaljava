@@ -14,11 +14,12 @@ apply plugin: 'scala'
 defaultTasks 'build'
 
 ext {
-//	scalaVersion = "2.7.+"
-//	scalaVersion = "2.8.+"
-	scalaVersion = "2.9.+"
+	scalaVersion = "2.10.+"
+//	scalaVersion = "2.9.+"
 
 	scalacheckVersion = "1.10.+"
+//	scalacheckScalaVersion = "2.9.3"
+	scalacheckScalaVersion = "2.10"
 }
 
 
@@ -35,7 +36,7 @@ dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.5'
 	testCompile "org.scala-lang:scala-library:$scalaVersion"
-	testCompile "org.scalacheck:scalacheck_2.9.3:$scalacheckVersion"
+	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
 
 
 	// Declare the dependency for your favourite test framework you want to use in your tests.
