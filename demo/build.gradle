@@ -9,9 +9,13 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'application'
 //apply plugin: 'scala'
 
 defaultTasks 'build'
+
+mainClassName = "fj.demo.Array_forall"
+//mainClassName = "fj.demo.Primes2"
 
 ext {
 //	scalaVersion = "2.7.+"
