@@ -1,2 +1,7 @@
 
 defaultTasks 'build'
+
+ext {
+	fjVersion = "4.0-java8"
+	projectName = "functionaljava"
+}
