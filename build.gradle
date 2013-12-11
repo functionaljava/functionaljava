@@ -2,6 +2,17 @@
 defaultTasks 'build'
 
 ext {
-	fjVersion = "4.0-java8"
-	projectName = "functionaljava"
+}
+
+allprojects {
+	ext {
+		fjVersion = "4.0-SNAPSHOT"
+		projectName = "functionaljava"
+	}
+	version = fjVersion
+	group = "org.functionaljava"
+}
+
+subprojects {
+
 }
