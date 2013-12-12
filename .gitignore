@@ -8,4 +8,6 @@ lib_managed
 
 .gradle
 build
+*.iml
+
 
