@@ -34,11 +34,13 @@ repositories {
     // Use 'maven central' for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     mavenCentral()
+	mavenLocal()
 }
 
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
+	compile "org.functionaljava:functionaljava:4.0-SNAPSHOT"
 	compile "org.scala-lang:scala-library:$scalaVersion"
 	testCompile "org.scala-lang:scala-library:$scalaVersion"
 	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
