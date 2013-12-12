@@ -1,24 +1,9 @@
 
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'scala'
 
 defaultTasks 'build'
 
-ext {
-	scalaVersion = "2.10.+"
-	scalacheckVersion = "1.10.+"
-	scalacheckScalaVersion = "2.10"
-}
-
-tasks.withType(ScalaCompile) {
-	scalaCompileOptions.useAnt = false
-}
-
-test {
-	scanForTestClasses = false
-	include '**/*Test.*'
-}
 
 jar {
 	baseName project.projectName
@@ -34,8 +19,6 @@ repositories {
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
-	testCompile "org.scala-lang:scala-library:$scalaVersion"
-	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
 
     testCompile "junit:junit:4.11"
 }

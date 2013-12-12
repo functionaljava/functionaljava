@@ -10,6 +10,25 @@
 // Apply the scala plugin to add support for Scala
 apply plugin: 'scala'
 
+
+ext {
+	scalaVersion = "2.10.+"
+	scalacheckVersion = "1.10.+"
+	scalacheckScalaVersion = "2.10"
+}
+
+
+
+tasks.withType(ScalaCompile) {
+	scalaCompileOptions.useAnt = false
+}
+
+
+test {
+	scanForTestClasses = false
+	include '**/*Test.*'
+}
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use 'maven central' for resolving your dependencies.
@@ -17,12 +36,13 @@ repositories {
     mavenCentral()
 }
 
-// In this section you declare the dependencies for your production and test code
-dependencies {
-    // We use the latest 2.10 scala version in our library project
-    compile 'org.scala-lang:scala-library:2.10.3'
 
-    // We use the latest version of the scalatest for testing our library
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.scalatest:scalatest_2.10:1.9.2'
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.5'
+	compile "org.scala-lang:scala-library:$scalaVersion"
+	testCompile "org.scala-lang:scala-library:$scalaVersion"
+	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
+
+    testCompile "junit:junit:4.11"
+	testCompile 'org.scalatest:scalatest_2.10:1.9.2'
 }
