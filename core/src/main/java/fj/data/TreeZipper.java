@@ -276,9 +276,10 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
         new F2<Stream<Tree<A>>, Stream<Tree<A>>, Option<P3<Stream<Tree<A>>, Tree<A>, Stream<Tree<A>>>>>() {
           public Option<P3<Stream<Tree<A>>, Tree<A>, Stream<Tree<A>>>> f(final Stream<Tree<A>> acc,
                                                                          final Stream<Tree<A>> xs) {
-            return p.f(xs.head()) ? some(P.p(acc, xs.head(), xs.tail()._1()))
-                                  : xs.isNotEmpty() ? f(acc.cons(xs.head()), xs.tail()._1())
-                                                    : Option.<P3<Stream<Tree<A>>, Tree<A>, Stream<Tree<A>>>>none();
+            return xs.isNotEmpty()
+                     ? p.f(xs.head()) ? some(P.p(acc, xs.head(), xs.tail()._1()))
+                                      : f(acc.cons(xs.head()), xs.tail()._1())
+                     : Option.<P3<Stream<Tree<A>>, Tree<A>, Stream<Tree<A>>>>none();
           }
         };
 
