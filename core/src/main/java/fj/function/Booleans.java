@@ -1,17 +1,17 @@
 package fj.function;
 
+import static fj.Function.compose;
+import static fj.Function.compose2;
+import static fj.Function.curry;
+import static fj.Function.flip;
+import static fj.Semigroup.conjunctionSemigroup;
+import static fj.Semigroup.disjunctionSemigroup;
+import static fj.Semigroup.exclusiveDisjunctionSemiGroup;
 import fj.F;
-import fj.F2;
 import fj.F3;
-import static fj.Function.*;
-
 import fj.Monoid;
 import fj.data.List;
 import fj.data.Stream;
-
-import static fj.Semigroup.disjunctionSemigroup;
-import static fj.Semigroup.conjunctionSemigroup;
-import static fj.Semigroup.exclusiveDisjunctionSemiGroup;
 
 /**
  * Curried logical functions.
@@ -42,20 +42,12 @@ public final class Booleans {
   /**
    * Logical negation.
    */
-  public static final F<Boolean, Boolean> not = new F<Boolean, Boolean>() {
-    public Boolean f(final Boolean p) {
-      return !p;
-    }
-  };
+  public static final F<Boolean, Boolean> not = p -> !p;
 
   /**
    * Curried form of logical "only if" (material implication).
    */
-  public static final F<Boolean, F<Boolean, Boolean>> implies = curry(new F2<Boolean, Boolean, Boolean>() {
-    public Boolean f(final Boolean p, final Boolean q) {
-      return !p || q;
-    }
-  });
+  public static final F<Boolean, F<Boolean, Boolean>> implies = curry((p,q) -> !p || q);
 
   /**
    * Curried form of logical "if" (reverse material implication).
