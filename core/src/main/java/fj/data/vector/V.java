@@ -52,11 +52,7 @@ public final class V {
    * @return A function that puts elements in a vector-2.
    */
   public static <A> F2<A, A, V2<A>> v2() {
-    return new F2<A, A, V2<A>>() {
-      public V2<A> f(final A a, final A a1) {
-        return v(a, a1);
-      }
-    };
+	  return V::v;
   }
 
   /**

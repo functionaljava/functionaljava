@@ -57,7 +57,7 @@ public final class Hash<A> {
    * @return A hash that uses the given function.
    */
   public static <A> Hash<A> hash(final F<A, Integer> f) {
-    return new Hash<A>(f);
+    return new Hash<>(f);
   }
 
   /**
@@ -66,11 +66,7 @@ public final class Hash<A> {
    * @return A hash that uses {@link Object#hashCode()}.
    */
   public static <A> Hash<A> anyHash() {
-    return new Hash<A>(new F<A, Integer>() {
-      public Integer f(final A a) {
-        return a.hashCode();
-      }
-    });
+    return new Hash<>(a -> a.hashCode());
   }
 
   /**
@@ -120,9 +116,8 @@ public final class Hash<A> {
 
   /**
    * A hash instance for the {@link StringBuffer} type.
-   */
-  public static final Hash<StringBuffer> stringBufferHash = new Hash<StringBuffer>(new F<StringBuffer, Integer>() {
-    public Integer f(final StringBuffer sb) {
+   */ 
+  public static final Hash<StringBuffer> stringBufferHash = new Hash<>(sb -> {
       final int p = 419;
       int r = 239;
 
@@ -130,8 +125,8 @@ public final class Hash<A> {
         r = p * r + sb.charAt(i);
 
       return r;
-    }
-  });
+    });
+  
 
   /**
    * A hash instance for the {@link StringBuilder} type.
@@ -340,8 +335,7 @@ public final class Hash<A> {
    */
   public static <A, B, C, D> Hash<P4<A, B, C, D>> p4Hash(final Hash<A> ha, final Hash<B> hb, final Hash<C> hc,
                                                          final Hash<D> hd) {
-    return new Hash<P4<A, B, C, D>>(new F<P4<A, B, C, D>, Integer>() {
-      public Integer f(final P4<A, B, C, D> p4) {
+    return new Hash<P4<A, B, C, D>>(p4 -> {
         final int p = 419;
         int r = 239;
 
@@ -351,7 +345,6 @@ public final class Hash<A> {
         r = p * r + hd.hash(p4._4());
 
         return r;
-      }
     });
   }
 

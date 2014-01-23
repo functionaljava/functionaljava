@@ -77,11 +77,7 @@ public final class Actor<A> {
   
   private Actor(final Strategy<Unit> s, final F<A, P1<Unit>> e) {
     this.s = s;
-    f = new F<A, P1<Unit>>() {
-      public P1<Unit> f(final A a) {
-        return s.par(e.f(a));
-      }
-    };
+    f = a-> s.par(e.f(a));
   }
 
   /**

@@ -52,13 +52,8 @@ public final class Equal<A> {
    * @return A function that returns <code>true</code> if the two given arguments are equal.
    */
   public F2<A, A, Boolean> eq() {
-    return new F2<A, A, Boolean>() {
-      public Boolean f(final A a, final A a1) {
-        return eq(a, a1);
-      }
-    };
+    return this::eq;
   }
-
   /**
    * Partially applied equality check.
    *
@@ -66,11 +61,7 @@ public final class Equal<A> {
    * @return A function that returns <code>true</code> if the given argument equals the argument to this method.
    */
   public F<A, Boolean> eq(final A a) {
-    return new F<A, Boolean>() {
-      public Boolean f(final A a1) {
-        return eq(a, a1);
-      }
-    };
+    return a1 -> eq(a, a1);
   }
 
   /**
@@ -101,15 +92,7 @@ public final class Equal<A> {
    *         equality.
    */
   public static <A> Equal<A> anyEqual() {
-    return new Equal<A>(new F<A, F<A, Boolean>>() {
-      public F<A, Boolean> f(final A a1) {
-        return new F<A, Boolean>() {
-          public Boolean f(final A a2) {
-            return a1.equals(a2);
-          }
-        };
-      }
-    });
+    return new Equal<A>(a1 -> a2 -> a1.equals(a2));
   }
 
   /**

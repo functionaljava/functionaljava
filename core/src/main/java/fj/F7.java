@@ -7,7 +7,8 @@ package fj;
  *
  * @version %build.number%
  */
-public abstract class F7<A, B, C, D, E, F$, G, H> {
+@FunctionalInterface
+public interface F7<A, B, C, D, E, F$, G, H> {
   /**
    * Transform <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code>,
    * <code>F$</code> and <code>G</code> to <code>H</code>.
@@ -21,5 +22,5 @@ public abstract class F7<A, B, C, D, E, F$, G, H> {
    * @param g The <code>G</code> to transform.
    * @return The result of the transformation.
    */
-  public abstract H f(A a, B b, C c, D d, E e, F$ f, G g);
+  H f(A a, B b, C c, D d, E e, F$ f, G g);
 }

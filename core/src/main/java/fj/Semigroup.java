@@ -81,38 +81,22 @@ public final class Semigroup<A> {
   /**
    * A semigroup that adds integers.
    */
-  public static final Semigroup<Integer> intAdditionSemigroup = semigroup(new F2<Integer, Integer, Integer>() {
-    public Integer f(final Integer i1, final Integer i2) {
-      return i1 + i2;
-    }
-  });
+  public static final Semigroup<Integer> intAdditionSemigroup = semigroup((i1,i2) -> i1+i2);
 
   /**
    * A semigroup that adds doubles.
    */
-  public static final Semigroup<Double> doubleAdditionSemigroup = semigroup(new F2<Double, Double, Double>() {
-    public Double f(final Double d1, final Double d2) {
-      return d1 + d2;
-    }
-  });
+  public static final Semigroup<Double> doubleAdditionSemigroup = semigroup((d1,d2) -> d1+d2);
 
   /**
    * A semigroup that multiplies integers.
    */
-  public static final Semigroup<Integer> intMultiplicationSemigroup = semigroup(new F2<Integer, Integer, Integer>() {
-    public Integer f(final Integer i1, final Integer i2) {
-      return i1 * i2;
-    }
-  });
+  public static final Semigroup<Integer> intMultiplicationSemigroup = semigroup((i1,i2) -> i1*i2);
 
   /**
    * A semigroup that multiplies doubles.
    */
-  public static final Semigroup<Double> doubleMultiplicationSemigroup = semigroup(new F2<Double, Double, Double>() {
-    public Double f(final Double d1, final Double d2) {
-      return d1 * d2;
-    }
-  });
+  public static final Semigroup<Double> doubleMultiplicationSemigroup = semigroup((d1,d2) -> d1*d2);
 
   /**
    * A semigroup that yields the maximum of integers.
@@ -128,21 +112,13 @@ public final class Semigroup<A> {
    * A semigroup that adds big integers.
    */
   public static final Semigroup<BigInteger> bigintAdditionSemigroup =
-      semigroup(new F2<BigInteger, BigInteger, BigInteger>() {
-        public BigInteger f(final BigInteger i1, final BigInteger i2) {
-          return i1.add(i2);
-        }
-      });
+      semigroup((i1,i2) -> i1.add(i2));
 
   /**
    * A semigroup that multiplies big integers.
    */
   public static final Semigroup<BigInteger> bigintMultiplicationSemigroup =
-      semigroup(new F2<BigInteger, BigInteger, BigInteger>() {
-        public BigInteger f(final BigInteger i1, final BigInteger i2) {
-          return i1.multiply(i2);
-        }
-      });
+      semigroup((i1,i2) -> i1.multiply(i2));
 
   /**
    * A semigroup that yields the maximum of big integers.
@@ -158,21 +134,13 @@ public final class Semigroup<A> {
    * A semigroup that adds big decimals.
    */
   public static final Semigroup<BigDecimal> bigdecimalAdditionSemigroup =
-      semigroup(new F2<BigDecimal, BigDecimal, BigDecimal>() {
-        public BigDecimal f(final BigDecimal i1, final BigDecimal i2) {
-          return i1.add(i2);
-        }
-      });
+      semigroup((i1,i2) -> i1.add(i2));
 
   /**
    * A semigroup that multiplies big decimals.
    */
   public static final Semigroup<BigDecimal> bigdecimalMultiplicationSemigroup =
-      semigroup(new F2<BigDecimal, BigDecimal, BigDecimal>() {
-        public BigDecimal f(final BigDecimal i1, final BigDecimal i2) {
-          return i1.multiply(i2);
-        }
-      });
+      semigroup((i1,i2) -> i1.multiply(i2));
 
   /**
    * A semigroup that yields the maximum of big decimals.
@@ -188,21 +156,13 @@ public final class Semigroup<A> {
    * A semigroup that multiplies natural numbers.
    */
   public static final Semigroup<Natural> naturalMultiplicationSemigroup =
-      semigroup(new F2<Natural, Natural, Natural>() {
-        public Natural f(final Natural n1, final Natural n2) {
-          return n1.multiply(n2);
-        }
-      });
+      semigroup((n1,n2) -> n1.multiply(n2));
 
   /**
-   * A semigroup that multiplies natural numbers.
+   * A semigroup that adds natural numbers.
    */
   public static final Semigroup<Natural> naturalAdditionSemigroup =
-      semigroup(new F2<Natural, Natural, Natural>() {
-        public Natural f(final Natural n1, final Natural n2) {
-          return n1.add(n2);
-        }
-      });
+      semigroup((n1,n2) -> n1.add(n2));
 
   /**
    * A semigroup that yields the maximum of natural numbers.
@@ -217,20 +177,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that adds longs.
    */
-  public static final Semigroup<Long> longAdditionSemigroup = semigroup(new F2<Long, Long, Long>() {
-    public Long f(final Long x, final Long y) {
-      return x + y;
-    }
-  });
+  public static final Semigroup<Long> longAdditionSemigroup = semigroup((x,y) -> x + y);
 
   /**
    * A semigroup that multiplies longs.
    */
-  public static final Semigroup<Long> longMultiplicationSemigroup = semigroup(new F2<Long, Long, Long>() {
-    public Long f(final Long x, final Long y) {
-      return x * y;
-    }
-  });
+  public static final Semigroup<Long> longMultiplicationSemigroup = semigroup((x,y) -> x*y);
 
   /**
    * A semigroup that yields the maximum of longs.
@@ -245,20 +197,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that ORs booleans.
    */
-  public static final Semigroup<Boolean> disjunctionSemigroup = semigroup(new F2<Boolean, Boolean, Boolean>() {
-    public Boolean f(final Boolean b1, final Boolean b2) {
-      return b1 || b2;
-    }
-  });
+  public static final Semigroup<Boolean> disjunctionSemigroup = semigroup((b1,b2) -> b1 || b2);
 
   /**
    * A semigroup that XORs booleans.
    */
-  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup(new F2<Boolean, Boolean, Boolean>() {
-    public Boolean f(final Boolean p, final Boolean q) {
-      return p && !q || !p && q;
-    }
-  });
+  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p,q) -> p && !q || !p && q);
 
   /**
    * A semigroup that ANDs booleans.
@@ -399,13 +343,8 @@ public final class Semigroup<A> {
    * @return A semigroup for arrays.
    */
   public static <A> Semigroup<Array<A>> arraySemigroup() {
-    return semigroup(new F2<Array<A>, Array<A>, Array<A>>() {
-      public Array<A> f(final Array<A> a1, final Array<A> a2) {
-        return a1.append(a2);
-      }
-    });
+    return semigroup((a1, a2) -> a1.append(a2));
   }
-
   /**
    * A semigroup for unary products.
    *

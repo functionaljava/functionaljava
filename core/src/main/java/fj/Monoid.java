@@ -1,18 +1,19 @@
 package fj;
 
-import static fj.Function.curry;
 import static fj.Function.compose;
+import static fj.Function.curry;
 import static fj.Function.flip;
+import static fj.data.Stream.iterableStream;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import fj.data.Array;
 import fj.data.List;
 import fj.data.Natural;
 import fj.data.Option;
 import fj.data.Set;
 import fj.data.Stream;
-import static fj.data.Stream.iterableStream;
-
-import java.math.BigInteger;
-import java.math.BigDecimal;
 
 /**
  * A monoid abstraction to be defined across types of the given type argument. Implementations must
@@ -99,11 +100,7 @@ public final class Monoid<A> {
    * @return The sum of the given values.
    */
   public A sumRight(final Stream<A> as) {
-    return as.foldRight(new F2<A, P1<A>, A>() {
-      public A f(final A a, final P1<A> ap1) {
-        return sum(a, ap1._1());
-      }
-    }, zero);
+    return as.foldRight((a, ap1) -> sum(a, ap1._1()), zero);
   }
 
   /**
@@ -132,11 +129,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<List<A>, A> sumLeft() {
-    return new F<List<A>, A>() {
-      public A f(final List<A> as) {
-        return sumLeft(as);
-      }
-    };
+	  return this::sumLeft;
   }
 
   /**
@@ -145,11 +138,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with right-fold.
    */
   public F<List<A>, A> sumRight() {
-    return new F<List<A>, A>() {
-      public A f(final List<A> as) {
-        return sumRight(as);
-      }
-    };
+	  return this::sumRight;
   }
 
   /**
@@ -158,11 +147,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<Stream<A>, A> sumLeftS() {
-    return new F<Stream<A>, A>() {
-      public A f(final Stream<A> as) {
-        return sumLeft(as);
-      }
-    };
+	  return this::sumLeft;
   }
 
   /**
@@ -369,7 +354,6 @@ public final class Monoid<A> {
    *
    * @return A monoid for arrays.
    */
-  @SuppressWarnings({"unchecked"})
   public static <A> Monoid<Array<A>> arrayMonoid() {
     return monoid(Semigroup.<A>arraySemigroup(), Array.<A>empty());
   }

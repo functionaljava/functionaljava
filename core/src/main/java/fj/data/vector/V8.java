@@ -312,11 +312,7 @@ public final class V8<A> implements Iterable<A> {
    * @return a function that transforms a vector-8 to a stream of its elements.
    */
   public static <A> F<V8<A>, Stream<A>> toStream_() {
-    return new F<V8<A>, Stream<A>>() {
-      public Stream<A> f(final V8<A> v) {
-        return v.toStream();
-      }
-    };
+    return v -> v.toStream();
   }
 
   /**
@@ -325,11 +321,7 @@ public final class V8<A> implements Iterable<A> {
    * @return a function that transforms a vector-8 to the equivalent product-8.
    */
   public static <A> F<V8<A>, P8<A, A, A, A, A, A, A, A>> p_() {
-    return new F<V8<A>, P8<A, A, A, A, A, A, A, A>>() {
-      public P8<A, A, A, A, A, A, A, A> f(final V8<A> v) {
-        return v.p();
-      }
-    };
+    return v -> v.p();
   }
 
 
@@ -339,11 +331,7 @@ public final class V8<A> implements Iterable<A> {
    * @return a function that gets the first element of a given vector.
    */
   public static <A> F<V8<A>, A> __1() {
-    return new F<V8<A>, A>() {
-      public A f(final V8<A> v) {
-        return v._1();
-      }
-    };
+	  return v -> v._1();
   }
 
   /**
