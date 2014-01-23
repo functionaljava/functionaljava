@@ -16,11 +16,7 @@ public final class P {
    * @return A function that puts an element in a product-1.
    */
   public static <A> F<A, P1<A>> p1() {
-    return new F<A, P1<A>>() {
-      public P1<A> f(final A a) {
-        return p(a);
-      }
-    };
+    return P::p;
   }
 
   /**
