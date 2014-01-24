@@ -36,13 +36,7 @@ public abstract class IO<A> {
   
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-  public static final F<Reader, IO<Unit>> closeReader =
-    new F<Reader, IO<Unit>>() {
-      @Override
-      public IO<Unit> f(final Reader r) {
-        return closeReader(r);
-      }
-    };
+  public static final F<Reader, IO<Unit>> closeReader = IO::closeReader;
 
   public static IO<Unit> closeReader(final Reader r) {
     return new IO<Unit>() {
@@ -97,11 +91,7 @@ public abstract class IO<A> {
   }
 
   public static IO<BufferedReader> bufferedReader(final File f, final Option<Charset> encoding) {
-    return fileReader(f, encoding).map(new F<Reader, BufferedReader>() {
-      @Override
-      public BufferedReader f(final Reader a) {
-        return new BufferedReader(a);
-      }});
+    return fileReader(f, encoding).map(BufferedReader::new);
   }
 
   public static IO<Reader> fileReader(final File f, final Option<Charset> encoding) {

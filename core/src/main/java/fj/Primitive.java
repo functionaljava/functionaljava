@@ -15,65 +15,37 @@ public final class Primitive {
   /**
    * A function that converts booleans to bytes.
    */
-  public static final F<Boolean, Byte> Boolean_Byte = new F<Boolean, Byte>() {
-    public Byte f(final Boolean b) {
-      return (byte) (b ? 1 : 0);
-    }
-  };
+  public static final F<Boolean, Byte> Boolean_Byte = b -> (byte) (b ? 1 : 0);
 
   /**
    * A function that converts booleans to characters.
    */
-  public static final F<Boolean, Character> Boolean_Character = new F<Boolean, Character>() {
-    public Character f(final Boolean b) {
-      return (char) (b ? 1 : 0);
-    }
-  };
+  public static final F<Boolean, Character> Boolean_Character = b -> (char) (b ? 1 : 0);
 
   /**
    * A function that converts booleans to doubles.
    */
-  public static final F<Boolean, Double> Boolean_Double = new F<Boolean, Double>() {
-    public Double f(final Boolean b) {
-      return b ? 1D : 0D;
-    }
-  };
+  public static final F<Boolean, Double> Boolean_Double = b -> b ? 1D : 0D;
 
   /**
    * A function that converts booleans to floats.
    */
-  public static final F<Boolean, Float> Boolean_Float = new F<Boolean, Float>() {
-    public Float f(final Boolean b) {
-      return b ? 1F : 0F;
-    }
-  };
+  public static final F<Boolean, Float> Boolean_Float = b -> b ? 1F : 0F;
 
   /**
    * A function that converts booleans to integers.
    */
-  public static final F<Boolean, Integer> Boolean_Integer = new F<Boolean, Integer>() {
-    public Integer f(final Boolean b) {
-      return b ? 1 : 0;
-    }
-  };
+  public static final F<Boolean, Integer> Boolean_Integer = b -> b ? 1 : 0;
 
   /**
    * A function that converts booleans to longs.
    */
-  public static final F<Boolean, Long> Boolean_Long = new F<Boolean, Long>() {
-    public Long f(final Boolean b) {
-      return b ? 1L : 0L;
-    }
-  };
+  public static final F<Boolean, Long> Boolean_Long = b -> b ? 1L : 0L;
 
   /**
    * A function that converts booleans to shorts.
    */
-  public static final F<Boolean, Short> Boolean_Short = new F<Boolean, Short>() {
-    public Short f(final Boolean b) {
-      return (short) (b ? 1 : 0);
-    }
-  };
+  public static final F<Boolean, Short> Boolean_Short = b -> (short) (b ? 1 : 0);
 
   // END Boolean ->
 
