@@ -140,11 +140,7 @@ public final class Shrink<A> {
    * @return A shrink strategy that cannot be reduced further.
    */
   public static <A> Shrink<A> empty() {
-    return new Shrink<A>(new F<A, Stream<A>>() {
-      public Stream<A> f(final A a) {
-        return nil();
-      }
-    });
+    return new Shrink<A>(a -> nil());
   }
 
   /**

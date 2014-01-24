@@ -233,11 +233,7 @@ public final class Parser<I, A, E> {
    * @return A parser after binding anonymously.
    */
   public <B> Parser<I, B, E> sequence(final Parser<I, B, E> p) {
-    return bind(new F<A, Parser<I, B, E>>() {
-      public Parser<I, B, E> f(final A a) {
-        return p;
-      }
-    });
+    return bind(a -> p);
   }
 
   /**
@@ -247,11 +243,7 @@ public final class Parser<I, A, E> {
    * @return A new parser after function application.
    */
   public <B> Parser<I, B, E> apply(final Parser<I, F<A, B>, E> p) {
-    return p.bind(new F<F<A, B>, Parser<I, B, E>>() {
-      public Parser<I, B, E> f(final F<A, B> f) {
-        return map(f);
-      }
-    });
+    return p.bind(this::map);
   }
 
   /**
@@ -796,11 +788,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> identifierIgnorable(final P1<E> missing,
                                                                                   final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isIdentifierIgnorable(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat,  Character::isIdentifierIgnorable);
     }
 
     /**

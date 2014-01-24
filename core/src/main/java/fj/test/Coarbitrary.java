@@ -91,11 +91,7 @@ public abstract class Coarbitrary<A> {
    * @return A curried version of {@link #coarbitrary(Object, Gen)}.
    */
   public final <B> F<Gen<B>, Gen<B>> coarbitrary(final A a) {
-    return new F<Gen<B>, Gen<B>>() {
-      public Gen<B> f(final Gen<B> g) {
-        return coarbitrary(a, g);
-      }
-    };
+    return g -> coarbitrary(a, g);
   }
 
   /**
@@ -493,11 +489,7 @@ public abstract class Coarbitrary<A> {
    * @return A coarbitrary for throwables.
    */
   public static Coarbitrary<Throwable> coarbThrowable(final Coarbitrary<String> cs) {
-    return cs.comap(new F<Throwable, String>() {
-      public String f(final Throwable t) {
-        return t.getMessage();
-      }
-    });
+    return cs.comap(t -> t.getMessage());
   }
 
   /**

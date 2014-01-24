@@ -221,29 +221,20 @@ public final class Semigroup<A> {
 	/**
 	 * A semigroup that ANDs booleans.
 	 */
-	public static final Semigroup<Boolean> conjunctionSemigroup = semigroup(new F2<Boolean, Boolean, Boolean>() {
-		public Boolean f(final Boolean b1, final Boolean b2) {
-			return b1 && b2;
-		}
-	});
+	public static final Semigroup<Boolean> conjunctionSemigroup = semigroup((
+			b1, b2) -> b1 && b2);
 
 	/**
 	 * A semigroup that appends strings.
 	 */
-	public static final Semigroup<String> stringSemigroup = semigroup(new F2<String, String, String>() {
-		public String f(final String s1, final String s2) {
-			return s1 + s2;
-		}
-	});
+	public static final Semigroup<String> stringSemigroup = semigroup((s1, s2) -> s1
+			+ s2);
 
 	/**
 	 * A semigroup that appends string buffers.
 	 */
-	public static final Semigroup<StringBuffer> stringBufferSemigroup = semigroup(new F2<StringBuffer, StringBuffer, StringBuffer>() {
-		public StringBuffer f(final StringBuffer s1, final StringBuffer s2) {
-			return new StringBuffer(s1).append(s2);
-		}
-	});
+	public static final Semigroup<StringBuffer> stringBufferSemigroup = semigroup((
+			s1, s2) -> new StringBuffer(s1).append(s2));
 
 	/**
 	 * A semigroup that appends string builders.
@@ -269,11 +260,7 @@ public final class Semigroup<A> {
 	 * @return A semigroup for lists.
 	 */
 	public static <A> Semigroup<List<A>> listSemigroup() {
-		return semigroup(new F2<List<A>, List<A>, List<A>>() {
-			public List<A> f(final List<A> a1, final List<A> a2) {
-				return a1.append(a2);
-			}
-		});
+		return semigroup((a1, a2) -> a1.append(a2));
 	}
 
 	/**
@@ -301,11 +288,7 @@ public final class Semigroup<A> {
 	 *         value.
 	 */
 	public static <A> Semigroup<Option<A>> firstOptionSemigroup() {
-		return semigroup(new F2<Option<A>, Option<A>, Option<A>>() {
-			public Option<A> f(final Option<A> a1, final Option<A> a2) {
-				return a1.orElse(a2);
-			}
-		});
+		return semigroup((a1, a2) -> a1.orElse(a2));
 	}
 
 	/**
@@ -315,11 +298,7 @@ public final class Semigroup<A> {
 	 *         value.
 	 */
 	public static <A> Semigroup<Option<A>> lastOptionSemigroup() {
-		return semigroup(new F2<Option<A>, Option<A>, Option<A>>() {
-			public Option<A> f(final Option<A> a1, final Option<A> a2) {
-				return a2.orElse(a1);
-			}
-		});
+		return semigroup((a1, a2) -> a2.orElse(a1));
 	}
 
 	/**
@@ -362,17 +341,13 @@ public final class Semigroup<A> {
 	 */
 	public static <A, B> Semigroup<P2<A, B>> p2Semigroup(final Semigroup<A> sa,
 			final Semigroup<B> sb) {
-		return semigroup(new F2<P2<A, B>, P2<A, B>, P2<A, B>>() {
-			public P2<A, B> f(final P2<A, B> a1, final P2<A, B> a2) {
-				return new P2<A, B>() {
-					public A _1() {
-						return sa.sum(a1._1(), a2._1());
-					}
+		return semigroup((a1, a2) -> new P2<A, B>() {
+			public A _1() {
+				return sa.sum(a1._1(), a2._1());
+			}
 
-					public B _2() {
-						return sb.sum(a1._2(), a2._2());
-					}
-				};
+			public B _2() {
+				return sb.sum(a1._2(), a2._2());
 			}
 		});
 	}
@@ -380,11 +355,8 @@ public final class Semigroup<A> {
 	/**
 	 * A semigroup for the Unit value.
 	 */
-	public static final Semigroup<Unit> unitSemigroup = semigroup(new F2<Unit, Unit, Unit>() {
-		public Unit f(final Unit u1, final Unit u2) {
-			return Unit.unit();
-		}
-	});
+	public static final Semigroup<Unit> unitSemigroup = semigroup((u1, u2) -> Unit
+			.unit());
 
 	/**
 	 * A semigroup for sets.

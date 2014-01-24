@@ -1,17 +1,18 @@
 package fj.test;
 
 import static fj.Bottom.decons;
+import static fj.Show.listShow;
+import static fj.Show.showS;
+import static fj.data.Option.some;
+import static fj.test.Arg.argShow;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import fj.F;
 import fj.Show;
 import fj.data.List;
 import fj.data.Option;
-import static fj.data.Option.some;
-import static fj.Show.listShow;
-import static fj.Show.showS;
-import static fj.test.Arg.argShow;
-
-import java.io.StringWriter;
-import java.io.PrintWriter;
 
 /**
  * An enumeration of the possible results after checking a property. A <code>CheckResult</code> may
@@ -237,7 +238,7 @@ public final class CheckResult {
       }
 
       @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
-      public String f(final CheckResult r) {
+      public String apply(final CheckResult r) {
         if (r.isProven())
           return "OK, property proven with " + arguments(r);
         else if (r.isPassed())
@@ -285,7 +286,7 @@ public final class CheckResult {
    */
   public static Show<CheckResult> summaryEx(final Show<Arg<?>> sa) {
     return showS(new F<CheckResult, String>() {
-      public String f(final CheckResult r) {
+      public String apply(final CheckResult r) {
         final String s = summary(sa).show(r).toString();
         if (r.isProven() || r.isPassed() || r.isExhausted())
           return s;

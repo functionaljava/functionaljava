@@ -261,11 +261,7 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that transforms a vector-5 to a stream of its elements.
    */
   public static <A> F<V5<A>, Stream<A>> toStream_() {
-    return new F<V5<A>, Stream<A>>() {
-      public Stream<A> f(final V5<A> v) {
-        return v.toStream();
-      }
-    };
+    return v -> v.toStream();
   }
 
   /**
@@ -274,11 +270,7 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that transforms a vector-5 to the equivalent product-5.
    */
   public static <A> F<V5<A>, P5<A, A, A, A, A>> p_() {
-    return new F<V5<A>, P5<A, A, A, A, A>>() {
-      public P5<A, A, A, A, A> f(final V5<A> v) {
-        return v.p();
-      }
-    };
+    return v -> v.p();
   }
 
   /**
@@ -287,11 +279,7 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that gets the first element of a given vector.
    */
   public static <A> F<V5<A>, A> __1() {
-    return new F<V5<A>, A>() {
-      public A f(final V5<A> v) {
-        return v._1();
-      }
-    };
+    return v -> v._1();
   }
 
   /**
@@ -300,11 +288,7 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that gets the second element of a given vector.
    */
   public static <A> F<V5<A>, A> __2() {
-    return new F<V5<A>, A>() {
-      public A f(final V5<A> v) {
-        return v._2();
-      }
-    };
+    return v -> v._2();
   }
 
   /**
@@ -313,11 +297,7 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that gets the third element of a given vector.
    */
   public static <A> F<V5<A>, A> __3() {
-    return new F<V5<A>, A>() {
-      public A f(final V5<A> v) {
-        return v._3();
-      }
-    };
+    return v -> v._3();
   }
 
   /**
@@ -326,11 +306,7 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that gets the fourth element of a given vector.
    */
   public static <A> F<V5<A>, A> __4() {
-    return new F<V5<A>, A>() {
-      public A f(final V5<A> v) {
-        return v._4();
-      }
-    };
+    return v -> v._4();
   }
 
   /**
@@ -339,10 +315,6 @@ public final class V5<A> implements Iterable<A> {
    * @return a function that gets the fifth element of a given vector.
    */
   public static <A> F<V5<A>, A> __5() {
-    return new F<V5<A>, A>() {
-      public A f(final V5<A> v) {
-        return v._5();
-      }
-    };
+    return v -> v._5();
   }
 }

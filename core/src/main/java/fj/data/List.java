@@ -1039,11 +1039,7 @@ public abstract class List<A> implements Iterable<A> {
 		return zipWith(range(0, length()),
 				new F<A, F<Integer, P2<A, Integer>>>() {
 					public F<Integer, P2<A, Integer>> f(final A a) {
-						return new F<Integer, P2<A, Integer>>() {
-							public P2<A, Integer> f(final Integer i) {
-								return p(a, i);
-							}
-						};
+						return i -> p(a, i);
 					}
 				});
 	}
@@ -1679,7 +1675,7 @@ public abstract class List<A> implements Iterable<A> {
 	 */
 	public static String asString(final List<Character> cs) {
 		final StringBuilder sb = new StringBuilder();
-		cs.foreach(c -> {
+		cs.foreach((F<Character, Unit>) c -> {
 			sb.append(c);
 			return unit();
 		});
@@ -1692,11 +1688,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return A first-class <code>asString</code>.
 	 */
 	public static F<List<Character>, String> asString() {
-		return new F<List<Character>, String>() {
-			public String f(final List<Character> cs) {
-				return asString(cs);
-			}
-		};
+		return List::asString;
 	}
 
 	/**
