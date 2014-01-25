@@ -1,22 +1,22 @@
 package fj.data;
 
-import fj.Equal;
-import fj.F;
-import fj.F2;
+import static fj.Equal.charEqual;
+import static fj.Equal.streamEqual;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.P.p;
-import fj.P1;
-import fj.P2;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.data.Stream.join;
 import static fj.function.Booleans.or;
 import static fj.function.Characters.isSpaceChar;
-import static fj.Equal.charEqual;
-import static fj.Equal.streamEqual;
 
 import java.util.regex.Pattern;
+
+import fj.Equal;
+import fj.F;
+import fj.P1;
+import fj.P2;
 
 /**
  * A lazy (non-evaluated) immutable character string.
@@ -36,18 +36,13 @@ public final class LazyString implements CharSequence {
 	 * @return A lazy string with the characters from the given string.
 	 */
 	public static LazyString str(final String s) {
-		return new LazyString(
-				Stream.unfold(
-						new F<P2<String, Integer>, Option<P2<Character, P2<String, Integer>>>>() {
-							public Option<P2<Character, P2<String, Integer>>> f(
-									final P2<String, Integer> o) {
-								final String s1 = o._1();
-								final int n = o._2();
-								final Option<P2<Character, P2<String, Integer>>> none = none();
-								return s1.length() <= n ? none : some(p(
-										s1.charAt(n), p(s1, n + 1)));
-							}
-						}, p(s, 0)));
+		return new LazyString(Stream.unfold(o -> {
+			final String s1 = o._1();
+			final int n = o._2();
+			final Option<P2<Character, P2<String, Integer>>> none = none();
+			return s1.length() <= n ? none
+					: some(p(s1.charAt(n), p(s1, n + 1)));
+		}, p(s, 0)));
 	}
 
 	/**
