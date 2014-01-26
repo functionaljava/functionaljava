@@ -667,11 +667,7 @@ public abstract class List<A> implements Iterable<A> {
 	 *         this list.
 	 */
 	public final <B> List<B> apply(final List<F<A, B>> lf) {
-		return lf.bind(new F<F<A, B>, List<B>>() {
-			public List<B> f(final F<A, B> f) {
-				return map(f);
-			}
-		});
+		return lf.bind(List::<B>map);
 	}
 
 	/**
@@ -1215,19 +1211,10 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return A possible list of values after binding through the Option monad.
 	 */
 	public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
-		return foldRight(new F2<A, Option<List<B>>, Option<List<B>>>() {
-			public Option<List<B>> f(final A a, final Option<List<B>> bs) {
-				return f.f(a).bind(new F<B, Option<List<B>>>() {
-					public Option<List<B>> f(final B b) {
-						return bs.map(new F<List<B>, List<B>>() {
-							public List<B> f(final List<B> bbs) {
-								return bbs.cons(b);
-							}
-						});
-					}
-				});
-			}
-		}, Option.<List<B>> some(List.<B> nil()));
+		return foldRight(
+				(a, bs) -> f.f(a).bind(
+						(B b) -> bs.map((List<B> bbs) -> bbs.cons(b))),
+				Option.<List<B>> some(List.<B> nil()));
 	}
 
 	/**

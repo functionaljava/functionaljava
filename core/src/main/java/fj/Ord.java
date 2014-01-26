@@ -26,7 +26,7 @@ public final class Ord<A> {
 	private Ord(final F<A, F<A, Ordering>> f) {
 		this.f = f;
 	}
-
+ 
 	/**
 	 * First-class ordering.
 	 * 
