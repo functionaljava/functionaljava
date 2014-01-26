@@ -63,15 +63,7 @@ public final class Property {
    * @return A generator of results from this property.
    */
   public Gen<Result> gen() {
-    return Gen.gen(new F<Integer, F<Rand, Result>>() {
-      public F<Rand, Result> f(final Integer i) {
-        return new F<Rand, Result>() {
-          public Result f(final Rand r) {
-            return f.f(i).f(r);
-          }
-        };
-      }
-    });
+    return Gen.gen(i -> r -> f.f(i).f(r));
   }
 
   /**

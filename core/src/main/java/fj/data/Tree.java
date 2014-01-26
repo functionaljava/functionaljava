@@ -233,11 +233,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A function that, given a tree, folds it with the given monoid.
    */
   public static <A, B> F<Tree<A>, B> foldMap_(final F<A, B> f, final Monoid<B> m) {
-    return new F<Tree<A>, B>() {
-      public B f(final Tree<A> t) {
-        return t.foldMap(f, m);
-      }
-    };
+    return t -> t.foldMap(f, m);
   }
 
   /**
@@ -315,11 +311,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return a show instance that draws a 2-dimensional representation of a tree.
    */
   public static <A> Show<Tree<A>> show2D(final Show<A> s) {
-    return Show.showS(new F<Tree<A>, String>() {
-      public String f(final Tree<A> tree) {
-        return tree.draw(s);
-      }
-    });
+    return Show.showS(tree -> tree.draw(s));
   }
 
   /**
@@ -354,12 +346,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return The folded tree
    */
   public static <A, B> Tree<B> bottomUp(Tree<A> t, final F<P2<A, Stream<B>>, B> f) {
-    final F<Tree<A>, Tree<B>> recursiveCall = new F<Tree<A>, Tree<B>>() {
-      @Override public Tree<B> f(Tree<A> a) {
-        return bottomUp(a, f);
-      }
-    };
- 
+    final F<Tree<A>, Tree<B>> recursiveCall = a -> bottomUp(a, f);
     final Stream<Tree<B>> tbs = t.subForest()._1().map(recursiveCall);
     return Tree.node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
    }
@@ -368,11 +355,7 @@ public final class Tree<A> implements Iterable<A> {
     * @return a function getting the root of a Tree 
 	*/
    private static <A> F<Tree<A>, A> getRoot() {
-     return new F<Tree<A>, A>() {
-       @Override public A f(Tree<A> a) {
-         return a.root();
-       }
-     };
+     return a -> a.root();
    }
 
 }

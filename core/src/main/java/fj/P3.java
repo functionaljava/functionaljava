@@ -151,11 +151,7 @@ public abstract class P3<A, B, C> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C> F<P3<A, B, C>, A> __1() {
-    return new F<P3<A, B, C>, A>() {
-      public A f(final P3<A, B, C> p) {
-        return p._1();
-      }
-    };
+    return p -> p._1();
   }
 
   /**
@@ -164,11 +160,7 @@ public abstract class P3<A, B, C> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C> F<P3<A, B, C>, B> __2() {
-    return new F<P3<A, B, C>, B>() {
-      public B f(final P3<A, B, C> p) {
-        return p._2();
-      }
-    };
+    return p -> p._2();
   }
 
   /**
@@ -177,10 +169,6 @@ public abstract class P3<A, B, C> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C> F<P3<A, B, C>, C> __3() {
-    return new F<P3<A, B, C>, C>() {
-      public C f(final P3<A, B, C> p) {
-        return p._3();
-      }
-    };
+    return p -> p._3();
   }
 }

@@ -805,11 +805,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return All the values in the given stream.
    */
   public static <A> Stream<A> somes(final Stream<Option<A>> as) {
-    return as.filter(Option.<A>isSome_()).map(new F<Option<A>, A>() {
-      public A f(final Option<A> o) {
-        return o.some();
-      }
-    });
+    return as.filter(Option.<A>isSome_()).map(o -> o.some());
   }
 
   /**
@@ -848,11 +844,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that takes an optional value to a value or errors if there is no value.
    */
   public static <A> F<Option<A>, A> fromSome() {
-    return new F<Option<A>, A>() {
-      public A f(final Option<A> option) {
-        return option.some();
-      }
-    };
+    return option -> option.some();
   }
 
   /**
@@ -898,54 +890,30 @@ public abstract class Option<A> implements Iterable<A> {
   /**
    * A function that parses a string to a byte.
    */
-  public static final F<String, Option<Byte>> parseByte = new F<String, Option<Byte>>() {
-      public Option<Byte> f(final String s) {
-          return parseByte(s).toOption();
-      }
-  };
+  public static final F<String, Option<Byte>> parseByte = s -> parseByte(s).toOption();
 
   /**
    * A function that parses a string to a double.
    */
-  public static final F<String, Option<Double>> parseDouble = new F<String, Option<Double>>() {
-      public Option<Double> f(final String s) {
-          return parseDouble(s).toOption();
-      }
-  };
+  public static final F<String, Option<Double>> parseDouble = s -> parseDouble(s).toOption();
 
   /**
    * A function that parses a string to a float.
    */
-  public static final F<String, Option<Float>> parseFloat = new F<String, Option<Float>>() {
-      public Option<Float> f(final String s) {
-          return parseFloat(s).toOption();
-      }
-  };
+  public static final F<String, Option<Float>> parseFloat = s -> parseFloat(s).toOption();
 
   /**
    * A function that parses a string to an integer.
    */
-  public static final F<String, Option<Integer>> parseInt = new F<String, Option<Integer>>() {
-      public Option<Integer> f(final String s) {
-          return parseInt(s).toOption();
-      }
-  };
+  public static final F<String, Option<Integer>> parseInt = s -> parseInt(s).toOption();
 
   /**
    * A function that parses a string to a long.
    */
-  public static final F<String, Option<Long>> parseLong = new F<String, Option<Long>>() {
-      public Option<Long> f(final String s) {
-          return parseLong(s).toOption();
-      }
-  };
+  public static final F<String, Option<Long>> parseLong = s -> parseLong(s).toOption();
 
   /**
    * A function that parses a string to a short.
    */
-  public static final F<String, Option<Short>> parseShort = new F<String, Option<Short>>() {
-      public Option<Short> f(final String s) {
-          return parseShort(s).toOption();
-      }
-  };
+  public static final F<String, Option<Short>> parseShort = s -> parseShort(s).toOption();
 }

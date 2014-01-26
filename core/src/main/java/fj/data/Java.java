@@ -321,11 +321,7 @@ public final class Java {
 	 * @return A function that converts arrays to enum sets.
 	 */
 	public static <A extends Enum<A>> F<Array<A>, EnumSet<A>> Array_EnumSet() {
-		return new F<Array<A>, EnumSet<A>>() {
-			public EnumSet<A> f(final Array<A> as) {
-				return copyOf(as.toCollection());
-			}
-		};
+		return as -> copyOf(as.toCollection());
 	}
 
 	/**
@@ -360,11 +356,7 @@ public final class Java {
 	 * @return A function that converts arrays to linked lists.
 	 */
 	public static <A> F<Array<A>, LinkedList<A>> Array_LinkedList() {
-		return new F<Array<A>, LinkedList<A>>() {
-			public LinkedList<A> f(final Array<A> as) {
-				return new LinkedList<A>(as.toCollection());
-			}
-		};
+		return as -> new LinkedList<A>(as.toCollection());
 	}
 
 	/**
@@ -373,11 +365,7 @@ public final class Java {
 	 * @return A function that converts arrays to priority queues.
 	 */
 	public static <A> F<Array<A>, PriorityQueue<A>> Array_PriorityQueue() {
-		return new F<Array<A>, PriorityQueue<A>>() {
-			public PriorityQueue<A> f(final Array<A> as) {
-				return new PriorityQueue<A>(as.toCollection());
-			}
-		};
+		return as -> new PriorityQueue<A>(as.toCollection());
 	}
 
 	/**
@@ -815,11 +803,7 @@ public final class Java {
 	 * @return A function that converts options to array lists.
 	 */
 	public static <A> F<Option<A>, ArrayList<A>> Option_ArrayList() {
-		return new F<Option<A>, ArrayList<A>>() {
-			public ArrayList<A> f(final Option<A> as) {
-				return new ArrayList<A>(as.toCollection());
-			}
-		};
+		return as -> new ArrayList<A>(as.toCollection());
 	}
 
 	/**
@@ -871,11 +855,7 @@ public final class Java {
 	 * @return A function that converts options to linked hash sets.
 	 */
 	public static <A> F<Option<A>, LinkedHashSet<A>> Option_LinkedHashSet() {
-		return new F<Option<A>, LinkedHashSet<A>>() {
-			public LinkedHashSet<A> f(final Option<A> as) {
-				return new LinkedHashSet<A>(as.toCollection());
-			}
-		};
+		return as -> new LinkedHashSet<A>(as.toCollection());
 	}
 
 	/**
@@ -884,11 +864,7 @@ public final class Java {
 	 * @return A function that converts options to linked lists.
 	 */
 	public static <A> F<Option<A>, LinkedList<A>> Option_LinkedList() {
-		return new F<Option<A>, LinkedList<A>>() {
-			public LinkedList<A> f(final Option<A> as) {
-				return new LinkedList<A>(as.toCollection());
-			}
-		};
+		return as -> new LinkedList<A>(as.toCollection());
 	}
 
 	/**
@@ -970,11 +946,7 @@ public final class Java {
 	 * @return A function that converts options to concurrent linked queues.
 	 */
 	public static <A> F<Option<A>, ConcurrentLinkedQueue<A>> Option_ConcurrentLinkedQueue() {
-		return new F<Option<A>, ConcurrentLinkedQueue<A>>() {
-			public ConcurrentLinkedQueue<A> f(final Option<A> as) {
-				return new ConcurrentLinkedQueue<A>(as.toCollection());
-			}
-		};
+		return as -> new ConcurrentLinkedQueue<A>(as.toCollection());
 	}
 
 	/**
@@ -983,11 +955,7 @@ public final class Java {
 	 * @return A function that converts options to copy on write array lists.
 	 */
 	public static <A> F<Option<A>, CopyOnWriteArrayList<A>> Option_CopyOnWriteArrayList() {
-		return new F<Option<A>, CopyOnWriteArrayList<A>>() {
-			public CopyOnWriteArrayList<A> f(final Option<A> as) {
-				return new CopyOnWriteArrayList<A>(as.toCollection());
-			}
-		};
+		return as -> new CopyOnWriteArrayList<A>(as.toCollection());
 	}
 
 	/**

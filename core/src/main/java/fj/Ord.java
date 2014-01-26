@@ -70,11 +70,7 @@ public final class Ord<A> {
 	 * @return An <code>Equal</code> for this order.
 	 */
 	public Equal<A> equal() {
-		return Equal.equal(curry(new F2<A, A, Boolean>() {
-			public Boolean f(final A a1, final A a2) {
-				return eq(a1, a2);
-			}
-		}));
+		return Equal.equal(curry(Ord::eq);
 	}
 
 	/**

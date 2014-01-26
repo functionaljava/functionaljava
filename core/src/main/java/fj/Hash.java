@@ -1,5 +1,5 @@
 package fj;
-
+ 
 import static fj.Function.compose;
 
 import fj.data.Array;
@@ -11,7 +11,7 @@ import fj.data.Stream;
 import fj.data.Tree;
 import fj.data.Validation;
 import fj.data.vector.V2;
-import fj.data.vector.V3;
+import fj.data.vector.V3; 
 import fj.data.vector.V4;
 import fj.data.vector.V5;
 import fj.data.vector.V6;
@@ -118,7 +118,7 @@ public final class Hash<A> {
    * A hash instance for the {@link StringBuffer} type.
    */ 
   public static final Hash<StringBuffer> stringBufferHash = new Hash<>(sb -> {
-      final int p = 419;
+       final int p = 419;
       int r = 239;
 
       for (int i = 0; i < sb.length(); i++)

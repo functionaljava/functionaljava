@@ -411,11 +411,7 @@ public final class ParModule {
 	 *         element.
 	 */
 	public <A, B> Promise<Array<B>> parMap(final Array<A> as, final F<A, B> f) {
-		return parMap(as.toStream(), f).fmap(new F<Stream<B>, Array<B>>() {
-			public Array<B> f(final Stream<B> stream) {
-				return stream.toArray();
-			}
-		});
+		return parMap(as.toStream(), f).fmap(stream -> stream.toArray());
 	}
 
 	/**

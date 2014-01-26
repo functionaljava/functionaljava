@@ -90,11 +90,7 @@ public final class Promise<A> {
    * @return A function that, given a 1-product, yields a promise of that product's value.
    */
   public static <A> F<P1<A>, Promise<A>> promise(final Strategy<Unit> s) {
-    return new F<P1<A>, Promise<A>>() {
-      public Promise<A> f(final P1<A> a) {
-        return promise(s, a);
-      }
-    };
+    return a -> promise(s, a);
   }
 
   /**
@@ -121,11 +117,7 @@ public final class Promise<A> {
    * @return The given function transformed into a function that returns a promise.
    */
   public static <A, B> F<A, Promise<B>> promise(final Strategy<Unit> s, final F<A, B> f) {
-    return new F<A, Promise<B>>() {
-      public Promise<B> f(final A a) {
-        return promise(s, P1.curry(f).f(a));
-      }
-    };
+    return a -> promise(s, P1.curry(f).f(a));
   }
 
   /**
@@ -271,11 +263,7 @@ public final class Promise<A> {
    * @return A function that turns a list of promises into a single promise of a list.
    */
   public static <A> F<List<Promise<A>>, Promise<List<A>>> sequence(final Strategy<Unit> s) {
-    return new F<List<Promise<A>>, Promise<List<A>>>() {
-      public Promise<List<A>> f(final List<Promise<A>> as) {
-        return sequence(s, as);
-      }
-    };
+    return as -> sequence(s, as);
   }
 
   /**
@@ -304,11 +292,7 @@ public final class Promise<A> {
    * @return A function that turns a list of promises into a single promise of a Stream..
    */
   public static <A> F<List<Promise<A>>, Promise<List<A>>> sequenceS(final Strategy<Unit> s) {
-    return new F<List<Promise<A>>, Promise<List<A>>>() {
-      public Promise<List<A>> f(final List<Promise<A>> as) {
-        return sequence(s, as);
-      }
-    };
+    return as -> sequence(s, as);
   }
 
   /**

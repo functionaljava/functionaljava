@@ -213,11 +213,7 @@ public final class Callables {
 	 *         List.
 	 */
 	public static <A> F<List<Callable<A>>, Callable<List<A>>> sequence_() {
-		return new F<List<Callable<A>>, Callable<List<A>>>() {
-			public Callable<List<A>> f(final List<Callable<A>> as) {
-				return sequence(as);
-			}
-		};
+		return Callables::sequence;
 	}
 
 	/**
@@ -247,11 +243,7 @@ public final class Callables {
 	 * @return a function that turns a Callable into an optional value.
 	 */
 	public static <A> F<Callable<A>, P1<Option<A>>> option() {
-		return new F<Callable<A>, P1<Option<A>>>() {
-			public P1<Option<A>> f(final Callable<A> a) {
-				return option(a);
-			}
-		};
+		return Callables::option;
 	}
 
 	/**
@@ -313,11 +305,7 @@ public final class Callables {
 	 * @return a function that turns an Either into a Callable.
 	 */
 	public static <A> F<P1<Either<Exception, A>>, Callable<A>> fromEither() {
-		return new F<P1<Either<Exception, A>>, Callable<A>>() {
-			public Callable<A> f(final P1<Either<Exception, A>> e) {
-				return fromEither(e);
-			}
-		};
+		return Callables::fromEither;
 	}
 
 	/**
@@ -347,11 +335,7 @@ public final class Callables {
 	 *         yields some value or throws an exception in the case of no value.
 	 */
 	public static <A> F<P1<Option<A>>, Callable<A>> fromOption() {
-		return new F<P1<Option<A>>, Callable<A>>() {
-			public Callable<A> f(final P1<Option<A>> o) {
-				return fromOption(o);
-			}
-		};
+		return Callables::fromOption;
 	}
 
 	/**
@@ -379,11 +363,7 @@ public final class Callables {
 	 *         wrapping the result in a new Callable.
 	 */
 	public static <A> F<Callable<A>, Callable<A>> normalise() {
-		return new F<Callable<A>, Callable<A>>() {
-			public Callable<A> f(final Callable<A> a) {
-				return normalise(a);
-			}
-		};
+		return Callables::normalise;
 	}
 
 }

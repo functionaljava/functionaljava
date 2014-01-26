@@ -144,11 +144,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A curried version of {@link #get(Object)}.
    */
   public F<K, Option<V>> get() {
-    return new F<K, Option<V>>() {
-      public Option<V> f(final K k) {
-        return get(k);
-      }
-    };
+    return this::get;
   }
 
   /**
@@ -189,11 +185,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return All values in this hash map.
    */
   public List<V> values() {
-    return keys().map(new F<K, V>() {
-      public V f(final K k) {
-        return m.get(new Key<K>(k, e, h));
-      }
-    });
+    return keys().map(k -> m.get(new Key<K>(k, e, h)));
   }
 
   /**

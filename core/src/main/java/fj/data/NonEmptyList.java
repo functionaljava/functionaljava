@@ -161,11 +161,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A function that takes a non-empty list to a list.
    */
   public static <A> F<NonEmptyList<A>, List<A>> toList_() {
-    return new F<NonEmptyList<A>, List<A>>() {
-      public List<A> f(final NonEmptyList<A> as) {
-        return as.toList();
-      }
-    };
+    return as -> as.toList();
   }
 
   /**
@@ -195,11 +191,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A function that puts an element into a non-empty list.
    */
   public static <A> F<A, NonEmptyList<A>> nel() {
-    return new F<A, NonEmptyList<A>>() {
-      public NonEmptyList<A> f(final A a) {
-        return nel(a);
-      }
-    };
+    return NonEmptyList::nel;
   }
 
   /**

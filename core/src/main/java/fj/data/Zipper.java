@@ -95,11 +95,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return A first-class function that yields the product-3 representation of a given Zipper.
    */
   public static <A> F<Zipper<A>, P3<Stream<A>, A, Stream<A>>> p_() {
-    return new F<Zipper<A>, P3<Stream<A>, A, Stream<A>>>() {
-      public P3<Stream<A>, A, Stream<A>> f(final Zipper<A> a) {
-        return a.p();
-      }
-    };
+    return a -> a.p();
   }
 
   /**
