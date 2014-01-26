@@ -1023,11 +1023,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return A function that zips the given lists to produce a list of pairs.
 	 */
 	public static <A, B> F<List<A>, F<List<B>, List<P2<A, B>>>> zip() {
-		return curry(new F2<List<A>, List<B>, List<P2<A, B>>>() {
-			public List<P2<A, B>> f(final List<A> as, final List<B> bs) {
-				return as.zip(bs);
-			}
-		});
+		return curry((List<A> as, List<B> bs) -> as.zip(bs));
 	}
 
 	/**
@@ -1244,19 +1240,10 @@ public abstract class List<A> implements Iterable<A> {
 	 */
 	public final <B> Trampoline<List<B>> mapMTrampoline(
 			final F<A, Trampoline<B>> f) {
-		return foldRight(new F2<A, Trampoline<List<B>>, Trampoline<List<B>>>() {
-			public Trampoline<List<B>> f(final A a, final Trampoline<List<B>> bs) {
-				return f.f(a).bind(new F<B, Trampoline<List<B>>>() {
-					public Trampoline<List<B>> f(final B b) {
-						return bs.map(new F<List<B>, List<B>>() {
-							public List<B> f(final List<B> bbs) {
-								return bbs.cons(b);
-							}
-						});
-					}
-				});
-			}
-		}, Trampoline.<List<B>> pure(List.<B> nil()));
+		return foldRight(
+				(a, bs) -> f.f(a).bind(
+						(B b) -> bs.map((List<B> bbs) -> bbs.cons(b))),
+				Trampoline.<List<B>> pure(List.<B> nil()));
 	}
 
 	/**
@@ -1744,11 +1731,7 @@ public abstract class List<A> implements Iterable<A> {
 	 */
 	public static <A, B> Option<B> lookup(final Equal<A> e,
 			final List<P2<A, B>> x, final A a) {
-		return x.find(new F<P2<A, B>, Boolean>() {
-			public Boolean f(final P2<A, B> p) {
-				return e.eq(p._1(), a);
-			}
-		}).map(P2.<A, B> __2());
+		return x.find(p -> e.eq(p._1(), a)).map(P2.<A, B> __2());
 	}
 
 	/**
@@ -1771,11 +1754,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return The bind function for lists.
 	 */
 	public static <A, B> F<F<A, List<B>>, F<List<A>, List<B>>> bind_() {
-		return curry(new F2<F<A, List<B>>, List<A>, List<B>>() {
-			public List<B> f(final F<A, List<B>> f, final List<A> as) {
-				return as.bind(f);
-			}
-		});
+		return curry((F<A, List<B>> f, List<A> as) -> as.bind(f));
 	}
 
 	/**
@@ -1784,7 +1763,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return The map function for lists.
 	 */
 	public static <A, B> F<F<A, B>, F<List<A>, List<B>>> map_() {
-		return curry((f, as) -> as.map(f));
+		return curry((F<A, B> f, List<A> as) -> as.map(f));
 	}
 
 	/**

@@ -96,11 +96,7 @@ public final class Callables {
 	 *         Callable-valued function.
 	 */
 	public static <A, B> F<F<A, B>, F<A, Callable<B>>> arrow() {
-		return new F<F<A, B>, F<A, Callable<B>>>() {
-			public F<A, Callable<B>> f(final F<A, B> f) {
-				return callable(f);
-			}
-		};
+		return Callables::callable;
 	}
 
 	/**
@@ -130,11 +126,7 @@ public final class Callables {
 	 * @return That function lifted to a function on Callables.
 	 */
 	public static <A, B> F<Callable<A>, Callable<B>> fmap(final F<A, B> f) {
-		return new F<Callable<A>, Callable<B>>() {
-			public Callable<B> f(final Callable<A> a) {
-				return Callables.bind(a, callable(f));
-			}
-		};
+		return a -> Callables.bind(a, callable(f));
 	}
 
 	/**

@@ -421,18 +421,9 @@ public abstract class Stream<A> implements Iterable<A> {
 	 */
 	public static <A, B> F<B, Stream<A>> sequence_(final Stream<F<B, A>> fs) {
 		return fs.foldRight(
-				new F2<F<B, A>, P1<F<B, Stream<A>>>, F<B, Stream<A>>>() {
-					public F<B, Stream<A>> f(final F<B, A> baf,
-							final P1<F<B, Stream<A>>> p1) {
-						return Function.bind(baf, p1._1(), Function
-								.curry(new F2<A, Stream<A>, Stream<A>>() {
-									public Stream<A> f(final A a,
-											final Stream<A> stream) {
-										return cons(a, p(stream));
-									}
-								}));
-					}
-				}, Function.<B, Stream<A>> constant(Stream.<A> nil()));
+				(baf, p1) -> Function.bind(baf, p1._1(),
+						Function.curry((a, stream) -> cons(a, p(stream)))),
+				Function.<B, Stream<A>> constant(Stream.<A> nil()));
 	}
 
 	/**
@@ -1590,11 +1581,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 *         if any.
 	 */
 	public final Option<Integer> indexOf(final F<A, Boolean> p) {
-		return zipIndex().find(new F<P2<A, Integer>, Boolean>() {
-			public Boolean f(final P2<A, Integer> p2) {
-				return p.f(p2._1());
-			}
-		}).map(P2.<A, Integer> __2());
+		return zipIndex().find(p2 -> p.f(p2._1())).map(P2.<A, Integer> __2());
 	}
 
 	/**
@@ -1738,15 +1725,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 *         a new stream.
 	 */
 	public static <A> F<A, F<P1<Stream<A>>, Stream<A>>> cons() {
-		return new F<A, F<P1<Stream<A>>, Stream<A>>>() {
-			public F<P1<Stream<A>>, Stream<A>> f(final A a) {
-				return new F<P1<Stream<A>>, Stream<A>>() {
-					public Stream<A> f(final P1<Stream<A>> list) {
-						return cons(a, list);
-					}
-				};
-			}
-		};
+		return a -> list -> cons(a, list);
 	}
 
 	/**
@@ -1757,11 +1736,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 *         a new stream.
 	 */
 	public static <A> F<A, F<Stream<A>, Stream<A>>> cons_() {
-		return curry(new F2<A, Stream<A>, Stream<A>>() {
-			public Stream<A> f(final A a, final Stream<A> as) {
-				return as.cons(a);
-			}
-		});
+		return curry((a, as) -> as.cons(a));
 	}
 
 	/**
@@ -1792,11 +1767,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 * @return A function that determines whether a given stream is empty.
 	 */
 	public static <A> F<Stream<A>, Boolean> isEmpty_() {
-		return new F<Stream<A>, Boolean>() {
-			public Boolean f(final Stream<A> as) {
-				return as.isEmpty();
-			}
-		};
+		return as -> as.isEmpty();
 	}
 
 	/**
@@ -1805,11 +1776,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 * @return A function that determines whether a given stream is not empty.
 	 */
 	public static <A> F<Stream<A>, Boolean> isNotEmpty_() {
-		return new F<Stream<A>, Boolean>() {
-			public Boolean f(final Stream<A> as) {
-				return as.isNotEmpty();
-			}
-		};
+		return as -> as.isNotEmpty();
 	}
 
 	/**

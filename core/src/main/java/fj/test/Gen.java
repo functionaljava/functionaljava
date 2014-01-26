@@ -452,11 +452,7 @@ public final class Gen<A> {
 	 * @return A new generator.
 	 */
 	public static <A> Gen<A> parameterised(final F<Integer, F<Rand, Gen<A>>> f) {
-		return new Gen<A>(curry(new F2<Integer, Rand, A>() {
-			public A f(final Integer i, final Rand r) {
-				return f.f(i).f(r).gen(i, r);
-			}
-		}));
+		return new Gen<A>(curry((i,r) -> f.f(i).f(r).gen(i, r)));
 	}
 
 	/**

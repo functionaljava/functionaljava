@@ -132,11 +132,7 @@ public abstract class Coarbitrary<A> {
   public static <A, B> Coarbitrary<F<A, B>> coarbF(final Arbitrary<A> a, final Coarbitrary<B> c) {
     return new Coarbitrary<F<A, B>>() {
       public <X> Gen<X> coarbitrary(final F<A, B> f, final Gen<X> g) {
-        return a.gen.bind(new F<A, Gen<X>>() {
-          public Gen<X> f(final A a) {
-            return c.coarbitrary(f.f(a), g);
-          }
-        });
+        return a.gen.bind((A aa) -> c.coarbitrary(f.f(aa), g));
       }
     };
   }
