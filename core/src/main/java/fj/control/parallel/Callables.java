@@ -64,11 +64,7 @@ public final class Callables {
 	 *         that value.
 	 */
 	public static <A> F<A, Callable<A>> callable() {
-		return new F<A, Callable<A>>() {
-			public Callable<A> f(final A a) {
-				return callable(a);
-			}
-		};
+		return Callables::<A>callable;
 	}
 
 	/**
@@ -265,11 +261,7 @@ public final class Callables {
 	 * @return a function that turns a Callable into an Either.
 	 */
 	public static <A> F<Callable<A>, P1<Either<Exception, A>>> either() {
-		return new F<Callable<A>, P1<Either<Exception, A>>>() {
-			public P1<Either<Exception, A>> f(final Callable<A> a) {
-				return either(a);
-			}
-		};
+		return Callables::<A>either;
 	}
 
 	/**

@@ -886,12 +886,8 @@ public abstract class List<A> implements Iterable<A> {
 			throw error("Can't create list partitions shorter than 1 element long.");
 		if (isEmpty())
 			throw error("Partition on empty list.");
-		return unfold(new F<List<A>, Option<P2<List<A>, List<A>>>>() {
-			public Option<P2<List<A>, List<A>>> f(final List<A> as) {
-				return as.isEmpty() ? Option.<P2<List<A>, List<A>>> none()
-						: some(as.splitAt(n));
-			}
-		}, this);
+		return unfold(as -> as.isEmpty() ? Option.<P2<List<A>, List<A>>> none()
+				: some(as.splitAt(n)), this);
 	}
 
 	/**
@@ -1439,7 +1435,7 @@ public abstract class List<A> implements Iterable<A> {
 	 *         new list.
 	 */
 	public static <A> F<A, F<List<A>, List<A>>> cons() {
-		return List::<A> cons;
+		return a -> tail -> cons(a, tail);
 	}
 
 	/**
@@ -1514,11 +1510,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return A function that joins a list of lists using a bind operation.
 	 */
 	public static <A> F<List<List<A>>, List<A>> join() {
-		return new F<List<List<A>>, List<A>>() {
-			public List<A> f(final List<List<A>> as) {
-				return join(as);
-			}
-		};
+		return List::<A> join;
 	}
 
 	/**
@@ -1669,15 +1661,7 @@ public abstract class List<A> implements Iterable<A> {
 	 */
 	public static <A> List<A> iterateWhile(final F<A, A> f,
 			final F<A, Boolean> p, final A a) {
-		return unfold(new F<A, Option<P2<A, A>>>() {
-			public Option<P2<A, A>> f(final A o) {
-				return Option.iif(new F<P2<A, A>, Boolean>() {
-					public Boolean f(final P2<A, A> p2) {
-						return p.f(o);
-					}
-				}, P.p(o, f.f(o)));
-			}
-		}, a);
+		return unfold(o -> Option.iif(p2 -> p.f(o), P.p(o, f.f(o))), a);
 	}
 
 	/**

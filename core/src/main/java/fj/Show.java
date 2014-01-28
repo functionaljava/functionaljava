@@ -275,15 +275,10 @@ public final class Show<A> {
 	 */
 	public static <A, B> Show<Either<A, B>> eitherShow(final Show<A> sa,
 			final Show<B> sb) {
-		return new Show<Either<A, B>>(new F<Either<A, B>, Stream<Character>>() {
-			public Stream<Character> f(final Either<A, B> e) {
-				return e.isLeft() ? fromString("Left(").append(
-						sa.f.f(e.left().value())).append(single(')'))
-						: fromString("Right(")
-								.append(sb.f.f(e.right().value())).append(
-										single(')'));
-			}
-		});
+		return new Show<Either<A, B>>(e -> e.isLeft() ? fromString("Left(")
+				.append(sa.f.f(e.left().value())).append(single(')'))
+				: fromString("Right(").append(sb.f.f(e.right().value()))
+						.append(single(')')));
 	}
 
 	/**
@@ -297,16 +292,9 @@ public final class Show<A> {
 	 */
 	public static <A, B> Show<Validation<A, B>> validationShow(
 			final Show<A> sa, final Show<B> sb) {
-		return new Show<Validation<A, B>>(
-				new F<Validation<A, B>, Stream<Character>>() {
-					public Stream<Character> f(final Validation<A, B> v) {
-						return v.isFail() ? fromString("Fail(").append(
-								sa.f.f(v.fail())).append(single(')'))
-								: fromString("Success(").append(
-										sb.f.f(v.success()))
-										.append(single(')'));
-					}
-				});
+		return new Show<Validation<A, B>>(v -> v.isFail() ? fromString("Fail(")
+				.append(sa.f.f(v.fail())).append(single(')')) : fromString(
+				"Success(").append(sb.f.f(v.success())).append(single(')')));
 	}
 
 	/**
@@ -339,15 +327,14 @@ public final class Show<A> {
 	 * @return A show instance for the {@link Tree} type.
 	 */
 	public static <A> Show<Tree<A>> treeShow(final Show<A> sa) {
-		return new Show<Tree<A>>(new F<Tree<A>, Stream<Character>>() {
-			public Stream<Character> f(final Tree<A> a) {
-				final Stream<Character> b = sa.f
-						.f(a.root())
-						.append(p1Show(streamShow(treeShow(sa))).f.f(a
-								.subForest())).snoc(')');
-				return cons('(', p(b));
-			}
-		});
+		return new Show<Tree<A>>(
+				a -> {
+					final Stream<Character> b = sa.f
+							.f(a.root())
+							.append(p1Show(streamShow(treeShow(sa))).f.f(a
+									.subForest())).snoc(')');
+					return cons('(', p(b));
+				});
 	}
 
 	/**

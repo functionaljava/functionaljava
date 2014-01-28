@@ -70,7 +70,7 @@ public final class Ord<A> {
 	 * @return An <code>Equal</code> for this order.
 	 */
 	public Equal<A> equal() {
-		return Equal.equal(curry(Ord::eq));
+		return Equal.equal(curry(this::eq));
 	}
 
 	/**
@@ -468,7 +468,7 @@ public final class Ord<A> {
 	/**
 	 * An order instance for the {@link Unit} type.
 	 */
-	public static final Ord<Unit> unitOrd = ord(curry((u1,u2) -> Ordering.EQ));
+	public static final Ord<Unit> unitOrd = ord(Function.<Unit, Unit, Ordering>curry((u1,u2) -> Ordering.EQ));
 
 	/**
 	 * An order instance for a product-1.
@@ -493,7 +493,7 @@ public final class Ord<A> {
 	 *         considered most significant.
 	 */
 	public static <A, B> Ord<P2<A, B>> p2Ord(final Ord<A> oa, final Ord<B> ob) {
-		return ord(curry((a,b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa
+		return ord(Function.<P2<A,B>, P2<A,B>, Ordering>curry((a,b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa
 						.compare(a._1(), b._1())));
 	}
 
@@ -512,7 +512,7 @@ public final class Ord<A> {
 	 */
 	public static <A, B, C> Ord<P3<A, B, C>> p3Ord(final Ord<A> oa,
 			final Ord<B> ob, final Ord<C> oc) {
-		return ord(curry((a,b) -> oa.eq(a._1(), b._1()) ? p2Ord(ob, oc).compare(
+		return ord(Function.<P3<A,B,C>, P3<A,B,C>, Ordering>curry((a,b) -> oa.eq(a._1(), b._1()) ? p2Ord(ob, oc).compare(
 						P.p(a._2(), a._3()), P.p(b._2(), b._3())) : oa.compare(
 						a._1(), b._1())));
 	}

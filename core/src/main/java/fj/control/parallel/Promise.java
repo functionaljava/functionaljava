@@ -229,11 +229,7 @@ public final class Promise<A> {
 	 *         promise.
 	 */
 	public <B> Promise<B> apply(final Promise<F<A, B>> pf) {
-		return pf.bind(new F<F<A, B>, Promise<B>>() {
-			public Promise<B> f(final F<A, B> f) {
-				return fmap(f);
-			}
-		});
+		return pf.bind(this::fmap);
 	}
 
 	/**
@@ -273,11 +269,7 @@ public final class Promise<A> {
 	 */
 	public static <A, B, C> F<Promise<A>, F<Promise<B>, Promise<C>>> liftM2(
 			final F<A, F<B, C>> f) {
-		return curry(new F2<Promise<A>, Promise<B>, Promise<C>>() {
-			public Promise<C> f(final Promise<A> ca, final Promise<B> cb) {
-				return ca.bind(cb, f);
-			}
-		});
+		return curry((ca, cb) -> ca.bind(cb, f));
 	}
 
 	/**
@@ -375,7 +367,7 @@ public final class Promise<A> {
 	public static <A, B> F<List<A>, Promise<B>> foldRight(
 			final Strategy<Unit> s, final F<A, F<B, B>> f, final B b) {
 		return new F<List<A>, Promise<B>>() {
-			public Promise<B> f(final List<A> as) {
+			public Promise<B> apply(final List<A> as) {
 				return as.isEmpty() ? promise(s, p(b)) : liftM2(f).f(
 						promise(s, P.p(as.head()))).f(
 						join(s, P1.curry(this).f(as.tail())));
