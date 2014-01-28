@@ -165,11 +165,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return a functional representation of this TreeMap.
    */
   public F<K, Option<V>> get() {
-    return new F<K, Option<V>>() {
-      public Option<V> f(final K k) {
-        return get(k);
-      }
-    };
+    return this::get;
   }
 
   /**
