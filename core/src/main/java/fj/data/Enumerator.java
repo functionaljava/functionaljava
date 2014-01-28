@@ -381,18 +381,24 @@ public final class Enumerator<A> {
 	 */
 	public static final Enumerator<BigInteger> bigintEnumerator = enumerator(
 			i -> some(i.add(BigInteger.ONE)),
-			i -> some(i.subtract(BigInteger.ONE)), Option.<BigInteger> none(),
-			Option.<BigInteger> none(), bigintOrd,
-			curry((i, l) -> some(i.add(BigInteger.valueOf(l)))));
+			i -> some(i.subtract(BigInteger.ONE)),
+			Option.<BigInteger> none(),
+			Option.<BigInteger> none(),
+			bigintOrd,
+			Function.<BigInteger, Long, Option<BigInteger>> curry((i, l) -> some(i
+					.add(BigInteger.valueOf(l)))));
 
 	/**
 	 * An enumerator for <code>BigDecimal</code>.
 	 */
 	public static final Enumerator<BigDecimal> bigdecimalEnumerator = enumerator(
 			i -> some(i.add(BigDecimal.ONE)),
-			i -> some(i.subtract(BigDecimal.ONE)), Option.<BigDecimal> none(),
-			Option.<BigDecimal> none(), bigdecimalOrd,
-			curry((d, l) -> some(d.add(BigDecimal.valueOf(l)))));
+			i -> some(i.subtract(BigDecimal.ONE)),
+			Option.<BigDecimal> none(),
+			Option.<BigDecimal> none(),
+			bigdecimalOrd,
+			Function.<BigDecimal, Long, Option<BigDecimal>> curry((d, l) -> some(d
+					.add(BigDecimal.valueOf(l)))));
 
 	/**
 	 * An enumerator for <code>long</code>.
@@ -425,14 +431,12 @@ public final class Enumerator<A> {
 	 * An enumerator for <code>Natural</code>
 	 */
 	public static final Enumerator<Natural> naturalEnumerator = enumerator(
-			n -> Option.some(n.succ()),
-			n -> n.pred(),
-			Option.<Natural> none(),
-			some(Natural.ZERO),
-			naturalOrd,
-			curry((n, l) -> some(n).apply(
-					Natural.natural(l).map(
-							Function.curry((n1, n2) -> n1.add(n2))))
+			n -> Option.some(n.succ()), n -> n.pred(), Option.<Natural> none(),
+			Option.some(Natural.ZERO), naturalOrd,
+			Function.<Natural, Long, Option<Natural>> curry((n, l) -> some(n)
+					.<Natural> apply(
+							Natural.natural(l).map(
+									Function.curry((n1, n2) -> n1.add(n2))))
 
 			));
 
