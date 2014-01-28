@@ -164,40 +164,28 @@ public final class Equal<A> {
 	 * An equal instance for the {@link StringBuffer} type.
 	 */
 	public static final Equal<StringBuffer> stringBufferEqual = new Equal<StringBuffer>(
-			new F<StringBuffer, F<StringBuffer, Boolean>>() {
-				public F<StringBuffer, Boolean> f(final StringBuffer sb1) {
-					return new F<StringBuffer, Boolean>() {
-						public Boolean f(final StringBuffer sb2) {
-							if (sb1.length() == sb2.length()) {
-								for (int i = 0; i < sb1.length(); i++)
-									if (sb1.charAt(i) != sb2.charAt(i))
-										return false;
-								return true;
-							} else
-								return false;
-						}
-					};
-				}
+			sb1 -> sb2 -> {
+				if (sb1.length() == sb2.length()) {
+					for (int i = 0; i < sb1.length(); i++)
+						if (sb1.charAt(i) != sb2.charAt(i))
+							return false;
+					return true;
+				} else
+					return false;
 			});
 
 	/**
 	 * An equal instance for the {@link StringBuilder} type.
 	 */
 	public static final Equal<StringBuilder> stringBuilderEqual = new Equal<StringBuilder>(
-			new F<StringBuilder, F<StringBuilder, Boolean>>() {
-				public F<StringBuilder, Boolean> f(final StringBuilder sb1) {
-					return new F<StringBuilder, Boolean>() {
-						public Boolean f(final StringBuilder sb2) {
-							if (sb1.length() == sb2.length()) {
-								for (int i = 0; i < sb1.length(); i++)
-									if (sb1.charAt(i) != sb2.charAt(i))
-										return false;
-								return true;
-							} else
-								return false;
-						}
-					};
-				}
+			sb1 -> sb2 -> {
+				if (sb1.length() == sb2.length()) {
+					for (int i = 0; i < sb1.length(); i++)
+						if (sb1.charAt(i) != sb2.charAt(i))
+							return false;
+					return true;
+				} else
+					return false;
 			});
 
 	/**
@@ -240,25 +228,19 @@ public final class Equal<A> {
 	 * @return An equal instance for the {@link List} type.
 	 */
 	public static <A> Equal<List<A>> listEqual(final Equal<A> ea) {
-		return new Equal<List<A>>(new F<List<A>, F<List<A>, Boolean>>() {
-			public F<List<A>, Boolean> f(final List<A> a1) {
-				return new F<List<A>, Boolean>() {
-					public Boolean f(final List<A> a2) {
-						List<A> x1 = a1;
-						List<A> x2 = a2;
+		return new Equal<List<A>>(a1 -> a2 -> {
+			List<A> x1 = a1;
+			List<A> x2 = a2;
 
-						while (x1.isNotEmpty() && x2.isNotEmpty()) {
-							if (!ea.eq(x1.head(), x2.head()))
-								return false;
+			while (x1.isNotEmpty() && x2.isNotEmpty()) {
+				if (!ea.eq(x1.head(), x2.head()))
+					return false;
 
-							x1 = x1.tail();
-							x2 = x2.tail();
-						}
-
-						return x1.isEmpty() && x2.isEmpty();
-					}
-				};
+				x1 = x1.tail();
+				x2 = x2.tail();
 			}
+
+			return x1.isEmpty() && x2.isEmpty();
 		});
 	}
 
@@ -281,17 +263,8 @@ public final class Equal<A> {
 	 * @return An equal instance for the {@link Option} type.
 	 */
 	public static <A> Equal<Option<A>> optionEqual(final Equal<A> ea) {
-		return new Equal<Option<A>>(new F<Option<A>, F<Option<A>, Boolean>>() {
-			public F<Option<A>, Boolean> f(final Option<A> o1) {
-				return new F<Option<A>, Boolean>() {
-					public Boolean f(final Option<A> o2) {
-						return o1.isNone() && o2.isNone() || o1.isSome()
-								&& o2.isSome()
-								&& ea.f.f(o1.some()).f(o2.some());
-					}
-				};
-			}
-		});
+		return new Equal<Option<A>>(o1 -> o2 -> o1.isNone() && o2.isNone()
+				|| o1.isSome() && o2.isSome() && ea.f.f(o1.some()).f(o2.some()));
 	}
 
 	/**
@@ -302,25 +275,19 @@ public final class Equal<A> {
 	 * @return An equal instance for the {@link Stream} type.
 	 */
 	public static <A> Equal<Stream<A>> streamEqual(final Equal<A> ea) {
-		return new Equal<Stream<A>>(new F<Stream<A>, F<Stream<A>, Boolean>>() {
-			public F<Stream<A>, Boolean> f(final Stream<A> a1) {
-				return new F<Stream<A>, Boolean>() {
-					public Boolean f(final Stream<A> a2) {
-						Stream<A> x1 = a1;
-						Stream<A> x2 = a2;
+		return new Equal<Stream<A>>(a1 -> a2 -> {
+			Stream<A> x1 = a1;
+			Stream<A> x2 = a2;
 
-						while (x1.isNotEmpty() && x2.isNotEmpty()) {
-							if (!ea.eq(x1.head(), x2.head()))
-								return false;
+			while (x1.isNotEmpty() && x2.isNotEmpty()) {
+				if (!ea.eq(x1.head(), x2.head()))
+					return false;
 
-							x1 = x1.tail()._1();
-							x2 = x2.tail()._1();
-						}
-
-						return x1.isEmpty() && x2.isEmpty();
-					}
-				};
+				x1 = x1.tail()._1();
+				x2 = x2.tail()._1();
 			}
+
+			return x1.isEmpty() && x2.isEmpty();
 		});
 	}
 
@@ -332,21 +299,15 @@ public final class Equal<A> {
 	 * @return An equal instance for the {@link Array} type.
 	 */
 	public static <A> Equal<Array<A>> arrayEqual(final Equal<A> ea) {
-		return new Equal<Array<A>>(new F<Array<A>, F<Array<A>, Boolean>>() {
-			public F<Array<A>, Boolean> f(final Array<A> a1) {
-				return new F<Array<A>, Boolean>() {
-					public Boolean f(final Array<A> a2) {
-						if (a1.length() == a2.length()) {
-							for (int i = 0; i < a1.length(); i++) {
-								if (!ea.eq(a1.get(i), a2.get(i)))
-									return false;
-							}
-							return true;
-						} else
-							return false;
-					}
-				};
-			}
+		return new Equal<Array<A>>(a1 -> a2 -> {
+			if (a1.length() == a2.length()) {
+				for (int i = 0; i < a1.length(); i++) {
+					if (!ea.eq(a1.get(i), a2.get(i)))
+						return false;
+				}
+				return true;
+			} else
+				return false;
 		});
 	}
 
@@ -385,16 +346,8 @@ public final class Equal<A> {
 	 */
 	public static <A, B> Equal<P2<A, B>> p2Equal(final Equal<A> ea,
 			final Equal<B> eb) {
-		return new Equal<P2<A, B>>(new F<P2<A, B>, F<P2<A, B>, Boolean>>() {
-			public F<P2<A, B>, Boolean> f(final P2<A, B> p1) {
-				return new F<P2<A, B>, Boolean>() {
-					public Boolean f(final P2<A, B> p2) {
-						return ea.eq(p1._1(), p2._1())
-								&& eb.eq(p1._2(), p2._2());
-					}
-				};
-			}
-		});
+		return new Equal<P2<A, B>>(p1 -> p2 -> ea.eq(p1._1(), p2._1())
+				&& eb.eq(p1._2(), p2._2()));
 	}
 
 	/**
@@ -410,18 +363,8 @@ public final class Equal<A> {
 	 */
 	public static <A, B, C> Equal<P3<A, B, C>> p3Equal(final Equal<A> ea,
 			final Equal<B> eb, final Equal<C> ec) {
-		return new Equal<P3<A, B, C>>(
-				new F<P3<A, B, C>, F<P3<A, B, C>, Boolean>>() {
-					public F<P3<A, B, C>, Boolean> f(final P3<A, B, C> p1) {
-						return new F<P3<A, B, C>, Boolean>() {
-							public Boolean f(final P3<A, B, C> p2) {
-								return ea.eq(p1._1(), p2._1())
-										&& eb.eq(p1._2(), p2._2())
-										&& ec.eq(p1._3(), p2._3());
-							}
-						};
-					}
-				});
+		return new Equal<P3<A, B, C>>(p1 -> p2 -> ea.eq(p1._1(), p2._1())
+				&& eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()));
 	}
 
 	/**
@@ -439,19 +382,9 @@ public final class Equal<A> {
 	 */
 	public static <A, B, C, D> Equal<P4<A, B, C, D>> p4Equal(final Equal<A> ea,
 			final Equal<B> eb, final Equal<C> ec, final Equal<D> ed) {
-		return new Equal<P4<A, B, C, D>>(
-				new F<P4<A, B, C, D>, F<P4<A, B, C, D>, Boolean>>() {
-					public F<P4<A, B, C, D>, Boolean> f(final P4<A, B, C, D> p1) {
-						return new F<P4<A, B, C, D>, Boolean>() {
-							public Boolean f(final P4<A, B, C, D> p2) {
-								return ea.eq(p1._1(), p2._1())
-										&& eb.eq(p1._2(), p2._2())
-										&& ec.eq(p1._3(), p2._3())
-										&& ed.eq(p1._4(), p2._4());
-							}
-						};
-					}
-				});
+		return new Equal<P4<A, B, C, D>>(p1 -> p2 -> ea.eq(p1._1(), p2._1())
+				&& eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3())
+				&& ed.eq(p1._4(), p2._4()));
 	}
 
 	/**
@@ -472,21 +405,9 @@ public final class Equal<A> {
 	public static <A, B, C, D, E> Equal<P5<A, B, C, D, E>> p5Equal(
 			final Equal<A> ea, final Equal<B> eb, final Equal<C> ec,
 			final Equal<D> ed, final Equal<E> ee) {
-		return new Equal<P5<A, B, C, D, E>>(
-				new F<P5<A, B, C, D, E>, F<P5<A, B, C, D, E>, Boolean>>() {
-					public F<P5<A, B, C, D, E>, Boolean> f(
-							final P5<A, B, C, D, E> p1) {
-						return new F<P5<A, B, C, D, E>, Boolean>() {
-							public Boolean f(final P5<A, B, C, D, E> p2) {
-								return ea.eq(p1._1(), p2._1())
-										&& eb.eq(p1._2(), p2._2())
-										&& ec.eq(p1._3(), p2._3())
-										&& ed.eq(p1._4(), p2._4())
-										&& ee.eq(p1._5(), p2._5());
-							}
-						};
-					}
-				});
+		return new Equal<P5<A, B, C, D, E>>(p1 -> p2 -> ea.eq(p1._1(), p2._1())
+				&& eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3())
+				&& ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()));
 	}
 
 	/**
@@ -509,22 +430,13 @@ public final class Equal<A> {
 	public static <A, B, C, D, E, F$> Equal<P6<A, B, C, D, E, F$>> p6Equal(
 			final Equal<A> ea, final Equal<B> eb, final Equal<C> ec,
 			final Equal<D> ed, final Equal<E> ee, final Equal<F$> ef) {
-		return new Equal<P6<A, B, C, D, E, F$>>(
-				new F<P6<A, B, C, D, E, F$>, F<P6<A, B, C, D, E, F$>, Boolean>>() {
-					public F<P6<A, B, C, D, E, F$>, Boolean> f(
-							final P6<A, B, C, D, E, F$> p1) {
-						return new F<P6<A, B, C, D, E, F$>, Boolean>() {
-							public Boolean f(final P6<A, B, C, D, E, F$> p2) {
-								return ea.eq(p1._1(), p2._1())
-										&& eb.eq(p1._2(), p2._2())
-										&& ec.eq(p1._3(), p2._3())
-										&& ed.eq(p1._4(), p2._4())
-										&& ee.eq(p1._5(), p2._5())
-										&& ef.eq(p1._6(), p2._6());
-							}
-						};
-					}
-				});
+		return new Equal<P6<A, B, C, D, E, F$>>(p1 -> p2 -> ea.eq(p1._1(),
+				p2._1())
+				&& eb.eq(p1._2(), p2._2())
+				&& ec.eq(p1._3(), p2._3())
+				&& ed.eq(p1._4(), p2._4())
+				&& ee.eq(p1._5(), p2._5())
+				&& ef.eq(p1._6(), p2._6()));
 	}
 
 	/**
@@ -550,23 +462,13 @@ public final class Equal<A> {
 			final Equal<A> ea, final Equal<B> eb, final Equal<C> ec,
 			final Equal<D> ed, final Equal<E> ee, final Equal<F$> ef,
 			final Equal<G> eg) {
-		return new Equal<P7<A, B, C, D, E, F$, G>>(
-				new F<P7<A, B, C, D, E, F$, G>, F<P7<A, B, C, D, E, F$, G>, Boolean>>() {
-					public F<P7<A, B, C, D, E, F$, G>, Boolean> f(
-							final P7<A, B, C, D, E, F$, G> p1) {
-						return new F<P7<A, B, C, D, E, F$, G>, Boolean>() {
-							public Boolean f(final P7<A, B, C, D, E, F$, G> p2) {
-								return ea.eq(p1._1(), p2._1())
-										&& eb.eq(p1._2(), p2._2())
-										&& ec.eq(p1._3(), p2._3())
-										&& ed.eq(p1._4(), p2._4())
-										&& ee.eq(p1._5(), p2._5())
-										&& ef.eq(p1._6(), p2._6())
-										&& eg.eq(p1._7(), p2._7());
-							}
-						};
-					}
-				});
+		return new Equal<P7<A, B, C, D, E, F$, G>>(p1 -> p2 -> ea.eq(p1._1(),
+				p2._1())
+				&& eb.eq(p1._2(), p2._2())
+				&& ec.eq(p1._3(), p2._3())
+				&& ed.eq(p1._4(), p2._4())
+				&& ee.eq(p1._5(), p2._5())
+				&& ef.eq(p1._6(), p2._6()) && eg.eq(p1._7(), p2._7()));
 	}
 
 	/**
@@ -594,25 +496,14 @@ public final class Equal<A> {
 			final Equal<A> ea, final Equal<B> eb, final Equal<C> ec,
 			final Equal<D> ed, final Equal<E> ee, final Equal<F$> ef,
 			final Equal<G> eg, final Equal<H> eh) {
-		return new Equal<P8<A, B, C, D, E, F$, G, H>>(
-				new F<P8<A, B, C, D, E, F$, G, H>, F<P8<A, B, C, D, E, F$, G, H>, Boolean>>() {
-					public F<P8<A, B, C, D, E, F$, G, H>, Boolean> f(
-							final P8<A, B, C, D, E, F$, G, H> p1) {
-						return new F<P8<A, B, C, D, E, F$, G, H>, Boolean>() {
-							public Boolean f(
-									final P8<A, B, C, D, E, F$, G, H> p2) {
-								return ea.eq(p1._1(), p2._1())
-										&& eb.eq(p1._2(), p2._2())
-										&& ec.eq(p1._3(), p2._3())
-										&& ed.eq(p1._4(), p2._4())
-										&& ee.eq(p1._5(), p2._5())
-										&& ef.eq(p1._6(), p2._6())
-										&& eg.eq(p1._7(), p2._7())
-										&& eh.eq(p1._8(), p2._8());
-							}
-						};
-					}
-				});
+		return new Equal<P8<A, B, C, D, E, F$, G, H>>(p1 -> p2 -> ea.eq(
+				p1._1(), p2._1())
+				&& eb.eq(p1._2(), p2._2())
+				&& ec.eq(p1._3(), p2._3())
+				&& ed.eq(p1._4(), p2._4())
+				&& ee.eq(p1._5(), p2._5())
+				&& ef.eq(p1._6(), p2._6())
+				&& eg.eq(p1._7(), p2._7()) && eh.eq(p1._8(), p2._8()));
 	}
 
 	/**

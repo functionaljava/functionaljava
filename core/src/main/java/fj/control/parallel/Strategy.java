@@ -1,18 +1,9 @@
 package fj.control.parallel;
 
-import fj.Effect;
-import fj.F;
-import fj.F2;
-import fj.Function;
-import fj.P;
-import fj.P1;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.P1.fmap;
 import static fj.P1.sequence;
-import fj.data.Java;
-import fj.data.List;
-import fj.data.Array;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -20,6 +11,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+
+import fj.Effect;
+import fj.F;
+import fj.F2;
+import fj.Function;
+import fj.P;
+import fj.P1;
+import fj.data.Array;
+import fj.data.Java;
+import fj.data.List;
 
 /**
  * Functional-style parallel evaluation strategies. A Strategy is a method of
@@ -187,11 +188,7 @@ public final class Strategy<A> {
 	 * @return The function transformed into a parallel function on lists.
 	 */
 	public <B> F<List<B>, P1<List<A>>> parMapList(final F<B, A> f) {
-		return new F<List<B>, P1<List<A>>>() {
-			public P1<List<A>> f(final List<B> as) {
-				return parMap(f, as);
-			}
-		};
+		return as -> parMap(f, as);
 	}
 
 	/**
@@ -201,11 +198,7 @@ public final class Strategy<A> {
 	 *         on lists.
 	 */
 	public <B> F<F<B, A>, F<List<B>, P1<List<A>>>> parMapList() {
-		return new F<F<B, A>, F<List<B>, P1<List<A>>>>() {
-			public F<List<B>, P1<List<A>>> f(final F<B, A> f) {
-				return parMapList(f);
-			}
-		};
+		return this::parMapList;
 	}
 
 	/**
@@ -215,15 +208,7 @@ public final class Strategy<A> {
 	 *         function on lists.
 	 */
 	public <B> F<F<B, A>, F<List<B>, List<A>>> parMapList1() {
-		return new F<F<B, A>, F<List<B>, List<A>>>() {
-			public F<List<B>, List<A>> f(final F<B, A> f) {
-				return new F<List<B>, List<A>>() {
-					public List<A> f(final List<B> bs) {
-						return parMap1(f, bs);
-					}
-				};
-			}
-		};
+		return f -> bs -> parMap1(f, bs);
 	}
 
 	/**
@@ -234,11 +219,7 @@ public final class Strategy<A> {
 	 * @return The function transformed into a parallel function on arrays.
 	 */
 	public <B> F<Array<B>, P1<Array<A>>> parMapArray(final F<B, A> f) {
-		return new F<Array<B>, P1<Array<A>>>() {
-			public P1<Array<A>> f(final Array<B> as) {
-				return parMap(f, as);
-			}
-		};
+		return as -> parMap(f, as);
 	}
 
 	/**
@@ -248,11 +229,7 @@ public final class Strategy<A> {
 	 *         on arrays.
 	 */
 	public <B> F<F<B, A>, F<Array<B>, P1<Array<A>>>> parMapArray() {
-		return new F<F<B, A>, F<Array<B>, P1<Array<A>>>>() {
-			public F<Array<B>, P1<Array<A>>> f(final F<B, A> f) {
-				return parMapArray(f);
-			}
-		};
+		return this::parMapArray;
 	}
 
 	/**
@@ -262,15 +239,7 @@ public final class Strategy<A> {
 	 *         function on arrays.
 	 */
 	public <B> F<F<B, A>, F<Array<B>, Array<A>>> parMapArray1() {
-		return new F<F<B, A>, F<Array<B>, Array<A>>>() {
-			public F<Array<B>, Array<A>> f(final F<B, A> f) {
-				return new F<Array<B>, Array<A>>() {
-					public Array<A> f(final Array<B> bs) {
-						return parMap1(f, bs);
-					}
-				};
-			}
-		};
+		return f -> bs -> parMap1(f, bs);
 	}
 
 	/**
@@ -462,13 +431,11 @@ public final class Strategy<A> {
 	 *         new thread for every evaluation.
 	 */
 	public static <A> Strategy<A> simpleThreadStrategy() {
-		return strategy(new F<P1<A>, P1<A>>() {
-			public P1<A> f(final P1<A> p) {
-				final FutureTask<A> t = new FutureTask<A>(Java
-						.<A> P1_Callable().f(p));
-				new Thread(t).start();
-				return obtain(t);
-			}
+		return strategy(p -> {
+			final FutureTask<A> t = new FutureTask<A>(Java.<A> P1_Callable().f(
+					p));
+			new Thread(t).start();
+			return obtain(t);
 		});
 	}
 
@@ -510,7 +477,7 @@ public final class Strategy<A> {
 	 *         of its argument.
 	 */
 	public static <A> Strategy<A> seqStrategy() {
-		return strategy(a-> P.p(a._1()));
+		return strategy(a -> P.p(a._1()));
 	}
 
 	/**

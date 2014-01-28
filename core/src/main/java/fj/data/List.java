@@ -667,7 +667,7 @@ public abstract class List<A> implements Iterable<A> {
 	 *         this list.
 	 */
 	public final <B> List<B> apply(final List<F<A, B>> lf) {
-		return lf.bind(List::<B>map);
+		return lf.bind(this::<B> map);
 	}
 
 	/**
@@ -794,15 +794,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return A new list that is the reverse of this one.
 	 */
 	public final List<A> reverse() {
-		return foldLeft(new F<List<A>, F<A, List<A>>>() {
-			public F<A, List<A>> f(final List<A> as) {
-				return new F<A, List<A>>() {
-					public List<A> f(final A a) {
-						return cons(a, as);
-					}
-				};
-			}
-		}, List.<A> nil());
+		return foldLeft(as -> a -> cons(a, as), List.<A> nil());
 	}
 
 	/**
@@ -1028,12 +1020,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * @return A new list with the same length as this list.
 	 */
 	public final List<P2<A, Integer>> zipIndex() {
-		return zipWith(range(0, length()),
-				new F<A, F<Integer, P2<A, Integer>>>() {
-					public F<Integer, P2<A, Integer>> f(final A a) {
-						return i -> p(a, i);
-					}
-				});
+		return zipWith(range(0, length()), a -> i -> p(a, i));
 	}
 
 	/**
@@ -1135,11 +1122,7 @@ public abstract class List<A> implements Iterable<A> {
 	 */
 	public final List<A> nub(final Equal<A> eq) {
 		return isEmpty() ? this : cons(head(),
-				tail().filter(new F<A, Boolean>() {
-					public Boolean f(final A a) {
-						return !eq.eq(a, head());
-					}
-				}).nub(eq));
+				tail().filter(a -> !eq.eq(a, head())).nub(eq));
 	}
 
 	/**
@@ -1456,15 +1439,7 @@ public abstract class List<A> implements Iterable<A> {
 	 *         new list.
 	 */
 	public static <A> F<A, F<List<A>, List<A>>> cons() {
-		return new F<A, F<List<A>, List<A>>>() {
-			public F<List<A>, List<A>> f(final A a) {
-				return new F<List<A>, List<A>>() {
-					public List<A> f(final List<A> tail) {
-						return cons(a, tail);
-					}
-				};
-			}
-		};
+		return List::<A> cons;
 	}
 
 	/**

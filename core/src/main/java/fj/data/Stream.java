@@ -761,11 +761,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
 	private static <A> F<Stream<A>, Promise<Stream<A>>> qs_(final Ord<A> o,
 			final Strategy<Unit> s) {
-		return new F<Stream<A>, Promise<Stream<A>>>() {
-			public Promise<Stream<A>> f(final Stream<A> xs) {
-				return xs.qs(o, s);
-			}
-		};
+		return xs -> xs.qs(o, s);
 	}
 
 	private static <A> F<Stream<A>, Promise<Stream<A>>> flt(final Ord<A> o,
@@ -842,13 +838,10 @@ public abstract class Stream<A> implements Iterable<A> {
 	public static <A> Stream<A> stream(final A... as) {
 		return as.length == 0 ? Stream.<A> nil()
 				: unfold(
-						P2.tuple(new F2<A[], Integer, Option<P2<A, P2<A[], Integer>>>>() {
-							public Option<P2<A, P2<A[], Integer>>> f(
-									final A[] as, final Integer i) {
+						P2.tuple((aas, i) -> {
 								return i >= as.length ? Option
 										.<P2<A, P2<A[], Integer>>> none()
-										: some(P.p(as[i], P.p(as, i + 1)));
-							}
+										: some(P.p(aas[i], P.p(aas, i + 1)));
 						}), P.p(as, 0));
 	}
 
@@ -888,10 +881,8 @@ public abstract class Stream<A> implements Iterable<A> {
 			final long step) {
 		return cons(from, new P1<Stream<A>>() {
 			public Stream<A> _1() {
-				return e.plus(from, step).map(new F<A, Stream<A>>() {
-					public Stream<A> f(final A a) {
-						return forever(e, a, step);
-					}
+				return e.plus(from, step).map(a -> {
+					return forever(e, a, step);
 				}).orSome(Stream.<A> nil());
 			}
 		});
@@ -1889,15 +1880,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 */
 	public static <A> Stream<A> iterateWhile(final F<A, A> f,
 			final F<A, Boolean> p, final A a) {
-		return unfold(new F<A, Option<P2<A, A>>>() {
-			public Option<P2<A, A>> f(final A o) {
-				return Option.iif(new F<P2<A, A>, Boolean>() {
-					public Boolean f(final P2<A, A> p2) {
-						return p.f(o);
-					}
-				}, P.p(o, f.f(o)));
-			}
-		}, a);
+		return unfold(o -> Option.iif(p2 -> p.f(o), P.p(o, f.f(o))), a);
 	}
 
 	/**
@@ -1999,11 +1982,7 @@ public abstract class Stream<A> implements Iterable<A> {
 	 *         joining the resulting streams.
 	 */
 	public static <A, B> F<F<A, Stream<B>>, F<Stream<A>, Stream<B>>> bind_() {
-		return curry(new F2<F<A, Stream<B>>, Stream<A>, Stream<B>>() {
-			public Stream<B> f(final F<A, Stream<B>> f, final Stream<A> as) {
-				return as.bind(f);
-			}
-		});
+		return curry((f, as) -> as.bind(f));
 	}
 
 	/**

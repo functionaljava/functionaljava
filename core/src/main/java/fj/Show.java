@@ -371,21 +371,19 @@ public final class Show<A> {
 	 * @return A show instance for the {@link Array} type.
 	 */
 	public static <A> Show<Array<A>> arrayShow(final Show<A> sa) {
-		return new Show<Array<A>>(new F<Array<A>, Stream<Character>>() {
-			public Stream<Character> f(final Array<A> as) {
-				Stream<Character> b = nil();
+		return new Show<Array<A>>(as -> {
+			Stream<Character> b = nil();
 
-				for (int i = 0; i < as.length(); i++) {
-					b = b.append(sa.f.f(as.get(i)));
+			for (int i = 0; i < as.length(); i++) {
+				b = b.append(sa.f.f(as.get(i)));
 
-					if (i != as.length() - 1)
-						b = b.snoc(',');
-				}
-
-				b = b.snoc('}');
-
-				return cons('{', p(b));
+				if (i != as.length() - 1)
+					b = b.snoc(',');
 			}
+
+			b = b.snoc('}');
+
+			return cons('{', p(b));
 		});
 	}
 
@@ -437,9 +435,9 @@ public final class Show<A> {
 	 */
 	public static <A, B, C> Show<P3<A, B, C>> p3Show(final Show<A> sa,
 			final Show<B> sb, final Show<C> sc) {
-		return new Show<P3<A, B, C>>(p -> cons('(', p(sa.show(p._1()))).snoc(',')
-						.append(sb.show(p._2())).snoc(',')
-						.append(sc.show(p._3())).snoc(')'));
+		return new Show<P3<A, B, C>>(p -> cons('(', p(sa.show(p._1())))
+				.snoc(',').append(sb.show(p._2())).snoc(',')
+				.append(sc.show(p._3())).snoc(')'));
 	}
 
 	/**

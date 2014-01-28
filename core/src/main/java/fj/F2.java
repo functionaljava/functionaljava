@@ -1,5 +1,12 @@
 package fj;
 
+import static fj.P.p;
+import static fj.data.IterableW.wrap;
+import static fj.data.Set.iterableSet;
+import static fj.data.Tree.node;
+import static fj.data.TreeZipper.treeZipper;
+import static fj.data.Zipper.zipper;
+
 import java.util.function.BiFunction;
 
 import fj.control.parallel.Promise;
@@ -13,12 +20,6 @@ import fj.data.Stream;
 import fj.data.Tree;
 import fj.data.TreeZipper;
 import fj.data.Zipper;
-import static fj.data.Tree.node;
-import static fj.P.p;
-import static fj.data.IterableW.wrap;
-import static fj.data.Set.iterableSet;
-import static fj.data.TreeZipper.treeZipper;
-import static fj.data.Zipper.zipper;
 
 /**
  * A transformation function of arity-2 from <code>A</code> and <code>B</code>
@@ -252,7 +253,7 @@ public interface F2<A, B, C> extends BiFunction<A, B, C> {
 	 */
 	public default F2<Tree<A>, Tree<B>, Tree<C>> zipTreeM() {
 		return new F2<Tree<A>, Tree<B>, Tree<C>>() {
-			public Tree<C> f(final Tree<A> ta, final Tree<B> tb) {
+			public Tree<C> apply(final Tree<A> ta, final Tree<B> tb) {
 				final F2<Tree<A>, Tree<B>, Tree<C>> self = this;
 				return node(F2.this.f(ta.root(), tb.root()),
 						new P1<Stream<Tree<C>>>() {
@@ -292,12 +293,12 @@ public interface F2<A, B, C> extends BiFunction<A, B, C> {
 	public default F2<TreeZipper<A>, TreeZipper<B>, TreeZipper<C>> zipTreeZipperM() {
 		return new F2<TreeZipper<A>, TreeZipper<B>, TreeZipper<C>>() {
 			@SuppressWarnings({ "unchecked" })
-			public TreeZipper<C> f(final TreeZipper<A> ta,
+			public TreeZipper<C> apply(final TreeZipper<A> ta,
 					final TreeZipper<B> tb) {
 				final F2<Stream<Tree<A>>, Stream<Tree<B>>, Stream<Tree<C>>> sf = F2.this
 						.treeM().zipStreamM();
 				final F2<Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>>, Stream<P3<Stream<Tree<B>>, B, Stream<Tree<B>>>>, Stream<P3<Stream<Tree<C>>, C, Stream<Tree<C>>>>> pf = new F2<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>, P3<Stream<Tree<B>>, B, Stream<Tree<B>>>, P3<Stream<Tree<C>>, C, Stream<Tree<C>>>>() {
-					public P3<Stream<Tree<C>>, C, Stream<Tree<C>>> f(
+					public P3<Stream<Tree<C>>, C, Stream<Tree<C>>> apply(
 							final P3<Stream<Tree<A>>, A, Stream<Tree<A>>> pa,
 							final P3<Stream<Tree<B>>, B, Stream<Tree<B>>> pb) {
 						return p(
