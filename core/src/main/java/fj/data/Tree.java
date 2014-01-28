@@ -2,6 +2,7 @@ package fj.data;
 
 import fj.F;
 import fj.F2;
+import fj.Function;
 import fj.P;
 import fj.P1;
 import fj.P2;
@@ -85,7 +86,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A function that constructs an n-ary tree given a root and a subforest or length n.
    */
   public static <A> F<A, F<P1<Stream<Tree<A>>>, Tree<A>>> node() {
-    return curry(Tree::node);
+    return Function.<A, P1<Stream<Tree<A>>>, Tree<A>>curry(Tree::<A>node);
   }
 
   /**

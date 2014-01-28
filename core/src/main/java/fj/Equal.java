@@ -605,12 +605,9 @@ public final class Equal<A> {
 	 */
 	public static <E, L extends HList<L>> Equal<HList.HCons<E, L>> hListEqual(
 			final Equal<E> e, final Equal<L> l) {
-		return equal(curry(new F2<HList.HCons<E, L>, HList.HCons<E, L>, Boolean>() {
-			public Boolean f(final HList.HCons<E, L> c1,
-					final HList.HCons<E, L> c2) {
-				return e.eq(c1.head(), c2.head()) && l.eq(c1.tail(), c2.tail());
-			}
-		}));
+		return equal(Function
+				.<HList.HCons<E, L>, HList.HCons<E, L>, Boolean> curry((c1, c2) -> e
+						.eq(c1.head(), c2.head()) && l.eq(c1.tail(), c2.tail())));
 	}
 
 	/**
@@ -621,7 +618,8 @@ public final class Equal<A> {
 	 * @return An equal instance for sets.
 	 */
 	public static <A> Equal<Set<A>> setEqual(final Equal<A> e) {
-		return equal(curry((a, b) -> streamEqual(e).eq(a.toStream(),
-				b.toStream())));
+		return equal(Function
+				.<Set<A>, Set<A>, Boolean> curry((a, b) -> streamEqual(e).eq(
+						a.toStream(), b.toStream())));
 	}
 }
