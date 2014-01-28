@@ -185,8 +185,8 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 			final Digit<V, A> s1, final Digit<V, A> p2,
 			final FingerTree<V, Node<V, A>> m2) {
 		final MakeTree<V, A> mk = mkTree(m);
-		return s1.match(
-				one1 -> p2.match(
+		return s1
+				.match(one1 -> p2.match(
 						one2 -> append1(m, m1,
 								mk.node2(one1.value(), one2.value()), m2),
 						two2 -> {
@@ -207,32 +207,21 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 									mk.node3(one1.value(), vs._1(), vs._2()),
 									mk.node2(vs._3(), vs._4()), m2);
 						}),
-				new F<Two<V, A>, FingerTree<V, Node<V, A>>>() {
-					public FingerTree<V, Node<V, A>> f(final Two<V, A> two1) {
-						final V2<A> v1 = two1.values();
-						return p2.match(
-								new F<One<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final One<V, A> one) {
-										return append1(
-												m,
-												m1,
-												mk.node3(v1._1(), v1._2(),
-														one.value()), m2);
-									}
-								},
-								new F<Two<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Two<V, A> two2) {
+						two1 -> {
+							final V2<A> v1 = two1.values();
+							return p2.match(
+									one -> append1(
+											m,
+											m1,
+											mk.node3(v1._1(), v1._2(),
+													one.value()), m2),
+									two2 -> {
 										final V2<A> v2 = two2.values();
 										return append2(m, m1,
 												mk.node2(v1._1(), v1._2()),
 												mk.node2(v2._1(), v2._2()), m2);
-									}
-								},
-								new F<Three<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Three<V, A> three) {
+									},
+									three -> {
 										final V3<A> v2 = three.values();
 										return append2(
 												m,
@@ -240,11 +229,8 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 												mk.node3(v1._1(), v1._2(),
 														v2._1()),
 												mk.node2(v2._2(), v2._3()), m2);
-									}
-								},
-								new F<Four<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Four<V, A> four) {
+									},
+									four -> {
 										final V4<A> v2 = four.values();
 										return append2(
 												m,
@@ -253,77 +239,67 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 														v2._1()),
 												mk.node3(v2._2(), v2._3(),
 														v2._4()), m2);
-									}
-								});
-					}
-				},
-				new F<Three<V, A>, FingerTree<V, Node<V, A>>>() {
-					public FingerTree<V, Node<V, A>> f(final Three<V, A> three1) {
-						final V3<A> v1 = three1.values();
-						return p2.match(
-								new F<One<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final One<V, A> one) {
-										return append2(m, m1,
-												mk.node2(v1._1(), v1._2()),
-												mk.node2(v1._3(), one.value()),
-												m2);
-									}
-								},
-								new F<Two<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Two<V, A> two) {
+									});
+						},
+						three1 -> {
+							final V3<A> v1 = three1.values();
+							return p2.match(
+									one -> append2(m, m1,
+											mk.node2(v1._1(), v1._2()),
+											mk.node2(v1._3(), one.value()), m2),
+									two -> {
 										final V2<A> v2 = two.values();
 										return append2(m, m1, mk.node3(v1),
 												mk.node2(v2), m2);
-									}
-								},
-								new F<Three<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Three<V, A> three2) {
-										return append2(m, m1, mk.node3(v1),
-												mk.node3(three2.values()), m2);
-									}
-								},
-								new F<Four<V, A>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Four<V, A> four) {
-										return append3(m, m1, mk.node3(v1), mk
-												.node2(four.values()._1(), four
-														.values()._2()), mk
-												.node2(four.values()._3(), four
-														.values()._4()), m2);
-									}
-								});
-					}
-				},
-				four1 -> {
-					final V4<A> v1 = four1.values();
-					return p2.match(
-							one -> append2(m, m1,
-									mk.node3(v1._1(), v1._2(), v1._3()),
-									mk.node2(v1._4(), one.value()), m2),
-							two -> {
-								final V2<A> v2 = two.values();
-								return append2(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node3(v1._4(), v2._1(), v2._2()), m2);
-							},
-							three -> {
-								final V3<A> v2 = three.values();
-								return append3(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node2(v1._4(), v2._1()),
-										mk.node2(v2._2(), v2._3()), m2);
-							},
-							four2 -> {
-								final V4<A> v2 = four2.values();
-								return append3(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node3(v1._4(), v2._1(), v2._2()),
-										mk.node2(v2._3(), v2._4()), m2);
-							});
-				});
+									},
+									three2 -> append2(m, m1, mk.node3(v1),
+											mk.node3(three2.values()), m2),
+									four -> append3(m, m1, mk.node3(v1), mk
+											.node2(four.values()._1(), four
+													.values()._2()), mk.node2(
+											four.values()._3(), four.values()
+													._4()), m2));
+						},
+						four1 -> {
+							final V4<A> v1 = four1.values();
+							return p2.match(
+									one -> append2(
+											m,
+											m1,
+											mk.node3(v1._1(), v1._2(), v1._3()),
+											mk.node2(v1._4(), one.value()), m2),
+									two -> {
+										final V2<A> v2 = two.values();
+										return append2(
+												m,
+												m1,
+												mk.node3(v1._1(), v1._2(),
+														v1._3()),
+												mk.node3(v1._4(), v2._1(),
+														v2._2()), m2);
+									},
+									three -> {
+										final V3<A> v2 = three.values();
+										return append3(
+												m,
+												m1,
+												mk.node3(v1._1(), v1._2(),
+														v1._3()),
+												mk.node2(v1._4(), v2._1()),
+												mk.node2(v2._2(), v2._3()), m2);
+									},
+									four2 -> {
+										final V4<A> v2 = four2.values();
+										return append3(
+												m,
+												m1,
+												mk.node3(v1._1(), v1._2(),
+														v1._3()),
+												mk.node3(v1._4(), v2._1(),
+														v2._2()),
+												mk.node2(v2._3(), v2._4()), m2);
+									});
+						});
 	}
 
 	private static <V, A> FingerTree<V, Node<V, A>> append1(
@@ -393,8 +369,8 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 						return append2(m, m1, mk.node3(v1),
 								mk.node3(n, v2._1(), v2._2()), m2);
 					},
-					three -> {
-						final V3<Node<V, A>> v2 = three.values();
+					three2 -> {
+						final V3<Node<V, A>> v2 = three2.values();
 						return append3(m, m1, mk.node3(v1),
 								mk.node2(n, v2._1()),
 								mk.node2(v2._2(), v2._3()), m2);
@@ -405,49 +381,27 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 								mk.node3(n, v2._1(), v2._2()),
 								mk.node2(v2._3(), v2._4()), m2);
 					});
-		}, new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-			public FingerTree<V, Node<V, Node<V, A>>> f(
-					final Four<V, Node<V, A>> four) {
-				final V4<Node<V, A>> v1 = four.values();
-				return y.match(
-						new F<One<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final One<V, Node<V, A>> one) {
-								return append2(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node3(v1._4(), n, one.value()), m2);
-							}
-						},
-						new F<Two<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final Two<V, Node<V, A>> two) {
-								return append3(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node2(v1._4(), n),
-										mk.node2(two.values()), m2);
-							}
-						},
-						new F<Three<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final Three<V, Node<V, A>> three) {
-								final V3<Node<V, A>> v2 = three.values();
-								return append3(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node3(v1._4(), n, v2._1()),
-										mk.node2(v2._2(), v2._3()), m2);
-							}
-						},
-						new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final Four<V, Node<V, A>> four) {
-								final V4<Node<V, A>> v2 = four.values();
-								return append3(m, m1,
-										mk.node3(v1._1(), v1._2(), v1._3()),
-										mk.node3(v1._4(), n, v2._1()),
-										mk.node3(v2._2(), v2._3(), v2._4()), m2);
-							}
-						});
-			}
+		}, four -> {
+			final V4<Node<V, A>> v1 = four.values();
+			return y.match(
+					one -> append2(m, m1, mk.node3(v1._1(), v1._2(), v1._3()),
+							mk.node3(v1._4(), n, one.value()), m2),
+					two -> append3(m, m1, mk.node3(v1._1(), v1._2(), v1._3()),
+							mk.node2(v1._4(), n), mk.node2(two.values()), m2),
+					three -> {
+						final V3<Node<V, A>> v2 = three.values();
+						return append3(m, m1,
+								mk.node3(v1._1(), v1._2(), v1._3()),
+								mk.node3(v1._4(), n, v2._1()),
+								mk.node2(v2._2(), v2._3()), m2);
+					},
+					four2 -> {
+						final V4<Node<V, A>> v2 = four2.values();
+						return append3(m, m1,
+								mk.node3(v1._1(), v1._2(), v1._3()),
+								mk.node3(v1._4(), n, v2._1()),
+								mk.node3(v2._2(), v2._3(), v2._4()), m2);
+					});
 		});
 	}
 
@@ -455,57 +409,15 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 			final Measured<V, A> m, final FingerTree<V, Node<V, A>> t1,
 			final Node<V, A> n1, final Node<V, A> n2,
 			final FingerTree<V, Node<V, A>> t2) {
-		return t1.match(
-				new F<Empty<V, Node<V, A>>, FingerTree<V, Node<V, A>>>() {
-					public FingerTree<V, Node<V, A>> f(
-							final Empty<V, Node<V, A>> empty) {
-						return t2.cons(n2).cons(n1);
-					}
-				}, new F<Single<V, Node<V, A>>, FingerTree<V, Node<V, A>>>() {
-					public FingerTree<V, Node<V, A>> f(
-							final Single<V, Node<V, A>> single) {
-						return t2.cons(n2).cons(n1).cons(single.value());
-					}
-				}, new F<Deep<V, Node<V, A>>, FingerTree<V, Node<V, A>>>() {
-					public FingerTree<V, Node<V, A>> f(
-							final Deep<V, Node<V, A>> deep) {
-						return t2
-								.match(new F<Empty<V, Node<V, A>>, FingerTree<V, Node<V, A>>>() {
-									public FingerTree<V, Node<V, A>> f(
-											final Empty<V, Node<V, A>> empty) {
-										return deep.snoc(n1).snoc(n2);
-									}
-								},
-										new F<Single<V, Node<V, A>>, FingerTree<V, Node<V, A>>>() {
-											public FingerTree<V, Node<V, A>> f(
-													final Single<V, Node<V, A>> single) {
-												return deep.snoc(n1).snoc(n2)
-														.snoc(single.value());
-											}
-										},
-										new F<Deep<V, Node<V, A>>, FingerTree<V, Node<V, A>>>() {
-											public FingerTree<V, Node<V, A>> f(
-													final Deep<V, Node<V, A>> deep2) {
-												return new Deep<V, Node<V, A>>(
-														m.nodeMeasured(),
-														m.sum(m.sum(m.sum(
-																deep.measure(),
-																n1.measure()),
-																n2.measure()),
-																deep2.measure()),
-														deep.prefix,
-														addDigits2(
-																m.nodeMeasured(),
-																deep.middle,
-																deep.suffix,
-																n1, n2,
-																deep2.prefix,
-																deep2.middle),
-														deep2.suffix);
-											}
-										});
-					}
-				});
+		return t1.match(empty -> t2.cons(n2).cons(n1), single -> t2.cons(n2)
+				.cons(n1).cons(single.value()), deep -> t2.match(
+				empty -> deep.snoc(n1).snoc(n2),
+				single -> deep.snoc(n1).snoc(n2).snoc(single.value()),
+				deep2 -> new Deep<V, Node<V, A>>(m.nodeMeasured(), m.sum(m.sum(
+						m.sum(deep.measure(), n1.measure()), n2.measure()),
+						deep2.measure()), deep.prefix, addDigits2(
+						m.nodeMeasured(), deep.middle, deep.suffix, n1, n2,
+						deep2.prefix, deep2.middle), deep2.suffix)));
 	}
 
 	private static <V, A> FingerTree<V, Node<V, Node<V, A>>> addDigits2(
@@ -621,293 +533,86 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 			final Digit<V, Node<V, A>> prefix,
 			final FingerTree<V, Node<V, Node<V, A>>> m2) {
 		final MakeTree<V, Node<V, A>> mk = mkTree(m);
-		return suffix
-				.match(new F<One<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-					public FingerTree<V, Node<V, Node<V, A>>> f(
-							final One<V, Node<V, A>> one) {
-						return prefix
-								.match(new F<One<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-									public FingerTree<V, Node<V, Node<V, A>>> f(
-											final One<V, Node<V, A>> one2) {
-										return append2(m, m1,
-												mk.node3(one.value(), n1, n2),
-												mk.node2(n3, one2.value()), m2);
-									}
-								},
-										new F<Two<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-											public FingerTree<V, Node<V, Node<V, A>>> f(
-													final Two<V, Node<V, A>> two) {
-												final V2<Node<V, A>> v2 = two
-														.values();
-												return append2(m, m1, mk.node3(
-														one.value(), n1, n2),
-														mk.node3(n3, v2._1(),
-																v2._2()), m2);
-											}
-										},
-										new F<Three<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-											public FingerTree<V, Node<V, Node<V, A>>> f(
-													final Three<V, Node<V, A>> three) {
-												final V3<Node<V, A>> v2 = three
-														.values();
-												return append3(m, m1, mk.node3(
-														one.value(), n1, n2),
-														mk.node2(n3, v2._1()),
-														mk.node2(v2._2(),
-																v2._3()), m2);
-											}
-										},
-										new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-											public FingerTree<V, Node<V, Node<V, A>>> f(
-													final Four<V, Node<V, A>> four) {
-												final V4<Node<V, A>> v2 = four
-														.values();
-												return append3(m, m1, mk.node3(
-														one.value(), n1, n2),
-														mk.node3(n3, v2._1(),
-																v2._2()),
-														mk.node2(v2._3(),
-																v2._4()), m2);
-											}
-										});
-					}
+		return suffix.match(one -> prefix.match(
+				one2 -> append2(m, m1, mk.node3(one.value(), n1, n2),
+						mk.node2(n3, one2.value()), m2),
+				two -> {
+					final V2<Node<V, A>> v2 = two.values();
+					return append2(m, m1, mk.node3(one.value(), n1, n2),
+							mk.node3(n3, v2._1(), v2._2()), m2);
 				},
-						new F<Two<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final Two<V, Node<V, A>> two) {
-								final V2<Node<V, A>> v1 = two.values();
-								return prefix
-										.match(new F<One<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-											public FingerTree<V, Node<V, Node<V, A>>> f(
-													final One<V, Node<V, A>> one) {
-												return append2(
-														m,
-														m1,
-														mk.node3(v1._1(),
-																v1._2(), n1),
-														mk.node3(n2, n3,
-																one.value()),
-														m2);
-											}
-										},
-												new F<Two<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Two<V, Node<V, A>> two) {
-														return append3(
-																m,
-																m1,
-																mk.node3(
-																		v1._1(),
-																		v1._2(),
-																		n1),
-																mk.node2(n2, n3),
-																mk.node2(two
-																		.values()),
-																m2);
-													}
-												},
-												new F<Three<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Three<V, Node<V, A>> three) {
-														final V3<Node<V, A>> v2 = three
-																.values();
-														return append3(
-																m,
-																m1,
-																mk.node3(
-																		v1._1(),
-																		v1._2(),
-																		n1),
-																mk.node3(n2,
-																		n3,
-																		v2._1()),
-																mk.node2(
-																		v2._2(),
-																		v2._3()),
-																m2);
-													}
-												},
-												new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Four<V, Node<V, A>> four) {
-														final V4<Node<V, A>> v2 = four
-																.values();
-														return append3(
-																m,
-																m1,
-																mk.node3(
-																		v1._1(),
-																		v1._2(),
-																		n1),
-																mk.node3(n2,
-																		n3,
-																		v2._1()),
-																mk.node3(
-																		v2._2(),
-																		v2._3(),
-																		v2._4()),
-																m2);
-													}
-												});
-							}
-						},
-						new F<Three<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final Three<V, Node<V, A>> three) {
-								return prefix
-										.match(new F<One<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-											public FingerTree<V, Node<V, Node<V, A>>> f(
-													final One<V, Node<V, A>> one) {
-												return append3(m, m1, mk
-														.node3(three.values()),
-														mk.node2(n1, n2),
-														mk.node2(n3,
-																one.value()),
-														m2);
-											}
-										},
-												new F<Two<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Two<V, Node<V, A>> two) {
-														return append3(
-																m,
-																m1,
-																mk.node3(three
-																		.values()),
-																mk.node3(n1,
-																		n2, n3),
-																mk.node2(two
-																		.values()),
-																m2);
-													}
-												},
-												new F<Three<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Three<V, Node<V, A>> three2) {
-														return append3(
-																m,
-																m1,
-																mk.node3(three
-																		.values()),
-																mk.node3(n1,
-																		n2, n3),
-																mk.node3(three2
-																		.values()),
-																m2);
-													}
-												},
-												new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Four<V, Node<V, A>> four) {
-														final V4<Node<V, A>> v2 = four
-																.values();
-														return append4(
-																m,
-																m1,
-																mk.node3(three
-																		.values()),
-																mk.node3(n1,
-																		n2, n3),
-																mk.node2(
-																		v2._1(),
-																		v2._2()),
-																mk.node2(
-																		v2._3(),
-																		v2._4()),
-																m2);
-													}
-												});
-							}
-						},
-						new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-							public FingerTree<V, Node<V, Node<V, A>>> f(
-									final Four<V, Node<V, A>> four) {
-								final V4<Node<V, A>> v1 = four.values();
-								return prefix
-										.match(new F<One<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-											public FingerTree<V, Node<V, Node<V, A>>> f(
-													final One<V, Node<V, A>> one) {
-												return append3(m, m1, mk.node3(
-														v1._1(), v1._2(),
-														v1._3()), mk.node3(
-														v1._4(), n1, n2),
-														mk.node2(n3,
-																one.value()),
-														m2);
-											}
-										},
-												new F<Two<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Two<V, Node<V, A>> two) {
-														final V2<Node<V, A>> v2 = two
-																.values();
-														return append3(
-																m,
-																m1,
-																mk.node3(
-																		v1._1(),
-																		v1._2(),
-																		v1._3()),
-																mk.node3(
-																		v1._4(),
-																		n1, n2),
-																mk.node3(
-																		n3,
-																		v2._1(),
-																		v2._2()),
-																m2);
-													}
-												},
-												new F<Three<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Three<V, Node<V, A>> three) {
-														final V3<Node<V, A>> v2 = three
-																.values();
-														return append4(
-																m,
-																m1,
-																mk.node3(
-																		v1._1(),
-																		v1._2(),
-																		v1._3()),
-																mk.node3(
-																		v1._4(),
-																		n1, n2),
-																mk.node2(n3,
-																		v2._1()),
-																mk.node2(
-																		v2._2(),
-																		v2._3()),
-																m2);
-													}
-												},
-												new F<Four<V, Node<V, A>>, FingerTree<V, Node<V, Node<V, A>>>>() {
-													public FingerTree<V, Node<V, Node<V, A>>> f(
-															final Four<V, Node<V, A>> four2) {
-														final V4<Node<V, A>> v2 = four2
-																.values();
-														return append4(
-																m,
-																m1,
-																mk.node3(
-																		v1._1(),
-																		v1._2(),
-																		v1._3()),
-																mk.node3(
-																		v1._4(),
-																		n1, n2),
-																mk.node3(
-																		n3,
-																		v2._1(),
-																		v2._2()),
-																mk.node2(
-																		v2._3(),
-																		v2._4()),
-																m2);
-													}
-												});
-							}
-						});
+				three -> {
+					final V3<Node<V, A>> v2 = three.values();
+					return append3(m, m1, mk.node3(one.value(), n1, n2),
+							mk.node2(n3, v2._1()), mk.node2(v2._2(), v2._3()),
+							m2);
+				},
+				four -> {
+					final V4<Node<V, A>> v2 = four.values();
+					return append3(m, m1, mk.node3(one.value(), n1, n2),
+							mk.node3(n3, v2._1(), v2._2()),
+							mk.node2(v2._3(), v2._4()), m2);
+				}), two -> {
+			final V2<Node<V, A>> v1 = two.values();
+			return prefix.match(
+					one -> append2(m, m1, mk.node3(v1._1(), v1._2(), n1),
+							mk.node3(n2, n3, one.value()), m2),
+					two2 -> append3(m, m1, mk.node3(v1._1(), v1._2(), n1),
+							mk.node2(n2, n3), mk.node2(two2.values()), m2),
+					three -> {
+						final V3<Node<V, A>> v2 = three.values();
+						return append3(m, m1, mk.node3(v1._1(), v1._2(), n1),
+								mk.node3(n2, n3, v2._1()),
+								mk.node2(v2._2(), v2._3()), m2);
+					},
+					four -> {
+						final V4<Node<V, A>> v2 = four.values();
+						return append3(m, m1, mk.node3(v1._1(), v1._2(), n1),
+								mk.node3(n2, n3, v2._1()),
+								mk.node3(v2._2(), v2._3(), v2._4()), m2);
+					});
+		}, three -> prefix.match(
+				one -> append3(m, m1, mk.node3(three.values()),
+						mk.node2(n1, n2), mk.node2(n3, one.value()), m2),
+				two -> append3(m, m1, mk.node3(three.values()),
+						mk.node3(n1, n2, n3), mk.node2(two.values()), m2),
+				three2 -> append3(m, m1, mk.node3(three.values()),
+						mk.node3(n1, n2, n3), mk.node3(three2.values()), m2),
+				four -> {
+					final V4<Node<V, A>> v2 = four.values();
+					return append4(m, m1, mk.node3(three.values()),
+							mk.node3(n1, n2, n3), mk.node2(v2._1(), v2._2()),
+							mk.node2(v2._3(), v2._4()), m2);
+				}), four -> {
+			final V4<Node<V, A>> v1 = four.values();
+			return prefix.match(
+					one -> append3(m, m1, mk.node3(v1._1(), v1._2(), v1._3()),
+							mk.node3(v1._4(), n1, n2),
+							mk.node2(n3, one.value()), m2),
+					two -> {
+						final V2<Node<V, A>> v2 = two.values();
+						return append3(m, m1,
+								mk.node3(v1._1(), v1._2(), v1._3()),
+								mk.node3(v1._4(), n1, n2),
+								mk.node3(n3, v2._1(), v2._2()), m2);
+					},
+					three -> {
+						final V3<Node<V, A>> v2 = three.values();
+						return append4(m, m1,
+								mk.node3(v1._1(), v1._2(), v1._3()),
+								mk.node3(v1._4(), n1, n2),
+								mk.node2(n3, v2._1()),
+								mk.node2(v2._2(), v2._3()), m2);
+					},
+					four2 -> {
+						final V4<Node<V, A>> v2 = four2.values();
+						return append4(m, m1,
+								mk.node3(v1._1(), v1._2(), v1._3()),
+								mk.node3(v1._4(), n1, n2),
+								mk.node3(n3, v2._1(), v2._2()),
+								mk.node2(v2._3(), v2._4()), m2);
+					});
+		});
 	}
 
 	@SuppressWarnings("unchecked")
