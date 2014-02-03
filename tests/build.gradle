@@ -12,7 +12,7 @@ apply plugin: 'scala'
 
 
 ext {
-	scalaVersion = "2.10.+"
+	scalaVersion = "2.10.3"
 	scalacheckVersion = "1.10.+"
 	scalacheckScalaVersion = "2.10"
 }
@@ -39,8 +39,8 @@ repositories {
 
 
 dependencies {
+	compile project(":core")
     compile 'org.slf4j:slf4j-api:1.7.5'
-	compile "org.functionaljava:functionaljava:4.0-SNAPSHOT"
 	compile "org.scala-lang:scala-library:$scalaVersion"
 	testCompile "org.scala-lang:scala-library:$scalaVersion"
 	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
