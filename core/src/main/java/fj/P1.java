@@ -3,7 +3,9 @@ package fj;
 import fj.data.List;
 import fj.data.Stream;
 import fj.data.Array;
+
 import java.lang.ref.SoftReference;
+import java.util.function.Supplier;
 
 /**
  * A product-1. Also, the identity monad.
@@ -11,14 +13,20 @@ import java.lang.ref.SoftReference;
  * @version %build.number%
  */
 @FunctionalInterface
-public interface P1<A> {
-	/**
+public interface P1<A> extends Supplier<A>{
+	/** 
 	 * Access the first element of the product.
 	 * 
 	 * @return The first element of the product.
 	 */
 	A _1();
 
+	@Override
+	public default A get() {
+		return _1();
+	}
+	
+	
 	/**
 	 * Map the element of the product.
 	 * 

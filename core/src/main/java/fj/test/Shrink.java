@@ -218,17 +218,9 @@ public final class Shrink<A> {
 	 * @return A shrink strategy for optional values.
 	 */
 	public static <A> Shrink<Option<A>> shrinkOption(final Shrink<A> sa) {
-		return new Shrink<Option<A>>(new F<Option<A>, Stream<Option<A>>>() {
-			public Stream<Option<A>> f(final Option<A> o) {
-				return o.isNone() ? Stream.<Option<A>> nil() : cons(
-						Option.<A> none(), new P1<Stream<Option<A>>>() {
-							public Stream<Option<A>> _1() {
-								return sa.shrink(o.some()).map(
-										Option.<A> some_());
-							}
-						});
-			}
-		});
+		return new Shrink<Option<A>>(o -> o.isNone() ? Stream.<Option<A>> nil()
+				: cons(Option.<A> none(),
+						() -> sa.shrink(o.some()).map(Option.<A> some_())));
 	}
 
 	/**
@@ -242,14 +234,9 @@ public final class Shrink<A> {
 	 */
 	public static <A, B> Shrink<Either<A, B>> shrinkEither(final Shrink<A> sa,
 			final Shrink<B> sb) {
-		return new Shrink<Either<A, B>>(
-				new F<Either<A, B>, Stream<Either<A, B>>>() {
-					public Stream<Either<A, B>> f(final Either<A, B> e) {
-						return e.isLeft() ? sa.shrink(e.left().value()).map(
-								Either.<A, B> left_()) : sb.shrink(
-								e.right().value()).map(Either.<A, B> right_());
-					}
-				});
+		return new Shrink<Either<A, B>>(e -> e.isLeft() ? sa.shrink(
+				e.left().value()).map(Either.<A, B> left_()) : sb.shrink(
+				e.right().value()).map(Either.<A, B> right_()));
 	}
 
 	/**
@@ -279,22 +266,11 @@ public final class Shrink<A> {
 								public Stream<List<A>> _1() {
 									return removeChunks(n1, as1)
 											.filter(isNotEmpty)
-											.map(new F<List<A>, List<A>>() {
-												public List<A> f(
-														final List<A> aas) {
-													return aas.append(as2);
-												}
-											})
+											.map(aas -> aas.append(as2))
 											.interleave(
 													removeChunks(n2, as2)
 															.filter(isNotEmpty)
-															.map(new F<List<A>, List<A>>() {
-																public List<A> f(
-																		final List<A> aas) {
-																	return as1
-																			.append(aas);
-																}
-															}));
+															.map(as1::append));
 								}
 							});
 						}
@@ -377,15 +353,7 @@ public final class Shrink<A> {
 	 * @return A shrink strategy for throwables.
 	 */
 	public static Shrink<Throwable> shrinkThrowable(final Shrink<String> ss) {
-		return ss.map(new F<String, Throwable>() {
-			public Throwable f(final String s) {
-				return new Throwable(s);
-			}
-		}, new F<Throwable, String>() {
-			public String f(final Throwable t) {
-				return t.getMessage();
-			}
-		});
+		return ss.map(Throwable::new, t -> t.getMessage());
 	}
 
 	/**
@@ -426,16 +394,8 @@ public final class Shrink<A> {
 	/**
 	 * A shrink strategy for dates.
 	 */
-	public static final Shrink<Date> shrinkDate = shrinkLong.map(
-			new F<Long, Date>() {
-				public Date f(final Long i) {
-					return new Date(i);
-				}
-			}, new F<Date, Long>() {
-				public Long f(final Date d) {
-					return d.getTime();
-				}
-			});
+	public static final Shrink<Date> shrinkDate = shrinkLong.map(Date::new,
+			d -> d.getTime());
 
 	/**
 	 * A shrink strategy for enum maps.
@@ -448,18 +408,7 @@ public final class Shrink<A> {
 	 */
 	public static <K extends Enum<K>, V> Shrink<EnumMap<K, V>> shrinkEnumMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(
-				new F<Hashtable<K, V>, EnumMap<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public EnumMap<K, V> f(final Hashtable<K, V> h) {
-						return new EnumMap<K, V>(h);
-					}
-				}, new F<EnumMap<K, V>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final EnumMap<K, V> m) {
-						return new Hashtable<K, V>(m);
-					}
-				});
+		return shrinkHashtable(sk, sv).map(EnumMap::new, Hashtable::new);
 	}
 
 	/**
@@ -496,8 +445,7 @@ public final class Shrink<A> {
 	 */
 	public static <K, V> Shrink<HashMap<K, V>> shrinkHashMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(h -> new HashMap<K, V>(h),
-				m -> new Hashtable<K, V>(m));
+		return shrinkHashtable(sk, sv).map(HashMap::new, Hashtable::new);
 	}
 
 	/**
@@ -524,30 +472,23 @@ public final class Shrink<A> {
 	@SuppressWarnings({ "UseOfObsoleteCollectionType" })
 	public static <K, V> Shrink<Hashtable<K, V>> shrinkHashtable(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkList(shrinkP2(sk, sv)).map(
-				new F<List<P2<K, V>>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final List<P2<K, V>> kvs) {
-						final Hashtable<K, V> h = new Hashtable<K, V>();
-						kvs.foreach(new Effect<P2<K, V>>() {
-							public void e(final P2<K, V> kv) {
-								h.put(kv._1(), kv._2());
-							}
-						});
-						return h;
-					}
-				}, new F<Hashtable<K, V>, List<P2<K, V>>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public List<P2<K, V>> f(final Hashtable<K, V> h) {
-						List<P2<K, V>> x = List.nil();
+		return shrinkList(shrinkP2(sk, sv)).map(kvs -> {
+			final Hashtable<K, V> h = new Hashtable<K, V>();
+			kvs.foreach(new Effect<P2<K, V>>() {
+				public void e(final P2<K, V> kv) {
+					h.put(kv._1(), kv._2());
+				}
+			});
+			return h;
+		}, h -> {
+			List<P2<K, V>> x = List.nil();
 
-						for (final K k : h.keySet()) {
-							x = x.snoc(p(k, h.get(k)));
-						}
+			for (final K k : h.keySet()) {
+				x = x.snoc(p(k, h.get(k)));
+			}
 
-						return x;
-					}
-				});
+			return x;
+		});
 	}
 
 	/**
@@ -561,18 +502,8 @@ public final class Shrink<A> {
 	 */
 	public static <K, V> Shrink<IdentityHashMap<K, V>> shrinkIdentityHashMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(
-				new F<Hashtable<K, V>, IdentityHashMap<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public IdentityHashMap<K, V> f(final Hashtable<K, V> h) {
-						return new IdentityHashMap<K, V>(h);
-					}
-				}, new F<IdentityHashMap<K, V>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final IdentityHashMap<K, V> m) {
-						return new Hashtable<K, V>(m);
-					}
-				});
+		return shrinkHashtable(sk, sv)
+				.map(IdentityHashMap::new, Hashtable::new);
 	}
 
 	/**
@@ -586,18 +517,7 @@ public final class Shrink<A> {
 	 */
 	public static <K, V> Shrink<LinkedHashMap<K, V>> shrinkLinkedHashMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(
-				new F<Hashtable<K, V>, LinkedHashMap<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public LinkedHashMap<K, V> f(final Hashtable<K, V> h) {
-						return new LinkedHashMap<K, V>(h);
-					}
-				}, new F<LinkedHashMap<K, V>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final LinkedHashMap<K, V> m) {
-						return new Hashtable<K, V>(m);
-					}
-				});
+		return shrinkHashtable(sk, sv).map(LinkedHashMap::new, Hashtable::new);
 	}
 
 	/**
@@ -642,30 +562,23 @@ public final class Shrink<A> {
 	 * A shrink strategy for properties.
 	 */
 	public static final Shrink<Properties> shrinkProperties = shrinkHashtable(
-			shrinkString, shrinkString).map(
-			new F<Hashtable<String, String>, Properties>() {
-				@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-				public Properties f(final Hashtable<String, String> h) {
-					final Properties p = new Properties();
+			shrinkString, shrinkString).map(h -> {
+		final Properties p = new Properties();
 
-					for (final String k : h.keySet()) {
-						p.setProperty(k, h.get(k));
-					}
+		for (final String k : h.keySet()) {
+			p.setProperty(k, h.get(k));
+		}
 
-					return p;
-				}
-			}, new F<Properties, Hashtable<String, String>>() {
-				@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-				public Hashtable<String, String> f(final Properties p) {
-					final Hashtable<String, String> t = new Hashtable<String, String>();
+		return p;
+	}, p -> {
+		final Hashtable<String, String> t = new Hashtable<String, String>();
 
-					for (final Object s : p.keySet()) {
-						t.put((String) s, p.getProperty((String) s));
-					}
+		for (final Object s : p.keySet()) {
+			t.put((String) s, p.getProperty((String) s));
+		}
 
-					return t;
-				}
-			});
+		return t;
+	});
 
 	/**
 	 * A shrink strategy for stacks.
@@ -689,18 +602,7 @@ public final class Shrink<A> {
 	 */
 	public static <K, V> Shrink<TreeMap<K, V>> shrinkTreeMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(
-				new F<Hashtable<K, V>, TreeMap<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public TreeMap<K, V> f(final Hashtable<K, V> h) {
-						return new TreeMap<K, V>(h);
-					}
-				}, new F<TreeMap<K, V>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final TreeMap<K, V> m) {
-						return new Hashtable<K, V>(m);
-					}
-				});
+		return shrinkHashtable(sk, sv).map(TreeMap::new, Hashtable::new);
 	}
 
 	/**
@@ -738,18 +640,7 @@ public final class Shrink<A> {
 	 */
 	public static <K, V> Shrink<WeakHashMap<K, V>> shrinkWeakHashMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(
-				new F<Hashtable<K, V>, WeakHashMap<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public WeakHashMap<K, V> f(final Hashtable<K, V> h) {
-						return new WeakHashMap<K, V>(h);
-					}
-				}, new F<WeakHashMap<K, V>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final WeakHashMap<K, V> m) {
-						return new Hashtable<K, V>(m);
-					}
-				});
+		return shrinkHashtable(sk, sv).map(WeakHashMap::new, Hashtable::new);
 	}
 
 	// END java.util
@@ -780,18 +671,8 @@ public final class Shrink<A> {
 	 */
 	public static <K, V> Shrink<ConcurrentHashMap<K, V>> shrinkConcurrentHashMap(
 			final Shrink<K> sk, final Shrink<V> sv) {
-		return shrinkHashtable(sk, sv).map(
-				new F<Hashtable<K, V>, ConcurrentHashMap<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public ConcurrentHashMap<K, V> f(final Hashtable<K, V> h) {
-						return new ConcurrentHashMap<K, V>(h);
-					}
-				}, new F<ConcurrentHashMap<K, V>, Hashtable<K, V>>() {
-					@SuppressWarnings({ "UseOfObsoleteCollectionType" })
-					public Hashtable<K, V> f(final ConcurrentHashMap<K, V> m) {
-						return new Hashtable<K, V>(m);
-					}
-				});
+		return shrinkHashtable(sk, sv).map(ConcurrentHashMap::new,
+				Hashtable::new);
 	}
 
 	/**
@@ -915,27 +796,22 @@ public final class Shrink<A> {
 	 * A shrink strategy for big integers.
 	 */
 	public static final Shrink<BigInteger> shrinkBigInteger = shrinkP2(
-			shrinkByte, shrinkArray(shrinkByte)).map(
-			new F<P2<Byte, Array<Byte>>, BigInteger>() {
-				public BigInteger f(final P2<Byte, Array<Byte>> bs) {
-					final byte[] x = new byte[bs._2().length() + 1];
+			shrinkByte, shrinkArray(shrinkByte)).map(bs -> {
+		final byte[] x = new byte[bs._2().length() + 1];
 
-					for (int i = 0; i < bs._2().array().length; i++) {
-						x[i] = bs._2().get(i);
-					}
+		for (int i = 0; i < bs._2().array().length; i++) {
+			x[i] = bs._2().get(i);
+		}
 
-					x[bs._2().length()] = bs._1();
+		x[bs._2().length()] = bs._1();
 
-					return new BigInteger(x);
-				}
-			}, new F<BigInteger, P2<Byte, Array<Byte>>>() {
-				public P2<Byte, Array<Byte>> f(final BigInteger i) {
-					final byte[] b = i.toByteArray();
-					final Byte[] x = new Byte[b.length - 1];
-					arraycopy(b, 0, x, 0, b.length - 1);
-					return p(b[0], array(x));
-				}
-			});
+		return new BigInteger(x);
+	}, i -> {
+		final byte[] b = i.toByteArray();
+		final Byte[] x = new Byte[b.length - 1];
+		arraycopy(b, 0, x, 0, b.length - 1);
+		return p(b[0], array(x));
+	});
 
 	/**
 	 * A shrink strategy for big decimals.
@@ -967,11 +843,9 @@ public final class Shrink<A> {
 	 */
 	public static <A, B> Shrink<P2<A, B>> shrinkP2(final Shrink<A> sa,
 			final Shrink<B> sb) {
-		return new Shrink<P2<A, B>>(new F<P2<A, B>, Stream<P2<A, B>>>() {
-			public Stream<P2<A, B>> f(final P2<A, B> p) {
-				final F<A, F<B, P2<A, B>>> p2 = p2();
-				return sa.shrink(p._1()).bind(sb.shrink(p._2()), p2);
-			}
+		return new Shrink<P2<A, B>>(p -> {
+			final F<A, F<B, P2<A, B>>> p2 = p2();
+			return sa.shrink(p._1()).bind(sb.shrink(p._2()), p2);
 		});
 	}
 
@@ -988,14 +862,11 @@ public final class Shrink<A> {
 	 */
 	public static <A, B, C> Shrink<P3<A, B, C>> shrinkP3(final Shrink<A> sa,
 			final Shrink<B> sb, final Shrink<C> sc) {
-		return new Shrink<P3<A, B, C>>(
-				new F<P3<A, B, C>, Stream<P3<A, B, C>>>() {
-					public Stream<P3<A, B, C>> f(final P3<A, B, C> p) {
-						final F<A, F<B, F<C, P3<A, B, C>>>> p3 = p3();
-						return sa.shrink(p._1()).bind(sb.shrink(p._2()),
-								sc.shrink(p._3()), p3);
-					}
-				});
+		return new Shrink<P3<A, B, C>>(p -> {
+			final F<A, F<B, F<C, P3<A, B, C>>>> p3 = p3();
+			return sa.shrink(p._1()).bind(sb.shrink(p._2()), sc.shrink(p._3()),
+					p3);
+		});
 	}
 
 	/**
@@ -1014,14 +885,11 @@ public final class Shrink<A> {
 	public static <A, B, C, D> Shrink<P4<A, B, C, D>> shrinkP4(
 			final Shrink<A> sa, final Shrink<B> sb, final Shrink<C> sc,
 			final Shrink<D> sd) {
-		return new Shrink<P4<A, B, C, D>>(
-				new F<P4<A, B, C, D>, Stream<P4<A, B, C, D>>>() {
-					public Stream<P4<A, B, C, D>> f(final P4<A, B, C, D> p) {
-						final F<A, F<B, F<C, F<D, P4<A, B, C, D>>>>> p4 = p4();
-						return sa.shrink(p._1()).bind(sb.shrink(p._2()),
-								sc.shrink(p._3()), sd.shrink(p._4()), p4);
-					}
-				});
+		return new Shrink<P4<A, B, C, D>>(p -> {
+			final F<A, F<B, F<C, F<D, P4<A, B, C, D>>>>> p4 = p4();
+			return sa.shrink(p._1()).bind(sb.shrink(p._2()), sc.shrink(p._3()),
+					sd.shrink(p._4()), p4);
+		});
 	}
 
 	/**
@@ -1042,15 +910,11 @@ public final class Shrink<A> {
 	public static <A, B, C, D, E> Shrink<P5<A, B, C, D, E>> shrinkP5(
 			final Shrink<A> sa, final Shrink<B> sb, final Shrink<C> sc,
 			final Shrink<D> sd, final Shrink<E> se) {
-		return new Shrink<P5<A, B, C, D, E>>(
-				new F<P5<A, B, C, D, E>, Stream<P5<A, B, C, D, E>>>() {
-					public Stream<P5<A, B, C, D, E>> f(final P5<A, B, C, D, E> p) {
-						final F<A, F<B, F<C, F<D, F<E, P5<A, B, C, D, E>>>>>> p5 = p5();
-						return sa.shrink(p._1()).bind(sb.shrink(p._2()),
-								sc.shrink(p._3()), sd.shrink(p._4()),
-								se.shrink(p._5()), p5);
-					}
-				});
+		return new Shrink<P5<A, B, C, D, E>>(p -> {
+			final F<A, F<B, F<C, F<D, F<E, P5<A, B, C, D, E>>>>>> p5 = p5();
+			return sa.shrink(p._1()).bind(sb.shrink(p._2()), sc.shrink(p._3()),
+					sd.shrink(p._4()), se.shrink(p._5()), p5);
+		});
 	}
 
 	/**
