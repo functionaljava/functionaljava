@@ -241,7 +241,7 @@ public final class HPre {
 	 * counterevidence against.
 	 */
 	public static final class HEq<X, Y, B extends HBool> {
-		private final B v;
+		final B v;
 
 		private HEq(final B v) {
 			this.v = v;
@@ -294,7 +294,7 @@ public final class HPre {
 	 * Type-level integer arithmetic
 	 */
 	public static final class HAdd<A extends HNat<A>, B extends HNat<B>, C extends HNat<C>> {
-		private final C sum;
+		final C sum;
 
 		private HAdd(final C sum) {
 			this.sum = sum;
