@@ -41,15 +41,11 @@ public abstract class DB<A> {
    * @return The callable-valued function which is isomorphic to this database action.
    */
   public final F<Connection, Callable<A>> asFunction() {
-    return new F<Connection, Callable<A>>() {
-      public Callable<A> f(final Connection c) {
-        return new Callable<A>() {
+    return c -> new Callable<A>() {
           public A call() throws Exception {
             return run(c);
           }
         };
-      }
-    };
   }
 
   /**
@@ -73,11 +69,7 @@ public abstract class DB<A> {
    * @return A function equivalent to the given one, which operates on values in the database.
    */
   public static <A, B> F<DB<A>, DB<B>> liftM(final F<A, B> f) {
-    return new F<DB<A>, DB<B>>() {
-      public DB<B> f(final DB<A> a) {
-        return a.map(f);
-      }
-    };
+    return a -> a.map(f);
   }
 
   /**
