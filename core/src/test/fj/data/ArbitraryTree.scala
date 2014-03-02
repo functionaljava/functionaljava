@@ -14,7 +14,11 @@ object ArbitraryTree {
   implicit def arbitraryTree[A](implicit a: Arbitrary[A]): Arbitrary[Tree[A]] = {
     def tree(implicit a:Arbitrary[A], n:Int, g:Gen[A]) : Gen[Tree[A]] =  n match {
       case 0 => g.map(leaf(_))
-      case n => choose(0, 10).flatMap((i) => lzy(g.map2(resize(i, listOf(tree(a, n/5, g)).map((x:fj.data.List[Tree[A]]) => P.p(x.toStream)))) (node(_, _))))
+      case n => choose(0, 10).flatMap((i) => lzy(
+          for {
+            gv <- g
+            gu <- resize(i, listOf(tree(a, n/5, g)).map((x:fj.data.List[Tree[A]]) => P.p(x.toStream)))
+          } yield node(gv, gu)))
     }
     Arbitrary(sized(tree(a, _, arbitrary[A])))
   }
