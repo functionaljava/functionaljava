@@ -10,7 +10,7 @@ allprojects {
 		projectName = "functionaljava"
 	}
 	version = fjVersion
-	group = "org.functionaljava"
+	group = "com.github.mperry"
 }
 
 subprojects {
