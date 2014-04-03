@@ -27,8 +27,8 @@ public class Problem2 {
 		out.println(sum(fibs.filter(even).takeWhile(intOrd.isLessThan(4000001)).toList()));
 	}
 
-	static F2<Integer, Integer, Stream<Integer>> fibsJava8 = (a, b) -> {
-		return cons(a, fibsJava8.curry().f(b).lazy().f(a + b));
+	final static F2<Integer, Integer, Stream<Integer>> fibsJava8 = (a, b) -> {
+		return cons(a, Problem2.fibsJava8.curry().f(b).lazy().f(a + b));
 	};
 
 	static void java8() {
