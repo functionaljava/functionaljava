@@ -28,7 +28,7 @@ public class Problem2 {
 	}
 
 	static F2<Integer, Integer, Stream<Integer>> fibsJava8 = (a, b) -> {
-		return cons(a, fibsJava8.curry().f(b).lazy().f(a + b));
+		return cons(a, Problem2.fibsJava8.curry().f(b).lazy().f(a + b));
 	};
 
 	static void java8() {

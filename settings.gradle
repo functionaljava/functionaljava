@@ -1,2 +1,3 @@
 
-include 'core', 'demo', 'tests'
+//include 'core', 'demo', 'tests'
+include 'core', 'demo'
