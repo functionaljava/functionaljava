@@ -78,7 +78,7 @@ public final class Ord<A> {
    * @return A new ord.
    */
   public <B> Ord<B> comap(final F<B, A> f) {
-    return ord(F1Functions.o(F1Functions.o(F1Functions.andThen(f), this.f), f));
+    return ord(F1Functions.o(F1Functions.o(F1Functions.<B, A, Ordering>andThen(f), this.f), f));
   }
 
   /**
