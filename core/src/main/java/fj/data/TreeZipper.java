@@ -1,15 +1,6 @@
 package fj.data;
 
-import fj.Equal;
-import fj.F;
-import fj.F2;
-import fj.F4;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.P4;
-import fj.Show;
+import fj.*;
 import fj.function.Booleans;
 
 import java.util.Iterator;
@@ -730,7 +721,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    * @return The result of applying the given function over this TreeZipper and the given TreeZipper, location-wise.
    */
   public <B, C> TreeZipper<C> zipWith(final TreeZipper<B> bs, final F2<A, B, C> f) {
-    return f.zipTreeZipperM().f(this, bs);
+    return F2Functions.zipTreeZipperM(f).f(this, bs);
   }
 
   /**

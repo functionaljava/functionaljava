@@ -3,6 +3,7 @@ package fj.data;
 import fj.Equal;
 import fj.F;
 import fj.F2;
+import fj.F2Functions;
 import fj.F3;
 import fj.Function;
 import fj.Ord;
@@ -24,6 +25,7 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.data.Stream.nil;
 import static fj.data.Stream.repeat;
+import static fj.F2Functions.*;
 
 /**
  * Provides a pointed stream, which is a non-empty zipper-like stream structure that tracks an index (focus)
@@ -592,7 +594,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return The result of applying the given function over this Zipper and the given Zipper, location-wise.
    */
   public <B, C> Zipper<C> zipWith(final Zipper<B> bs, final F2<A, B, C> f) {
-    return f.zipZipperM().f(this, bs);
+    return F2Functions.zipZipperM(f).f(this, bs);
   }
 
 

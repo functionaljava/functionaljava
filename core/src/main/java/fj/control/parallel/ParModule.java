@@ -3,6 +3,7 @@ package fj.control.parallel;
 import fj.Effect;
 import fj.F;
 import fj.F2;
+import fj.F2Functions;
 import fj.Function;
 import fj.Monoid;
 import fj.P;
@@ -103,7 +104,7 @@ public final class ParModule {
    *         that can be claimed in the future.
    */
   public <A, B, C> F2<A, B, Promise<C>> promise(final F2<A, B, C> f) {
-    return P2.untuple(f.tuple().promiseK(strategy));
+    return P2.untuple(F2Functions.tuple(f).promiseK(strategy));
   }
 
 

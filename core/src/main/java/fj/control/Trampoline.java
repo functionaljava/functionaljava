@@ -5,6 +5,7 @@ import fj.F;
 import fj.F2;
 import fj.P1;
 import fj.data.Either;
+import fj.F2Functions;
 
 import static fj.Function.curry;
 import static fj.data.Either.left;
@@ -336,7 +337,7 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(P1.bind(x, y, new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
+        return suspend(P1.bind(x, y, F2Functions.curry(new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta, final Trampoline<B> tb) {
             return suspend(new P1<Trampoline<C>>() {
               public Trampoline<C> _1() {
@@ -344,12 +345,12 @@ public abstract class Trampoline<A> {
               }
             });
           }
-        }.curry()));
+        })));
       }
       for (final B y : eb.right()) {
         return suspend(x.map(new F<Trampoline<A>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta) {
-            return ta.map(f.flip().f(y));
+            return ta.map(F2Functions.f(F2Functions.flip(f), y));
           }
         }));
       }
@@ -363,7 +364,7 @@ public abstract class Trampoline<A> {
         });
       }
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(y.map(liftM2(f.curry()).f(pure(x))));
+        return suspend(y.map(liftM2(F2Functions.curry(f)).f(pure(x))));
       }
     }
     throw Bottom.error("Match error: Trampoline is neither done nor suspended.");
