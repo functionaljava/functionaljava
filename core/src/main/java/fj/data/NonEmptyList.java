@@ -2,6 +2,7 @@ package fj.data;
 
 import fj.Effect;
 import fj.F;
+import fj.F1Functions;
 import static fj.data.Option.some;
 import static fj.data.Option.somes;
 
@@ -106,11 +107,11 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public NonEmptyList<NonEmptyList<A>> sublists() {
     return fromList(
         somes(toList().toStream().substreams()
-            .map(new F<List<A>, Option<NonEmptyList<A>>>() {
+            .map(F1Functions.o(new F<List<A>, Option<NonEmptyList<A>>>() {
               public Option<NonEmptyList<A>> f(final List<A> list) {
                 return fromList(list);
               }
-            }.o(Conversions.<A>Stream_List())).toList())).some();
+            }, Conversions.<A>Stream_List())).toList())).some();
   }
 
   /**

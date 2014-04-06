@@ -2,6 +2,7 @@ package fj.control;
 
 import fj.Bottom;
 import fj.F;
+import fj.F1Functions;
 import fj.F2;
 import fj.P1;
 import fj.data.Either;
@@ -214,7 +215,7 @@ public abstract class Trampoline<A> {
    * @return A new trampoline that runs this trampoline, then applies the given function to the result.
    */
   public final <B> Trampoline<B> map(final F<A, B> f) {
-    return bind(Trampoline.<B>pure().o(f));
+    return bind(F1Functions.o(Trampoline.<B>pure(), f));
   }
 
   /**

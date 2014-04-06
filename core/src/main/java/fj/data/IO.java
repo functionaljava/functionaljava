@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import fj.F;
+import fj.F1Functions;
 import fj.Function;
 import fj.P;
 import fj.P1;
@@ -171,7 +172,7 @@ public abstract class IO<A> {
                   final String s = r.readLine();
                   if (s == null) { return i; }
                   final Input<String> input = Input.<String>el(s);
-                  final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = Function.<Input<String>, IterV<String, A>>apply(input).lazy();
+                  final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.<Input<String>, IterV<String, A>>apply(input));
                   i = i.fold(done, cont)._1();
                 }
                 return i;
@@ -222,7 +223,7 @@ public abstract class IO<A> {
                   }
                   final Input<char[]> input = Input.<char[]>el(buffer);
                   final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
-                      Function.<Input<char[]>, IterV<char[], A>>apply(input).lazy();
+                      F1Functions.lazy(Function.<Input<char[]>, IterV<char[], A>>apply(input));
                   i = i.fold(done, cont)._1();
                 }
                 return i;
