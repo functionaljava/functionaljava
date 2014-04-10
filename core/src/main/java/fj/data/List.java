@@ -1,6 +1,7 @@
 package fj.data;
 
 import static fj.Bottom.error;
+import fj.F2Functions;
 import fj.Effect;
 import fj.Equal;
 import fj.F;
@@ -637,7 +638,7 @@ public abstract class List<A> implements Iterable<A> {
   public final <B> Trampoline<B> foldRightC(final F2<A, B, B> f, final B b) {
     return Trampoline.suspend(new P1<Trampoline<B>>() {
       public Trampoline<B> _1() {
-        return isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(f.f(head()));
+        return isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(F2Functions.f(f, head()));
       }
     });
   }

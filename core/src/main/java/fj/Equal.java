@@ -80,7 +80,7 @@ public final class Equal<A> {
    * @return A new equal.
    */
   public <B> Equal<B> comap(final F<B, A> f) {
-    return equal(f.<Boolean>andThen().o(this.f).o(f));
+    return equal(F1Functions.o(F1Functions.o(F1Functions.<B, A, Boolean>andThen(f), this.f), f));
   }
 
   /**

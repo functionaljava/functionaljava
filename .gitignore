@@ -4,6 +4,10 @@ lib_managed
 *.iws
 .deps
 
-.idea/ant.xml
-.idea/workspace.xml
+.idea
+
+.gradle
+build
+*.iml
+
 

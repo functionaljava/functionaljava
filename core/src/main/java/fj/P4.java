@@ -144,7 +144,7 @@ public abstract class P4<A, B, C, D> {
    * @return the 1-product projection over the first element.
    */
   public final P1<A> _1_() {
-    return P4.<A, B, C, D>__1().lazy().f(this);
+    return F1Functions.lazy(P4.<A, B, C, D>__1()).f(this);
   }
 
   /**
@@ -153,7 +153,7 @@ public abstract class P4<A, B, C, D> {
    * @return the 1-product projection over the second element.
    */
   public final P1<B> _2_() {
-    return P4.<A, B, C, D>__2().lazy().f(this);
+    return F1Functions.lazy(P4.<A, B, C, D>__2()).f(this);
   }
 
   /**
@@ -162,7 +162,7 @@ public abstract class P4<A, B, C, D> {
    * @return the 1-product projection over the third element.
    */
   public final P1<C> _3_() {
-    return P4.<A, B, C, D>__3().lazy().f(this);
+    return F1Functions.lazy(P4.<A, B, C, D>__3()).f(this);
   }
 
   /**
@@ -171,7 +171,7 @@ public abstract class P4<A, B, C, D> {
    * @return the 1-product projection over the fourth element.
    */
   public final P1<D> _4_() {
-    return P4.<A, B, C, D>__4().lazy().f(this);
+    return F1Functions.lazy(P4.<A, B, C, D>__4()).f(this);
   }
 
   /**
