@@ -6,7 +6,7 @@ ext {
 
 allprojects {
 	ext {
-		fjVersion = "4.0-SNAPSHOT"
+		fjVersion = "4.1-SNAPSHOT"
 		projectName = "functionaljava"
 	}
 	version = fjVersion

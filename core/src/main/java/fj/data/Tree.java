@@ -2,6 +2,7 @@ package fj.data;
 
 import fj.F;
 import fj.F2;
+import fj.F2Functions;
 import fj.P;
 import fj.P1;
 import fj.P2;
@@ -144,7 +145,7 @@ public final class Tree<A> implements Iterable<A> {
   public Stream<A> flatten() {
     final F2<Tree<A>, P1<Stream<A>>, Stream<A>> squish = new F2<Tree<A>, P1<Stream<A>>, Stream<A>>() {
       public Stream<A> f(final Tree<A> t, final P1<Stream<A>> xs) {
-        return cons(t.root(), t.subForest().map(Stream.<Tree<A>, Stream<A>>foldRight().f(curry()).f(xs._1())));
+        return cons(t.root(), t.subForest().map(Stream.<Tree<A>, Stream<A>>foldRight().f(F2Functions.curry(this)).f(xs._1())));
       }
     };
     return squish.f(this, P.p(Stream.<A>nil()));
@@ -331,7 +332,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A new tree of the results of applying the given function over this tree and the given tree, position-wise.
    */
   public <B, C> Tree<C> zipWith(final Tree<B> bs, final F2<A, B, C> f) {
-    return f.zipTreeM().f(this, bs);
+    return F2Functions.zipTreeM(f).f(this, bs);
   }
 
   /**

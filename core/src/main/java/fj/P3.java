@@ -99,7 +99,7 @@ public abstract class P3<A, B, C> {
    * @return the 1-product projection over the first element.
    */
   public final P1<A> _1_() {
-    return P3.<A, B, C>__1().lazy().f(this);
+    return F1Functions.lazy(P3.<A, B, C>__1()).f(this);
   }
 
   /**
@@ -108,7 +108,7 @@ public abstract class P3<A, B, C> {
    * @return the 1-product projection over the second element.
    */
   public final P1<B> _2_() {
-    return P3.<A, B, C>__2().lazy().f(this);
+    return F1Functions.lazy(P3.<A, B, C>__2()).f(this);
   }
 
   /**
@@ -117,7 +117,7 @@ public abstract class P3<A, B, C> {
    * @return the 1-product projection over the third element.
    */
   public final P1<C> _3_() {
-    return P3.<A, B, C>__3().lazy().f(this);
+    return F1Functions.lazy(P3.<A, B, C>__3()).f(this);
   }
 
   /**

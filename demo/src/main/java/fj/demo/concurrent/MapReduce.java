@@ -1,6 +1,7 @@
 package fj.demo.concurrent;
 
 import fj.F;
+import fj.F1Functions;
 import fj.P1;
 import fj.Unit;
 import fj.control.parallel.ParModule;
@@ -40,37 +41,37 @@ public class MapReduce {
   // Main program does the requisite IO gymnastics
   public static void main(final String[] args) {
     final List<Stream<Character>> documents = list(args).map(
-        new F<String, BufferedReader>() {
-          public BufferedReader f(final String fileName) {
-            try {
-              return new BufferedReader(new FileReader(new File(fileName)));
-            } catch (FileNotFoundException e) {
-              throw new Error(e);
-            }
-          }
-        }.andThen(new F<BufferedReader, Stream<Character>>() {
-          public Stream<Character> f(final BufferedReader reader) {
-            final Option<String> s;
-            try {
-              s = fromNull(reader.readLine());
-            } catch (IOException e) {
-              throw new Error(e);
-            }
-            if (s.isSome())
-              return fromString(s.some()).append(new P1<Stream<Character>>() {
-                public Stream<Character> _1() {
-                  return f(reader);
+        F1Functions.andThen(new F<String, BufferedReader>() {
+            public BufferedReader f(final String fileName) {
+                try {
+                    return new BufferedReader(new FileReader(new File(fileName)));
+                } catch (FileNotFoundException e) {
+                    throw new Error(e);
                 }
-              });
-            else {
-              try {
-                reader.close();
-              } catch (IOException e) {
-                throw new Error(e);
-              }
-              return Stream.nil();
             }
-          }
+        }, new F<BufferedReader, Stream<Character>>() {
+            public Stream<Character> f(final BufferedReader reader) {
+                final Option<String> s;
+                try {
+                    s = fromNull(reader.readLine());
+                } catch (IOException e) {
+                    throw new Error(e);
+                }
+                if (s.isSome())
+                    return fromString(s.some()).append(new P1<Stream<Character>>() {
+                        public Stream<Character> _1() {
+                            return f(reader);
+                        }
+                    });
+                else {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        throw new Error(e);
+                    }
+                    return Stream.nil();
+                }
+            }
         }));
 
     final ExecutorService pool = newFixedThreadPool(16);

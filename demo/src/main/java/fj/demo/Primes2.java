@@ -1,5 +1,6 @@
 package fj.demo;
 
+import fj.F1Functions;
 import fj.P1;
 import static fj.data.Enumerator.naturalEnumerator;
 
@@ -22,7 +23,7 @@ public class Primes2 {
   public static Stream<Natural> sieve(final Stream<Natural> xs) {
     return cons(xs.head(), new P1<Stream<Natural>>() {
       public Stream<Natural> _1() {
-        return sieve(xs.tail()._1().removeAll(naturalOrd.equal().eq(ZERO).o(mod.f(xs.head()))));
+        return sieve(xs.tail()._1().removeAll(F1Functions.o(naturalOrd.equal().eq(ZERO), mod.f(xs.head()))));
       }
     });
   }

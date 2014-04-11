@@ -1,6 +1,4 @@
 
-//include 'core', 'demo', 'tests'
-include 'core', 'demo'
-// The final Java 8 release, (build 1.8.0-b132) does not work with Gradle and the Scala plugin
-// see http://issues.gradle.org/browse/GRADLE-3023
+include 'core', 'demo', 'tests'
+//include 'core', 'demo'
 
