@@ -1,0 +1,18 @@
+
+defaultTasks 'build'
+
+ext {
+}
+
+allprojects {
+	ext {
+		fjVersion = "4.0-SNAPSHOT"
+		projectName = "functionaljava"
+	}
+	version = fjVersion
+	group = "org.functionaljava"
+}
+
+subprojects {
+
+}

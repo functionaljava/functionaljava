@@ -1,0 +1,22 @@
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+defaultTasks 'build'
+
+mainClassName = "fj.demo.euler.Problem2"
+
+ext {
+	scalaVersion = "2.9.+"
+	scalacheckVersion = "1.10.+"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'org.slf4j:slf4j-api:1.7.5'
+	compile project(":core")
+	testCompile "junit:junit:4.11"
+}
