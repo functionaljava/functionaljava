@@ -1,9 +1,9 @@
 
 apply plugin: 'java'
 apply plugin: 'maven'
+//apply plugin: 'signing'
 
 defaultTasks 'build'
-
 
 jar {
 	baseName project.projectName
@@ -19,6 +19,48 @@ repositories {
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
-
     testCompile "junit:junit:4.11"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            // used for signing the artifacts, no need to sign snapshot, so leave out for now
+//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: sonatypeUploadUrl) {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+            pom {
+                groupId = project.group
+                project {
+                    name pomProjectName
+                    packaging 'jar'
+                    description projectDescription
+                    url projectUrl
+                    organization {
+                        name pomOrganisation
+                        url projectUrl
+                    }
+                    scm {
+                        url scmUrl
+//                        connection scmGitFile
+//                        developerConnection scmGitFile
+                    }
+                    licenses {
+                        license {
+                            name "The BSD3 License"
+                            url "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            email primaryEmail
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

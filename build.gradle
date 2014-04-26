@@ -6,9 +6,28 @@ ext {
 
 allprojects {
 	ext {
-		fjVersion = "4.0-SNAPSHOT"
+        isSnapshot = true
+        fjBaseVersion = "4.0"
+
+        snapshotAppendix = "-SNAPSHOT"
+		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
+
+        projectTitle = "Functional Java"
 		projectName = "functionaljava"
-	}
+        pomProjectName = projectTitle
+        pomOrganisation = projectTitle
+        projectDescription = "Functional Java is an open source library that supports closures for the Java programming language"
+        projectUrl = "http://functionaljava.org/"
+        scmUrl = "git://github.com/functionaljava/functionaljava.git"
+        scmGitFile = "scm:git@github.com:functionaljava/functionaljava.git"
+
+        sonatypeBaseUrl = "https://oss.sonatype.org"
+        sonatypeSnapshotUrl = "$sonatypeBaseUrl/content/repositories/snapshots/"
+        sonatypeRepositoryUrl = "$sonatypeBaseUrl/content/groups/public"
+        sonatypeReleaseUrl = "$sonatypeBaseUrl/service/local/staging/deploy/maven2/"
+        sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
+        primaryEmail = "functionaljava@googlegroups.com"
+    }
 	version = fjVersion
 	group = "org.functionaljava"
 }
