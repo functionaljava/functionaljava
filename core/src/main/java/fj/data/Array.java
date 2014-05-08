@@ -674,7 +674,7 @@ public final class Array<A> implements Iterable<A> {
    * @param i The iterable to take to an array.
    * @return An array from the given iterable.
    */
-  public static <A> Array<A> iterableArray(final Iterable<A> i) {
+  public static <A> Array<A> iterableArray(final Iterable<? extends A> i) {
     return iterableList(i).toArray();
   }
 
