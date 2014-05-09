@@ -38,7 +38,7 @@ import static fj.data.Zipper.fromStream;
  *
  * @version %build.number%
  */
-public interface F<A, B> {
+public abstract class F<A, B> {
   /**
    * Transform <code>A</code> to <code>B</code>.
    *
@@ -54,7 +54,7 @@ public interface F<A, B> {
    * @param g A function to compose with this one.
    * @return The composed function such that this function is applied last.
    */
-  default public <C> F<C, B> o(final F<C, A> g) {
+  public final <C> F<C, B> o(final F<C, A> g) {
     return new F<C, B>() {
       public B f(final C c) {
         return F.this.f(g.f(c));
@@ -67,7 +67,7 @@ public interface F<A, B> {
    *
    * @return A function that composes this function with another.
    */
-  default public <C> F<F<C, A>, F<C, B>> o() {
+  public final <C> F<F<C, A>, F<C, B>> o() {
     return new F<F<C, A>, F<C, B>>() {
       public F<C, B> f(final F<C, A> g) {
         return F.this.o(g);
@@ -82,7 +82,7 @@ public interface F<A, B> {
    * @return The composed function such that this function is applied first.
    */
   @SuppressWarnings({"unchecked"})
-  default public <C> F<A, C> andThen(final F<B, C> g) {
+  public final <C> F<A, C> andThen(final F<B, C> g) {
     return g.o(this);
   }
 
@@ -91,7 +91,7 @@ public interface F<A, B> {
    *
    * @return A function that invokes this function and then a given function on the result.
    */
-  default public <C> F<F<B, C>, F<A, C>> andThen() {
+  public final <C> F<F<B, C>, F<A, C>> andThen() {
     return new F<F<B, C>, F<A, C>>() {
       public F<A, C> f(final F<B, C> g) {
         return F.this.andThen(g);
@@ -105,7 +105,7 @@ public interface F<A, B> {
    * @param g A function that takes the return value of this function as an argument, yielding a new function.
    * @return A function that invokes this function on its argument and then the given function on the result.
    */
-  default public <C> F<A, C> bind(final F<B, F<A, C>> g) {
+  public final <C> F<A, C> bind(final F<B, F<A, C>> g) {
     return new F<A, C>() {
       @SuppressWarnings({"unchecked"})
       public C f(final A a) {
@@ -119,7 +119,7 @@ public interface F<A, B> {
    *
    * @return A function that binds another function across this function.
    */
-  default public <C> F<F<B, F<A, C>>, F<A, C>> bind() {
+  public final <C> F<F<B, F<A, C>>, F<A, C>> bind() {
     return new F<F<B, F<A, C>>, F<A, C>>() {
       public F<A, C> f(final F<B, F<A, C>> g) {
         return F.this.bind(g);
@@ -135,7 +135,7 @@ public interface F<A, B> {
    * @return A new function that invokes the given function on its argument, yielding a new function that is then
    *         applied to the result of applying this function to the argument.
    */
-  default public <C> F<A, C> apply(final F<A, F<B, C>> g) {
+  public final <C> F<A, C> apply(final F<A, F<B, C>> g) {
     return new F<A, C>() {
       @SuppressWarnings({"unchecked"})
       public C f(final A a) {
@@ -149,7 +149,7 @@ public interface F<A, B> {
    *
    * @return A function that applies a given function within the environment of this function.
    */
-  default public <C> F<F<A, F<B, C>>, F<A, C>> apply() {
+  public final <C> F<F<A, F<B, C>>, F<A, C>> apply() {
     return new F<F<A, F<B, C>>, F<A, C>>() {
       public F<A, C> f(final F<A, F<B, C>> g) {
         return F.this.apply(g);
@@ -163,7 +163,7 @@ public interface F<A, B> {
    * @param g The function over whose arguments to apply this function.
    * @return A new function that invokes this function on its arguments before invoking the given function.
    */
-  default public <C> F<A, F<A, C>> on(final F<B, F<B, C>> g) {
+  public final <C> F<A, F<A, C>> on(final F<B, F<B, C>> g) {
     return new F<A, F<A, C>>() {
       public F<A, C> f(final A a1) {
         return new F<A, C>() {
@@ -182,7 +182,7 @@ public interface F<A, B> {
    *
    * @return A function that applies this function over the arguments of another function.
    */
-  default public <C> F<F<B, F<B, C>>, F<A, F<A, C>>> on() {
+  public final <C> F<F<B, F<B, C>>, F<A, F<A, C>>> on() {
     return new F<F<B, F<B, C>>, F<A, F<A, C>>>() {
       public F<A, F<A, C>> f(final F<B, F<B, C>> g) {
         return F.this.on(g);
@@ -195,7 +195,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result in a product-1.
    */
-  default public F<A, P1<B>> lazy() {
+  public final F<A, P1<B>> lazy() {
     return new F<A, P1<B>>() {
       public P1<B> f(final A a) {
         return new P1<B>() {
@@ -212,7 +212,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a product-1.
    */
-  default public F<P1<A>, P1<B>> mapP1() {
+  public final F<P1<A>, P1<B>> mapP1() {
     return new F<P1<A>, P1<B>>() {
       public P1<B> f(final P1<A> p) {
         return p.map(F.this);
@@ -225,7 +225,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result in an Option.
    */
-  default public F<A, Option<B>> optionK() {
+  public final F<A, Option<B>> optionK() {
     return new F<A, Option<B>>() {
       public Option<B> f(final A a) {
         return some(F.this.f(a));
@@ -238,7 +238,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over an optional value.
    */
-  default public F<Option<A>, Option<B>> mapOption() {
+  public final F<Option<A>, Option<B>> mapOption() {
     return new F<Option<A>, Option<B>>() {
       public Option<B> f(final Option<A> o) {
         return o.map(F.this);
@@ -251,7 +251,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result in a List.
    */
-  default public F<A, List<B>> listK() {
+  public final F<A, List<B>> listK() {
     return new F<A, List<B>>() {
       public List<B> f(final A a) {
         return List.single(F.this.f(a));
@@ -264,7 +264,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a List.
    */
-  default public F<List<A>, List<B>> mapList() {
+  public final F<List<A>, List<B>> mapList() {
     return new F<List<A>, List<B>>() {
       public List<B> f(final List<A> x) {
         return x.map(F.this);
@@ -277,7 +277,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result in a Stream.
    */
-  default public F<A, Stream<B>> streamK() {
+  public final F<A, Stream<B>> streamK() {
     return new F<A, Stream<B>>() {
       public Stream<B> f(final A a) {
         return Stream.single(F.this.f(a));
@@ -290,7 +290,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a Stream.
    */
-  default public F<Stream<A>, Stream<B>> mapStream() {
+  public final F<Stream<A>, Stream<B>> mapStream() {
     return new F<Stream<A>, Stream<B>>() {
       public Stream<B> f(final Stream<A> x) {
         return x.map(F.this);
@@ -303,7 +303,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result in a Array.
    */
-  default public F<A, Array<B>> arrayK() {
+  public final F<A, Array<B>> arrayK() {
     return new F<A, Array<B>>() {
       public Array<B> f(final A a) {
         return Array.single(F.this.f(a));
@@ -316,7 +316,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a Array.
    */
-  default public F<Array<A>, Array<B>> mapArray() {
+  public final F<Array<A>, Array<B>> mapArray() {
     return new F<Array<A>, Array<B>>() {
       public Array<B> f(final Array<A> x) {
         return x.map(F.this);
@@ -329,7 +329,7 @@ public interface F<A, B> {
    *
    * @return A function that comaps over a given actor.
    */
-  default public F<Actor<B>, Actor<A>> comapActor() {
+  public final F<Actor<B>, Actor<A>> comapActor() {
     return new F<Actor<B>, Actor<A>>() {
       public Actor<A> f(final Actor<B> a) {
         return a.comap(F.this);
@@ -343,7 +343,7 @@ public interface F<A, B> {
    * @param s A parallel strategy for concurrent execution.
    * @return A concurrent function that returns a Promise of a value.
    */
-  default public F<A, Promise<B>> promiseK(final Strategy<Unit> s) {
+  public final F<A, Promise<B>> promiseK(final Strategy<Unit> s) {
     return Promise.promise(s, this);
   }
 
@@ -352,7 +352,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over Promises.
    */
-  default public F<Promise<A>, Promise<B>> mapPromise() {
+  public final F<Promise<A>, Promise<B>> mapPromise() {
     return new F<Promise<A>, Promise<B>>() {
       public Promise<B> f(final Promise<A> p) {
         return p.fmap(F.this);
@@ -367,7 +367,7 @@ public interface F<A, B> {
    * @return This function promoted to return its result on the left side of an Either.
    */
   @SuppressWarnings({"unchecked"})
-  default public <C> F<A, Either<B, C>> eitherLeftK() {
+  public final <C> F<A, Either<B, C>> eitherLeftK() {
     return Either.<B, C>left_().o(F.this);
   }
 
@@ -378,7 +378,7 @@ public interface F<A, B> {
    * @return This function promoted to return its result on the right side of an Either.
    */
   @SuppressWarnings({"unchecked"})
-  default public <C> F<A, Either<C, B>> eitherRightK() {
+  public final <C> F<A, Either<C, B>> eitherRightK() {
     return Either.<C, B>right_().o(F.this);
   }
 
@@ -388,7 +388,7 @@ public interface F<A, B> {
    * @return This function promoted to map over the left side of an Either.
    */
   @SuppressWarnings({"unchecked"})
-  default public <X> F<Either<A, X>, Either<B, X>> mapLeft() {
+  public final <X> F<Either<A, X>, Either<B, X>> mapLeft() {
     return Either.<A, X, B>leftMap_().f(F.this);
   }
 
@@ -398,7 +398,7 @@ public interface F<A, B> {
    * @return This function promoted to map over the right side of an Either.
    */
   @SuppressWarnings({"unchecked"})
-  default public <X> F<Either<X, A>, Either<X, B>> mapRight() {
+  public final <X> F<Either<X, A>, Either<X, B>> mapRight() {
     return Either.<X, A, B>rightMap_().f(F.this);
   }
 
@@ -407,7 +407,7 @@ public interface F<A, B> {
    *
    * @return a function that returns the left side of a given Either, or this function applied to the right side.
    */
-  default public F<Either<B, A>, B> onLeft() {
+  public final F<Either<B, A>, B> onLeft() {
     return new F<Either<B, A>, B>() {
       public B f(final Either<B, A> either) {
         return either.left().on(F.this);
@@ -420,7 +420,7 @@ public interface F<A, B> {
    *
    * @return a function that returns the right side of a given Either, or this function applied to the left side.
    */
-  default public F<Either<A, B>, B> onRight() {
+  public final F<Either<A, B>, B> onRight() {
     return new F<Either<A, B>, B>() {
       public B f(final Either<A, B> either) {
         return either.right().on(F.this);
@@ -434,7 +434,7 @@ public interface F<A, B> {
    * @return This function promoted to return its value in an Iterable.
    */
   @SuppressWarnings({"unchecked"})
-  default public F<A, IterableW<B>> iterableK() {
+  public final F<A, IterableW<B>> iterableK() {
     return IterableW.<A, B>arrow().f(F.this);
   }
 
@@ -444,7 +444,7 @@ public interface F<A, B> {
    * @return This function promoted to map over Iterables.
    */
   @SuppressWarnings({"unchecked"})
-  default public F<Iterable<A>, IterableW<B>> mapIterable() {
+  public final F<Iterable<A>, IterableW<B>> mapIterable() {
     return IterableW.<A, B>map().f(F.this).o(IterableW.<A, Iterable<A>>wrap());
   }
 
@@ -454,7 +454,7 @@ public interface F<A, B> {
    * @return This function promoted to return its value in a NonEmptyList.
    */
   @SuppressWarnings({"unchecked"})
-  default public F<A, NonEmptyList<B>> nelK() {
+  public final F<A, NonEmptyList<B>> nelK() {
     return NonEmptyList.<B>nel().o(F.this);
   }
 
@@ -463,7 +463,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a NonEmptyList.
    */
-  default public F<NonEmptyList<A>, NonEmptyList<B>> mapNel() {
+  public final F<NonEmptyList<A>, NonEmptyList<B>> mapNel() {
     return new F<NonEmptyList<A>, NonEmptyList<B>>() {
       public NonEmptyList<B> f(final NonEmptyList<A> list) {
         return list.map(F.this);
@@ -477,7 +477,7 @@ public interface F<A, B> {
    * @param o An order for the set.
    * @return This function promoted to return its value in a Set.
    */
-  default public F<A, Set<B>> setK(final Ord<B> o) {
+  public final F<A, Set<B>> setK(final Ord<B> o) {
     return new F<A, Set<B>>() {
       public Set<B> f(final A a) {
         return Set.single(o, F.this.f(a));
@@ -491,7 +491,7 @@ public interface F<A, B> {
    * @param o An order for the resulting set.
    * @return This function promoted to map over a Set.
    */
-  default public F<Set<A>, Set<B>> mapSet(final Ord<B> o) {
+  public final F<Set<A>, Set<B>> mapSet(final Ord<B> o) {
     return new F<Set<A>, Set<B>>() {
       public Set<B> f(final Set<A> set) {
         return set.map(o, F.this);
@@ -504,7 +504,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its value in a Tree.
    */
-  default public F<A, Tree<B>> treeK() {
+  public final F<A, Tree<B>> treeK() {
     return new F<A, Tree<B>>() {
       public Tree<B> f(final A a) {
         return Tree.leaf(F.this.f(a));
@@ -518,7 +518,7 @@ public interface F<A, B> {
    * @return This function promoted to map over a Tree.
    */
   @SuppressWarnings({"unchecked"})
-  default public F<Tree<A>, Tree<B>> mapTree() {
+  public final F<Tree<A>, Tree<B>> mapTree() {
     return Tree.<A, B>fmap_().f(F.this);
   }
 
@@ -528,7 +528,7 @@ public interface F<A, B> {
    * @param m The monoid with which to fold the mapped tree.
    * @return a function that maps this function over a tree and folds it with the given monoid.
    */
-  default public F<Tree<A>, B> foldMapTree(final Monoid<B> m) {
+  public final F<Tree<A>, B> foldMapTree(final Monoid<B> m) {
     return Tree.foldMap_(F.this, m);
   }
 
@@ -537,7 +537,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its value in a TreeZipper.
    */
-  default public F<A, TreeZipper<B>> treeZipperK() {
+  public final F<A, TreeZipper<B>> treeZipperK() {
     return treeK().andThen(TreeZipper.<B>fromTree());
   }
 
@@ -546,7 +546,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a TreeZipper.
    */
-  default public F<TreeZipper<A>, TreeZipper<B>> mapTreeZipper() {
+  public final F<TreeZipper<A>, TreeZipper<B>> mapTreeZipper() {
     return new F<TreeZipper<A>, TreeZipper<B>>() {
       public TreeZipper<B> f(final TreeZipper<A> zipper) {
         return zipper.map(F.this);
@@ -560,7 +560,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result on the failure side of a Validation.
    */
-  default public <C> F<A, Validation<B, C>> failK() {
+  public final <C> F<A, Validation<B, C>> failK() {
     return new F<A, Validation<B, C>>() {
       public Validation<B, C> f(final A a) {
         return Validation.fail(F.this.f(a));
@@ -574,7 +574,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its result on the success side of an Validation.
    */
-  default public <C> F<A, Validation<C, B>> successK() {
+  public final <C> F<A, Validation<C, B>> successK() {
     return new F<A, Validation<C, B>>() {
       public Validation<C, B> f(final A a) {
         return Validation.success(F.this.f(a));
@@ -587,7 +587,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over the failure side of a Validation.
    */
-  default public <X> F<Validation<A, X>, Validation<B, X>> mapFail() {
+  public final <X> F<Validation<A, X>, Validation<B, X>> mapFail() {
     return new F<Validation<A, X>, Validation<B, X>>() {
       public Validation<B, X> f(final Validation<A, X> validation) {
         return validation.f().map(F.this);
@@ -600,7 +600,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over the success side of a Validation.
    */
-  default public <X> F<Validation<X, A>, Validation<X, B>> mapSuccess() {
+  public final <X> F<Validation<X, A>, Validation<X, B>> mapSuccess() {
     return new F<Validation<X, A>, Validation<X, B>>() {
       public Validation<X, B> f(final Validation<X, A> validation) {
         return validation.map(F.this);
@@ -615,7 +615,7 @@ public interface F<A, B> {
    * @return a function that returns the failure side of a given Validation,
    *         or this function applied to the success side.
    */
-  default public F<Validation<B, A>, B> onFail() {
+  public final F<Validation<B, A>, B> onFail() {
     return new F<Validation<B, A>, B>() {
       public B f(final Validation<B, A> v) {
         return v.f().on(F.this);
@@ -630,7 +630,7 @@ public interface F<A, B> {
    * @return a function that returns the success side of a given Validation,
    *         or this function applied to the failure side.
    */
-  default public F<Validation<A, B>, B> onSuccess() {
+  public final F<Validation<A, B>, B> onSuccess() {
     return new F<Validation<A, B>, B>() {
       public B f(final Validation<A, B> v) {
         return v.on(F.this);
@@ -643,7 +643,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to return its value in a Zipper.
    */
-  default public F<A, Zipper<B>> zipperK() {
+  public final F<A, Zipper<B>> zipperK() {
     return streamK().andThen(new F<Stream<B>, Zipper<B>>() {
       public Zipper<B> f(final Stream<B> stream) {
         return fromStream(stream).some();
@@ -656,7 +656,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a Zipper.
    */
-  default public F<Zipper<A>, Zipper<B>> mapZipper() {
+  public final F<Zipper<A>, Zipper<B>> mapZipper() {
     return new F<Zipper<A>, Zipper<B>>() {
       public Zipper<B> f(final Zipper<A> zipper) {
         return zipper.map(F.this);
@@ -669,7 +669,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over an Equal as a contravariant functor.
    */
-  default public F<Equal<B>, Equal<A>> comapEqual() {
+  public final F<Equal<B>, Equal<A>> comapEqual() {
     return new F<Equal<B>, Equal<A>>() {
       public Equal<A> f(final Equal<B> equal) {
         return equal.comap(F.this);
@@ -682,7 +682,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a Hash as a contravariant functor.
    */
-  default public F<Hash<B>, Hash<A>> comapHash() {
+  public final F<Hash<B>, Hash<A>> comapHash() {
     return new F<Hash<B>, Hash<A>>() {
       public Hash<A> f(final Hash<B> hash) {
         return hash.comap(F.this);
@@ -695,7 +695,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over a Show as a contravariant functor.
    */
-  default public F<Show<B>, Show<A>> comapShow() {
+  public final F<Show<B>, Show<A>> comapShow() {
     return new F<Show<B>, Show<A>>() {
       public Show<A> f(final Show<B> s) {
         return s.comap(F.this);
@@ -708,7 +708,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over the first element of a pair.
    */
-  default public <C> F<P2<A, C>, P2<B, C>> mapFst() {
+  public final <C> F<P2<A, C>, P2<B, C>> mapFst() {
     return P2.map1_(F.this);
   }
 
@@ -717,7 +717,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over the second element of a pair.
    */
-  default public <C> F<P2<C, A>, P2<C, B>> mapSnd() {
+  public final <C> F<P2<C, A>, P2<C, B>> mapSnd() {
     return P2.map2_(F.this);
   }
 
@@ -726,7 +726,7 @@ public interface F<A, B> {
    *
    * @return This function promoted to map over both elements of a pair.
    */
-  default public F<P2<A, A>, P2<B, B>> mapBoth() {
+  public final F<P2<A, A>, P2<B, B>> mapBoth() {
     return new F<P2<A, A>, P2<B, B>>() {
       public P2<B, B> f(final P2<A, A> aap2) {
         return P2.map(F.this, aap2);
@@ -740,7 +740,7 @@ public interface F<A, B> {
    * @param as A SynchronousQueue to map this function over.
    * @return A new SynchronousQueue with this function applied to each element.
    */
-  default public SynchronousQueue<B> mapJ(final SynchronousQueue<A> as) {
+  public final SynchronousQueue<B> mapJ(final SynchronousQueue<A> as) {
     final SynchronousQueue<B> bs = new SynchronousQueue<B>();
     bs.addAll(iterableStream(as).map(this).toCollection());
     return bs;
@@ -753,7 +753,7 @@ public interface F<A, B> {
    * @param as A PriorityBlockingQueue to map this function over.
    * @return A new PriorityBlockingQueue with this function applied to each element.
    */
-  default public PriorityBlockingQueue<B> mapJ(final PriorityBlockingQueue<A> as) {
+  public final PriorityBlockingQueue<B> mapJ(final PriorityBlockingQueue<A> as) {
     return new PriorityBlockingQueue<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -763,7 +763,7 @@ public interface F<A, B> {
    * @param as A LinkedBlockingQueue to map this function over.
    * @return A new LinkedBlockingQueue with this function applied to each element.
    */
-  default public LinkedBlockingQueue<B> mapJ(final LinkedBlockingQueue<A> as) {
+  public final LinkedBlockingQueue<B> mapJ(final LinkedBlockingQueue<A> as) {
     return new LinkedBlockingQueue<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -773,7 +773,7 @@ public interface F<A, B> {
    * @param as A CopyOnWriteArraySet to map this function over.
    * @return A new CopyOnWriteArraySet with this function applied to each element.
    */
-  default public CopyOnWriteArraySet<B> mapJ(final CopyOnWriteArraySet<A> as) {
+  public final CopyOnWriteArraySet<B> mapJ(final CopyOnWriteArraySet<A> as) {
     return new CopyOnWriteArraySet<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -783,7 +783,7 @@ public interface F<A, B> {
    * @param as A CopyOnWriteArrayList to map this function over.
    * @return A new CopyOnWriteArrayList with this function applied to each element.
    */
-  default public CopyOnWriteArrayList<B> mapJ(final CopyOnWriteArrayList<A> as) {
+  public final CopyOnWriteArrayList<B> mapJ(final CopyOnWriteArrayList<A> as) {
     return new CopyOnWriteArrayList<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -793,7 +793,7 @@ public interface F<A, B> {
    * @param as A ConcurrentLinkedQueue to map this function over.
    * @return A new ConcurrentLinkedQueue with this function applied to each element.
    */
-  default public ConcurrentLinkedQueue<B> mapJ(final ConcurrentLinkedQueue<A> as) {
+  public final ConcurrentLinkedQueue<B> mapJ(final ConcurrentLinkedQueue<A> as) {
     return new ConcurrentLinkedQueue<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -803,7 +803,7 @@ public interface F<A, B> {
    * @param as An ArrayBlockingQueue to map this function over.
    * @return A new ArrayBlockingQueue with this function applied to each element.
    */
-  default public ArrayBlockingQueue<B> mapJ(final ArrayBlockingQueue<A> as) {
+  public final ArrayBlockingQueue<B> mapJ(final ArrayBlockingQueue<A> as) {
     final ArrayBlockingQueue<B> bs = new ArrayBlockingQueue<B>(as.size());
     bs.addAll(iterableStream(as).map(this).toCollection());
     return bs;
@@ -816,7 +816,7 @@ public interface F<A, B> {
    * @param as A TreeSet to map this function over.
    * @return A new TreeSet with this function applied to each element.
    */
-  default public TreeSet<B> mapJ(final TreeSet<A> as) {
+  public final TreeSet<B> mapJ(final TreeSet<A> as) {
     return new TreeSet<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -826,7 +826,7 @@ public interface F<A, B> {
    * @param as A PriorityQueue to map this function over.
    * @return A new PriorityQueue with this function applied to each element.
    */
-  default public PriorityQueue<B> mapJ(final PriorityQueue<A> as) {
+  public final PriorityQueue<B> mapJ(final PriorityQueue<A> as) {
     return new PriorityQueue<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -836,7 +836,7 @@ public interface F<A, B> {
    * @param as A LinkedList to map this function over.
    * @return A new LinkedList with this function applied to each element.
    */
-  default public LinkedList<B> mapJ(final LinkedList<A> as) {
+  public final LinkedList<B> mapJ(final LinkedList<A> as) {
     return new LinkedList<B>(iterableStream(as).map(this).toCollection());
   }
 
@@ -846,7 +846,7 @@ public interface F<A, B> {
    * @param as An ArrayList to map this function over.
    * @return A new ArrayList with this function applied to each element.
    */
-  default public ArrayList<B> mapJ(final ArrayList<A> as) {
+  public final ArrayList<B> mapJ(final ArrayList<A> as) {
     return new ArrayList<B>(iterableStream(as).map(this).toCollection());
   }
 }

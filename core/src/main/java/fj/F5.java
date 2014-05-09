@@ -7,7 +7,7 @@ package fj;
  *
  * @version %build.number%
  */
-public interface F5<A, B, C, D, E, F$> {
+public abstract class F5<A, B, C, D, E, F$> {
   /**
    * Transform <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code> and <code>E</code> to
    * <code>F$</code>.
@@ -19,5 +19,5 @@ public interface F5<A, B, C, D, E, F$> {
    * @param e The <code>E</code> to transform.
    * @return The result of the transformation.
    */
-  public F$ f(A a, B b, C c, D d, E e);
+  public abstract F$ f(A a, B b, C c, D d, E e);
 }
