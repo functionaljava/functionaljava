@@ -1,16 +1,7 @@
 package fj.control.parallel;
 
-import fj.Effect;
-import fj.F;
-import fj.F2;
-import fj.Function;
-import fj.Monoid;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.P4;
-import fj.Unit;
+import fj.*;
+
 import static fj.P.p;
 import static fj.Function.curry;
 import static fj.Function.uncurryF2;
@@ -78,7 +69,7 @@ public final class ParModule {
    *         that can be claimed in the future.
    */
   public <A, B> F<A, Promise<B>> promise(final F<A, B> f) {
-    return f.promiseK(strategy);
+    return F1Functions.promiseK(f, strategy);
   }
 
   /**
@@ -103,7 +94,7 @@ public final class ParModule {
    *         that can be claimed in the future.
    */
   public <A, B, C> F2<A, B, Promise<C>> promise(final F2<A, B, C> f) {
-    return P2.untuple(f.tuple().promiseK(strategy));
+    return P2.untuple(F1Functions.promiseK(F2Functions.tuple(f), strategy));
   }
 
 

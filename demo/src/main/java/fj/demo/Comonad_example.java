@@ -1,6 +1,7 @@
 package fj.demo;
 
 import fj.F;
+import fj.F1Functions;
 import fj.P;
 import static fj.data.List.asString;
 import static fj.data.List.fromString;
@@ -27,7 +28,7 @@ public class Comonad_example {
       r = join(z.cobind(new F<Zipper<Character>, Stream<Stream<Character>>>() {
         public Stream<Stream<Character>> f(final Zipper<Character> zp) {
           return perms(zp.lefts().reverse().append(zp.rights()))
-              .map(Stream.<Character>cons().f(zp.focus()).o(P.<Stream<Character>>p1()));
+              .map(F1Functions.o(Stream.<Character>cons().f(zp.focus()), P.<Stream<Character>>p1()));
         }
       }).toStream());
     return r;
