@@ -1,0 +1,15 @@
+
+apply plugin: 'java'
+
+defaultTasks 'build'
+
+repositories {
+    mavenCentral()
+    maven {
+        url sonatypeRepositoryUrl
+    }
+}
+
+dependencies {
+    compile("org.functionaljava:functionaljava:$fjConsumeVersion")
+}
