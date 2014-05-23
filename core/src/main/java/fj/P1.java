@@ -10,7 +10,7 @@ import java.lang.ref.SoftReference;
  *
  * @version %build.number%
  */
-public abstract class P1<A> {
+public interface P1<A> {
   /**
    * Access the first element of the product.
    *
@@ -24,12 +24,8 @@ public abstract class P1<A> {
    * @param f The function to map with.
    * @return A product with the given function applied.
    */
-  public final <X> P1<X> map(final F<A, X> f) {
-    return new P1<X>() {
-      public X _1() {
-        return f.f(P1.this._1());
-      }
-    };
+  public default <X> P1<X> map(final F<A, X> f) {
+    return () -> f.f(_1());
   }
 
   /**
@@ -38,11 +34,7 @@ public abstract class P1<A> {
    * @return A function that returns the first element of a product.
    */
   public static <A> F<P1<A>, A> __1() {
-    return new F<P1<A>, A>() {
-      public A f(final P1<A> p) {
-        return p._1();
-      }
-    };
+    return P1::_1;
   }
 
   /**
@@ -52,11 +44,7 @@ public abstract class P1<A> {
    * @return A function promoted to operate on P1s.
    */
   public static <A, B> F<P1<A>, P1<B>> fmap(final F<A, B> f) {
-    return new F<P1<A>, P1<B>>() {
-      public P1<B> f(final P1<A> a) {
-        return a.map(f);
-      }
-    };
+    return a -> a.map(f);
   }
 
   /**
@@ -67,11 +55,7 @@ public abstract class P1<A> {
    * @return The result of applying the given function to the value of given product-1.
    */
   public static <A, B> P1<B> bind(final P1<A> a, final F<A, P1<B>> f) {
-    return new P1<B>() {
-      public B _1() {
-        return f.f(a._1())._1();
-      }
-    };
+    return () -> f.f(a._1())._1();
   }
 
   /**
@@ -81,15 +65,7 @@ public abstract class P1<A> {
    * @return A function whose result is wrapped in a P1.
    */
   public static <A, B> F<A, P1<B>> curry(final F<A, B> f) {
-    return new F<A, P1<B>>() {
-      public P1<B> f(final A a) {
-        return new P1<B>() {
-          public B _1() {
-            return f.f(a);
-          }
-        };
-      }
-    };
+    return a -> () -> f.f(a);
   }
 
   /**
@@ -100,11 +76,7 @@ public abstract class P1<A> {
    * @return A new P1 after applying the given P1 function to the first argument.
    */
   public static <A, B> P1<B> apply(final P1<A> ca, final P1<F<A, B>> cf) {
-    return bind(cf, new F<F<A, B>, P1<B>>() {
-      public P1<B> f(final F<A, B> f) {
-        return fmap(f).f(ca);
-      }
-    });
+    return bind(cf, f -> fmap(f).f(ca));
   }
 
   /**
@@ -126,7 +98,7 @@ public abstract class P1<A> {
    * @return A new P1 that is the join of the given P1.
    */
   public static <A> P1<A> join(final P1<P1<A>> a) {
-    return bind(a, Function.<P1<A>>identity());
+    return bind(a, Function.identity());
   }
 
   /**
@@ -136,11 +108,7 @@ public abstract class P1<A> {
    * @return A function of arity-2 promoted to map over P1s.
    */
   public static <A, B, C> F<P1<A>, F<P1<B>, P1<C>>> liftM2(final F<A, F<B, C>> f) {
-    return Function.curry(new F2<P1<A>, P1<B>, P1<C>>() {
-      public P1<C> f(final P1<A> pa, final P1<B> pb) {
-        return bind(pa, pb, f);
-      }
-    });
+    return pa -> pb -> bind(pa, pb, f);
   }
 
   /**
@@ -150,7 +118,7 @@ public abstract class P1<A> {
    * @return A single P1 for the given List.
    */
   public static <A> P1<List<A>> sequence(final List<P1<A>> as) {
-    return as.foldRight(liftM2(List.<A>cons()), P.p(List.<A>nil()));
+    return as.foldRight(liftM2(List.cons()), () -> List.nil());
   }
 
   /**
@@ -159,11 +127,7 @@ public abstract class P1<A> {
    * @return A function from a List of P1s to a single P1 of a List.
    */
   public static <A> F<List<P1<A>>, P1<List<A>>> sequenceList() {
-    return new F<List<P1<A>>, P1<List<A>>>() {
-      public P1<List<A>> f(final List<P1<A>> as) {
-        return sequence(as);
-      }
-    };
+    return as -> sequence(as);
   }
 
   /**
@@ -173,7 +137,7 @@ public abstract class P1<A> {
    * @return A single P1 for the given stream.
    */
   public static <A> P1<Stream<A>> sequence(final Stream<P1<A>> as) {
-    return as.foldRight(liftM2(Stream.<A>cons()), P.p(Stream.<A>nil()));
+    return as.foldRight(liftM2(Stream.cons()), () -> Stream.nil());
   }
 
   /**
@@ -183,11 +147,7 @@ public abstract class P1<A> {
    * @return A single P1 for the given array.
    */
   public static <A> P1<Array<A>> sequence(final Array<P1<A>> as) {
-    return new P1<Array<A>>() {
-      public Array<A> _1() {
-        return as.map(P1.<A>__1());
-      }
-    };
+    return () -> as.map(P1::_1);
   }
 
   /**
@@ -195,7 +155,7 @@ public abstract class P1<A> {
    *
    * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
    */
-  public final P1<A> memo() {
+  public default P1<A> memo() {
     final P1<A> self = this;
     return new P1<A>() {
       private final Object latch = new Object();
@@ -220,11 +180,7 @@ public abstract class P1<A> {
    *
    * @return A constant function that always uses this value. 
    */
-  public final <B> F<B, A> constant() {
-    return new F<B, A>() {
-      public A f(final B b) {
-          return _1();
-      }
-    };
+  public default <B> F<B, A> constant() {
+    return b -> _1();
   }
 }
