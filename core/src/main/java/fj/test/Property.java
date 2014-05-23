@@ -13,6 +13,7 @@ import fj.F7;
 import fj.F8;
 import fj.P;
 import fj.P1;
+import fj.P1Functions;
 import fj.P2;
 import static fj.P2.__2;
 import fj.data.List;
@@ -27,7 +28,6 @@ import static fj.test.CheckResult.passed;
 import static fj.test.CheckResult.propException;
 import static fj.test.CheckResult.proven;
 import static fj.test.Result.noResult;
-
 import static java.lang.Math.round;
 
 /**
@@ -526,7 +526,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A> Property property(final Arbitrary<A> aa, final Shrink<A> sa, final F<A, Property> f) {
-    return propertyP(aa, sa, P1.curry(f));
+    return propertyP(aa, sa, P1Functions.curry(f));
   }
 
   /**
@@ -552,7 +552,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A> Property property(final Arbitrary<A> aa, final F<A, Property> f) {
-    return propertyP(aa, P1.curry(f));
+    return propertyP(aa, P1Functions.curry(f));
   }
 
 

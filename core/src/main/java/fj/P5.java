@@ -243,11 +243,11 @@ public abstract class P5<A, B, C, D, E> {
    */
   public final P5<A, B, C, D, E> memo() {
     return new P5<A, B, C, D, E>() {
-      private final P1<A> a = _1_().memo();
-      private final P1<B> b = _2_().memo();
-      private final P1<C> c = _3_().memo();
-      private final P1<D> d = _4_().memo();
-      private final P1<E> e = _5_().memo();
+      private final P1<A> a = P1Functions.memo(_1_());
+      private final P1<B> b = P1Functions.memo(_2_());
+      private final P1<C> c = P1Functions.memo(_3_());
+      private final P1<D> d = P1Functions.memo(_4_());
+      private final P1<E> e = P1Functions.memo(_5_());
 
       public A _1() {
         return a._1();

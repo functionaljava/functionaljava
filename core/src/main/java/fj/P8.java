@@ -479,14 +479,14 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    */
   public final P8<A, B, C, D, E, F, G, H> memo() {
     return new P8<A, B, C, D, E, F, G, H>() {
-      private final P1<A> a = _1_().memo();
-      private final P1<B> b = _2_().memo();
-      private final P1<C> c = _3_().memo();
-      private final P1<D> d = _4_().memo();
-      private final P1<E> e = _5_().memo();
-      private final P1<F> f = _6_().memo();
-      private final P1<G> g = _7_().memo();
-      private final P1<H> h = _8_().memo();
+      private final P1<A> a = P1Functions.memo(_1_());
+      private final P1<B> b = P1Functions.memo(_2_());
+      private final P1<C> c = P1Functions.memo(_3_());
+      private final P1<D> d = P1Functions.memo(_4_());
+      private final P1<E> e = P1Functions.memo(_5_());
+      private final P1<F> f = P1Functions.memo(_6_());
+      private final P1<G> g = P1Functions.memo(_7_());
+      private final P1<H> h = P1Functions.memo(_8_());
 
       public A _1() {
         return a._1();

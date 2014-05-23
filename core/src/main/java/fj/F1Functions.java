@@ -188,7 +188,7 @@ public class F1Functions {
     static public <A, B> F<P1<A>, P1<B>> mapP1(final F<A, B> f) {
         return new F<P1<A>, P1<B>>() {
             public P1<B> f(final P1<A> p) {
-                return p.map(f);
+                return P1Functions.map(p, f);
             }
         };
     }

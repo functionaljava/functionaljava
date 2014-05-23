@@ -2,14 +2,13 @@ package fj.data;
 
 import static fj.data.Option.some;
 import static fj.data.Stream.iterableStream;
-
 import fj.Equal;
 import fj.F;
 import fj.F2;
 import fj.F3;
 import fj.P1;
+import fj.P1Functions;
 import fj.P2;
-
 import static fj.Function.curry;
 import static fj.Function.identity;
 
@@ -157,7 +156,7 @@ public final class IterableW<A> implements Iterable<A> {
     final Stream<T> ts = iterableStream(as);
     return ts.isEmpty() ? iterable(wrap(Option.<A>none())) : wrap(ts.head()).bind(new F<A, Iterable<IterableW<A>>>() {
       public Iterable<IterableW<A>> f(final A a) {
-        return sequence(ts.tail().map(IterableW.<T, Stream<T>>wrap())._1())
+        return sequence(P1Functions.map(ts.tail(), IterableW.<T, Stream<T>>wrap())._1())
             .bind(new F<IterableW<A>, Iterable<IterableW<A>>>() {
               public Iterable<IterableW<A>> f(final IterableW<A> as) {
                 return iterable(wrap(Stream.cons(a, new P1<Stream<A>>() {

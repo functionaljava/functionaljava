@@ -9,6 +9,7 @@ import fj.Function;
 import fj.Ord;
 import fj.P;
 import fj.P1;
+import fj.P1Functions;
 import fj.P2;
 import fj.P3;
 import fj.Show;
@@ -157,7 +158,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
   public <B> B foldRight(final F<A, F<B, B>> f, final B z) {
     return left.foldLeft(flip(f),
                          right.cons(focus).foldRight(compose(
-                             Function.<P1<B>, B, B>andThen().f(P1.<B>__1()), f), z));
+                             Function.<P1<B>, B, B>andThen().f(P1Functions.<B>__1()), f), z));
   }
 
   /**

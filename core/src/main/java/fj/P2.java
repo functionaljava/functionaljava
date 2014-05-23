@@ -187,8 +187,8 @@ public abstract class P2<A, B> {
    */
   public final P2<A, B> memo() {
     return new P2<A, B>() {
-      private final P1<A> a = _1_().memo();
-      private final P1<B> b = _2_().memo();
+      private final P1<A> a = P1Functions.memo(_1_());
+      private final P1<B> b = P1Functions.memo(_2_());
 
       public A _1() {
         return a._1();

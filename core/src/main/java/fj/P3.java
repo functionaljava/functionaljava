@@ -127,9 +127,9 @@ public abstract class P3<A, B, C> {
    */
   public final P3<A, B, C> memo() {
     return new P3<A, B, C>() {
-      private final P1<A> a = _1_().memo();
-      private final P1<B> b = _2_().memo();
-      private final P1<C> c = _3_().memo();
+      private final P1<A> a = P1Functions.memo(_1_());
+      private final P1<B> b = P1Functions.memo(_2_());
+      private final P1<C> c = P1Functions.memo(_3_());
 
       public A _1() {
         return a._1();

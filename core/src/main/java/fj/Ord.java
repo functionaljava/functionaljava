@@ -577,7 +577,7 @@ public final class Ord<A> {
    * @return An order instance for a product-1.
    */
   public static <A> Ord<P1<A>> p1Ord(final Ord<A> oa) {
-    return oa.comap(P1.<A>__1());
+    return oa.comap(P1Functions.<A>__1());
   }
 
 
