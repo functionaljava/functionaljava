@@ -1,15 +1,15 @@
 package fj.demo;
 
-import fj.*;
+import fj.F;
+import fj.P2;
+import fj.Show;
+import fj.Unit;
 import fj.data.List;
 import fj.data.Stream;
 
 import static fj.P.p;
-import static fj.data.List.cons;
+import static fj.data.Case.*;
 import static fj.data.List.list;
-import static fj.data.Case.when;
-import static fj.data.Case.otherwise;
-import static fj.data.Case.match;
 import static fj.demo.PatternMatching.Leaf.show;
 
 public class PatternMatching {
