@@ -31,7 +31,21 @@ public final class Case<A, B> {
         return new Case<>(c, f);
     }
 
+    public static <A, B> Case when(final Class<A> type, F<A, B> f) {
+        return when(new F<A, Boolean>() {
+            @Override
+            public Boolean f(A o) {
+                return type.isInstance(o);
+            }
+        }, f);
+    }
++
     public static <A, B> Case otherwise(F<A, B> f) {
-        return new Case<>(a -> true, f);
+        return new Case<>(new F<A, Boolean>() {
+            @Override
+            public Boolean f(A a) {
+                return true;
+            }
+        }, f);
     }
 }
