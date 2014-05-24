@@ -39,7 +39,7 @@ public final class Case<A, B> {
             }
         }, f);
     }
-+
+
     public static <A, B> Case otherwise(F<A, B> f) {
         return new Case<>(new F<A, Boolean>() {
             @Override
