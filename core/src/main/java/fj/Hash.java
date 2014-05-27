@@ -282,7 +282,7 @@ public final class Hash<A> {
    * @return A hash instance for a product-1.
    */
   public static <A> Hash<P1<A>> p1Hash(final Hash<A> ha) {
-    return ha.comap(P1.<A>__1());
+    return ha.comap(P1Functions.<A>__1());
   }
 
   /**

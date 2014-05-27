@@ -4,6 +4,7 @@ import static fj.Bottom.error;
 import fj.Effect;
 import fj.F;
 import fj.P;
+import fj.P1Functions;
 import fj.P2;
 import fj.Unit;
 import fj.data.List;
@@ -50,7 +51,7 @@ public class Fibs
           {return n < CUTOFF ? promise(su, P.p(seqFib(n))) : f(n - 1).bind(f(n - 2), add);}};
 
       System.out.println("Calculating Fibonacci sequence in parallel...");
-      join(su, spi.parMap(fib, range(0, 46)).map(Promise.<Integer>sequence(su))).to(out);}
+      join(su, P1Functions.map(spi.parMap(fib, range(0, 46)), Promise.<Integer>sequence(su))).to(out);}
 
   // The sequential version of the recursive Fibonacci function
   public static int seqFib(final int n)

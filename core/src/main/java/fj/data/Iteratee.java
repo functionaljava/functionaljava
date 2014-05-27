@@ -5,6 +5,7 @@ import fj.F1Functions;
 import fj.Function;
 import fj.P;
 import fj.P1;
+import fj.P1Functions;
 import fj.P2;
 import fj.Unit;
 
@@ -161,7 +162,7 @@ public final class Iteratee {
               new P1<F<E, IterV<E, Integer>>>() {
                 @Override
                 public F<E, IterV<E, Integer>> _1() {
-                  return P.p(cont(step.f(acc + 1))).<E>constant();
+                  return P1Functions.constant(P.p(cont(step.f(acc + 1))));
                 }
               };
             final P1<IterV<E, Integer>> eof =
@@ -199,7 +200,7 @@ public final class Iteratee {
             new P1<F<E, IterV<E, Unit>>>() {
               @Override
               public F<E, IterV<E, Unit>> _1() {
-                return P.p(IterV.<E>drop(n - 1)).<E>constant();
+                return P1Functions.constant(P.p(IterV.<E>drop(n - 1)));
               }
             };
           final P1<IterV<E, Unit>> eof =

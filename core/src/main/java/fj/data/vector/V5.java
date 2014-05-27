@@ -3,6 +3,7 @@ package fj.data.vector;
 import fj.F;
 import fj.F2;
 import fj.P1;
+import fj.P1Functions;
 import fj.P2;
 import fj.P4;
 import fj.P5;
@@ -208,7 +209,7 @@ public final class V5<A> implements Iterable<A> {
    * @return A new vector after the given function has been applied to each element.
    */
   public <B> V5<B> map(final F<A, B> f) {
-    return new V5<B>(head.map(f), tail.map(f));
+    return new V5<B>(P1Functions.map(head, f), tail.map(f));
   }
 
   /**
@@ -218,7 +219,7 @@ public final class V5<A> implements Iterable<A> {
    * @return A new vector after zipping the given vector of functions over this vector.
    */
   public <B> V5<B> apply(final V5<F<A, B>> vf) {
-    return new V5<B>(P1.<A, B>apply(head, vf.head()), tail.apply(vf.tail()));
+    return new V5<B>(P1Functions.<A, B>apply(head, vf.head()), tail.apply(vf.tail()));
   }
 
   /**
