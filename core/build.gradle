@@ -22,11 +22,42 @@ dependencies {
     testCompile "junit:junit:4.11"
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from "build/docs/javadoc"
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+Boolean doSigning() {
+    signingEnabled.trim() == "true"
+}
+
+
+if (doSigning()) {
+    apply plugin: "signing"
+    signing {
+        sign configurations.archives
+    }
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {
             // used for signing the artifacts, no need to sign snapshot, so leave out for now
 //            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            if (doSigning()) {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            }
 
             repository(url: sonatypeUploadUrl) {
                 authentication(userName: sonatypeUsername, password: sonatypePassword)

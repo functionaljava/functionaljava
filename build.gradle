@@ -6,7 +6,7 @@ ext {
 
 allprojects {
 	ext {
-        isSnapshot = true
+        isSnapshot = false
         fjBaseVersion = "3.2"
 
         snapshotAppendix = "-SNAPSHOT"
