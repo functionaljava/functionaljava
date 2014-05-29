@@ -14,8 +14,8 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 	ext {
-        isSnapshot = false
-        fjBaseVersion = "4.1"
+        isSnapshot = true
+        fjBaseVersion = "4.2"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
