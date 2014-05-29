@@ -8,7 +8,8 @@ lib_managed
 build
 *.iml
 .settings
-.project
 .classpath
+.project
+
 
 

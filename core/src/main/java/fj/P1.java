@@ -13,4 +13,5 @@ public interface P1<A> {
    * @return The first element of the product.
    */
   public abstract A _1();
+
 }

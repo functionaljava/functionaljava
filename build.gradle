@@ -4,6 +4,14 @@ defaultTasks 'build'
 ext {
 }
 
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
 allprojects {
 	ext {
         isSnapshot = true
@@ -11,7 +19,7 @@ allprojects {
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = fjVersion
+        fjConsumeVersion = "$fjBaseVersion$snapshotAppendix"
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
