@@ -14,12 +14,12 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 	ext {
-        isSnapshot = true
+        isSnapshot = false
         fjBaseVersion = "4.0"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = fjVersion
+        fjConsumeVersion = "$fjBaseVersion$snapshotAppendix"
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
