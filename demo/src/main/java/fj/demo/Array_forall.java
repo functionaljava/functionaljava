@@ -14,6 +14,7 @@ public final class Array_forall {
         return fromString(s).forall(isLowerCase);
       }
     });
+    final boolean b2 = a.forall(s -> fromString(s).forall(isLowerCase));
     System.out.println(b); // false ("There" is a counter-example; try removing it)
   }
 }

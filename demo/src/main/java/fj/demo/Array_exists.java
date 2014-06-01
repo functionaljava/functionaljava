@@ -14,6 +14,7 @@ public final class Array_exists {
         return fromString(s).forall(isLowerCase);
       }
     });
+    final boolean b2 = a.exists(s -> fromString(s).forall(isLowerCase));
     System.out.println(b); // true ("what" provides the only example; try removing it)
   }
 }

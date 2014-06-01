@@ -15,6 +15,11 @@ public final class Option_filter {
     final Option<Integer> p1 = o1.filter(even);
     final Option<Integer> p2 = o2.filter(even);
     final Option<Integer> p3 = o3.filter(even);
+
+    final Option<Integer> p4 = o1.filter(i -> i % 2 == 0);
+    final Option<Integer> p5 = o1.filter(i -> i % 2 == 0);
+    final Option<Integer> p6 = o1.filter(i -> i % 2 == 0);
+
     optionShow(intShow).println(p1); // None
     optionShow(intShow).println(p2); // None
     optionShow(intShow).println(p3); // Some(8)
