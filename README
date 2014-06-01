@@ -3,8 +3,8 @@ Functional Java is an open source library that seeks to improve the experience o
 Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language. The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck.
 
 Note that the website is in the midst of being updated.  The URLs are:
-* [functionaljava.org] (old site)
-* [functionaljava.github.io] (new site)
+* http://functionaljava.org (old site)
+* http://functionaljava.github.io (new site)
 
 Functional Java includes the following features:
 
