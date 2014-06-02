@@ -1,0 +1,50 @@
+package fj
+package data
+
+import org.scalacheck.Prop._
+import ArbitraryHashMap._
+import Equal.{intEqual, stringEqual, optionEqual}
+import Hash.{intHash, stringHash}
+import org.scalacheck.Properties
+
+object CheckHashMap extends Properties("HashMap") {
+  implicit val equalInt: Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
+  implicit val hashInt: Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
+
+  property("eq") = forAll((m: HashMap[Int, String], x: Int, y: Int) => m.eq(x, y) == equalInt.eq(x, y))
+
+  property("hash") = forAll((m: HashMap[Int, String], x: Int) => m.hash(x) == hashInt.hash(x))
+
+  property("get") = forAll((m: HashMap[Int, String], k: Int) => optionEqual(stringEqual).eq(m.get(k), m.get.f(k)))
+
+  property("set") = forAll((m: HashMap[Int, String], k: Int, v: String) => {
+    m.set(k, v)
+    m.get(k).some == v
+  })
+
+  property("clear") = forAll((m: HashMap[Int, String], k: Int) => {
+    m.clear
+    m.get(k).isNone
+  })
+
+  property("contains") = forAll((m: HashMap[Int, String], k: Int) => m.get(k).isSome == m.contains(k))
+
+  property("keys") = forAll((m: HashMap[Int, String]) => m.keys.forall((k: Int) => (m.get(k).isSome): java.lang.Boolean))
+
+  property("isEmpty") = forAll((m: HashMap[Int, String], k: Int) => m.get(k).isNone || !m.isEmpty)
+
+  property("size") = forAll((m: HashMap[Int, String], k: Int) => m.get(k).isNone || m.size != 0)
+
+  property("delete") = forAll((m: HashMap[Int, String], k: Int) => {
+    m.delete(k)
+    m.get(k).isNone
+  })
+
+  property("getDelete") = forAll((m: HashMap[Int, String], k: Int) => {
+    val x = m.get(k)
+    val y = m.getDelete(k)
+    val z = m.get(k)
+
+    z.isNone && optionEqual(stringEqual).eq(x, y)
+  })
+}

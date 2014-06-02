@@ -1,0 +1,5 @@
+package fj
+
+object Implicit {
+
+}
