@@ -60,9 +60,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return A new tree map with the given value mapped to the given key.
    */
   public TreeMap<K, V> set(final K k, final V v) {
-    final P3<Set<P2<K, Option<V>>>, Option<P2<K, Option<V>>>, Set<P2<K, Option<V>>>> x
-        = tree.split(P.p(k, Option.<V>none()));
-    return new TreeMap<K, V>(x._1().union(x._3().insert(P.p(k, Option.some(v)))));
+      return new TreeMap<K, V>(tree.insert(P.p(k, Option.some(v))));
   }
 
   /**
