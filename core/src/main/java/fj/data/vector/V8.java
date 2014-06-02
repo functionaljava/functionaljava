@@ -154,9 +154,9 @@ public final class V8<A> implements Iterable<A> {
   }
 
   /**
-   * Returns all but the first element of this vector, as a vector-6.
+   * Returns all but the first element of this vector, as a vector-7.
    *
-   * @return all but the first element of this vector, as a vector-6.
+   * @return all but the first element of this vector, as a vector-7.
    */
   public V7<A> tail() {
     return tail;
