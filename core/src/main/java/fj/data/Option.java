@@ -668,6 +668,14 @@ public abstract class Option<A> implements Iterable<A> {
     return new Some<T>(t);
   }
 
+  public static <T> F<T, Option<T>> none_() {
+    return new F<T, Option<T>>() {
+      public Option<T> f(final T t) {
+        return none();
+      }
+    };
+  }
+
   /**
    * Constructs an optional value that has no value.
    *
