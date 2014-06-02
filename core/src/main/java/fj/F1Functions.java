@@ -824,4 +824,14 @@ public class F1Functions {
         return new ArrayList<B>(iterableStream(as).map(f).toCollection());
     }
 
+    static public <A, B> F<A, Try<B>> toF1(final Try1<A, B> t) {
+        return a -> {
+            try {
+                return Try.trySuccess(t.f(a));
+            } catch (Exception e) {
+                return Try.<B>tryFail(e);
+            }
+        };
+    }
+
 }

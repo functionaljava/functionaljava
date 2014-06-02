@@ -346,4 +346,15 @@ public class F2Functions {
         };
     }
 
+
+    static public <A, B, C> F2<A, B, Try<C>> toF2(final Try2<A, B, C> t) {
+        return (a, b) -> {
+            try {
+                return Try.trySuccess(t.f(a, b));
+            } catch (Exception e) {
+                return Try.<C>tryFail(e);
+            }
+        };
+    }
+
 }

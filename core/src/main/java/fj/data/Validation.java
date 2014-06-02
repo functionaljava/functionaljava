@@ -30,10 +30,10 @@ import java.util.Iterator;
  *
  * @version %build.number%
  */
-public final class Validation<E, T> implements Iterable<T> {
+public class Validation<E, T> implements Iterable<T> {
   private final Either<E, T> e;
 
-  private Validation(final Either<E, T> e) {
+  protected Validation(final Either<E, T> e) {
     this.e = e;
   }
 
