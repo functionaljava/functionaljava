@@ -19,7 +19,7 @@ allprojects {
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "$fjBaseVersion$snapshotAppendix"
+        fjConsumeVersion = "4.1"
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
