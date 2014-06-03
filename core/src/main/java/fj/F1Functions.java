@@ -824,12 +824,18 @@ public class F1Functions {
         return new ArrayList<B>(iterableStream(as).map(f).toCollection());
     }
 
-    static public <A, B> F<A, Try<B>> toF1(final Try1<A, B> t) {
+    /**
+     * Promotes the TryCatch1 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch1 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B> F<A, Validation<Exception, B>> toF1(final TryCatch1<A, B> t) {
         return a -> {
             try {
-                return Try.trySuccess(t.f(a));
+                return Validation.success(t.f(a));
             } catch (Exception e) {
-                return Try.<B>tryFail(e);
+                return Validation.fail(e);
             }
         };
     }

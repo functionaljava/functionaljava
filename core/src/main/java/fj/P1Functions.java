@@ -5,6 +5,7 @@ import java.lang.ref.SoftReference;
 import fj.data.Array;
 import fj.data.List;
 import fj.data.Stream;
+import fj.data.Validation;
 
 public final class P1Functions {
 
@@ -216,5 +217,21 @@ public final class P1Functions {
           }
         };
       }
+
+    /**
+     * Promotes the TryCatch0 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch0 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A> P1<Validation<Exception, A>> toP1(final TryCatch0<A> t) {
+        return () -> {
+            try {
+                return Validation.success(t.f());
+            } catch (Exception e) {
+                return Validation.fail(e);
+            }
+        };
+    }
 
 }

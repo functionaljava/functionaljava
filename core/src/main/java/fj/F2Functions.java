@@ -347,12 +347,18 @@ public class F2Functions {
     }
 
 
-    static public <A, B, C> F2<A, B, Try<C>> toF2(final Try2<A, B, C> t) {
+    /**
+     * Promotes the TryCatch2 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch2 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C> F2<A, B, Validation<Exception, C>> toF2(final TryCatch2<A, B, C> t) {
         return (a, b) -> {
             try {
-                return Try.trySuccess(t.f(a, b));
+                return Validation.success(t.f(a, b));
             } catch (Exception e) {
-                return Try.<C>tryFail(e);
+                return Validation.fail(e);
             }
         };
     }
