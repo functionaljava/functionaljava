@@ -15,6 +15,8 @@ apply plugin: 'maven'
 //apply plugin: 'signing'
 apply plugin: 'retrolambda'
 
+apply from: "$rootDir/lib.gradle"
+
 defaultTasks 'build'
 
 jar {
@@ -34,6 +36,8 @@ dependencies {
     testCompile "junit:junit:4.11"
 }
 
+task javadoc(type: Javadoc, overwrite: true, dependsOn: "java8Javadoc") {
+}
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")
@@ -41,10 +45,10 @@ retrolambda {
     javaVersion JavaVersion.VERSION_1_7
 }
 
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from "build/docs/javadoc"
-//}
+task javadocJar(type: Jar, dependsOn: java8Javadoc) {
+    classifier = 'javadoc'
+    from "build/docs/javadoc"
+}
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
@@ -53,7 +57,7 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives jar
-//    archives javadocJar
+    archives javadocJar
     archives sourcesJar
 }
 

@@ -1,4 +1,6 @@
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 defaultTasks 'build'
 
 ext {
@@ -12,7 +14,10 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
+
 allprojects {
+
+
 	ext {
         isSnapshot = true
         fjBaseVersion = "4.2"
@@ -42,5 +47,8 @@ allprojects {
 }
 
 subprojects {
+
+
+
 
 }

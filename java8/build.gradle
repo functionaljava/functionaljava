@@ -12,10 +12,21 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'retrolambda'
 
+apply from: "$rootDir/lib.gradle"
+
 defaultTasks 'build'
 
 repositories {
     mavenCentral()
+}
+
+//task javadoc(type: Javadoc, overwrite: true, dependsOn: "java8Javadoc") {
+//}
+
+task javadoc(type: Javadoc, overwrite: true) {
+    def t = createDynamicJavadoc("$projectDir", ["core"])
+//    dependsOn(":$t.name")
+    dependsOn(t)
 }
 
 retrolambda {

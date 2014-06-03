@@ -1,0 +1,49 @@
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+
+String findCommand(String dir, String command) {
+    def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? ".exe" : ""
+    def cmd = "$dir/$command$extension"
+    if (! new File(cmd).exists()) {
+        throw new Exception("Command $command not found in dir $dir")
+    }
+    cmd
+
+}
+
+String findJavaCommand(String s) {
+    def jh = System.getenv("JAVA8_HOME")
+    if (jh == null) {
+        throw new Exception("Environment variable JAVA8_HOME not set")
+    }
+    findCommand("$jh/bin", "javadoc")
+}
+
+List<String> projectClasses(List<String> list) {
+    list.collect {
+//        "$projectDir/../$it/src/main/java"
+        "$projectDir/../$it/build/classes/main"
+    }
+
+}
+
+def createDynamicJavadoc(String mainPath, List<String> paths) {
+    def taskName = "dynamicJava8Javadoc"
+    task "$taskName"(type: Exec) {
+        def cp = projectClasses(paths).join(";")
+        def c = findJavaCommand("javadoc")
+        commandLine c, "-sourcepath", "$mainPath/src/main/java", "-d", "$mainPath/build/docs/javadoc", "-subpackages", "fj", "-Xdoclint:none", "-quiet", "-classpath", cp
+    }
+    project.tasks[taskName]
+}
+
+ext {
+    createDynamicJavadoc = this.&createDynamicJavadoc
+}
+
+task java8Javadoc(type: Exec) {
+    def c = findJavaCommand("javadoc")
+    commandLine c, "-sourcepath", "$projectDir/src/main/java", "-d", "$buildDir/docs/javadoc", "-subpackages", "fj", "-Xdoclint:none", "-quiet"
+}
+
