@@ -20,12 +20,8 @@ repositories {
     mavenCentral()
 }
 
-//task javadoc(type: Javadoc, overwrite: true, dependsOn: "java8Javadoc") {
-//}
-
 task javadoc(type: Javadoc, overwrite: true) {
     def t = createDynamicJavadoc("$projectDir", ["core"])
-//    dependsOn(":$t.name")
     dependsOn(t)
 }
 
@@ -36,7 +32,6 @@ retrolambda {
 }
 
 dependencies {
-//    compile 'org.slf4j:slf4j-api:1.7.5'
     compile project(":core")
 
     testCompile "junit:junit:4.11"

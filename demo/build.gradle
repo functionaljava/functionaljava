@@ -28,7 +28,6 @@ repositories {
     mavenCentral()
 }
 
-//task javadoc(type: Javadoc, overwrite: true, dependsOn: "java8Javadoc") {
 task javadoc(type: Javadoc, overwrite: true) {
     def t = createDynamicJavadoc("$projectDir", ["core"])
     dependsOn(t)

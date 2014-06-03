@@ -1,7 +1,6 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-
 String findCommand(String dir, String command) {
     def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? ".exe" : ""
     def cmd = "$dir/$command$extension"
@@ -9,7 +8,6 @@ String findCommand(String dir, String command) {
         throw new Exception("Command $command not found in dir $dir")
     }
     cmd
-
 }
 
 String findJavaCommand(String s) {
@@ -22,7 +20,6 @@ String findJavaCommand(String s) {
 
 List<String> projectClasses(List<String> list) {
     list.collect {
-//        "$projectDir/../$it/src/main/java"
         "$projectDir/../$it/build/classes/main"
     }
 
