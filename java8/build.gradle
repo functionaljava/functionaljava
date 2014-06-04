@@ -1,4 +1,6 @@
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'java'
 
 apply from: "$rootDir/lib.gradle"
@@ -24,7 +26,8 @@ compileJava {
     if (jh == null) {
         throw new Exception("JAVA8_HOME environment variable not set")
     }
+    def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? ".exe" : ""
     options.fork = true
-    options.forkOptions.executable = "$jh/bin/javac"
+    options.forkOptions.executable = "$jh$extension/bin/javac"
 }
 
