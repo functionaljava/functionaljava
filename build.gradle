@@ -7,7 +7,6 @@ Boolean doSigning() {
     signingEnabled.trim() == "true"
 }
 
-
 ext {
 }
 
@@ -19,9 +18,7 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
-
 allprojects {
-
 
 	ext {
         isSnapshot = true
@@ -49,9 +46,8 @@ allprojects {
 
         dependencySlf4jApi = "org.slf4j:slf4j-api:1.7.5"
         dependencyJunit = "junit:junit:4.11"
-
-
     }
+
 	version = fjVersion
 	group = "org.functionaljava"
 }
@@ -73,7 +69,6 @@ subprojects {
     repositories {
         mavenCentral()
     }
-
 
     apply plugin: "maven"
     apply plugin: "java"
@@ -108,7 +103,6 @@ subprojects {
         }
     }
 
-
     uploadArchives {
         enabled = false
         repositories {
@@ -133,8 +127,6 @@ subprojects {
                         }
                         scm {
                             url scmUrl
-//                        connection scmGitFile
-//                        developerConnection scmGitFile
                         }
                         licenses {
                             license {

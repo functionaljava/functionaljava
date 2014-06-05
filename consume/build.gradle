@@ -6,5 +6,5 @@ repositories {
 }
 
 dependencies {
-    compile("org.functionaljava:functionaljava:$fjConsumeVersion")
+    compile("$group:$projectName:$fjConsumeVersion")
 }
