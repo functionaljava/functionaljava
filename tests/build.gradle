@@ -15,10 +15,10 @@ tasks.withType(ScalaCompile) {
 
 dependencies {
 	compile project(":core")
-    compile "org.slf4j:slf4j-api:1.7.5"
+    compile dependencySlf4jApi
 	compile "org.scala-lang:scala-library:$scalaVersion"
 
 	testCompile "org.scala-lang:scala-library:$scalaVersion"
 	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
-    testCompile "junit:junit:4.11"
+    testCompile dependencyJunit
 }

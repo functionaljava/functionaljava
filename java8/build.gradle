@@ -14,7 +14,7 @@ task javadoc(type: Javadoc, overwrite: true) {
 
 dependencies {
     compile project(":core")
-    testCompile "junit:junit:4.11"
+    testCompile dependencyJunit
 }
 
 compileJava {
