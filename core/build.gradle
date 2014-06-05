@@ -72,46 +72,5 @@ if (doSigning()) {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            if (doSigning()) {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            }
+uploadArchives.enabled = true
 
-            repository(url: sonatypeUploadUrl) {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-            pom {
-                groupId = project.group
-                project {
-                    name pomProjectName
-                    packaging 'jar'
-                    description projectDescription
-                    url projectUrl
-                    organization {
-                        name pomOrganisation
-                        url projectUrl
-                    }
-                    scm {
-                        url scmUrl
-//                        connection scmGitFile
-//                        developerConnection scmGitFile
-                    }
-                    licenses {
-                        license {
-                            name "The BSD3 License"
-                            url "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            email primaryEmail
-                        }
-                    }
-                }
-            }
-        }
-    }
-}

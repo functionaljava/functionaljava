@@ -3,6 +3,11 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 defaultTasks 'build'
 
+Boolean doSigning() {
+    signingEnabled.trim() == "true"
+}
+
+
 ext {
 }
 
@@ -47,8 +52,58 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: "maven"
 
+    if (doSigning()) {
+        apply plugin: "signing"
+        signing {
+            sign configurations.archives
+        }
+    }
 
+    uploadArchives {
+        enabled = false
+        repositories {
+            mavenDeployer {
+                if (doSigning()) {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                }
 
+                repository(url: sonatypeUploadUrl) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+                pom {
+                    groupId = project.group
+                    project {
+                        name pomProjectName
+                        packaging 'jar'
+                        description projectDescription
+                        url projectUrl
+                        organization {
+                            name pomOrganisation
+                            url projectUrl
+                        }
+                        scm {
+                            url scmUrl
+//                        connection scmGitFile
+//                        developerConnection scmGitFile
+                        }
+                        licenses {
+                            license {
+                                name "The BSD3 License"
+                                url "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                email primaryEmail
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

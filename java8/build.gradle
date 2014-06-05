@@ -11,6 +11,11 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    baseName "${project.projectName}-${project.name}"
+    version project.fjVersion
+}
+
 task javadoc(type: Javadoc, overwrite: true) {
     def t = createDynamicJavadoc("$projectDir", ["core"])
     dependsOn(t)
@@ -31,3 +36,4 @@ compileJava {
     options.forkOptions.executable = "$jh$extension/bin/javac"
 }
 
+uploadArchives.enabled = true
