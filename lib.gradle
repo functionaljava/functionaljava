@@ -15,20 +15,19 @@ String findJavaCommand(String s) {
     if (jh == null) {
         throw new Exception("Environment variable JAVA8_HOME not set")
     }
-    findCommand("$jh/bin", "javadoc")
+    findCommand("$jh/bin", s)
 }
 
-List<String> projectClasses(List<String> list) {
+List<String> projectClasses(List<String> list, String base) {
     list.collect {
-        "$projectDir/../$it/build/classes/main"
+        "$base/$it/build/classes/main"
     }
-
 }
 
 def createDynamicJavadoc(String mainPath, List<String> paths) {
     def taskName = "dynamicJava8Javadoc"
     task "$taskName"(type: Exec) {
-        def cp = projectClasses(paths).join(";")
+        def cp = projectClasses(paths, projectDir).join(";")
         def c = findJavaCommand("javadoc")
         commandLine c, "-sourcepath", "$mainPath/src/main/java", "-d", "$mainPath/build/docs/javadoc", "-subpackages", "fj", "-Xdoclint:none", "-quiet", "-classpath", cp
     }
