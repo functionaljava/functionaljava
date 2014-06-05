@@ -2,13 +2,10 @@
 apply plugin: 'application'
 apply plugin: 'retrolambda'
 
-apply from: "$rootDir/lib.gradle"
-
 mainClassName = "fj.demo.euler.Problem2"
 
 task javadoc(type: Javadoc, overwrite: true) {
-    def t = createDynamicJavadoc("$projectDir", ["core"])
-    dependsOn(t)
+    dependsOn(createDynamicJavadoc("$projectDir", ["core"]))
 }
 
 retrolambda {

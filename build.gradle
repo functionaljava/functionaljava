@@ -70,7 +70,7 @@ subprojects {
         mavenCentral()
     }
 
-//    apply from: "$rootDir/lib.gradle"
+    apply from: "$rootDir/lib.gradle"
     apply plugin: "maven"
     apply plugin: "java"
 

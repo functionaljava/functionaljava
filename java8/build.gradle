@@ -1,15 +1,12 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-apply from: "$rootDir/lib.gradle"
-
 jar {
     baseName "${project.projectName}-${project.name}"
 }
 
 task javadoc(type: Javadoc, overwrite: true) {
-    def t = createDynamicJavadoc("$projectDir", ["core"])
-    dependsOn(t)
+    dependsOn(createDynamicJavadoc("$projectDir", ["core"]))
 }
 
 dependencies {
