@@ -6,11 +6,6 @@ apply from: "$rootDir/lib.gradle"
 
 mainClassName = "fj.demo.euler.Problem2"
 
-ext {
-	scalaVersion = "2.9.+"
-	scalacheckVersion = "1.10.+"
-}
-
 repositories {
     mavenCentral()
 }
