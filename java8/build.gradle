@@ -13,7 +13,6 @@ repositories {
 
 jar {
     baseName "${project.projectName}-${project.name}"
-    version project.fjVersion
 }
 
 task javadoc(type: Javadoc, overwrite: true) {
