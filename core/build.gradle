@@ -12,7 +12,6 @@ dependencies {
     testCompile "junit:junit:4.11"
 }
 
-//tasks["javadoc"].dependsOn("java8Javadoc")
 task javadoc(type: Javadoc, overwrite: true, dependsOn: "java8Javadoc") {
 }
 
@@ -21,25 +20,6 @@ retrolambda {
     oldJdk System.getenv("JAVA7_HOME")
     javaVersion JavaVersion.VERSION_1_7
 }
-
-//project.tasks['javadocJar'].dependsOn(javadoc)
-
-//task javadocJar(type: Jar, dependsOn: java8Javadoc) {
-//    classifier = 'javadoc'
-//    from "build/docs/javadoc"
-//}
-
-
-//Boolean doSigning() {
-//    signingEnabled.trim() == "true"
-//}
-//
-//if (doSigning()) {
-//    apply plugin: "signing"
-//    signing {
-//       sign configurations.archives
-//    }
-//}
 
 uploadArchives.enabled = true
 

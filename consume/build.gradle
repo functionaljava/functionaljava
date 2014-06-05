@@ -1,10 +1,5 @@
 
-apply plugin: 'java'
-
-defaultTasks 'build'
-
 repositories {
-    mavenCentral()
     maven {
         url sonatypeRepositoryUrl
     }

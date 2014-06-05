@@ -1,15 +1,7 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-apply plugin: 'java'
-
 apply from: "$rootDir/lib.gradle"
-
-defaultTasks 'build'
-
-repositories {
-    mavenCentral()
-}
 
 jar {
     baseName "${project.projectName}-${project.name}"
