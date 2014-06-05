@@ -24,8 +24,8 @@ import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
 
 /**
- * IO monad for processing files, with main methods {@link #enumFileLines(File, Option, IterV)},
- * {@link #enumFileChars(File, Option, IterV)} and {@link #enumFileCharChunks(File, Option, IterV)}
+ * IO monad for processing files, with main methods {@link #enumFileLines },
+ * {@link #enumFileChars} and {@link #enumFileCharChunks}
  * (the latter one is the fastest as char chunks read from the file are directly passed to the iteratee
  * without indirection in between).
  *
@@ -58,7 +58,7 @@ public abstract class IO<A> {
   /**
    * An IO monad that reads lines from the given file (using a {@link BufferedReader}) and passes
    * lines to the provided iteratee. May not be suitable for files with very long
-   * lines, consider to use {@link #enumFileCharChunks(File, IterV)} or {@link #enumFileChars(File, IterV)}
+   * lines, consider to use {@link #enumFileCharChunks} or {@link #enumFileChars}
    * as an alternative.
    * 
    * @param f the file to read, must not be <code>null</code>

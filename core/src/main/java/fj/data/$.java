@@ -7,6 +7,7 @@ import fj.P1;
  * is the identity morphism from B to B.
  */
 @SuppressWarnings({"UnusedDeclaration"})
+@Deprecated
 public final class $<A, B> implements P1<B> {
 
   private final B b;
