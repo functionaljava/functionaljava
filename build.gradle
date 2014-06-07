@@ -1,6 +1,4 @@
 
-import org.apache.tools.ant.taskdefs.condition.Os
-
 defaultTasks 'build'
 
 Boolean doSigning() {
