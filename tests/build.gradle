@@ -15,7 +15,6 @@ tasks.withType(ScalaCompile) {
 
 dependencies {
 	compile project(":core")
-    compile dependencySlf4jApi
 	compile "org.scala-lang:scala-library:$scalaVersion"
 
 	testCompile "org.scala-lang:scala-library:$scalaVersion"

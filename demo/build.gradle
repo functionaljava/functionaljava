@@ -15,7 +15,6 @@ retrolambda {
 }
 
 dependencies {
-    compile dependencySlf4jApi
 	compile project(":core")
     testCompile dependencyJunit
 }
