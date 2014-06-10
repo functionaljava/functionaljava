@@ -6,7 +6,6 @@ jar {
 }
 
 dependencies {
-    compile dependencySlf4jApi
     testCompile dependencyJunit
 }
 
