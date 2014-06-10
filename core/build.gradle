@@ -9,8 +9,6 @@ dependencies {
     testCompile dependencyJunit
 }
 
-task javadoc(type: Javadoc, overwrite: true, dependsOn: "java8Javadoc") {
-}
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")

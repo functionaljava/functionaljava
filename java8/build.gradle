@@ -3,18 +3,11 @@ jar {
     baseName "${project.projectName}-${project.name}"
 }
 
-task javadoc(type: Javadoc, overwrite: true) {
-    dependsOn(createDynamicJavadoc("$projectDir", ["core"]))
-}
 
 dependencies {
     compile project(":core")
     testCompile dependencyJunit
 }
 
-compileJava {
-    options.fork = true
-    options.forkOptions.executable = findJavaCommand("javac")
-}
 
 uploadArchives.enabled = true

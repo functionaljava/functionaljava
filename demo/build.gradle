@@ -4,9 +4,6 @@ apply plugin: 'retrolambda'
 
 mainClassName = "fj.demo.euler.Problem2"
 
-task javadoc(type: Javadoc, overwrite: true) {
-    dependsOn(createDynamicJavadoc("$projectDir", ["core"]))
-}
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")
