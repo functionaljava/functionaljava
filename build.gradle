@@ -6,12 +6,12 @@ ext {
 
 allprojects {
 	ext {
-        isSnapshot = false
-        fjBaseVersion = "3.2"
+        isSnapshot = true
+        fjBaseVersion = "3.3"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "3.1"
+        fjConsumeVersion = "3.2"
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
