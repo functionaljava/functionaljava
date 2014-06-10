@@ -3,6 +3,7 @@ jar {
     baseName "${project.projectName}-${project.name}"
 }
 
+sourceCompatibility = "1.8"
 
 dependencies {
     compile project(":core")
