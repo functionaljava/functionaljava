@@ -1,6 +1,4 @@
 
-import org.apache.tools.ant.taskdefs.condition.Os
-
 jar {
     baseName "${project.projectName}-${project.name}"
 }
@@ -15,13 +13,8 @@ dependencies {
 }
 
 compileJava {
-    def jh = System.getenv("JAVA8_HOME")
-    if (jh == null) {
-        throw new Exception("JAVA8_HOME environment variable not set")
-    }
-    def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? ".exe" : ""
     options.fork = true
-    options.forkOptions.executable = "$jh$extension/bin/javac"
+    options.forkOptions.executable = findJavaCommand("javac")
 }
 
 uploadArchives.enabled = true
