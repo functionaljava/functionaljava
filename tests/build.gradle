@@ -13,7 +13,7 @@ apply plugin: 'scala'
 
 ext {
 	scalaVersion = "2.10.3"
-	scalacheckVersion = "1.10.+"
+	scalacheckVersion = "1.10.1"
 	scalacheckScalaVersion = "2.10"
 }
 
