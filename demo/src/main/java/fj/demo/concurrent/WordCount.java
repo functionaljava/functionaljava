@@ -33,8 +33,6 @@ import fj.data.IO;
 import fj.data.Iteratee;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
-import fj.data.List;
-import fj.data.Option;
 
 /**
  * Reads words and their counts from files ({@link #getWordsAndCountsFromFiles(List)} in a single thread
@@ -67,7 +65,7 @@ public class WordCount {
     @Override
     public Map<String, Integer> f(final String fileName) {
       try {
-        return IO.enumFileCharChunks(new File(fileName), Option.<Charset> none(), wordCountsFromCharChunks()).run().run();
+        return IOFunctions.enumFileCharChunks(new File(fileName), Option.<Charset>none(), wordCountsFromCharChunks()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -78,7 +76,7 @@ public class WordCount {
     @Override
     public Map<String, Integer> f(final String fileName) {
       try {
-        return IO.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
+        return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -89,7 +87,7 @@ public class WordCount {
     @Override
     public Map<String, Integer> f(final String fileName) {
       try {
-        return IO.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
+        return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
