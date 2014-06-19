@@ -29,8 +29,7 @@ import fj.Unit;
 import fj.control.parallel.ParModule;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
-import fj.data.IO;
-import fj.data.Iteratee;
+import fj.data.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
 

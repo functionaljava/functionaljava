@@ -4,7 +4,7 @@ package data
 import Equal.{listEqual, anyEqual}
 import Unit.unit
 import fj.Show.{listShow, anyShow}
-import fj.data.IO._
+import fj.data.IOFunctions._
 import fj.data.Iteratee.IterV
 import java.io.{File, BufferedWriter, OutputStreamWriter, FileOutputStream}
 import java.nio.charset.Charset
