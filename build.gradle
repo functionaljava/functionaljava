@@ -65,7 +65,11 @@ subprojects {
 
     repositories {
         mavenCentral()
-    }
+		maven {
+			url sonatypeRepositoryUrl
+		}
+
+	}
 
     apply from: "$rootDir/lib.gradle"
     apply plugin: "maven"

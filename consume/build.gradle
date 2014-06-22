@@ -1,10 +1,4 @@
 
-repositories {
-    maven {
-        url sonatypeRepositoryUrl
-    }
-}
-
 dependencies {
     compile("$group:$projectName:$fjConsumeVersion")
 }

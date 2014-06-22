@@ -13,13 +13,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import fj.F;
-import fj.F1Functions;
-import fj.Function;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.Unit;
+import fj.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
 
@@ -309,4 +303,36 @@ public abstract class IOFunctions {
       }
     };
   }
+
+	/**
+	 * Evaluate each action in the sequence from left to right, and collect the results.
+	 *
+	 * @param list
+	 * @return
+	 */
+	public static <A> IO<List<A>> sequence(List<IO<A>> list) {
+		F2<IO<A>, IO<List<A>>, IO<List<A>>> f2 = (io, ioList) ->
+				IOFunctions.bind(ioList, (xs) -> map(io, x -> List.cons(x, xs)));
+		return list.foldRight(f2, IOFunctions.unit(List.<A>nil()));
+	}
+
+	/**
+	 * Map each element of a structure to an action, evaluate these actions from left to right
+	 * and collect the results.
+	 *
+	 * @param list
+	 * @param f
+	 * @return
+	 */
+	public static <A, B> IO<List<B>> traverse(List<A> list, F<A, IO<B>> f) {
+		F2<A, IO<List<B>>, IO<List<B>>> f2 = (a, acc) ->
+				bind(acc, (bs) -> map(f.f(a), b -> bs.append(List.list(b))));
+		return list.foldRight(f2, IOFunctions.unit(List.<B>nil()));
+	}
+
+	public static <A> IO<A> join(IO<IO<A>> io1) {
+		return bind(io1, io2 -> io2);
+	}
+
+
 }
