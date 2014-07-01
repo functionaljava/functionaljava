@@ -18,28 +18,6 @@ String findJavaCommand(String command) {
     findCommand("$jh/bin", command)
 }
 
-List<String> projectClasses(List<String> list, String base) {
-    list.collect {
-        "$base/$it/build/classes/main"
-    }
-}
-
-def createDynamicJavadoc(String module, List<String> paths) {
-    def taskName = "dynamicJava8Javadoc"
-    task "$taskName"(type: Exec) {
-        def cp = projectClasses(paths, "$module/..").join(";")
-        def c = findJavaCommand("javadoc")
-        commandLine c, "-sourcepath", "$module/src/main/java", "-d", "$module/build/docs/javadoc", "-subpackages", "fj", "-Xdoclint:none", "-quiet", "-classpath", cp
-    }
-    project.tasks[taskName]
-}
-
 ext {
-    createDynamicJavadoc = this.&createDynamicJavadoc
     findJavaCommand = this.&findJavaCommand
-}
-
-task java8Javadoc(type: Exec) {
-    def c = findJavaCommand("javadoc")
-    commandLine c, "-sourcepath", "$projectDir/src/main/java", "-d", "$buildDir/docs/javadoc", "-subpackages", "fj", "-Xdoclint:none", "-quiet"
 }
