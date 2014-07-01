@@ -34,8 +34,8 @@ import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
 
 /**
- * Reads words and their counts from files ({@link #getWordsAndCountsFromFiles(List)} in a single thread
- * and {@link #getWordsAndCountsFromFilesInParallel(List, int)} in multiple threads). The files are created
+ * Reads words and their counts from files ({@link #getWordsAndCountsFromFiles} in a single thread
+ * and {@link #getWordsAndCountsFromFilesInParallel} in multiple threads). The files are created
  * initially and populated with some sample content.
  * 
  * @author Martin Grotzke
