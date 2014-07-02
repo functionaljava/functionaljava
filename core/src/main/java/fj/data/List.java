@@ -1383,6 +1383,10 @@ public abstract class List<A> implements Iterable<A> {
     };
   }
 
+  public static <A> F2<A, List<A>, List<A>> cons_() {
+      return (a, listA) -> cons(a, listA);
+  }
+
   /**
    * Returns a function that prepends a value to the given list.
    *
