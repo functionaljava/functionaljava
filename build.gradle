@@ -155,3 +155,7 @@ subprojects {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
+
+task env << {
+	println System.getenv()
+}
