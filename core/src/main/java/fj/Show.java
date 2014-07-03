@@ -179,7 +179,7 @@ public final class Show<A> {
   public static <A> Show<A> anyShow() {
     return new Show<A>(new F<A, Stream<Character>>() {
       public Stream<Character> f(final A a) {
-        return Stream.fromString(a.toString());
+        return Stream.fromString((a == null) ? "null" : a.toString());
       }
     });
   }
