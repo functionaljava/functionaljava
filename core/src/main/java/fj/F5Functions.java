@@ -13,12 +13,12 @@ public class F5Functions {
      * @param t A TryCatch5 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, B, C, D, E, F> F5<A, B, C, D, E, Validation<Exception, F>> toF5(final TryCatch5<A, B, C, D, E, F> t) {
+    static public <A, B, C, D, E, F, Z extends Exception> F5<A, B, C, D, E, Validation<Z, F>> toF5(final TryCatch5<A, B, C, D, E, F, Z> t) {
         return (a, b, c, d, e) -> {
             try {
                 return Validation.success(t.f(a, b, c, d, e));
             } catch (Exception ex) {
-                return Validation.fail(ex);
+                return Validation.fail((Z) ex);
             }
         };
     }

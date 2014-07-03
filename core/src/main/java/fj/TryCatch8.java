@@ -9,8 +9,8 @@ package fj;
  * @version %build.number%
  */
 
-public interface TryCatch8<A, B, C, D, E, F, G, H, I> {
+public interface TryCatch8<A, B, C, D, E, F, G, H, I, Z extends Exception> {
 
-    I f(A a, B b, C c, D d, E e, F f, G g, H h) throws Exception;
+    I f(A a, B b, C c, D d, E e, F f, G g, H h) throws Z;
 
 }

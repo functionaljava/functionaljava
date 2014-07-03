@@ -64,27 +64,27 @@ public final class Java8 {
         return f -> (a, b) -> f.f(a, b);
     }
 
-    static public <A> Supplier<Validation<Exception, A>> TryCatch0_Supplier(final TryCatch0<A> t) {
-        return Java8.<A>TryCatch0_Supplier().f(t);
+    static public <A, E extends Exception> Supplier<Validation<E, A>> TryCatch0_Supplier(final TryCatch0<A, E> t) {
+        return Java8.<A, E>TryCatch0_Supplier().f(t);
     }
 
-    static public <A> F<TryCatch0<A>, Supplier<Validation<Exception, A>>> TryCatch0_Supplier() {
+    static public <A, E extends Exception> F<TryCatch0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
         return t -> () -> P1Functions.toP1(t)._1();
     }
 
-    static public <A, B> Function<A, Validation<Exception, B>> TryCatch1_Function(final TryCatch1<A, B> t) {
-        return Java8.<A, B>TryCatch1_Function().f(t);
+    static public <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final TryCatch1<A, B, E> t) {
+        return Java8.<A, B, E>TryCatch1_Function().f(t);
     }
 
-    static public <A, B> F<TryCatch1<A, B>, Function<A, Validation<Exception, B>>> TryCatch1_Function() {
+    static public <A, B, E extends Exception> F<TryCatch1<A, B, E>, Function<A, Validation<E, B>>> TryCatch1_Function() {
         return t -> a -> F1Functions.toF1(t).f(a);
     }
 
-    static public <A, B, C> BiFunction<A, B, Validation<Exception, C>> TryCatch2_BiFunction(final TryCatch2<A, B, C> t) {
-        return Java8.<A, B, C>TryCatch2_BiFunction().f(t);
+    static public <A, B, C, E extends Exception> BiFunction<A, B, Validation<E, C>> TryCatch2_BiFunction(final TryCatch2<A, B, C, E> t) {
+        return Java8.<A, B, C, E>TryCatch2_BiFunction().f(t);
     }
 
-    static public <A, B, C> F<TryCatch2<A, B, C>, BiFunction<A, B, Validation<Exception, C>>> TryCatch2_BiFunction() {
+    static public <A, B, C, E extends Exception> F<TryCatch2<A, B, C, E>, BiFunction<A, B, Validation<E, C>>> TryCatch2_BiFunction() {
         return t -> (a, b) -> F2Functions.toF2(t).f(a, b);
     }
 

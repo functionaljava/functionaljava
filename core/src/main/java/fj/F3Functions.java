@@ -16,12 +16,12 @@ public class F3Functions {
      * @param t A TryCatch3 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, B, C, D> F3<A, B, C, Validation<Exception, D>> toF3(final TryCatch3<A, B, C, D> t) {
+    static public <A, B, C, D, E extends Exception> F3<A, B, C, Validation<E, D>> toF3(final TryCatch3<A, B, C, D, E> t) {
         return (a, b, c) -> {
             try {
                 return success(t.f(a, b, c));
             } catch (Exception e) {
-                return fail(e);
+                return fail((E) e);
             }
         };
     }

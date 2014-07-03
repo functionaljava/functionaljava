@@ -9,8 +9,8 @@ package fj;
  * @version %build.number%
  */
 
-public interface TryCatch3<A, B, C, D> {
+public interface TryCatch3<A, B, C, D, E extends Exception> {
 
-    D f(A a, B b, C c) throws Exception;
+    D f(A a, B b, C c) throws E;
 
 }

@@ -14,12 +14,12 @@ public class F4Functions {
      * @param t A TryCatch4 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, B, C, D, E> F4<A, B, C, D, Validation<Exception, E>> toF4(final TryCatch4<A, B, C, D, E> t) {
+    static public <A, B, C, D, E, Z extends Exception> F4<A, B, C, D, Validation<Z, E>> toF4(final TryCatch4<A, B, C, D, E, Z> t) {
         return (a, b, c, d) -> {
             try {
                 return Validation.success(t.f(a, b, c, d));
             } catch (Exception ex) {
-                return Validation.fail(ex);
+                return Validation.fail((Z) ex);
             }
         };
     }

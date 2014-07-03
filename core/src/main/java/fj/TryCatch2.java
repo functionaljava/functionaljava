@@ -9,8 +9,8 @@ package fj;
  * @version %build.number%
  */
 
-public interface TryCatch2<A, B, C> {
+public interface TryCatch2<A, B, C, E extends Exception> {
 
-    C f(A a, B b) throws Exception;
+    C f(A a, B b) throws E;
 
 }

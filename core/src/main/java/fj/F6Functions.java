@@ -13,12 +13,12 @@ public class F6Functions {
      * @param t A TryCatch6 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, B, C, D, E, F, G> F6<A, B, C, D, E, F, Validation<Exception, G>> toF6(final TryCatch6<A, B, C, D, E, F, G> t) {
+    static public <A, B, C, D, E, F, G, Z extends Exception> F6<A, B, C, D, E, F, Validation<Z, G>> toF6(final TryCatch6<A, B, C, D, E, F, G, Z> t) {
         return (a, b, c, d, e, f) -> {
             try {
                 return Validation.success(t.f(a, b, c, d, e, f));
             } catch (Exception ex) {
-                return Validation.fail(ex);
+                return Validation.fail((Z) ex);
             }
         };
     }

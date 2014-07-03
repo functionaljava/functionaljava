@@ -353,12 +353,12 @@ public class F2Functions {
      * @param t A TryCatch2 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, B, C> F2<A, B, Validation<Exception, C>> toF2(final TryCatch2<A, B, C> t) {
+    static public <A, B, C, E extends Exception> F2<A, B, Validation<E, C>> toF2(final TryCatch2<A, B, C, E> t) {
         return (a, b) -> {
             try {
                 return Validation.success(t.f(a, b));
             } catch (Exception e) {
-                return Validation.fail(e);
+                return Validation.fail((E) e);
             }
         };
     }

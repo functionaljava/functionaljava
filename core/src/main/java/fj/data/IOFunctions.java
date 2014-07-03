@@ -26,7 +26,7 @@ import fj.data.Iteratee.IterV;
  * @author Martin Grotzke
  *
  */
-public abstract class IOFunctions {
+public class IOFunctions {
   
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
@@ -334,5 +334,8 @@ public abstract class IOFunctions {
 		return bind(io1, io2 -> io2);
 	}
 
+	public static <A> SafeIO<IOException, A> toSafeIO(IO<A> io) {
+		return () -> P1Functions.toP1(() -> io.run())._1();
+	}
 
 }
