@@ -184,7 +184,8 @@ public final class Property {
           break;
         }
       } catch (final Throwable t) {
-        genException(t, s, d);
+        res = genException(t, s, d);
+        break;
       }
     }
 
