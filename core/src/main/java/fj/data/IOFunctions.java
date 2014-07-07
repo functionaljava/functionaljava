@@ -338,4 +338,47 @@ public class IOFunctions {
 		return () -> P1Functions.toP1(() -> io.run())._1();
 	}
 
+	public static <A, B> IO<B> append(final IO<A> io1, final IO<B> io2) {
+		return () -> {
+			io1.run();
+			return io2.run();
+		};
+	}
+
+	public static <A, B> IO<A> left(final IO<A> io1, final IO<B> io2) {
+		return () -> {
+			A a = io1.run();
+			io2.run();
+			return a;
+		};
+	}
+
+	public static <A, B> IO<B> flatMap(final IO<A> io, final F<A, IO<B>> f) {
+		return bind(io, f);
+	}
+
+	static <A> IO<Stream<A>> sequenceWhile(final Stream<IO<A>> stream, final F<A, Boolean> f) {
+		return new IO<Stream<A>>() {
+			@Override
+			public Stream<A> run() throws IOException {
+				boolean loop = true;
+				Stream<IO<A>> input = stream;
+				Stream<A> result = Stream.<A>nil();
+				while (loop) {
+					if (input.isEmpty()) {
+						loop = false;
+					} else {
+						A a = input.head().run();
+						if (!f.f(a)) {
+							loop = false;
+						} else {
+							input = input.tail()._1();
+							result = result.cons(a);
+						}
+					}
+				}
+				return result.reverse();
+			}
+		};
+	}
 }
