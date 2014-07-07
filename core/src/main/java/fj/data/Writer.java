@@ -2,6 +2,8 @@ package fj.data;
 
 import fj.F;
 import fj.F2;
+import fj.P;
+import fj.P2;
 
 /**
  * Created by MarkPerry on 7/07/2014.
@@ -20,6 +22,10 @@ public class Writer<W, A> {
 		value = a;
 		log = w;
 		plus = f;
+	}
+
+	public P2<W, A> run() {
+		return P.p(log, value);
 	}
 
 	public static <W, B> Writer<W, B> unit(B a, W w, F2<W, W, W> f) {
