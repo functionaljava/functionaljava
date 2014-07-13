@@ -306,9 +306,6 @@ public class IOFunctions {
 
 	/**
 	 * Evaluate each action in the sequence from left to right, and collect the results.
-	 *
-	 * @param list
-	 * @return
 	 */
 	public static <A> IO<List<A>> sequence(List<IO<A>> list) {
 		F2<IO<A>, IO<List<A>>, IO<List<A>>> f2 = (io, ioList) ->
@@ -319,10 +316,6 @@ public class IOFunctions {
 	/**
 	 * Map each element of a structure to an action, evaluate these actions from left to right
 	 * and collect the results.
-	 *
-	 * @param list
-	 * @param f
-	 * @return
 	 */
 	public static <A, B> IO<List<B>> traverse(List<A> list, F<A, IO<B>> f) {
 		F2<A, IO<List<B>>, IO<List<B>>> f2 = (a, acc) ->
