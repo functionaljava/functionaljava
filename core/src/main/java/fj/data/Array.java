@@ -292,6 +292,144 @@ public final class Array<A> implements Iterable<A> {
   }
 
   /**
+   * Performs a fold left accummulating and returns an array of the intermediate results.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (initial value/previous result and next array element)
+   * @param b The beginning value to start the application from.
+   * @return The array containing all intermediate results of the left-fold reduction.
+   */
+  @SuppressWarnings({"unchecked"})
+  public <B> Array<B> scanLeft(final F<B, F<A, B>> f, final B b) {
+    final Object[] bs = new Object[a.length];
+    B x = b;
+    
+    for (int i = 0; i < a.length; i++) {
+      x = f.f(x).f((A) a[i]);
+      bs[i] = x;
+    }
+    
+    return new Array<B>(bs);
+  }
+
+  /**
+   * Performs a left-fold accummulating and returns an array of the intermediate results.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (initial value/previous result and next array element)
+   * @param b The beginning value to start the application from.
+   * @return The array containing all intermediate results of the left-fold reduction.
+   */
+  public <B> Array<B> scanLeft(final F2<B, A, B> f, final B b) {
+    return scanLeft(curry(f), b);
+  }
+
+  /**
+   * Performs a left-fold accummulating using first array element as a starting value
+   * and returns an array of the intermediate results.
+   * It will fail for empty arrays.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (next array element and first array element/previous result)
+   * @return The array containing all intermediate results of the left-fold reduction.
+   */
+  @SuppressWarnings({"unchecked"})
+  public Array<A> scanLeft1(final F<A, F<A, A>> f) {
+    final Object[] bs = new Object[a.length];
+    A x = get(0);
+	bs[0] = x;
+
+    for (int i = 1; i < a.length; i++) {
+      x = f.f(x).f((A) a[i]);
+      bs[i] = x;
+    }
+
+    return new Array<A>(bs);
+  }
+
+  /**
+   * Performs a left-fold accummulating using first array element as a starting value
+   * and returns an array of the intermediate results.
+   * It will fail for empty arrays.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (next array element and first array element/previous result)
+   * @return The array containing all intermediate results of the left-fold reduction.
+   */
+  public Array<A> scanLeft1(final F2<A, A, A> f) {
+    return scanLeft1(curry(f));
+  }
+
+  /**
+   * Performs a right-fold accummulating and returns an array of the intermediate results.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (previous array element and initial value/previous result)
+   * @param b The beginning value to start the application from.
+   * @return The array containing all intermediate results of the right-fold reduction.
+   */
+  @SuppressWarnings({"unchecked"})
+  public <B> Array<B> scanRight(final F<A, F<B, B>>f, final B b) {
+    final Object[] bs = new Object[a.length];
+    B x = b;
+
+    for (int i = a.length - 1; i >= 0; i--) {
+      x = f.f((A) a[i]).f(x);
+      bs[i] = x;
+    }
+
+    return new Array<B>(bs);
+  }
+
+  /**
+   * Performs a right-fold accummulating and returns an array of the intermediate results.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (previous array element and initial value/previous result)
+   * @param b The beginning value to start the application from.
+   * @return The array containing all intermediate results of the right-fold reduction.
+   */
+  public <B> Array<B> scanRight(final F2<A, B, B> f, final B b) {
+    return scanRight(curry(f), b);
+  }
+
+  /**
+   * Performs a right-fold accummulating using last array element as a starting value
+   * and returns an array of the intermediate results.
+   * It will fail for empty arrays.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (previous array element and last array element/previous result)
+   * @return The array containing all intermediate results of the right-fold reduction.
+   */
+  @SuppressWarnings({"unchecked"})
+  public Array<A> scanRight1(final F<A, F<A, A>>f) {
+    final Object[] bs = new Object[a.length];
+    A x = get(length() - 1);
+	bs[length() - 1] = x;
+
+    for (int i = a.length - 2; i >= 0; i--) {
+      x = f.f((A) a[i]).f(x);
+      bs[i] = x;
+    }
+
+    return new Array<A>(bs);
+  }
+
+  /**
+   * Performs a right-fold accummulating using last array element as a starting value
+   * and returns an array of the intermediate results.
+   * It will fail for empty arrays.
+   * This function runs in constant stack space.
+   *
+   * @param f The function to apply on each argument pair (previous array element and last array element/previous result)
+   * @return The array containing all intermediate results of the right-fold reduction.
+   */
+  public Array<A> scanRight1(final F2<A, A, A> f) {
+    return scanRight1(curry(f));
+  }
+
+  /**
    * Binds the given function across each element of this array with a final join.
    *
    * @param f The function to apply to each element of this array.
