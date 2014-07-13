@@ -168,7 +168,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return The value of this optional value if there there is one.
    */
   public final A valueE(final P1<String> message) {
-    if(isSome())
+    if (isSome())
       return some();
     else
       throw error(message._1());
@@ -181,7 +181,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return The value of this optional value if there there is one.
    */
   public final A valueE(final String message) {
-    if(isSome())
+    if (isSome())
       return some();
     else
       throw error(message);
@@ -290,7 +290,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A new optional value after performing the map, then final join.
    */
   public final <B, C, D, E> Option<E> bind(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                     final F<A, F<B, F<C, F<D, E>>>> f) {
+                                           final F<A, F<B, F<C, F<D, E>>>> f) {
     return od.apply(bind(ob, oc, f));
   }
 
@@ -307,7 +307,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A new optional value after performing the map, then final join.
    */
   public final <B, C, D, E, F$> Option<F$> bind(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                          final Option<E> oe, final F<A, F<B, F<C, F<D, F<E, F$>>>>> f) {
+                                                final Option<E> oe, final F<A, F<B, F<C, F<D, F<E, F$>>>>> f) {
     return oe.apply(bind(ob, oc, od, f));
   }
 
@@ -325,8 +325,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A new optional value after performing the map, then final join.
    */
   public final <B, C, D, E, F$, G> Option<G> bind(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                            final Option<E> oe, final Option<F$> of,
-                                            final F<A, F<B, F<C, F<D, F<E, F<F$, G>>>>>> f) {
+                                                  final Option<E> oe, final Option<F$> of,
+                                                  final F<A, F<B, F<C, F<D, F<E, F<F$, G>>>>>> f) {
     return of.apply(bind(ob, oc, od, oe, f));
   }
 
@@ -345,8 +345,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A new optional value after performing the map, then final join.
    */
   public final <B, C, D, E, F$, G, H> Option<H> bind(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                               final Option<E> oe, final Option<F$> of, final Option<G> og,
-                                               final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>> f) {
+                                                     final Option<E> oe, final Option<F$> of, final Option<G> og,
+                                                     final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>> f) {
     return og.apply(bind(ob, oc, od, oe, of, f));
   }
 
@@ -366,45 +366,45 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A new optional value after performing the map, then final join.
    */
   public final <B, C, D, E, F$, G, H, I> Option<I> bind(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                                  final Option<E> oe, final Option<F$> of, final Option<G> og,
-                                                  final Option<H> oh,
-                                                  final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>> f) {
+                                                        final Option<E> oe, final Option<F$> of, final Option<G> og,
+                                                        final Option<H> oh,
+                                                        final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>> f) {
     return oh.apply(bind(ob, oc, od, oe, of, og, f));
   }
 
-  public final <B> Option<P2<A,B>> bindProduct(final Option<B> ob) {
-    return bind(ob, P.<A,B>p2()); 
+  public final <B> Option<P2<A, B>> bindProduct(final Option<B> ob) {
+    return bind(ob, P.<A, B>p2());
   }
 
-  public final <B, C> Option<P3<A,B,C>> bindProduct(final Option<B> ob, final Option<C> oc) {
-    return bind(ob, oc, P.<A,B,C>p3());
+  public final <B, C> Option<P3<A, B, C>> bindProduct(final Option<B> ob, final Option<C> oc) {
+    return bind(ob, oc, P.<A, B, C>p3());
   }
-  
-  public final <B, C, D> Option<P4<A,B,C,D>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od) {
+
+  public final <B, C, D> Option<P4<A, B, C, D>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od) {
     return bind(ob, oc, od, P.<A, B, C, D>p4());
   }
-  
-  public final <B,C,D,E> Option<P5<A,B,C,D,E>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                                     final Option<E> oe) {
+
+  public final <B, C, D, E> Option<P5<A, B, C, D, E>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od,
+                                                                  final Option<E> oe) {
     return bind(ob, oc, od, oe, P.<A, B, C, D, E>p5());
   }
 
-  public final <B,C,D,E,F$> Option<P6<A,B,C,D,E,F$>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od,
-                                                           final Option<E> oe, final Option<F$> of) {
+  public final <B, C, D, E, F$> Option<P6<A, B, C, D, E, F$>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od,
+                                                                          final Option<E> oe, final Option<F$> of) {
     return bind(ob, oc, od, oe, of, P.<A, B, C, D, E, F$>p6());
   }
 
-  public final <B,C,D,E,F$,G> Option<P7<A,B,C,D,E,F$,G>> bindProduct(final Option<B> ob, final Option<C> oc,
-                                                               final Option<D> od, final Option<E> oe,
-                                                               final Option<F$> of, final Option<G> og) {
+  public final <B, C, D, E, F$, G> Option<P7<A, B, C, D, E, F$, G>> bindProduct(final Option<B> ob, final Option<C> oc,
+                                                                                final Option<D> od, final Option<E> oe,
+                                                                                final Option<F$> of, final Option<G> og) {
     return bind(ob, oc, od, oe, of, og, P.<A, B, C, D, E, F$, G>p7());
   }
 
-  public final <B,C,D,E,F$,G,H> Option<P8<A,B,C,D,E,F$,G,H>> bindProduct(final Option<B> ob, final Option<C> oc,
-                                                                   final Option<D> od, final Option<E> oe,
-                                                                   final Option<F$> of, final Option<G> og,
-                                                                   final Option<H> oh) {
-    return bind(ob, oc, od, oe, of, og, oh, P.<A,B,C,D,E,F$,G,H>p8());
+  public final <B, C, D, E, F$, G, H> Option<P8<A, B, C, D, E, F$, G, H>> bindProduct(final Option<B> ob, final Option<C> oc,
+                                                                                      final Option<D> od, final Option<E> oe,
+                                                                                      final Option<F$> of, final Option<G> og,
+                                                                                      final Option<H> oh) {
+    return bind(ob, oc, od, oe, of, og, oh, P.<A, B, C, D, E, F$, G, H>p8());
   }
 
   /**
@@ -492,6 +492,42 @@ public abstract class Option<A> implements Iterable<A> {
       }
     });
   }
+
+  /**
+   * Returns a validation projection of this optional value; the given argument as the <code>Fail</code> projection
+   * if no value, or the value in <code>Success</code>.
+   *
+   * @param e The error or failing value
+   * @return A validation projection of this optional value.
+   */
+  public final <E> Validation<E, A> toValidation(final E e) {
+    return isSome() ? Validation.<E, A>success(some()) : Validation.<E, A>fail(e);
+  }
+
+  /**
+   * Returns a validation projection of this optional value; the given argument as the <code>Fail</code> projection
+   * if no value, or the value in <code>Success</code>.
+   *
+   * @param e The error or failing value
+   * @return A validation projection of this optional value.
+   */
+  public final <E> Validation<E, A> toValidation(final P1<E> e) {
+    return isSome() ? Validation.<E, A>success(some()) : Validation.<E, A>fail(e._1());
+  }
+
+  /**
+   * A first-class version of the toValidation method.
+   *
+   * @return A function that returns a validation projection of a given optional value, given a value to return in the failure case.
+   */
+  public static <A, E> F<Option<A>, F<E, Validation<E,A>>> toValidation() {
+    return curry(new F2<Option<A>,E, Validation<E,A>>() {
+      public Validation<E, A> f(final Option<A> a, final E e) {
+        return a.toValidation(e);
+      }
+    });
+  }
+
 
   /**
    * Returns a list projection of this optional value.
@@ -597,18 +633,18 @@ public abstract class Option<A> implements Iterable<A> {
 
     @Override
     public int hashCode() {
-       return 31;
+      return 31;
     }
 
     @Override
     public boolean equals(Object obj) {
-       if (this == obj)
-          return true;
-       if (obj == null)
-          return false;
-       if (getClass() != obj.getClass())
-          return false;
-       return true;
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      return true;
     }
   }
 
@@ -625,27 +661,27 @@ public abstract class Option<A> implements Iterable<A> {
 
     @Override
     public int hashCode() {
-       final int prime = 31;
-       int result = 1;
-       result = prime * result + ((a == null) ? 0 : a.hashCode());
-       return result;
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((a == null) ? 0 : a.hashCode());
+      return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-       if (this == obj)
-          return true;
-       if (obj == null)
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Some<?> other = (Some<?>) obj;
+      if (a == null) {
+        if (other.a != null)
           return false;
-       if (getClass() != obj.getClass())
-          return false;
-       Some<?> other = (Some<?>) obj;
-       if (a == null) {
-          if (other.a != null)
-             return false;
-       } else if (!a.equals(other.a))
-          return false;
-       return true;
+      } else if (!a.equals(other.a))
+        return false;
+      return true;
     }
 
   }
@@ -729,12 +765,12 @@ public abstract class Option<A> implements Iterable<A> {
    */
   public static <A> Option<List<A>> sequence(final List<Option<A>> a) {
     return a.isEmpty() ?
-           some(List.<A>nil()) :
-           a.head().bind(new F<A, Option<List<A>>>() {
-             public Option<List<A>> f(final A aa) {
-               return sequence(a.tail()).map(cons_(aa));
-             }
-           });
+            some(List.<A>nil()) :
+            a.head().bind(new F<A, Option<List<A>>>() {
+              public Option<List<A>> f(final A aa) {
+                return sequence(a.tail()).map(cons_(aa));
+              }
+            });
   }
 
   /**
@@ -907,53 +943,53 @@ public abstract class Option<A> implements Iterable<A> {
    * A function that parses a string to a byte.
    */
   public static final F<String, Option<Byte>> parseByte = new F<String, Option<Byte>>() {
-      public Option<Byte> f(final String s) {
-          return parseByte(s).toOption();
-      }
+    public Option<Byte> f(final String s) {
+      return parseByte(s).toOption();
+    }
   };
 
   /**
    * A function that parses a string to a double.
    */
   public static final F<String, Option<Double>> parseDouble = new F<String, Option<Double>>() {
-      public Option<Double> f(final String s) {
-          return parseDouble(s).toOption();
-      }
+    public Option<Double> f(final String s) {
+      return parseDouble(s).toOption();
+    }
   };
 
   /**
    * A function that parses a string to a float.
    */
   public static final F<String, Option<Float>> parseFloat = new F<String, Option<Float>>() {
-      public Option<Float> f(final String s) {
-          return parseFloat(s).toOption();
-      }
+    public Option<Float> f(final String s) {
+      return parseFloat(s).toOption();
+    }
   };
 
   /**
    * A function that parses a string to an integer.
    */
   public static final F<String, Option<Integer>> parseInt = new F<String, Option<Integer>>() {
-      public Option<Integer> f(final String s) {
-          return parseInt(s).toOption();
-      }
+    public Option<Integer> f(final String s) {
+      return parseInt(s).toOption();
+    }
   };
 
   /**
    * A function that parses a string to a long.
    */
   public static final F<String, Option<Long>> parseLong = new F<String, Option<Long>>() {
-      public Option<Long> f(final String s) {
-          return parseLong(s).toOption();
-      }
+    public Option<Long> f(final String s) {
+      return parseLong(s).toOption();
+    }
   };
 
   /**
    * A function that parses a string to a short.
    */
   public static final F<String, Option<Short>> parseShort = new F<String, Option<Short>>() {
-      public Option<Short> f(final String s) {
-          return parseShort(s).toOption();
-      }
+    public Option<Short> f(final String s) {
+      return parseShort(s).toOption();
+    }
   };
 }
