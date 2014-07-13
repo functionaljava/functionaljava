@@ -4,7 +4,6 @@ apply plugin: 'retrolambda'
 
 mainClassName = "fj.demo.euler.Problem2"
 
-sourceCompatibility = "1.8"
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")

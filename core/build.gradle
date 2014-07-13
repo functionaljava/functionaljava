@@ -9,7 +9,6 @@ dependencies {
     testCompile dependencyJunit
 }
 
-sourceCompatibility = "1.8"
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")

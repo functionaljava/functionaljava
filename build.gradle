@@ -75,7 +75,7 @@ subprojects {
     apply plugin: "maven"
     apply plugin: "java"
 
-    sourceCompatibility = "1.7"
+    sourceCompatibility = "1.8"
 
     if (doSigning()) {
         apply plugin: "signing"
