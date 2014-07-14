@@ -403,7 +403,8 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
-   * Groups elements according to the given equality implementation.
+   * Groups elements according to the given equality implementation by longest
+   * sequence of equal elements.
    *
    * @param e The equality implementation for the elements.
    * @return A list of grouped elements.
