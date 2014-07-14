@@ -1,14 +1,13 @@
 package fj;
 
-import fj.test.Arbitrary;
 import fj.test.Property;
 import org.junit.Test;
 
 import static fj.test.Arbitrary.arbInteger;
-import static fj.test.Arbitrary.arbString;
 import static fj.test.CheckResult.summary;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by mperry on 14/07/2014.
@@ -31,6 +30,27 @@ public class MemoisationTest {
             return prop(t._1() == t._1() && t._2() == t._2());
         });
         summary.println(p.check());
+    }
+
+    static P2<Integer, Integer> pair = P.p(0, 0);
+
+    static Integer count(int i) {
+        if (i == 1) {
+            pair = P.p(pair._1() + 1, pair._2());
+            return pair._1();
+        } else if (i == 2) {
+            pair = P.p(pair._1(), pair._2() + 1);
+            return pair._2();
+        } else {
+            return -1;
+        }
+    }
+
+    @Test
+    public void testRecomputeP2() {
+        P2<Integer, Integer> t = P.lazy(() -> count(1), () -> count(2)).memo();
+        System.out.println("tuple: " + t + " 1:" + t._1() + " 2: " + t._2());
+        assertTrue(t._1() == t._1() && t._2() == t._2());
     }
 
     @Test
@@ -86,6 +106,5 @@ public class MemoisationTest {
         });
         summary.println(p.check());
     }
-
 
 }
