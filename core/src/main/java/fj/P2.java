@@ -180,25 +180,26 @@ public abstract class P2<A, B> {
     return F1Functions.lazy(P2.<A, B>__2()).f(this);
   }
 
-  /**
-   * Provides a memoising P2 that remembers its values.
-   *
-   * @return A P2 that calls this P2 once for any given element and remembers the value for subsequent calls.
-   */
-  public final P2<A, B> memo() {
-    return new P2<A, B>() {
-      private final P1<A> a = P1Functions.memo(_1_());
-      private final P1<B> b = P1Functions.memo(_2_());
+    /**
+     * Provides a memoising P2 that remembers its values.
+     *
+     * @return A P2 that calls this P2 once for any given element and remembers the value for subsequent calls.
+     */
+    public final P2<A, B> memo() {
+        P2<A, B> self = this;
+        return new P2<A, B>() {
+            private final P1<A> a = P1Functions.memo(() -> self._1());
+            private final P1<B> b = P1Functions.memo(() -> self._2());
 
-      public A _1() {
-        return a._1();
-      }
+            public A _1() {
+                return a._1();
+            }
 
-      public B _2() {
-        return b._1();
-      }
-    };
-  }
+            public B _2() {
+                return b._1();
+            }
+        };
+    }
 
   /**
    * A first-class version of the split function.

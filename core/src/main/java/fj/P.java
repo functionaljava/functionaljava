@@ -37,7 +37,202 @@ public final class P {
     };
   }
 
-  /**
+
+    public static <A> P1<A> lazy(final P1<A> pa) {
+        return pa;
+    }
+
+    public static <A, B> P2<A, B> lazy(final P1<A> pa, final P1<B> pb) {
+        return new P2<A, B>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+        };
+    }
+
+    public static <A, B, C> P3<A, B, C> lazy(final P1<A> pa, final P1<B> pb, final P1<C> pc) {
+        return new P3<A, B, C>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+            @Override
+            public C _3() {
+                return pc._1();
+            }
+        };
+    }
+
+    public static <A, B, C, D> P4<A, B, C, D> lazy(final P1<A> pa, final P1<B> pb, final P1<C> pc, final P1<D> pd) {
+        return new P4<A, B, C, D>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+            @Override
+            public C _3() {
+                return pc._1();
+            }
+
+            @Override
+            public D _4() {
+                return pd._1();
+            }
+        };
+    }
+
+    public static <A, B, C, D, E> P5<A, B, C, D, E> lazy(final P1<A> pa, final P1<B> pb, final P1<C> pc, final P1<D> pd, P1<E> pe) {
+        return new P5<A, B, C, D, E>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+            @Override
+            public C _3() {
+                return pc._1();
+            }
+
+            @Override
+            public D _4() {
+                return pd._1();
+            }
+
+            @Override
+            public E _5() {
+                return pe._1();
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F> P6<A, B, C, D, E, F> lazy(final P1<A> pa, final P1<B> pb, final P1<C> pc, final P1<D> pd, P1<E> pe, P1<F> pf) {
+        return new P6<A, B, C, D, E, F>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+            @Override
+            public C _3() {
+                return pc._1();
+            }
+
+            @Override
+            public D _4() {
+                return pd._1();
+            }
+
+            @Override
+            public E _5() {
+                return pe._1();
+            }
+
+            @Override
+            public F _6() {
+                return pf._1();
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F, G> P7<A, B, C, D, E, F, G> lazy(final P1<A> pa, final P1<B> pb, final P1<C> pc, final P1<D> pd, P1<E> pe, P1<F> pf, P1<G> pg) {
+        return new P7<A, B, C, D, E, F, G>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+            @Override
+            public C _3() {
+                return pc._1();
+            }
+
+            @Override
+            public D _4() {
+                return pd._1();
+            }
+
+            @Override
+            public E _5() {
+                return pe._1();
+            }
+
+            @Override
+            public F _6() {
+                return pf._1();
+            }
+
+            @Override
+            public G _7() {
+                return pg._1();
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F, G, H> P8<A, B, C, D, E, F, G, H> lazy(final P1<A> pa, final P1<B> pb, final P1<C> pc, final P1<D> pd, P1<E> pe, P1<F> pf, P1<G> pg, P1<H> ph) {
+        return new P8<A, B, C, D, E, F, G, H>() {
+            @Override
+            public A _1() {
+                return pa._1();
+            }
+            @Override
+            public B _2() {
+                return pb._1();
+            }
+            @Override
+            public C _3() {
+                return pc._1();
+            }
+
+            @Override
+            public D _4() {
+                return pd._1();
+            }
+
+            @Override
+            public E _5() {
+                return pe._1();
+            }
+
+            @Override
+            public F _6() {
+                return pf._1();
+            }
+
+            @Override
+            public G _7() {
+                return pg._1();
+            }
+
+            @Override
+            public H _8() {
+                return ph._1();
+            }
+        };
+    }
+
+    /**
    * A function that puts an element in a product-2.
    *
    * @return A function that puts an element in a product-2.

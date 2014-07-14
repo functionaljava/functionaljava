@@ -180,11 +180,12 @@ public abstract class P4<A, B, C, D> {
    * @return A P4 that calls this P4 once for any given element and remembers the value for subsequent calls.
    */
   public final P4<A, B, C, D> memo() {
+      P4<A, B, C, D> self = this;
     return new P4<A, B, C, D>() {
-      private final P1<A> a = P1Functions.memo(_1_());
-      private final P1<B> b = P1Functions.memo(_2_());
-      private final P1<C> c = P1Functions.memo(_3_());
-      private final P1<D> d = P1Functions.memo(_4_());
+      private final P1<A> a = P1Functions.memo(() -> self._1());
+      private final P1<B> b = P1Functions.memo(() -> self._2());
+      private final P1<C> c = P1Functions.memo(() -> self._3());
+      private final P1<D> d = P1Functions.memo(() -> self._4());
 
       public A _1() {
         return a._1();

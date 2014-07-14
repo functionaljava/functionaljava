@@ -126,10 +126,11 @@ public abstract class P3<A, B, C> {
    * @return A P3 that calls this P3 once for any given element and remembers the value for subsequent calls.
    */
   public final P3<A, B, C> memo() {
+      P3<A, B, C> self = this;
     return new P3<A, B, C>() {
-      private final P1<A> a = P1Functions.memo(_1_());
-      private final P1<B> b = P1Functions.memo(_2_());
-      private final P1<C> c = P1Functions.memo(_3_());
+      private final P1<A> a = P1Functions.memo(() -> self._1());
+      private final P1<B> b = P1Functions.memo(() -> self._2());
+      private final P1<C> c = P1Functions.memo(() -> self._3());
 
       public A _1() {
         return a._1();

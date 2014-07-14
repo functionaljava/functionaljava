@@ -391,14 +391,15 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A P7 that calls this P7 once for any given element and remembers the value for subsequent calls.
    */
   public final P7<A, B, C, D, E, F, G> memo() {
+      P7<A, B, C, D, E, F, G> self = this;
     return new P7<A, B, C, D, E, F, G>() {
-      private final P1<A> a = P1Functions.memo(_1_());
-      private final P1<B> b = P1Functions.memo(_2_());
-      private final P1<C> c = P1Functions.memo(_3_());
-      private final P1<D> d = P1Functions.memo(_4_());
-      private final P1<E> e = P1Functions.memo(_5_());
-      private final P1<F> f = P1Functions.memo(_6_());
-      private final P1<G> g = P1Functions.memo(_7_());
+      private final P1<A> a = P1Functions.memo(() -> self._1());
+      private final P1<B> b = P1Functions.memo(() -> self._2());
+      private final P1<C> c = P1Functions.memo(() -> self._3());
+      private final P1<D> d = P1Functions.memo(() -> self._4());
+      private final P1<E> e = P1Functions.memo(() -> self._5());
+      private final P1<F> f = P1Functions.memo(() -> self._6());
+      private final P1<G> g = P1Functions.memo(() -> self._7());
 
       public A _1() {
         return a._1();
