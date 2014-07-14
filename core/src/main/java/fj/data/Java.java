@@ -11,6 +11,8 @@ import fj.P2;
 import static fj.data.List.list;
 import static fj.data.Option.some;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.EnumSet;
@@ -1723,7 +1725,7 @@ public final class Java {
     return new F<ArrayList<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final ArrayList<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1741,7 +1743,7 @@ public final class Java {
     return new F<java.util.List<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final java.util.List<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1775,13 +1777,26 @@ public final class Java {
    * @return A function that converts enum sets to lists.
    */
   public static <A extends Enum<A>> F<EnumSet<A>, List<A>> EnumSet_List() {
-    return new F<EnumSet<A>, List<A>>() {
-      @SuppressWarnings({"unchecked"})
-      public List<A> f(final EnumSet<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
-      }
-    };
+	  return new F<EnumSet<A>, List<A>>() {
+		  @SuppressWarnings({"unchecked"})
+		  public List<A> f(final EnumSet<A> as) {
+			  return Collection_List(as);
+		  }
+	  };
   }
+
+	public static <A> List<A> Collection_List(Collection<A> c) {
+		return Java.<A>Collection_List().f(c);
+	}
+
+	public static <A> F<Collection<A>, List<A>> Collection_List() {
+		return c -> list(c.toArray(array(c.size())));
+	}
+
+	@SafeVarargs
+	private static <E> E[] array(int length, E... array) {
+		return Arrays.copyOf(array, length);
+	}
 
   // todo
 
@@ -1798,7 +1813,7 @@ public final class Java {
     return new F<HashSet<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final HashSet<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+        return Collection_List(as);
       }
     };
   }
@@ -1818,7 +1833,7 @@ public final class Java {
     return new F<LinkedHashSet<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final LinkedHashSet<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+        return Collection_List(as);
       }
     };
   }
@@ -1838,7 +1853,7 @@ public final class Java {
     return new F<LinkedList<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final LinkedList<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1858,7 +1873,7 @@ public final class Java {
     return new F<PriorityQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final PriorityQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1878,7 +1893,7 @@ public final class Java {
     return new F<Stack<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final Stack<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1898,7 +1913,7 @@ public final class Java {
     return new F<TreeSet<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final TreeSet<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1918,7 +1933,7 @@ public final class Java {
     return new F<Vector<A>, List<A>>() {
       @SuppressWarnings({"unchecked", "UseOfObsoleteCollectionType"})
       public List<A> f(final Vector<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1938,7 +1953,7 @@ public final class Java {
     return new F<ArrayBlockingQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final ArrayBlockingQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1958,7 +1973,7 @@ public final class Java {
     return new F<ConcurrentLinkedQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final ConcurrentLinkedQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1978,7 +1993,7 @@ public final class Java {
     return new F<CopyOnWriteArrayList<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final CopyOnWriteArrayList<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -1998,7 +2013,7 @@ public final class Java {
     return new F<CopyOnWriteArraySet<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final CopyOnWriteArraySet<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -2018,7 +2033,7 @@ public final class Java {
     return new F<DelayQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final DelayQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -2038,7 +2053,7 @@ public final class Java {
     return new F<LinkedBlockingQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final LinkedBlockingQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -2058,7 +2073,7 @@ public final class Java {
     return new F<PriorityBlockingQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final PriorityBlockingQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
@@ -2078,7 +2093,7 @@ public final class Java {
     return new F<SynchronousQueue<A>, List<A>>() {
       @SuppressWarnings({"unchecked"})
       public List<A> f(final SynchronousQueue<A> as) {
-        return list(as.toArray((A[]) new Object[as.size()]));
+		  return Collection_List(as);
       }
     };
   }
