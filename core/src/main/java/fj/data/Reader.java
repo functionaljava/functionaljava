@@ -18,6 +18,10 @@ public class Reader<A, B> {
 		return new Reader<A, B>(f);
 	}
 
+	public static <A, B> Reader<A, B> constant(B b) {
+		return unit(a -> b);
+	}
+
 	public B f(A a) {
 		return function.f(a);
 	}
