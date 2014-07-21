@@ -521,4 +521,10 @@ public abstract class P7<A, B, C, D, E, F, G> {
       }
     };
   }
+
+	public String toString() {
+		return Show.p7Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow(), Show.<G>anyShow()).showS(this);
+	}
+
+
 }

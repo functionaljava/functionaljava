@@ -234,4 +234,7 @@ public final class P1Functions {
         };
     }
 
+	static public <A> String toString(P1<A> p) {
+		return Show.p1Show(Show.<A>anyShow()).showS(p);
+	}
 }

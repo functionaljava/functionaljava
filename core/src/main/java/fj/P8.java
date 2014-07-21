@@ -627,4 +627,9 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
       }
     };
   }
+
+	public String toString() {
+		return Show.p8Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow(), Show.<G>anyShow(), Show.<H>anyShow()).showS(this);
+	}
+
 }

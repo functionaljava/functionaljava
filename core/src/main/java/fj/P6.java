@@ -426,4 +426,9 @@ public abstract class P6<A, B, C, D, E, F> {
       }
     };
   }
+
+	public String toString() {
+		return Show.p6Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow()).showS(this);
+	}
+
 }

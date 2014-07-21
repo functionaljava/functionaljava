@@ -344,4 +344,8 @@ public abstract class P2<A, B> {
     };
   }
 
+	public String toString() {
+		return Show.p2Show(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
+	}
+
 }
