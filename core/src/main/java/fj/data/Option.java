@@ -479,6 +479,10 @@ public abstract class Option<A> implements Iterable<A> {
     return isSome() ? Either.<X, A>right(some()) : Either.<X, A>left(x);
   }
 
+    public final <X> Validation<X, A> toValidation(final X x) {
+        return Validation.validation(toEither(x));
+    }
+
   /**
    * A first-class version of the toEither method.
    *
