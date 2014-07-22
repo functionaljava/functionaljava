@@ -1,22 +1,9 @@
 package fj.data;
 
-import fj.Effect;
-import fj.F;
-import fj.F2;
-import fj.F3;
-import fj.F4;
-import fj.F5;
-import fj.F6;
-import fj.F7;
-import fj.F8;
+import fj.*;
 
 import static fj.Function.curry;
 import static fj.P.p;
-
-import fj.Function;
-import fj.P1;
-import fj.Semigroup;
-import fj.Unit;
 
 import static fj.Unit.unit;
 import static fj.Bottom.error;
@@ -1186,4 +1173,9 @@ public class Validation<E, T> implements Iterable<T> {
       return parseShort(s);
     }
   };
+
+    public String toString() {
+        return Show.validationShow(Show.<E>anyShow(), Show.<T>anyShow()).showS(this);
+    }
+
 }
