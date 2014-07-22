@@ -184,4 +184,10 @@ public abstract class P3<A, B, C> {
       }
     };
   }
+
+	public String toString() {
+		return Show.p3Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow()).showS(this);
+	}
+
+
 }

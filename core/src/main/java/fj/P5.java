@@ -336,4 +336,10 @@ public abstract class P5<A, B, C, D, E> {
       }
     };
   }
+
+	public String toString() {
+		return Show.p5Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow()).showS(this);
+	}
+
+
 }

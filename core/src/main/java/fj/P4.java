@@ -257,4 +257,9 @@ public abstract class P4<A, B, C, D> {
       }
     };
   }
+
+	public String toString() {
+		return Show.p4Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow()).showS(this);
+	}
+
 }
