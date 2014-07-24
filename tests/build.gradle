@@ -21,3 +21,6 @@ dependencies {
 	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
     testCompile dependencyJunit
 }
+
+sourceCompatibility = "1.7"
+
