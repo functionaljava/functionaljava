@@ -181,6 +181,16 @@ public class F1Functions {
     }
 
     /**
+     * Partial application.
+     *
+     * @param a The <code>A</code> to which to apply this function.
+     * @return The function partially applied to the given argument to return a lazy value.
+     */
+    static public <A, B> P1<B> f(final F<A, B> f, final A a) {
+        return P.lazy(u -> f.f(a));
+    }
+
+    /**
      * Promotes this function to map over a product-1.
      *
      * @return This function promoted to map over a product-1.
