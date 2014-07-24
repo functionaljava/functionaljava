@@ -363,4 +363,20 @@ public class F2Functions {
         };
     }
 
+    static public <A, B, C, Z> F2<Z, B, C> contramapFirst(F2<A, B, C> target, F<Z, A> f) {
+        return (z, b) -> target.f(f.f(z), b);
+    }
+
+    static public <A, B, C, Z> F2<A, Z, C> contramapSecond(F2<A, B, C> target, F<Z, B> f) {
+        return (a, z) -> target.f(a, f.f(z));
+    }
+
+    static public <A, B, C, X, Y> F2<X, Y, C> contramap(F2<A, B, C> target, F<X, A> f, F<Y, B> g) {
+        return contramapSecond(contramapFirst(target, f), g);
+    }
+
+    static public <A, B, C, Z> F2<A, B, Z> map(F2<A, B, C> target, F<C, Z> f) {
+        return (a, b) -> f.f(target.f(a, b));
+    }
+
 }

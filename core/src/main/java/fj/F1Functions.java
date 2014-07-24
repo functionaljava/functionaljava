@@ -840,4 +840,12 @@ public class F1Functions {
         };
     }
 
+    static public <A, B, C> F<A, C> map(F<A, B> target, F<B, C> f) {
+        return andThen(target, f);
+    }
+
+    static public <A, B, C> F<C, B> contramap(F<A, B> target, F<C, A> f) {
+        return andThen(f, target);
+    }
+
 }
