@@ -5,7 +5,6 @@ import fj.F2;
 import fj.F2Functions;
 import fj.P;
 import fj.P1;
-import fj.P1Functions;
 import fj.P2;
 import static fj.Function.*;
 import static fj.data.Stream.*;
@@ -146,7 +145,7 @@ public final class Tree<A> implements Iterable<A> {
   public Stream<A> flatten() {
     final F2<Tree<A>, P1<Stream<A>>, Stream<A>> squish = new F2<Tree<A>, P1<Stream<A>>, Stream<A>>() {
       public Stream<A> f(final Tree<A> t, final P1<Stream<A>> xs) {
-        return cons(t.root(), P1Functions.map(t.subForest(), Stream.<Tree<A>, Stream<A>>foldRight().f(F2Functions.curry(this)).f(xs._1())));
+        return cons(t.root(), t.subForest().map(Stream.<Tree<A>, Stream<A>>foldRight().f(F2Functions.curry(this)).f(xs._1())));
       }
     };
     return squish.f(this, P.p(Stream.<A>nil()));
@@ -175,7 +174,7 @@ public final class Tree<A> implements Iterable<A> {
    */
   public Stream<Stream<A>> levels() {
     final F<Stream<Tree<A>>, Stream<Tree<A>>> flatSubForests =
-        Stream.<Tree<A>, Tree<A>>bind_().f(compose(P1Functions.<Stream<Tree<A>>>__1(), Tree.<A>subForest_()));
+        Stream.<Tree<A>, Tree<A>>bind_().f(compose(P1.<Stream<Tree<A>>>__1(), Tree.<A>subForest_()));
     final F<Stream<Tree<A>>, Stream<A>> roots = Stream.<Tree<A>, A>map_().f(Tree.<A>root_());
     return iterateWhile(flatSubForests, Stream.<Tree<A>>isNotEmpty_(), single(this)).map(roots);
   }
@@ -187,7 +186,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return The new Tree after the function has been applied to each element in this Tree.
    */
   public <B> Tree<B> fmap(final F<A, B> f) {
-    return node(f.f(root()), P1Functions.map(subForest(), Stream.<Tree<A>, Tree<B>>map_().f(Tree.<A, B>fmap_().f(f))));
+    return node(f.f(root()), subForest().map(Stream.<Tree<A>, Tree<B>>map_().f(Tree.<A, B>fmap_().f(f))));
   }
 
   /**
@@ -252,7 +251,7 @@ public final class Tree<A> implements Iterable<A> {
     return new F<B, Tree<A>>() {
       public Tree<A> f(final B b) {
         final P2<A, P1<Stream<B>>> p = f.f(b);
-        return node(p._1(), P1Functions.map(p._2(), Stream.<B, Tree<A>>map_().f(unfoldTree(f))));
+        return node(p._1(), p._2().map(Stream.<B, Tree<A>>map_().f(unfoldTree(f))));
       }
     };
   }

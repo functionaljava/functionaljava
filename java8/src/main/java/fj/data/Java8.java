@@ -21,7 +21,7 @@ public final class Java8 {
     }
 
     public static <A> F<Supplier<A>, P1<A>> Supplier_P1() {
-        return s -> () -> s.get();
+        return s -> P.lazy(u -> s.get());
     }
 
     public static <A> Supplier<A> P1_Supplier(final P1<A> p) {
@@ -69,7 +69,7 @@ public final class Java8 {
     }
 
     static public <A, E extends Exception> F<TryCatch0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
-        return t -> () -> P1Functions.toP1(t)._1();
+        return t -> () -> P1.toP1(t)._1();
     }
 
     static public <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final TryCatch1<A, B, E> t) {

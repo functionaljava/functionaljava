@@ -17,7 +17,7 @@ public class MemoisationTest {
     @Test
     public void test1() {
         final Property p = property(arbInteger, a -> {
-            P1<Integer> t = P1Functions.memo(P.p(a));
+            P1<Integer> t = P.p(a).memo();
             return prop(t._1() == t._1());
         });
         summary.println(p.check());
@@ -48,7 +48,7 @@ public class MemoisationTest {
 
     @Test
     public void testRecomputeP2() {
-        P2<Integer, Integer> t = P.lazy(() -> count(1), () -> count(2)).memo();
+        P2<Integer, Integer> t = P.lazy(u -> count(1), u -> count(2)).memo();
         System.out.println("tuple: " + t + " 1:" + t._1() + " 2: " + t._2());
         assertTrue(t._1() == t._1() && t._2() == t._2());
     }

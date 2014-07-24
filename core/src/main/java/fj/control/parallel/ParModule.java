@@ -260,7 +260,7 @@ public final class ParModule {
    * @return A promised product of the result of mapping the given function over the given product.
    */
   public <A, B> Promise<P1<B>> mapM(final P1<A> a, final F<A, Promise<B>> f) {
-    return sequence(P1Functions.map(a, f));
+    return sequence(a.map(f));
   }
 
   /**

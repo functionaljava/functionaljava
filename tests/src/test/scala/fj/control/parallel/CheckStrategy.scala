@@ -24,19 +24,19 @@ object CheckStrategy extends Properties("Strategy") {
   property("par") = forAll((a: P1[Int], s: Strategy[Int]) => a._1 == s.par(a)._1)
 
   property("parMapList") = forAll((a: List[String], s: Strategy[String]) =>
-    listEqual(stringEqual).eq(s.parMap(rev, a)._1, a.map(compose(P1Functions.__1[String], s.concurry[String](rev)))))
+    listEqual(stringEqual).eq(s.parMap(rev, a)._1, a.map(compose(P1.__1[String], s.concurry[String](rev)))))
 
   property("parMapArray") = forAll((a: Array[String], s: Strategy[String]) =>
-    arrayEqual(stringEqual).eq(s.parMap(rev, a)._1, a.map(compose(P1Functions.__1[String], s.concurry[String](rev)))))
+    arrayEqual(stringEqual).eq(s.parMap(rev, a)._1, a.map(compose(P1.__1[String], s.concurry[String](rev)))))
 
   property("parFlatMapList") = forAll((a: List[String], st: Strategy[List[String]]) => {
     def f = (x: String) => single[String](x)
-    listEqual(stringEqual).eq(parFlatMap(st, f, a)._1, a.bind(compose(P1Functions.__1[List[String]], st.concurry[String](f))))
+    listEqual(stringEqual).eq(parFlatMap(st, f, a)._1, a.bind(compose(P1.__1[List[String]], st.concurry[String](f))))
   })
 
   property("parFlatMapArray") = forAll((a: Array[String], st: Strategy[Array[String]]) => {
     def f = (x: String) => array[String](scala.Array(x): _*)
-    arrayEqual(stringEqual).eq(parFlatMap(st, f, a)._1, a.bind(compose(P1Functions.__1[Array[String]], st.concurry[String](f))))
+    arrayEqual(stringEqual).eq(parFlatMap(st, f, a)._1, a.bind(compose(P1.__1[Array[String]], st.concurry[String](f))))
   })
 
   property("xmapID") = forAll((s: Strategy[Int], n: P1[Int]) =>

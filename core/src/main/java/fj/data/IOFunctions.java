@@ -328,7 +328,7 @@ public class IOFunctions {
 	}
 
 	public static <A> SafeIO<IOException, A> toSafeIO(IO<A> io) {
-		return () -> P1Functions.toP1(() -> io.run())._1();
+		return () -> P1.toP1(() -> io.run())._1();
 	}
 
 	public static <A, B> IO<B> append(final IO<A> io1, final IO<B> io2) {

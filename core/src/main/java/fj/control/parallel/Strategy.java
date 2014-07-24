@@ -6,11 +6,8 @@ import fj.F2;
 import fj.Function;
 import fj.P;
 import fj.P1;
-import fj.P1Functions;
 import static fj.Function.compose;
 import static fj.Function.curry;
-import static fj.P1Functions.fmap;
-import static fj.P1Functions.sequence;
 import fj.data.Java;
 import fj.data.List;
 import fj.data.Array;
@@ -74,7 +71,7 @@ public final class Strategy<A> {
    * @return A function that executes concurrently when called, yielding a Future value.
    */
   public <B> F<B, P1<A>> concurry(final F<B, A> f) {
-    return compose(f(), P1Functions.<B, A>curry(f));
+    return compose(f(), P1.<B, A>curry(f));
   }
 
   /**
@@ -108,7 +105,7 @@ public final class Strategy<A> {
    * @return A list of the values of the product-1s in the argument.
    */
   public P1<List<A>> parList(final List<P1<A>> ps) {
-    return sequence(ps.map(f()));
+    return P1.sequence(ps.map(f()));
   }
 
   /**
@@ -119,7 +116,7 @@ public final class Strategy<A> {
    * @return A product-1 that returns the list with all of its elements transformed by the given function.
    */
   public <B> P1<List<A>> parMap(final F<B, A> f, final List<B> bs) {
-    return sequence(bs.map(concurry(f)));
+    return P1.sequence(bs.map(concurry(f)));
   }
 
   /**
@@ -130,7 +127,7 @@ public final class Strategy<A> {
    * @return A product-1 that returns the array with all of its elements transformed by the given function.
    */
   public <B> P1<Array<A>> parMap(final F<B, A> f, final Array<B> bs) {
-    return sequence(bs.map(concurry(f)));
+    return P1.sequence(bs.map(concurry(f)));
   }
 
   /**
@@ -143,7 +140,7 @@ public final class Strategy<A> {
    * @return A list with all of its elements transformed by the given function.
    */
   public <B> List<A> parMap1(final F<B, A> f, final List<B> bs) {
-    return compose(P1Functions.<List<A>>__1(), parMapList(f)).f(bs);
+    return compose(P1.<List<A>>__1(), parMapList(f)).f(bs);
   }
 
   /**
@@ -156,7 +153,7 @@ public final class Strategy<A> {
    * @return An array with all of its elements transformed by the given function.
    */
   public <B> Array<A> parMap1(final F<B, A> f, final Array<B> bs) {
-    return compose(P1Functions.<Array<A>>__1(), parMapArray(f)).f(bs);
+    return compose(P1.<Array<A>>__1(), parMapArray(f)).f(bs);
   }
 
   /**
@@ -258,7 +255,7 @@ public final class Strategy<A> {
   public static <A, B> P1<List<B>> parFlatMap(final Strategy<List<B>> s,
                                               final F<A, List<B>> f,
                                               final List<A> as) {
-    return fmap(List.<B>join()).f(s.parMap(f, as));
+    return P1.fmap(List.<B>join()).f(s.parMap(f, as));
   }
 
   /**
@@ -272,7 +269,7 @@ public final class Strategy<A> {
   public static <A, B> P1<Array<B>> parFlatMap(final Strategy<Array<B>> s,
                                                final F<A, Array<B>> f,
                                                final Array<A> as) {
-    return fmap(Array.<B>join()).f(s.parMap(f, as));
+    return P1.fmap(Array.<B>join()).f(s.parMap(f, as));
   }
 
   /**
@@ -287,7 +284,7 @@ public final class Strategy<A> {
   public static <A> P1<List<A>> parListChunk(final Strategy<List<A>> s,
                                              final int chunkLength,
                                              final List<P1<A>> as) {
-    return fmap(List.<A>join()).f(s.parList(as.partition(chunkLength).map(P1Functions.<A>sequenceList())));
+    return P1.fmap(List.<A>join()).f(s.parList(as.partition(chunkLength).map(P1.<A>sequenceList())));
   }
 
   /**
@@ -303,7 +300,7 @@ public final class Strategy<A> {
    * @return The list of the results of calling the given function on corresponding elements of the given lists.
    */
   public <B, C> P1<List<A>> parZipWith(final F2<B, C, A> f, final List<B> bs, final List<C> cs) {
-    return sequence(bs.zipWith(cs, concurry(f)));
+    return P1.sequence(bs.zipWith(cs, concurry(f)));
   }
 
   /**
@@ -319,7 +316,7 @@ public final class Strategy<A> {
    * @return The array of the results of calling the given function on corresponding elements of the given arrays.
    */
   public <B, C> P1<Array<A>> parZipWith(final F2<B, C, A> f, final Array<B> bs, final Array<C> cs) {
-    return sequence(bs.zipWith(cs, concurry(f)));
+    return P1.sequence(bs.zipWith(cs, concurry(f)));
   }
 
   /**
@@ -547,7 +544,7 @@ public final class Strategy<A> {
   public static <A> Strategy<Callable<A>> callableStrategy(final Strategy<Callable<A>> s) {
     return s.comap(new F<P1<Callable<A>>, P1<Callable<A>>>() {
       public P1<Callable<A>> f(final P1<Callable<A>> a) {
-        return P1Functions.curry(Callables.<A>normalise()).f(a._1());
+        return P1.curry(Callables.<A>normalise()).f(a._1());
       }
     });
   }

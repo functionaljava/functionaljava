@@ -10,7 +10,6 @@ import fj.Monoid;
 import fj.Ord;
 import fj.P;
 import fj.P1;
-import fj.P1Functions;
 import fj.P2;
 import fj.Unit;
 import fj.control.parallel.Promise;
@@ -136,7 +135,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight1(final F<A, F<B, B>> f, final B b) {
-    return foldRight(compose(Function.<P1<B>, B, B>andThen().f(P1Functions.<B>__1()), f), b);
+    return foldRight(compose(Function.<P1<B>, B, B>andThen().f(P1.<B>__1()), f), b);
   }
 
   /**
@@ -655,8 +654,8 @@ public abstract class Stream<A> implements Iterable<A> {
       final F<Boolean, Boolean> id = identity();
       final A x = head();
       final P1<Stream<A>> xs = tail();
-      final Promise<Stream<A>> left = Promise.join(s, P1Functions.map(xs, flt(o, s, x, id)));
-      final Promise<Stream<A>> right = P1Functions.map(xs, flt(o, s, x, not))._1();
+      final Promise<Stream<A>> left = Promise.join(s, xs.map(flt(o, s, x, id)));
+      final Promise<Stream<A>> right = xs.map(flt(o, s, x, not))._1();
       final Monoid<Stream<A>> m = Monoid.streamMonoid();
       return right.fmap(m.sum(single(x))).apply(left.fmap(m.sum()));
     }
@@ -1170,7 +1169,7 @@ public abstract class Stream<A> implements Iterable<A> {
       };
       return new P2<Stream<A>, Stream<A>>() {
         @Override public Stream<A> _1() {
-          return cons(head(), P1Functions.map(yszs, P2.<Stream<A>, Stream<A>>__1()));
+          return cons(head(), yszs.map(P2.<Stream<A>, Stream<A>>__1()));
         }
 
         @Override public Stream<A> _2() {
@@ -1499,7 +1498,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
     Cons(final A head, final P1<Stream<A>> tail) {
       this.head = head;
-      this.tail = P1Functions.memo(tail);
+      this.tail = tail.memo();
     }
 
     public A head() {

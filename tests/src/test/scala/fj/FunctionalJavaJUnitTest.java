@@ -17,7 +17,7 @@ public class FunctionalJavaJUnitTest {
 //		System.out.println("Hello world");
 		Assert.assertTrue(true);
 //		new Tests$().main(null);
-		Tests.main(null);
+//		Tests.main(null);
 	}
 
 }

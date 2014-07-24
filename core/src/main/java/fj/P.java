@@ -1,5 +1,7 @@
 package fj;
 
+import static fj.Unit.unit;
+
 /**
  * Functions across products.
  *
@@ -672,4 +674,190 @@ public final class P {
       }
     };
   }
+
+    public static <A> P1<A> lazy(F<Unit, A> f) {
+        return new P1<A>() {
+            @Override
+            public A _1() {
+                return f.f(unit());
+            }
+        };
+    }
+
+    public static <A, B> P2<A, B> lazy(F<Unit, A> fa, F<Unit, B> fb) {
+        return new P2<A, B>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+        };
+    }
+
+    public static <A, B, C> P3<A, B, C> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc) {
+        return new P3<A, B, C>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+            @Override
+            public C _3() {
+                return fc.f(unit());
+            }
+        };
+    }
+
+
+    public static <A, B, C, D> P4<A, B, C, D> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc, F<Unit, D> fd) {
+        return new P4<A, B, C, D>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+            @Override
+            public C _3() {
+                return fc.f(unit());
+            }
+            @Override
+            public D _4() {
+                return fd.f(unit());
+            }
+        };
+    }
+
+    public static <A, B, C, D, E> P5<A, B, C, D, E> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc, F<Unit, D> fd, F<Unit, E> fe) {
+        return new P5<A, B, C, D, E>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+            @Override
+            public C _3() {
+                return fc.f(unit());
+            }
+            @Override
+            public D _4() {
+                return fd.f(unit());
+            }
+            @Override
+            public E _5() {
+                return fe.f(unit());
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F$> P6<A, B, C, D, E, F$> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc, F<Unit, D> fd, F<Unit, E> fe, F<Unit, F$> ff) {
+        return new P6<A, B, C, D, E, F$>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+            @Override
+            public C _3() {
+                return fc.f(unit());
+            }
+            @Override
+            public D _4() {
+                return fd.f(unit());
+            }
+            @Override
+            public E _5() {
+                return fe.f(unit());
+            }
+            @Override
+            public F$ _6() {
+                return ff.f(unit());
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F$, G> P7<A, B, C, D, E, F$, G> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc, F<Unit, D> fd, F<Unit, E> fe, F<Unit, F$> ff, F<Unit, G> fg) {
+        return new P7<A, B, C, D, E, F$, G>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+            @Override
+            public C _3() {
+                return fc.f(unit());
+            }
+            @Override
+            public D _4() {
+                return fd.f(unit());
+            }
+            @Override
+            public E _5() {
+                return fe.f(unit());
+            }
+            @Override
+            public F$ _6() {
+                return ff.f(unit());
+            }
+            @Override
+            public G _7() {
+                return fg.f(unit());
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F$, G, H> P8<A, B, C, D, E, F$, G, H> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc, F<Unit, D> fd, F<Unit, E> fe, F<Unit, F$> ff, F<Unit, G> fg, F<Unit, H> fh) {
+        return new P8<A, B, C, D, E, F$, G, H>() {
+            @Override
+            public A _1() {
+                return fa.f(unit());
+            }
+            @Override
+            public B _2() {
+                return fb.f(unit());
+            }
+            @Override
+            public C _3() {
+                return fc.f(unit());
+            }
+            @Override
+            public D _4() {
+                return fd.f(unit());
+            }
+            @Override
+            public E _5() {
+                return fe.f(unit());
+            }
+            @Override
+            public F$ _6() {
+                return ff.f(unit());
+            }
+            @Override
+            public G _7() {
+                return fg.f(unit());
+            }
+            @Override
+            public H _8() {
+                return fh.f(unit());
+            }
+        };
+    }
+
 }

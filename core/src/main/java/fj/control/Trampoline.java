@@ -5,7 +5,6 @@ import fj.F;
 import fj.F1Functions;
 import fj.F2;
 import fj.P1;
-import fj.P1Functions;
 import fj.data.Either;
 import fj.F2Functions;
 import static fj.Function.curry;
@@ -67,7 +66,7 @@ public abstract class Trampoline<A> {
     public Either<P1<Trampoline<A>>, A> resume() {
       return left(sub.resume().either(new F<P1<Trampoline<Object>>, P1<Trampoline<A>>>() {
             public P1<Trampoline<A>> f(final P1<Trampoline<Object>> p) {
-              return P1Functions.map(p, new F<Trampoline<Object>, Trampoline<A>>() {
+              return p.map(new F<Trampoline<Object>, Trampoline<A>>() {
                 public Trampoline<A> f(final Trampoline<Object> ot) {
                   return ot.fold(new F<Normal<Object>, Trampoline<A>>() {
                         public Trampoline<A> f(final Normal<Object> o) {
@@ -338,7 +337,7 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(P1Functions.bind(x, y, F2Functions.curry(new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
+        return suspend(x.bind(y, F2Functions.curry(new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta, final Trampoline<B> tb) {
             return suspend(new P1<Trampoline<C>>() {
               public Trampoline<C> _1() {
@@ -349,7 +348,7 @@ public abstract class Trampoline<A> {
         })));
       }
       for (final B y : eb.right()) {
-        return suspend(P1Functions.map(x, new F<Trampoline<A>, Trampoline<C>>() {
+        return suspend(x.map(new F<Trampoline<A>, Trampoline<C>>() {
           public Trampoline<C> f(final Trampoline<A> ta) {
             return ta.map(F2Functions.f(F2Functions.flip(f), y));
           }
@@ -365,7 +364,7 @@ public abstract class Trampoline<A> {
         });
       }
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(P1Functions.map(y, liftM2(F2Functions.curry(f)).f(pure(x))));
+        return suspend(y.map(liftM2(F2Functions.curry(f)).f(pure(x))));
       }
     }
     throw Bottom.error("Match error: Trampoline is neither done nor suspended.");

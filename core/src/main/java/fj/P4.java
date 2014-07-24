@@ -182,10 +182,10 @@ public abstract class P4<A, B, C, D> {
   public final P4<A, B, C, D> memo() {
       P4<A, B, C, D> self = this;
     return new P4<A, B, C, D>() {
-      private final P1<A> a = P1Functions.memo(() -> self._1());
-      private final P1<B> b = P1Functions.memo(() -> self._2());
-      private final P1<C> c = P1Functions.memo(() -> self._3());
-      private final P1<D> d = P1Functions.memo(() -> self._4());
+      private final P1<A> a = P1.memo(u -> self._1());
+      private final P1<B> b = P1.memo(u -> self._2());
+      private final P1<C> c = P1.memo(u -> self._3());
+      private final P1<D> d = P1.memo(u -> self._4());
 
       public A _1() {
         return a._1();
