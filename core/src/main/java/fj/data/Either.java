@@ -6,6 +6,7 @@ import fj.F;
 import static fj.Function.identity;
 import static fj.P.p;
 
+import fj.Show;
 import fj.Function;
 import fj.P1;
 import fj.Unit;
@@ -792,5 +793,10 @@ public abstract class Either<A, B> {
       }
     }, List.<B>nil());
   }
+
+    public String toString() {
+        return Show.eitherShow(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
+    }
+
 }
 
