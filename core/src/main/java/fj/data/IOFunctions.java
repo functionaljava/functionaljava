@@ -313,6 +313,14 @@ public class IOFunctions {
 		return list.foldRight(f2, IOFunctions.unit(List.<A>nil()));
 	}
 
+
+	public static <A> IO<Stream<A>> sequence(Stream<IO<A>> stream) {
+		F2<IO<Stream<A>>, IO<A>, IO<Stream<A>>> f2 = (ioList, io) ->
+			IOFunctions.bind(ioList, (xs) -> map(io, x -> Stream.cons(x, P.lazy(u -> xs))));
+		return stream.foldLeft(f2, IOFunctions.unit(Stream.<A>nil()));
+	}
+
+
 	/**
 	 * Map each element of a structure to an action, evaluate these actions from left to right
 	 * and collect the results.
@@ -374,4 +382,34 @@ public class IOFunctions {
 			}
 		};
 	}
+
+	public static <A, B> IO<B> apply(IO<A> io, IO<F<A, B>> iof) {
+		return bind(iof, f -> map(io, a -> f.f(a)));
+	}
+
+	public static <A, B, C> IO<C> liftM2(IO<A> ioa, IO<B> iob, F2<A, B, C> f) {
+		return bind(ioa, a -> map(iob, b -> f.f(a, b)));
+	}
+
+	public static <A> IO<List<A>> replicateM(IO<A> ioa, int n) {
+		return sequence(List.replicate(n, ioa));
+	}
+
+	public static <A> IO<State<BufferedReader, Validation<IOException, String>>> readerState() {
+		return () -> State.unit((BufferedReader r) -> P.p(r, Try.f((BufferedReader r2) -> r2.readLine()).f(r)));
+	}
+
+	public static final BufferedReader stdinBufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+	public static IO<String> stdinReadLine() {
+		return () -> stdinBufferedReader.readLine();
+	}
+
+	public static IO<Unit> stdoutPrintln(final String s) {
+		return () -> {
+			System.out.println(s);
+			return Unit.unit();
+		};
+	}
+
 }
