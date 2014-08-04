@@ -82,6 +82,7 @@ public class StateDemo_VendingMachine {
 	static void test() {
 		State<VendingMachine, VendingMachine> s = simulate(List.list(COIN, TURN, TURN, COIN, COIN, TURN));
 		VendingMachine m = s.eval(new VendingMachine(true, 5, 0));
+        System.out.println(s.run(new VendingMachine(true, 5, 0)));
 		VendingMachine oracle = new VendingMachine(true, 3, 2);
 		System.out.printf("m1: %s, oracle: %s, equals: %b", m, oracle, m.equals(oracle));
 	}
