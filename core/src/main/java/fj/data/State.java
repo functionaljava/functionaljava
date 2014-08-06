@@ -2,6 +2,8 @@ package fj.data;
 
 import fj.*;
 
+import java.util.*;
+
 import static fj.P.p;
 
 /**
@@ -94,6 +96,25 @@ public class State<S, A> {
 
 	public static <S, A> State<S, A> gets(F<S, A> f) {
 		return State.<S>init().map(s -> f.f(s));
+	}
+
+	/**
+	 * Evaluate each action in the sequence from left to right, and collect the results.
+	 */
+	public static <S, A> State<S, List<A>> sequence(List<State<S, A>> list) {
+		return list.foldLeft((State<S, List<A>> acc, State<S, A> ma) ->
+			acc.flatMap((List<A> xs) -> ma.map((A x) -> xs.snoc(x))
+		), constant(List.<A>nil()));
+	}
+
+	/**
+	 * Map each element of a structure to an action, evaluate these actions from left to right
+	 * and collect the results.
+	 */
+	public static <S, A, B> State<S, List<B>> traverse(List<A> list, F<A, State<S, B>> f) {
+		return list.foldLeft((State<S, List<B>> acc, A a) ->
+			acc.flatMap(bs -> f.f(a).map(b -> bs.snoc(b))
+		), constant(List.<B>nil()));
 	}
 
 }

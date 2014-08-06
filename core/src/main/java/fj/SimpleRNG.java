@@ -23,7 +23,8 @@ public class SimpleRNG extends RNG {
         return P.p(p._1(), i);
 	}
 
-    public P2<RNG, Long> nextLong() {
+
+	public P2<RNG, Long> nextLong() {
         P2<Long, Long> p = nextLong(seed);
         return P.p(new SimpleRNG(p._1()), p._2());
     }
