@@ -12,7 +12,7 @@ import static fj.data.Stream.unfold;
 /**
  * Created by mperry on 4/08/2014.
  */
-public class StateDemo_Rng {
+public class TestRngState {
 
 	static String expected1 = "<4,4,2,2,2,5,3,3,1,5>";
 	static int size = 10;
