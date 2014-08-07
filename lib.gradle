@@ -20,7 +20,7 @@ String findJavaCommand(String command) {
 
 Boolean doSigning(String signingAllowed, Boolean doModule) {
     def b = signingAllowed.trim() == "true" && doModule
-    println("signModule: ${project.name} signingEnabled: $signingAllowed module: $doModule")
+//    println("signModule: ${project.name} signingEnabled: $signingAllowed module: $doModule")
     b
 }
 
