@@ -1,8 +1,6 @@
 package fj.data;
 
 import fj.*;
-import fj.data.State;
-import fj.data.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,13 +15,29 @@ public class TestRngState {
 	static String expected1 = "<4,4,2,2,2,5,3,3,1,5>";
 	static int size = 10;
 
-    static RNG initRNG() {
+    static RNG defaultRng() {
         return new SimpleRNG(1);
     }
 
+    static P2<RNG, Integer> num(RNG r) {
+        return r.range(1, 5);
+    }
+
+    static State<RNG, Integer> defaultState() {
+        return State.unit(s -> num(s));
+    }
+
+    static F<State<RNG, Integer>, State<RNG, Integer>> nextState() {
+        return s -> s.mapState(p2 -> num(p2._1()));
+    }
+
+	static P2<RNG, Integer> num(RNG r, int x) {
+		return r.range(x, x + 1);
+	}
+
 	@Test
     public void testUnfold() {
-        Stream<Integer> s = unfold(r -> some(num(r).swap()), initRNG());
+        Stream<Integer> s = unfold(r -> some(num(r).swap()), defaultRng());
 		Assert.assertTrue(s.take(size).toList().toString().equals(expected1));
     }
 
@@ -36,27 +50,22 @@ public class TestRngState {
 			}
 				, P.p(List.nil(),  defaultState())
 		);
-		List<Integer> ints = p._1().map(s -> s.eval(initRNG()));
+		List<Integer> ints = p._1().map(s -> s.eval(defaultRng()));
 		Assert.assertTrue(ints.toString().equals(expected1));
-    }
-
-
-    static P2<RNG, Integer> num(RNG r) {
-        return r.range(1, 5);
-    }
-
-	static State<RNG, Integer> defaultState() {
-		return State.unit(s -> num(s));
-	}
-
-    static F<State<RNG, Integer>, State<RNG, Integer>> nextState() {
-        return s -> s.mapState(p2 -> num(p2._1()));
     }
 
 	@Test
 	public void testSequence() {
-		List<Integer> list = State.sequence(List.replicate(size, defaultState())).eval(initRNG());
+		List<Integer> list = State.sequence(List.replicate(size, defaultState())).eval(defaultRng());
 		Assert.assertTrue(list.toString().equals(expected1));
 	}
+
+    @Test
+    public void testTraverse() {
+        List<Integer> list = State.traverse(List.range(1, 10), a -> (State.unit((RNG s) -> num(s, a)))).eval(defaultRng());
+//        System.out.println(list.toString());
+        String expected = "<1,2,3,5,6,7,7,9,10>";
+        Assert.assertTrue(list.toString().equals(expected));
+    }
 
 }
