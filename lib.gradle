@@ -26,7 +26,7 @@ Boolean doSigning(String signingAllowed, Boolean doModule) {
 
 void performSigning(String signingAllowed, Boolean doModule) {
     signing {
-        required { doSigning(signingEnabled, signModule) }
+        required { doSigning(signingAllowed, doModule) }
         sign configurations.archives
     }
 }
