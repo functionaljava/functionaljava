@@ -30,7 +30,23 @@ public class IOFunctions {
   
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-  public static final F<Reader, IO<Unit>> closeReader =
+    public static <A> TryCatch0<A, IOException> toTry(IO<A> io) {
+        return () -> io.run();
+    }
+
+    public static <A> P1<Validation<IOException, A>> p(IO<A> io) {
+        return Try.f(toTry(io));
+    }
+
+    public static <A> IO<A> io(P1<A> p) {
+        return () -> p._1();
+    }
+
+    public static <A> IO<A> io(TryCatch0<A, ? extends IOException> t) {
+        return () -> t.f();
+    }
+
+    public static final F<Reader, IO<Unit>> closeReader =
     new F<Reader, IO<Unit>>() {
       @Override
       public IO<Unit> f(final Reader r) {

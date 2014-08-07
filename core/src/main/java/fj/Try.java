@@ -1,6 +1,10 @@
 package fj;
 
+import fj.data.IO;
+import fj.data.IOFunctions;
 import fj.data.Validation;
+
+import java.io.IOException;
 
 /**
  * Created by mperry on 24/07/2014.
@@ -41,6 +45,10 @@ public class Try {
 
     public static <A, B, C, D, E, F$, G, H, I, Z extends Exception> F8<A, B, C, D, E, F$, G, H, Validation<Z, I>> f(TryCatch8<A, B, C, D, E, F$, G, H, I, Z> t) {
         return F8Functions.toF8(t);
+    }
+
+    public static <A> IO<A> io(TryCatch0<A, ? extends IOException> t) {
+        return IOFunctions.io(t);
     }
 
 }
