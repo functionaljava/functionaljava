@@ -18,6 +18,68 @@ String findJavaCommand(String command) {
     findCommand("$jh/bin", command)
 }
 
+Boolean doSigning(String signingAllowed, Boolean doModule) {
+    def b = signingAllowed.trim() == "true" && doModule
+    println("signModule: ${project.name} signingEnabled: $signingAllowed module: $doModule")
+    b
+}
+
+void performSigning(String signingAllowed, Boolean doModule) {
+    signing {
+        required { doSigning(signingEnabled, signModule) }
+        sign configurations.archives
+    }
+}
+
+void configureUpload(String signingEnabled, Boolean signModule) {
+
+    uploadArchives {
+        enabled = false
+        repositories {
+            mavenDeployer {
+                if (doSigning(signingEnabled, signModule)) {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                }
+
+                repository(url: sonatypeUploadUrl) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+                pom {
+                    groupId = project.group
+                    project {
+                        name pomProjectName
+                        packaging 'jar'
+                        description projectDescription
+                        url projectUrl
+                        organization {
+                            name pomOrganisation
+                            url projectUrl
+                        }
+                        scm {
+                            url scmUrl
+                        }
+                        licenses {
+                            license {
+                                name "The BSD3 License"
+                                url "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                email primaryEmail
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 ext {
     findJavaCommand = this.&findJavaCommand
+    doSigning = this.&doSigning
+    performSigning = this.&performSigning
+    configureUpload = this.&configureUpload
 }

@@ -1,10 +1,6 @@
 
 defaultTasks 'build'
 
-Boolean doSigning() {
-    signingEnabled.trim() == "true"
-}
-
 ext {
 }
 
@@ -19,12 +15,14 @@ if (JavaVersion.current().isJava8Compatible()) {
 allprojects {
 
 	ext {
-        isSnapshot = true
+        isSnapshot = false
         fjBaseVersion = "4.2-beta-1"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
         fjConsumeVersion = "4.1"
+
+        signModule = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
@@ -74,15 +72,9 @@ subprojects {
     apply from: "$rootDir/lib.gradle"
     apply plugin: "maven"
     apply plugin: "java"
+    apply plugin: "signing"
 
     sourceCompatibility = "1.8"
-
-    if (doSigning()) {
-        apply plugin: "signing"
-        signing {
-            sign configurations.archives
-        }
-    }
 
     task javadocJar(type: Jar, dependsOn: "javadoc") {
         classifier = 'javadoc'
@@ -104,49 +96,6 @@ subprojects {
         version project.fjVersion
         manifest {
             attributes 'Signature-Version': project.fjVersion
-        }
-    }
-
-    uploadArchives {
-        enabled = false
-        repositories {
-            mavenDeployer {
-                if (doSigning()) {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                }
-
-                repository(url: sonatypeUploadUrl) {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
-                pom {
-                    groupId = project.group
-                    project {
-                        name pomProjectName
-                        packaging 'jar'
-                        description projectDescription
-                        url projectUrl
-                        organization {
-                            name pomOrganisation
-                            url projectUrl
-                        }
-                        scm {
-                            url scmUrl
-                        }
-                        licenses {
-                            license {
-                                name "The BSD3 License"
-                                url "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
-                                distribution 'repo'
-                            }
-                        }
-                        developers {
-                            developer {
-                                email primaryEmail
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 

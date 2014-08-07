@@ -1,20 +1,23 @@
 
 apply plugin: 'retrolambda'
 
-jar {
-	baseName project.projectName
+ext {
+    signModule = true
 }
+
+archivesBaseName = project.projectName
 
 dependencies {
     testCompile dependencyJunit
 }
 
+performSigning(signingEnabled, signModule)
+configureUpload(signingEnabled, signModule)
+
+uploadArchives.enabled = true
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")
     oldJdk System.getenv("JAVA7_HOME")
     javaVersion JavaVersion.VERSION_1_7
 }
-
-uploadArchives.enabled = true
-
