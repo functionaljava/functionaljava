@@ -19,8 +19,12 @@ Functional Java includes the following features:
   * Array wrapper (fj.data.Array).
   * Optional value — type-safe null (fj.data.Option).
   * Disjoint union data type — compositional exception handling (fj.data.Either).
+  * Validation, a right biased either for chaining computations over potentially failed operations.
+  * Reader, Writer and State.
   * Monoid (fj.Monoid).
+  * Input/Output monad for abstracting IO.
   * Functions with arity 1 to 8.
+  * Functions with arity 0 to 8 that can produce exceptions (fj.TryCatch).
   * Products of 1 to 8.
   * Configurable equality and hash-code for HashMap and HashSet.
   * Natural number data type (fj.data.Natural).
@@ -29,3 +33,4 @@ Functional Java includes the following features:
   * Immutable tree-map using a red/black tree implementation (fj.data.TreeMap).
   * Zipper implementations for streams and trees.
   * Automated specification-based testing framework (fj.test).
+  * Conversion between FunctionalJava and Java 8 function types.

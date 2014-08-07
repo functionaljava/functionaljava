@@ -2,9 +2,9 @@
 Release Notes
 =============
 
-
 4.2
 ===
+Release target: Aug 2014
 
 * Enhancements
     * Added Java 8 examples
@@ -40,11 +40,13 @@ Release Notes
 
 4.1
 ===
+Released: 30 May, 2014
 
 * Support Java 7 by removing default methods.  Methods on class C with default methods moved to static methods on new class ${C}Functions.
 
 4.0
 ===
+Released: 30 May, 2014
 
 * Merged changes from 3.2
 * Minimal changes to support Java 8.
@@ -52,6 +54,7 @@ Release Notes
 
 3.2
 ===
+Released: 30 May, 2014
 
 * Added methods to HashMap: toList, toStream, toOption, toArray, map, mapKeys, foreach, convert to/from java.util.Map.
 * Convert from java.util.List to List.
@@ -59,4 +62,12 @@ Release Notes
 * Fixed stack overflow when sorting and zipping.
 * Fixed stack overflow in Stream's bind method.
 * Small Javadoc fixes.
+
+3.1
+===
+Released: May 2012
+
+3.0 
+===
+Released: Jun 2010
 
