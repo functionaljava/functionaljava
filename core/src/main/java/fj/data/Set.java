@@ -166,7 +166,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @return true if the given element is a member of this set.
    */
   public final boolean member(final A x) {
-    return !isEmpty() && (ord.isLessThan(x, head()) && l().member(x) || ord.eq(head(), x) || r().member(x));
+    return !isEmpty() && (ord.isLessThan(x, head()) ? l().member(x) : ord.eq(head(), x) || r().member(x));
   }
 
 
