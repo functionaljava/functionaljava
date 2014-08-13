@@ -149,10 +149,13 @@ public class IOFunctions {
     };
   }
 
-	public static final <A> IO<A> unit(final P1<A> p) {
+	public static final <A> IO<A> lazy(final P1<A> p) {
 		return () -> p._1();
 	}
 
+    public static final <A> IO<A> lazy(final F<Unit, A> f) {
+        return () -> f.f(Unit.unit());
+    }
 
 	/**
    * A function that feeds an iteratee with lines read from a {@link BufferedReader}.
