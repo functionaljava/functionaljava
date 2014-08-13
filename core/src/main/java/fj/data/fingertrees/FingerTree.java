@@ -1,9 +1,7 @@
 package fj.data.fingertrees;
 
-import fj.F;
-import fj.P2;
+import fj.*;
 import fj.data.Seq;
-import fj.Monoid;
 
 /**
  * Provides 2-3 finger trees, a functional representation of persistent sequences supporting access to the ends in
@@ -32,6 +30,10 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> B foldRight(final F<A, F<B, B>> f, final B z);
 
+    public <B> B foldRight(final F2<A, B, B> f, final B z) {
+        return foldRight(F2Functions.curry(f), z);
+    }
+
   /**
    * Folds the tree to the right with the given function.
    *
@@ -48,6 +50,10 @@ public abstract class FingerTree<V, A> {
    * @return A reduction of this tree by applying the given function, associating to the left.
    */
   public abstract <B> B foldLeft(final F<B, F<A, B>> f, final B z);
+
+    public <B> B foldLeft(final F2<B, A, B> f, final B z) {
+        return foldLeft(F2Functions.curry(f), z);
+    }
 
   /**
    * Folds the tree to the left with the given function.
@@ -66,6 +72,11 @@ public abstract class FingerTree<V, A> {
    *         and nodes annotated according to the given measuring.
    */
   public abstract <B> FingerTree<V, B> map(final F<A, B> f, final Measured<V, B> m);
+
+    public <B> FingerTree<V, A> filter(final F<A, Boolean> f) {
+        FingerTree<V, A> tree = new Empty<V, A>(m);
+        return foldLeft((acc, a) -> f.f(a) ? acc.snoc(a) : acc, tree);
+    }
 
   /**
    * Returns the sum of this tree's annotations.
