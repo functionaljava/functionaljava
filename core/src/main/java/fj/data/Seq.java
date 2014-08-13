@@ -1,5 +1,8 @@
 package fj.data;
 
+import fj.F;
+import fj.F2;
+import fj.F2Functions;
 import fj.Function;
 import static fj.Bottom.error;
 import static fj.Monoid.intAdditionMonoid;
@@ -106,4 +109,17 @@ public final class Seq<A> {
       throw error("Index " + i + "out of bounds.");
     return ftree.lookup(Function.<Integer>identity(), i)._2();
   }
+
+    public <B> B foldLeft(final F2<B, A, B> f, final B z) {
+        return ftree.foldLeft(f, z);
+    }
+
+    public <B> B foldRight(final F2<A, B, B> f, final B z) {
+        return ftree.foldRight(f, z);
+    }
+
+    public <B> Seq<B> map(F<A, B> f) {
+        return new Seq<B>(ftree.map(f, Seq.<B>elemMeasured()));
+    }
+
 }
