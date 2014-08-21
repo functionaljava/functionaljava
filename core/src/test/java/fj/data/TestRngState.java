@@ -15,23 +15,23 @@ public class TestRngState {
 	static String expected1 = "<4,4,2,2,2,5,3,3,1,5>";
 	static int size = 10;
 
-    static Rng2 defaultRng() {
+    static Rng defaultRng() {
         return new LcgRng(1);
     }
 
-    static P2<Rng2, Integer> num(Rng2 r) {
+    static P2<Rng, Integer> num(Rng r) {
         return r.range(1, 5);
     }
 
-    static State<Rng2, Integer> defaultState() {
+    static State<Rng, Integer> defaultState() {
         return State.unit(s -> num(s));
     }
 
-    static F<State<Rng2, Integer>, State<Rng2, Integer>> nextState() {
+    static F<State<Rng, Integer>, State<Rng, Integer>> nextState() {
         return s -> s.mapState(p2 -> num(p2._1()));
     }
 
-	static P2<Rng2, Integer> num(Rng2 r, int x) {
+	static P2<Rng, Integer> num(Rng r, int x) {
 		return r.range(x, x + 1);
 	}
 
@@ -43,9 +43,9 @@ public class TestRngState {
 
 	@Test
     public void testTransitions() {
-		P2<List<State<Rng2, Integer>>, State<Rng2, Integer>> p = List.replicate(size, nextState()).foldLeft(
-			(P2<List<State<Rng2, Integer>>, State<Rng2, Integer>> p2, F<State<Rng2, Integer>, State<Rng2, Integer>> f) -> {
-				State<Rng2, Integer> s = f.f(p2._2());
+		P2<List<State<Rng, Integer>>, State<Rng, Integer>> p = List.replicate(size, nextState()).foldLeft(
+			(P2<List<State<Rng, Integer>>, State<Rng, Integer>> p2, F<State<Rng, Integer>, State<Rng, Integer>> f) -> {
+				State<Rng, Integer> s = f.f(p2._2());
 				return P.p(p2._1().snoc(p2._2()), s);
 			}
 				, P.p(List.nil(),  defaultState())
@@ -62,7 +62,7 @@ public class TestRngState {
 
     @Test
     public void testTraverse() {
-        List<Integer> list = State.traverse(List.range(1, 10), a -> (State.unit((Rng2 s) -> num(s, a)))).eval(defaultRng());
+        List<Integer> list = State.traverse(List.range(1, 10), a -> (State.unit((Rng s) -> num(s, a)))).eval(defaultRng());
 //        System.out.println(list.toString());
         String expected = "<1,2,3,5,6,7,7,9,10>";
         Assert.assertTrue(list.toString().equals(expected));

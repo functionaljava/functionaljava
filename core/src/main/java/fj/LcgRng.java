@@ -5,7 +5,7 @@ package fj;
  *
  * https://en.wikipedia.org/wiki/Linear_congruential_generator
  */
-public class LcgRng extends Rng2 {
+public class LcgRng extends Rng {
 
 	private Long seed;
 
@@ -17,14 +17,14 @@ public class LcgRng extends Rng2 {
 		seed = s;
 	}
 
-	public P2<Rng2, Integer> nextInt() {
-        P2<Rng2, Long> p = nextLong();
+	public P2<Rng, Integer> nextInt() {
+        P2<Rng, Long> p = nextLong();
         int i = (int) p._2().longValue();
         return P.p(p._1(), i);
 	}
 
 
-	public P2<Rng2, Long> nextLong() {
+	public P2<Rng, Long> nextLong() {
         P2<Long, Long> p = nextLong(seed);
         return P.p(new LcgRng(p._1()), p._2());
     }
