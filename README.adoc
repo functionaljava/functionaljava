@@ -14,6 +14,19 @@ Important URLs for the project are:
 * Website, http://www.functionaljava.org
 * Website repository, http://github.com/functionaljava/functionaljava.github.io
 
+== Downloading
+
+The recommended way to download and use the project is through your build tool.
+
+The Functional Java artifact is published to Maven Central using the group `org.functionaljava` with two published artifacts:
+
+* the core library (`functionaljava`)
+* Java 8 specific support (`functionaljava-java8`)
+
+== Building
+
+TODO
+
 == Features
 
 Functional Java provides abstractions for the following types:
