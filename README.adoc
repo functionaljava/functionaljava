@@ -6,6 +6,12 @@ Functional Java is an open source library facilitating functional programming in
 
 The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 5 to 8 and beyond.
 
+Functional Java provides abstractions for the following types:
+
+* Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation).
+* Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list.
+* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing, actors, concurrency and type conversion.
+
 == URLs
 
 Important URLs for the project are:
@@ -54,13 +60,7 @@ This will download the Gradle build tool and necessary dependencies and build Fu
 
 == Features
 
-Functional Java provides abstractions for the following types:
-
-* Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation).
-* Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list.
-* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing, actors, concurrency and type conversion.
-
-A more complete description of the types above are:
+A more complete description of the features mentioned above are:
 
 * Basic Data Structures
 ** Functions with arity 1 to 8 (`fj.F`).
