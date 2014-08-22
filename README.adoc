@@ -79,7 +79,7 @@ A more complete description of the features mentioned above are:
 ** Immutable set implementation using a red/black tree (`fj.data.Set`).
 ** Immutable multi-way tree - aka rose tree (`fj.data.Tree`).
 ** Immutable tree-map using a red/black tree implementation (`fj.data.TreeMap`).
-* Other
+* Other Abstractions
 ** Monoid (`fj.Monoid`).
 ** Semigroup (`fj.Semigroup`).
 ** Natural number data type (`fj.data.Natural`).
