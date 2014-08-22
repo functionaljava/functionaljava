@@ -2,7 +2,6 @@
 
 image::http://www.functionaljava.org/img/logo-600x144.png[]
 
-
 Functional Java is an open source library facilitating functional programming in Java. The library implements numerous basic and advanced programming abstractions that assist composition oriented development. Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language.
 
 The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 5 to 8 and beyond.
@@ -23,9 +22,35 @@ The Functional Java artifact is published to Maven Central using the group `org.
 * the core library (`functionaljava`)
 * Java 8 specific support (`functionaljava-java8`)
 
+The latest version is `4.2-beta-1`.  This can be added to your Gradle project by adding the dependencies:
+----
+compile "org.functionaljava:functionaljava:4.2-beta-1"
+compile "org.functionaljava:functionaljava-java8:4.2-beta-1"
+----
+
+and in Maven:
+----
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava</artifactId>
+    <version>4.2-beta-1</version>
+</dependency>
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava-java8</artifactId>
+    <version>4.2-beta-1</version>
+</dependency>
+----
+
 == Building
 
-TODO
+FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 7 bytecode.  This requires access to both JDK 7 and 8.  The build system requires the environment variables `JAVA7_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
+
+Building is done using Gradle 2.0.  In the root directory run:
+----
+./gradlew
+----
+This will download the Gradle build tool and necessary dependencies and build FunctionalJava.
 
 == Features
 
