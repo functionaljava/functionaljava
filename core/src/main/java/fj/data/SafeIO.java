@@ -5,10 +5,10 @@ import java.io.IOException;
 /**
  * Created by MarkPerry on 3/07/2014.
  */
-public interface SafeIO<E extends IOException, A> extends IO<Validation<E, A>> {
+public interface SafeIO<A> extends IO<A> {
 
 	@Override
-	public Validation<E, A> run();
+	public A run();
 
 }
 

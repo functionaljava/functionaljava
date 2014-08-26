@@ -354,7 +354,7 @@ public class IOFunctions {
 		return bind(io1, io2 -> io2);
 	}
 
-	public static <A> SafeIO<IOException, A> toSafeIO(IO<A> io) {
+	public static <A> SafeIO<Validation<IOException, A>> toSafeIO(IO<A> io) {
 		return () -> P1.toP1(() -> io.run())._1();
 	}
 
