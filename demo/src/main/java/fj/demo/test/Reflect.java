@@ -13,6 +13,8 @@ import static fj.test.Arbitrary.arbInteger;
 import static fj.test.Arbitrary.arbIntegerBoundaries;
 import static fj.test.Arbitrary.arbStringBuilder;
 import static fj.test.Bool.bool;
+
+import fj.function.Effect1;
 import fj.test.CheckResult;
 import static fj.test.CheckResult.summary;
 import fj.test.Property;
@@ -142,8 +144,8 @@ public final class Reflect {
   }
 
   private static void printResults(final List<P2<String,CheckResult>> results) {
-    results.foreach(new Effect<P2<String, CheckResult>>() {
-      public void e(final P2<String, CheckResult> result) {
+    results.foreach(new Effect1<P2<String, CheckResult>>() {
+      public void f(final P2<String, CheckResult> result) {
         summary.print(result._2());
         out.println(" (" + result._1() + ')');
       }

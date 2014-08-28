@@ -8,6 +8,7 @@ import fj.data.List;
 import fj.data.Option;
 import fj.data.Stream;
 import fj.function.Characters;
+import fj.function.Effect1;
 
 import static fj.Equal.charEqual;
 import static fj.Equal.listEqual;
@@ -124,8 +125,8 @@ public final class ChequeWrite {
         final List<P2<List<Character>, Integer>> k = split(cs);
         final int c = k.head()._2();
 
-        k.foreach(new Effect<P2<List<Character>, Integer>>() {
-          public void e(final P2<List<Character>, Integer> z) {
+        k.foreach(new Effect1<P2<List<Character>, Integer>>() {
+          public void f(final P2<List<Character>, Integer> z) {
             final List<Character> w = z._1();
             final int i = z._2();
 

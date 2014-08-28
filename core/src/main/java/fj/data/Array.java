@@ -7,6 +7,7 @@ import fj.P;
 import fj.P1;
 import fj.P2;
 import fj.Unit;
+import fj.function.Effect1;
 
 import static fj.Function.*;
 import static fj.P.p;
@@ -229,9 +230,9 @@ public final class Array<A> implements Iterable<A> {
    * @param f The side-effect to perform for the given element.
    */
   @SuppressWarnings("unchecked")
-  public void foreach(final Effect<A> f) {
+  public void foreach(final Effect1<A> f) {
     for (final Object x : a) {
-      f.e((A) x);
+      f.f((A) x);
     }
   }
 

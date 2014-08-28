@@ -32,6 +32,7 @@ import fj.control.parallel.Strategy;
 import fj.data.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
+import fj.function.Effect1;
 
 /**
  * Reads words and their counts from files ({@link #getWordsAndCountsFromFiles} in a single thread
@@ -312,9 +313,9 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
     
     // we have tmpfiles, but still want to be sure not to leave rubbish
-    fileNames.foreach(new Effect<String>() {
+    fileNames.foreach(new Effect1<String>() {
       @Override
-      public void e(final String a) {
+      public void f(final String a) {
         new File(a).delete();
       }});
   }

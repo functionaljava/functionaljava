@@ -15,6 +15,8 @@ import fj.data.List;
 import static fj.data.List.nil;
 import static fj.data.List.replicate;
 import fj.data.Option;
+import fj.function.Effect1;
+
 import static fj.Monoid.intAdditionMonoid;
 import static fj.Ord.intOrd;
 
@@ -155,8 +157,8 @@ public final class Gen<A> {
    * @param r The random generator to generate the result to apply the side-effect to.
    * @param f The side-effect to execute on the generated value.
    */
-  public void foreach(final Integer i, final Rand r, final Effect<A> f) {
-    f.e(this.f.f(i).f(r));
+  public void foreach(final Integer i, final Rand r, final Effect1<A> f) {
+    f.f(this.f.f(i).f(r));
   }
 
   /**

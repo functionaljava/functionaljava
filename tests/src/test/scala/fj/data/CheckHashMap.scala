@@ -1,6 +1,7 @@
 package fj
 package data
 
+import fj.function.Effect1
 import org.scalacheck.Prop._
 import ArbitraryHashMap._
 import Equal._
@@ -106,8 +107,8 @@ object CheckHashMap extends Properties("HashMap") {
 
   property("No null values") = forAll((m: List[Int]) => {
     val map = HashMap.hashMap[Int, Int]()
-    m.foreach(new Effect[Int] {
-      def e(a: Int) {
+    m.foreach(new Effect1[Int] {
+      def f(a: Int) {
         map.set(a, null.asInstanceOf[Int])
       }
     })

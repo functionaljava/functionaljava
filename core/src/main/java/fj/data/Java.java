@@ -7,6 +7,7 @@ import static fj.P.p;
 import fj.Function;
 import fj.P1;
 import fj.P2;
+import fj.function.Effect1;
 
 import static fj.data.List.list;
 import static fj.data.Option.some;
@@ -69,8 +70,8 @@ public final class Java {
   public static final F<List<Boolean>, BitSet> List_BitSet = new F<List<Boolean>, BitSet>() {
     public BitSet f(final List<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
-      bs.zipIndex().foreach(new Effect<P2<Boolean, Integer>>() {
-        public void e(final P2<Boolean, Integer> bi) {
+      bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
+        public void f(final P2<Boolean, Integer> bi) {
           s.set(bi._2(), bi._1());
         }
       });
@@ -317,8 +318,8 @@ public final class Java {
     public BitSet f(final Array<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
 
-      bs.zipIndex().foreach(new Effect<P2<Boolean, Integer>>() {
-        public void e(final P2<Boolean, Integer> bi) {
+      bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
+        public void f(final P2<Boolean, Integer> bi) {
           s.set(bi._2(), bi._1());
         }
       });
@@ -601,8 +602,8 @@ public final class Java {
   public static final F<Stream<Boolean>, BitSet> Stream_BitSet = new F<Stream<Boolean>, BitSet>() {
     public BitSet f(final Stream<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
-      bs.zipIndex().foreach(new Effect<P2<Boolean, Integer>>() {
-        public void e(final P2<Boolean, Integer> bi) {
+      bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
+        public void f(final P2<Boolean, Integer> bi) {
           s.set(bi._2(), bi._1());
         }
       });
@@ -849,8 +850,8 @@ public final class Java {
     public BitSet f(final Option<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
 
-      bs.foreach(new Effect<Boolean>() {
-        public void e(final Boolean b) {
+      bs.foreach(new Effect1<Boolean>() {
+        public void f(final Boolean b) {
           if (b)
             s.set(0);
         }

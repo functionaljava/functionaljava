@@ -16,6 +16,7 @@ import fj.P7;
 import fj.P8;
 import fj.Unit;
 import fj.Show;
+import fj.function.Effect1;
 
 import static fj.Function.*;
 import static fj.P.p;
@@ -225,9 +226,9 @@ public abstract class Option<A> implements Iterable<A> {
    *
    * @param f The side-effect to perform for the given element.
    */
-  public final void foreach(final Effect<A> f) {
+  public final void foreach(final Effect1<A> f) {
     if (isSome())
-      f.e(some());
+      f.f(some());
   }
 
   /**

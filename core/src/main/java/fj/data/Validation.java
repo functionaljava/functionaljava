@@ -1,6 +1,7 @@
 package fj.data;
 
 import fj.*;
+import fj.function.Effect1;
 
 import static fj.Function.curry;
 import static fj.P.p;
@@ -160,7 +161,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @param f The side-effect to execute.
    */
-  public void foreach(final Effect<T> f) {
+  public void foreach(final Effect1<T> f) {
     e.right().foreach(f);
   }
 
@@ -811,7 +812,7 @@ public class Validation<E, T> implements Iterable<T> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect<E> f) {
+    public void foreach(final Effect1<E> f) {
       v.toEither().left().foreach(f);
     }
 

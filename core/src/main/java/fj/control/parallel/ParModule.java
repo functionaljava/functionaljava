@@ -15,6 +15,8 @@ import fj.data.Stream;
 import fj.data.Tree;
 import fj.data.TreeZipper;
 import fj.data.Zipper;
+import fj.function.Effect1;
+
 import static fj.data.Option.some;
 import static fj.data.Stream.iterableStream;
 
@@ -105,7 +107,7 @@ public final class ParModule {
    * @param e The effect that the actor should have on its messages.
    * @return A concurrent actor that does not guarantee ordering of its messages.
    */
-  public <A> Actor<A> effect(final Effect<A> e) {
+  public <A> Actor<A> effect(final Effect1<A> e) {
     return Actor.actor(strategy, e);
   }
 
@@ -115,9 +117,9 @@ public final class ParModule {
    *
    * @return A function that takes an effect and returns a concurrent effect.
    */
-  public <A> F<Effect<A>, Actor<A>> effect() {
-    return new F<Effect<A>, Actor<A>>() {
-      public Actor<A> f(final Effect<A> effect) {
+  public <A> F<Effect1<A>, Actor<A>> effect() {
+    return new F<Effect1<A>, Actor<A>>() {
+      public Actor<A> f(final Effect1<A> effect) {
         return effect(effect);
       }
     };
@@ -129,7 +131,7 @@ public final class ParModule {
    * @param e The effect that the actor should have on its messages.
    * @return A concurrent actor that is guaranteed to process its messages in order.
    */
-  public <A> Actor<A> actor(final Effect<A> e) {
+  public <A> Actor<A> actor(final Effect1<A> e) {
     return Actor.queueActor(strategy, e);
   }
 
@@ -138,9 +140,9 @@ public final class ParModule {
    *
    * @return A function that takes an effect and returns an actor that processes messages in some order.
    */
-  public <A> F<Effect<A>, Actor<A>> actor() {
-    return new F<Effect<A>, Actor<A>>() {
-      public Actor<A> f(final Effect<A> effect) {
+  public <A> F<Effect1<A>, Actor<A>> actor() {
+    return new F<Effect1<A>, Actor<A>>() {
+      public Actor<A> f(final Effect1<A> effect) {
         return actor(effect);
       }
     };

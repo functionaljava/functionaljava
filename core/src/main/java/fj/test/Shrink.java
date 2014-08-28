@@ -41,6 +41,8 @@ import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
 import fj.data.Stream;
+import fj.function.Effect1;
+
 import static fj.data.Stream.cons;
 import static fj.data.Stream.iterate;
 import static fj.data.Stream.nil;
@@ -521,8 +523,8 @@ public final class Shrink<A> {
       @SuppressWarnings({"UseOfObsoleteCollectionType"})
       public Hashtable<K, V> f(final List<P2<K, V>> kvs) {
         final Hashtable<K, V> h = new Hashtable<K, V>();
-        kvs.foreach(new Effect<P2<K, V>>() {
-          public void e(final P2<K, V> kv) {
+        kvs.foreach(new Effect1<P2<K, V>>() {
+          public void f(final P2<K, V> kv) {
             h.put(kv._1(), kv._2());
           }
         });

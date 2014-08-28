@@ -1,6 +1,7 @@
 package fj.data;
 
 import fj.*;
+import fj.function.Effect1;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -290,7 +291,7 @@ public final class HashMap<K, V> implements Iterable<K> {
     return map(Function.<K>identity(), function, e, h);
   }
 
-  public void foreach(Effect<P2<K, V>> effect) {
+  public void foreach(Effect1<P2<K, V>> effect) {
     toStream().foreach(effect);
   }
 

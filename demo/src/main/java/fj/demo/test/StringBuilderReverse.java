@@ -8,6 +8,8 @@ import static fj.Equal.stringBuilderEqual;
 import static fj.test.Arbitrary.arbCharacter;
 import static fj.test.Arbitrary.arbStringBuilder;
 import static fj.test.CheckResult.summary;
+
+import fj.function.Effect1;
 import fj.test.Property;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -45,8 +47,8 @@ public final class StringBuilderReverse {
     //OK, passed 100 tests.
     //OK, passed 100 tests.
     //OK, passed 100 tests.
-    list(p1, p2, p3).foreach(new Effect<Property>() {
-      public void e(final Property p) {
+    list(p1, p2, p3).foreach(new Effect1<Property>() {
+      public void f(final Property p) {
         summary.println(p.check());
       }
     });
