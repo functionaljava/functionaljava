@@ -1,10 +1,13 @@
 package fj.data;
 
-import fj.Effect;
 import fj.F;
+import fj.P;
 import fj.P1;
+import fj.Unit;
+import fj.function.Effect0;
 import fj.function.Effect1;
 
+import static fj.Unit.unit;
 import static fj.data.List.asString;
 import static fj.data.List.fromString;
 
@@ -391,6 +394,43 @@ public final class Conversions {
 
   // END Option ->
 
+    // BEGIN Effect
+
+    public static F<Effect0, P1<Unit>> Effect0_P1() {
+        return e -> Effect0_P1(e);
+    }
+
+    public static P1<Unit> Effect0_P1(Effect0 e) {
+        return P.lazy(u -> {
+            e.f();
+            return unit();
+        });
+    }
+
+    public static IO<Unit> Effect_IO(Effect0 e) {
+        return () ->{
+            e.f();
+            return Unit.unit();
+        };
+    }
+
+    public static F<Effect0, IO<Unit>> Effect_IO() {
+        return e -> Effect_IO(e);
+    }
+
+    public static SafeIO<Unit> Effect_SafeIO(Effect0 e) {
+        return () -> {
+            e.f();
+            return unit();
+        };
+    }
+
+    public static F<Effect0, SafeIO<Unit>> Effect_SafeIO() {
+        return e -> Effect_SafeIO(e);
+    }
+
+    // END Effect
+
   // BEGIN Either ->
 
   /**
@@ -576,6 +616,18 @@ public final class Conversions {
   }
 
   // END Either ->
+
+    // BEGIN F
+
+    public static <A> SafeIO<A> F_SafeIO(F<Unit, A> f) {
+        return () -> f.f(unit());
+    }
+
+    public static <A> F<F<Unit, A>, SafeIO<A>> F_SafeIO() {
+        return f -> F_SafeIO(f);
+    }
+
+    // END F
 
   // BEGIN String ->
 

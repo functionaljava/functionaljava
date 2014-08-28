@@ -7,6 +7,7 @@ import fj.function.Try2;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -106,5 +107,17 @@ public final class Java8 {
     static public <A> F<Option<A>, Optional<A>> Option_Optional() {
         return o -> o.isSome() ? Optional.ofNullable(o.some()) : Optional.empty();
     }
+
+    static public <A> F<Consumer<A>, F<A, Unit>> Consumer_F() {
+        return c -> Consumer_F(c);
+    }
+
+    public static <A> F<A, Unit> Consumer_F(Consumer<A> c) {
+        return a -> {
+            c.accept(a);
+            return Unit.unit();
+        };
+    }
+
 
 }
