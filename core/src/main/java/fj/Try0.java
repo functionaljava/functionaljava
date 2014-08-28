@@ -9,7 +9,7 @@ package fj;
  * @version %build.number%
  */
 
-public interface TryCatch0<A, E extends Exception> {
+public interface Try0<A, E extends Exception> {
 
     A f() throws E;
 

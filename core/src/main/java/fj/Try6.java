@@ -9,7 +9,7 @@ package fj;
  * @version %build.number%
  */
 
-public interface TryCatch6<A, B, C, D, E, F, G, Z extends Exception> {
+public interface Try6<A, B, C, D, E, F, G, Z extends Exception> {
 
     G f(A a, B b, C c, D d, E e, F f) throws Z;
 
