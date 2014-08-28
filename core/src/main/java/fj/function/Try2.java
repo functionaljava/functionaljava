@@ -9,8 +9,8 @@ package fj.function;
  * @version %build.number%
  */
 
-public interface Try2<A, B, C, E extends Exception> {
+public interface Try2<A, B, C, Z extends Exception> {
 
-    C f(A a, B b) throws E;
+    C f(A a, B b) throws Z;
 
 }
