@@ -840,7 +840,7 @@ public class F1Functions {
      * @param t A TryCatch1 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, B, E extends Exception> F<A, Validation<E, B>> toF1(final TryCatch1<A, B, E> t) {
+    static public <A, B, E extends Exception> F<A, Validation<E, B>> toF1(final Try1<A, B, E> t) {
         return a -> {
             try {
                 return Validation.success(t.f(a));

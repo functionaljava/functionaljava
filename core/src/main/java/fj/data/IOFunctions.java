@@ -30,7 +30,7 @@ public class IOFunctions {
   
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-    public static <A> TryCatch0<A, IOException> toTry(IO<A> io) {
+    public static <A> Try0<A, IOException> toTry(IO<A> io) {
         return () -> io.run();
     }
 
@@ -42,7 +42,7 @@ public class IOFunctions {
         return () -> p._1();
     }
 
-    public static <A> IO<A> io(TryCatch0<A, ? extends IOException> t) {
+    public static <A> IO<A> io(Try0<A, ? extends IOException> t) {
         return () -> t.f();
     }
 

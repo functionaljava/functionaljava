@@ -237,7 +237,7 @@ public abstract class P1<A> {
      * @param t A TryCatch0 to promote
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
-    static public <A, E extends Exception> P1<Validation<E, A>> toP1(final TryCatch0<A, E> t) {
+    static public <A, E extends Exception> P1<Validation<E, A>> toP1(final Try0<A, E> t) {
         return P.lazy(u -> {
             try {
                 return Validation.success(t.f());
