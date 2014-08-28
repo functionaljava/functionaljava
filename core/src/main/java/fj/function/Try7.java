@@ -1,4 +1,4 @@
-package fj;
+package fj.function;
 
 
 /**
@@ -6,7 +6,7 @@ package fj;
  *
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to an <code>F7</code>.
  *
- * @see F7Functions#toF7
+ * @see fj.F7Functions#toF7
  * @version %build.number%
  */
 

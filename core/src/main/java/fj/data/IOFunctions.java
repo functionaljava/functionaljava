@@ -16,6 +16,7 @@ import java.util.Arrays;
 import fj.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
+import fj.function.Try0;
 
 /**
  * IO monad for processing files, with main methods {@link #enumFileLines },

@@ -1,11 +1,11 @@
-package fj;
+package fj.function;
 
 /**
  * A transformation function of arity-6 from <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code> and <code>F</code> to <code>G</code> that may throw an <code>Exception</code>.
  *
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to an <code>F6</code>.
  *
- * @see F6Functions#toF6
+ * @see fj.F6Functions#toF6
  * @version %build.number%
  */
 

@@ -1,6 +1,7 @@
 package fj;
 
 import fj.data.Validation;
+import fj.function.Try8;
 
 /**
  * Created by MarkPerry on 6/04/2014.

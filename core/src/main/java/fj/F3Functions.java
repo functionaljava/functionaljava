@@ -1,6 +1,7 @@
 package fj;
 
 import fj.data.Validation;
+import fj.function.Try3;
 
 import static fj.data.Validation.fail;
 import static fj.data.Validation.success;

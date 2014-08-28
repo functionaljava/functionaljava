@@ -4,6 +4,7 @@ import fj.control.parallel.Actor;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.data.*;
+import fj.function.Try1;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

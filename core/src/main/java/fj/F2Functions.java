@@ -2,6 +2,7 @@ package fj;
 
 import fj.control.parallel.Promise;
 import fj.data.*;
+import fj.function.Try2;
 
 import static fj.P.p;
 import static fj.data.IterableW.wrap;

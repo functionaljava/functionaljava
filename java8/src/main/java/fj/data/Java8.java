@@ -1,6 +1,9 @@
 package fj.data;
 
 import fj.*;
+import fj.function.Try0;
+import fj.function.Try1;
+import fj.function.Try2;
 
 import java.util.Optional;
 import java.util.function.BiFunction;

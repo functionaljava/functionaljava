@@ -6,6 +6,7 @@ import fj.data.Array;
 import fj.data.List;
 import fj.data.Stream;
 import fj.data.Validation;
+import fj.function.Try0;
 
 public abstract class P1<A> {
 
