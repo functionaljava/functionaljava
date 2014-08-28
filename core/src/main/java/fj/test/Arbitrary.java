@@ -1,6 +1,5 @@
 package fj.test;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.F3;
@@ -787,10 +786,10 @@ public final class Arbitrary<A> {
       arbitrary(arbList(arbBoolean).gen.map(new F<List<Boolean>, BitSet>() {
         public BitSet f(final List<Boolean> bs) {
           final BitSet s = new BitSet(bs.length());
-          bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
-            public void f(final P2<Boolean, Integer> bi) {
-              s.set(bi._2(), bi._1());
-            }
+          bs.zipIndex().foreachDoEffect(new Effect1<P2<Boolean, Integer>>() {
+              public void f(final P2<Boolean, Integer> bi) {
+                  s.set(bi._2(), bi._1());
+              }
           });
           return s;
         }
@@ -918,10 +917,10 @@ public final class Arbitrary<A> {
           public Hashtable<K, V> f(final List<V> vs) {
             final Hashtable<K, V> t = new Hashtable<K, V>();
 
-            ks.zip(vs).foreach(new Effect1<P2<K, V>>() {
-              public void f(final P2<K, V> kv) {
-                t.put(kv._1(), kv._2());
-              }
+            ks.zip(vs).foreachDoEffect(new Effect1<P2<K, V>>() {
+                public void f(final P2<K, V> kv) {
+                    t.put(kv._1(), kv._2());
+                }
             });
 
             return t;

@@ -279,7 +279,7 @@ public abstract class List<A> implements Iterable<A> {
    *
    * @param f The side-effect to perform for the given element.
    */
-  public final void foreach(final Effect1<A> f) {
+  public final void foreachDoEffect(final Effect1<A> f) {
     for (List<A> xs = this; xs.isNotEmpty(); xs = xs.tail()) {
       f.f(xs.head());
     }

@@ -1,6 +1,5 @@
 package fj.data;
 
-import fj.Effect;
 import fj.F;
 import static fj.P.p;
 
@@ -70,10 +69,10 @@ public final class Java {
   public static final F<List<Boolean>, BitSet> List_BitSet = new F<List<Boolean>, BitSet>() {
     public BitSet f(final List<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
-      bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
-        public void f(final P2<Boolean, Integer> bi) {
-          s.set(bi._2(), bi._1());
-        }
+      bs.zipIndex().foreachDoEffect(new Effect1<P2<Boolean, Integer>>() {
+          public void f(final P2<Boolean, Integer> bi) {
+              s.set(bi._2(), bi._1());
+          }
       });
       return s;
     }

@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.Monoid;
@@ -313,11 +312,12 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
     
     // we have tmpfiles, but still want to be sure not to leave rubbish
-    fileNames.foreach(new Effect1<String>() {
-      @Override
-      public void f(final String a) {
-        new File(a).delete();
-      }});
+    fileNames.foreachDoEffect(new Effect1<String>() {
+        @Override
+        public void f(final String a) {
+            new File(a).delete();
+        }
+    });
   }
 
   @SuppressWarnings("unused")
