@@ -7,45 +7,156 @@ import fj.function.*;
 
 import java.io.IOException;
 
+import static fj.data.Validation.fail;
+import static fj.data.Validation.success;
+
 /**
  * Created by mperry on 24/07/2014.
  */
 public class Try {
 
-    public static <A, Z extends Exception> P1<Validation<Z, A>> f(Try0<A, Z> t) {
-        return P1.toP1(t);
+    /**
+     * Promotes the TryCatch0 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch0 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, E extends Exception> P1<Validation<E, A>> f(final Try0<A, E> t) {
+        return P.lazy(u -> {
+            try {
+                return Validation.success(t.f());
+            } catch (Exception e) {
+                return Validation.fail((E) e);
+            }
+        });
     }
 
-    public static <A, B, Z extends Exception> F<A, Validation<Z, B>> f(Try1<A, B, Z> t) {
-        return F1Functions.toF1(t);
+    /**
+     * Promotes the TryCatch1 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch1 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, E extends Exception> F<A, Validation<E, B>> f(final Try1<A, B, E> t) {
+        return a -> {
+            try {
+                return Validation.success(t.f(a));
+            } catch (Exception e) {
+                return Validation.fail((E) e);
+            }
+        };
     }
 
-    public static <A, B, C, Z extends Exception> F2<A, B, Validation<Z, C>> f(Try2<A, B, C, Z> t) {
-        return F2Functions.toF2(t);
+    /**
+     * Promotes the TryCatch2 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch2 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, E extends Exception> F2<A, B, Validation<E, C>> f(final Try2<A, B, C, E> t) {
+        return (a, b) -> {
+            try {
+                return Validation.success(t.f(a, b));
+            } catch (Exception e) {
+                return Validation.fail((E) e);
+            }
+        };
     }
 
-    public static <A, B, C, D, Z extends Exception> F3<A, B, C, Validation<Z, D>> f(Try3<A, B, C, D, Z> t) {
-        return F3Functions.toF3(t);
+    /**
+     * Promotes the TryCatch3 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch3 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, D, E extends Exception> F3<A, B, C, Validation<E, D>> f(final Try3<A, B, C, D, E> t) {
+        return (a, b, c) -> {
+            try {
+                return success(t.f(a, b, c));
+            } catch (Exception e) {
+                return fail((E) e);
+            }
+        };
     }
 
-    public static <A, B, C, D, E, Z extends Exception> F4<A, B, C, D, Validation<Z, E>> f(Try4<A, B, C, D, E, Z> t) {
-        return F4Functions.toF4(t);
+    /**
+     * Promotes the TryCatch4 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch4 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, D, E, Z extends Exception> F4<A, B, C, D, Validation<Z, E>> f(final Try4<A, B, C, D, E, Z> t) {
+        return (a, b, c, d) -> {
+            try {
+                return Validation.success(t.f(a, b, c, d));
+            } catch (Exception ex) {
+                return Validation.fail((Z) ex);
+            }
+        };
     }
 
-    public static <A, B, C, D, E, F$, Z extends Exception> F5<A, B, C, D, E, Validation<Z, F$>> f(Try5<A, B, C, D, E, F$, Z> t) {
-        return F5Functions.toF5(t);
+    /**
+     * Promotes the TryCatch5 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch5 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, D, E, F, Z extends Exception> F5<A, B, C, D, E, Validation<Z, F>> f(final Try5<A, B, C, D, E, F, Z> t) {
+        return (a, b, c, d, e) -> {
+            try {
+                return Validation.success(t.f(a, b, c, d, e));
+            } catch (Exception ex) {
+                return Validation.fail((Z) ex);
+            }
+        };
     }
 
-    public static <A, B, C, D, E, F$, G, Z extends Exception> F6<A, B, C, D, E, F$, Validation<Z, G>> f(Try6<A, B, C, D, E, F$, G, Z> t) {
-        return F6Functions.toF6(t);
+    /**
+     * Promotes the TryCatch6 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch6 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, D, E, F, G, Z extends Exception> F6<A, B, C, D, E, F, Validation<Z, G>> f(final Try6<A, B, C, D, E, F, G, Z> t) {
+        return (a, b, c, d, e, f) -> {
+            try {
+                return Validation.success(t.f(a, b, c, d, e, f));
+            } catch (Exception ex) {
+                return Validation.fail((Z) ex);
+            }
+        };
     }
 
-    public static <A, B, C, D, E, F$, G, H, Z extends Exception> F7<A, B, C, D, E, F$, G, Validation<Z, H>> f(Try7<A, B, C, D, E, F$, G, H, Z> t) {
-        return F7Functions.toF7(t);
+    /**
+     * Promotes the TryCatch7 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch7 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, D, E, F, G, H, Z extends Exception> F7<A, B, C, D, E, F, G, Validation<Z, H>> f(final Try7<A, B, C, D, E, F, G, H, Z> t) {
+        return (a, b, c, d, e, f, g) -> {
+            try {
+                return Validation.success(t.f(a, b, c, d, e, f, g));
+            } catch (Exception ex) {
+                return Validation.fail((Z) ex);
+            }
+        };
     }
 
-    public static <A, B, C, D, E, F$, G, H, I, Z extends Exception> F8<A, B, C, D, E, F$, G, H, Validation<Z, I>> f(Try8<A, B, C, D, E, F$, G, H, I, Z> t) {
-        return F8Functions.toF8(t);
+    /**
+     * Promotes the TryCatch8 to a Validation that returns an Exception on the failure side and its result on the success side.
+     *
+     * @param t A TryCatch8 to promote
+     * @return A Validation with an Exception on the failure side and its result on the success side.
+     */
+    static public <A, B, C, D, E, F, G, H, I, Z extends Exception> F8<A, B, C, D, E, F, G, H, Validation<Z, I>> f(final Try8<A, B, C, D, E, F, G, H, I, Z> t) {
+        return (a, b, c, d, e, f, g, h) -> {
+            try {
+                return Validation.success(t.f(a, b, c, d, e, f, g, h));
+            } catch (Exception ex) {
+                return Validation.fail((Z) ex);
+            }
+        };
     }
 
     public static <A> IO<A> io(Try0<A, ? extends IOException> t) {

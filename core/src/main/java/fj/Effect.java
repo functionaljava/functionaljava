@@ -31,11 +31,9 @@ public class Effect {
    * @return The function using the given effect.
    */
   public static final <A> F<A, Unit> f(Effect1<A> e1) {
-    return new F<A, Unit>() {
-      public Unit f(final A a) {
+    return a -> {
         e1.f(a);
         return unit();
-      }
     };
   }
 

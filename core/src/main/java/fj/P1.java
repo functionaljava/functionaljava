@@ -232,22 +232,6 @@ public abstract class P1<A> {
         };
       }
 
-    /**
-     * Promotes the TryCatch0 to a Validation that returns an Exception on the failure side and its result on the success side.
-     *
-     * @param t A TryCatch0 to promote
-     * @return A Validation with an Exception on the failure side and its result on the success side.
-     */
-    static public <A, E extends Exception> P1<Validation<E, A>> toP1(final Try0<A, E> t) {
-        return P.lazy(u -> {
-            try {
-                return Validation.success(t.f());
-            } catch (Exception e) {
-                return Validation.fail((E) e);
-            }
-        });
-    }
-
     public String toString() {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}

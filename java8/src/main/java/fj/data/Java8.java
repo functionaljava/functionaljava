@@ -73,7 +73,7 @@ public final class Java8 {
     }
 
     static public <A, E extends Exception> F<Try0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
-        return t -> () -> P1.toP1(t)._1();
+        return t -> () -> Try.f(t)._1();
     }
 
     static public <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final Try1<A, B, E> t) {
@@ -81,7 +81,7 @@ public final class Java8 {
     }
 
     static public <A, B, E extends Exception> F<Try1<A, B, E>, Function<A, Validation<E, B>>> TryCatch1_Function() {
-        return t -> a -> F1Functions.toF1(t).f(a);
+        return t -> a -> Try.f(t).f(a);
     }
 
     static public <A, B, C, E extends Exception> BiFunction<A, B, Validation<E, C>> TryCatch2_BiFunction(final Try2<A, B, C, E> t) {
@@ -89,7 +89,7 @@ public final class Java8 {
     }
 
     static public <A, B, C, E extends Exception> F<Try2<A, B, C, E>, BiFunction<A, B, Validation<E, C>>> TryCatch2_BiFunction() {
-        return t -> (a, b) -> F2Functions.toF2(t).f(a, b);
+        return t -> (a, b) -> Try.f(t).f(a, b);
     }
 
     static public <A> Option<A> Optional_Option(final Optional<A> o) {
