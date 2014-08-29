@@ -248,7 +248,7 @@ public abstract class P1<A> {
         });
     }
 
-	public String toString() {
+    public String toString() {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}
 }
