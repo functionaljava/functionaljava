@@ -158,7 +158,15 @@ public class IOFunctions {
         return () -> f.f(Unit.unit());
     }
 
-	/**
+    public static final <A> SafeIO<A> lazySafe(final F<Unit, A> f) {
+        return () -> f.f(Unit.unit());
+    }
+
+    public static final <A> SafeIO<A> lazySafe(final P1<A> f) {
+        return () -> f._1();
+    }
+
+    /**
    * A function that feeds an iteratee with lines read from a {@link BufferedReader}.
    */
   public static <A> F<BufferedReader, F<IterV<String, A>, IO<IterV<String, A>>>> lineReader() {
