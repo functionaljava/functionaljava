@@ -5,7 +5,7 @@ package fj.function;
  *
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to an <code>F3</code>.
  *
- * @see fj.F3Functions#toF3
+ * @see fj.Try#f
  * @version %build.number%
  */
 

@@ -6,7 +6,7 @@ package fj.function;
  *
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to an <code>F7</code>.
  *
- * @see fj.F7Functions#toF7
+ * @see fj.Try#f
  * @version %build.number%
  */
 
