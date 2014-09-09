@@ -100,7 +100,7 @@ public class Effect {
     };
   }
   
-  public static <A> Effect1<A> f(final F<A, Unit> f) {
+  public static <A> Effect1<A> lazy(final F<A, Unit> f) {
     return new Effect1<A>() {
       public void f(final A a) {
         f.f(a);
