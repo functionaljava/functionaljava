@@ -2,6 +2,7 @@ package fj;
 
 import fj.control.parallel.Promise;
 import fj.data.*;
+import fj.function.Try2;
 
 import static fj.P.p;
 import static fj.data.IterableW.wrap;
@@ -342,23 +343,6 @@ public class F2Functions {
                         });
                 return treeZipper(treeM(f).f(ta.p()._1(), tb.p()._1()), sf.f(ta.lefts(), tb.lefts()),
                         sf.f(ta.rights(), tb.rights()), pf.f(ta.p()._4(), tb.p()._4()));
-            }
-        };
-    }
-
-
-    /**
-     * Promotes the TryCatch2 to a Validation that returns an Exception on the failure side and its result on the success side.
-     *
-     * @param t A TryCatch2 to promote
-     * @return A Validation with an Exception on the failure side and its result on the success side.
-     */
-    static public <A, B, C, E extends Exception> F2<A, B, Validation<E, C>> toF2(final TryCatch2<A, B, C, E> t) {
-        return (a, b) -> {
-            try {
-                return Validation.success(t.f(a, b));
-            } catch (Exception e) {
-                return Validation.fail((E) e);
             }
         };
     }

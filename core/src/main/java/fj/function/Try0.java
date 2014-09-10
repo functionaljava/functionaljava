@@ -1,16 +1,16 @@
-package fj;
+package fj.function;
 
 /**
  * A product of <code>A</code> which may throw an <code>Exception</code>.
  *
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to a <code>P1</code>.
  *
- * @see P1#toP1
+ * @see fj.Try#f
  * @version %build.number%
  */
 
-public interface TryCatch0<A, E extends Exception> {
+public interface Try0<A, Z extends Exception> {
 
-    A f() throws E;
+    A f() throws Z;
 
 }

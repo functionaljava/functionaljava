@@ -1,6 +1,5 @@
 package fj.test;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.F3;
@@ -31,6 +30,8 @@ import static fj.data.List.list;
 import fj.data.Option;
 import static fj.data.Option.some;
 import fj.data.Stream;
+import fj.function.Effect1;
+
 import static fj.data.Stream.range;
 import static fj.test.Gen.choose;
 import static fj.test.Gen.elements;
@@ -785,10 +786,10 @@ public final class Arbitrary<A> {
       arbitrary(arbList(arbBoolean).gen.map(new F<List<Boolean>, BitSet>() {
         public BitSet f(final List<Boolean> bs) {
           final BitSet s = new BitSet(bs.length());
-          bs.zipIndex().foreach(new Effect<P2<Boolean, Integer>>() {
-            public void e(final P2<Boolean, Integer> bi) {
-              s.set(bi._2(), bi._1());
-            }
+          bs.zipIndex().foreachDoEffect(new Effect1<P2<Boolean, Integer>>() {
+              public void f(final P2<Boolean, Integer> bi) {
+                  s.set(bi._2(), bi._1());
+              }
           });
           return s;
         }
@@ -916,10 +917,10 @@ public final class Arbitrary<A> {
           public Hashtable<K, V> f(final List<V> vs) {
             final Hashtable<K, V> t = new Hashtable<K, V>();
 
-            ks.zip(vs).foreach(new Effect<P2<K, V>>() {
-              public void e(final P2<K, V> kv) {
-                t.put(kv._1(), kv._2());
-              }
+            ks.zip(vs).foreachDoEffect(new Effect1<P2<K, V>>() {
+                public void f(final P2<K, V> kv) {
+                    t.put(kv._1(), kv._2());
+                }
             });
 
             return t;

@@ -1,8 +1,9 @@
 package fj.data;
 
-import fj.Effect;
 import fj.F;
 import fj.F1Functions;
+import fj.function.Effect1;
+
 import static fj.data.Option.some;
 import static fj.data.Option.somes;
 
@@ -88,12 +89,12 @@ public final class NonEmptyList<A> implements Iterable<A> {
     final NonEmptyList<B> p = f.f(head);
     b.snoc(p.head);
     b.append(p.tail);
-    tail.foreach(new Effect<A>() {
-      public void e(final A a) {
-        final NonEmptyList<B> p = f.f(a);
-        b.snoc(p.head);
-        b.append(p.tail);
-      }
+    tail.foreachDoEffect(new Effect1<A>() {
+        public void f(final A a) {
+            final NonEmptyList<B> p = f.f(a);
+            b.snoc(p.head);
+            b.append(p.tail);
+        }
     });
     final List<B> bb = b.toList();
     return nel(bb.head(), bb.tail());

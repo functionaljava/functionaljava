@@ -6,6 +6,7 @@ import fj.P1;
 import fj.control.parallel.Actor;
 import static fj.control.parallel.Actor.actor;
 import fj.control.parallel.Strategy;
+import fj.function.Effect1;
 
 /**
  * Pings a Pong actor a given number of times, one at a time, and calls back with its ID when done.
@@ -21,8 +22,8 @@ public class Ping {
     n = i;
     this.pong = pong;
     cb = callback;
-    ping = actor(s, new Effect<Pong>() {
-      public void e(final Pong pong) {
+    ping = actor(s, new Effect1<Pong>() {
+      public void f(final Pong pong) {
         n--;
         if (n > 0)
           pong.act(Ping.this);

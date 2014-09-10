@@ -1,0 +1,99 @@
+= Functional Java
+
+image::http://www.functionaljava.org/img/logo-600x144.png[]
+
+Functional Java is an open source library facilitating functional programming in Java. The library implements numerous basic and advanced programming abstractions that assist composition oriented development. Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language.
+
+The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 5 to 8 and beyond.
+
+Functional Java provides abstractions for the following types:
+
+* Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation).
+* Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list.
+* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing, actors, concurrency and type conversion.
+
+== URLs
+
+Important URLs for the project are:
+
+* Website, http://www.functionaljava.org
+* Website repository, http://github.com/functionaljava/functionaljava.github.io
+
+== Downloading
+
+The recommended way to download and use the project is through your build tool.
+
+The Functional Java artifact is published to Maven Central using the group `org.functionaljava` with two published artifacts:
+
+* the core library (`functionaljava`)
+* Java 8 specific support (`functionaljava-java8`)
+
+The latest version is `4.2-beta-1`.  This can be added to your Gradle project by adding the dependencies:
+----
+compile "org.functionaljava:functionaljava:4.2-beta-1"
+compile "org.functionaljava:functionaljava-java8:4.2-beta-1"
+----
+
+and in Maven:
+----
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava</artifactId>
+    <version>4.2-beta-1</version>
+</dependency>
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava-java8</artifactId>
+    <version>4.2-beta-1</version>
+</dependency>
+----
+
+== Building
+
+FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 7 bytecode.  This requires access to both JDK 7 and 8.  The build system requires the environment variables `JAVA7_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
+
+Building is done using Gradle 2.0.  In the root directory run:
+----
+./gradlew
+----
+This will download the Gradle build tool and necessary dependencies and build FunctionalJava.
+
+== Features
+
+A more complete description of the features mentioned above are:
+
+* Basic Data Structures
+** Functions with arity 1 to 8 (`fj.F`).
+** Functions with arity 0 to 8 that can produce exceptions (`fj.TryCatch`).
+** Products with arity 1 to 8 (`fj.P`).
+** Unit type (`fj.Unit`).
+** Optional value - _type-safe null_ (`fj.data.Option`).
+** Disjoint union data type - _compositional exception handling_ (`fj.data.Either`).
+** Validation - _right biased_ compositional exception handling (`fj.data.Validation`).
+* Immutable Collections
+** Array wrapper (`fj.data.Array`).
+** Immutable, in-memory singly linked list (`fj.data.List`).
+** Immutable lazy singly linked list (`fj.data.Stream`).
+** A package (`fj.data.fingertrees`) providing 2-3 finger trees for a functional representation of persistent sequences, supporting access to the ends in amortized O(1) time.
+** Type-safe heterogeneous list (`fj.data.hlist`) for lists of elements of differing types without sacrificing type-safety.
+** Immutable set implementation using a red/black tree (`fj.data.Set`).
+** Immutable multi-way tree - aka rose tree (`fj.data.Tree`).
+** Immutable tree-map using a red/black tree implementation (`fj.data.TreeMap`).
+* Other Abstractions
+** Monoid (`fj.Monoid`).
+** Semigroup (`fj.Semigroup`).
+** Natural number data type (`fj.data.Natural`).
+** Random number generator using a _linear congruential generator_ (`fj.LcgRng`).
+** Reader, Writer and State monads (`fj.data.Reader`,`fj.data.Writer`, `fj.data.State`).
+** Input/Output monad for abstracting IO (`fj.IO`).
+** Monadic parser combinators for writing parsers by combining smaller parsers using composition.
+** Conversion of data types to/from standard Java types.
+** Conversion between FunctionalJava and Java 8 specific types.
+** Configurable equality and hash-code for HashMap and HashSet.
+** Zipper implementations for streams and trees.
+** Automated specification-based testing framework (`fj.test`).
+** Fully operational Actors for parallel computations (`fj.control.parallel`) and layered abstractions such as parallel-map, map-reduce, parallel-zip.
+
+== License
+
+link:etc/LICENCE[The Functional Java license] uses the BSD 3 license, available at  (3-clause license, https://en.wikipedia.org/wiki/BSD_licenses[]).

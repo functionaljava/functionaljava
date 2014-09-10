@@ -11,6 +11,7 @@ import static fj.Function.curry;
 import fj.data.Java;
 import fj.data.List;
 import fj.data.Array;
+import fj.function.Effect1;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -388,9 +389,9 @@ public final class Strategy<A> {
    *
    * @return An effect, which, given a Future, waits for it to obtain a value, discarding the value.
    */
-  public static <A> Effect<Future<A>> discard() {
-    return new Effect<Future<A>>() {
-      public void e(final Future<A> a) {
+  public static <A> Effect1<Future<A>> discard() {
+    return new Effect1<Future<A>>() {
+      public void f(final Future<A> a) {
         Strategy.<A>obtain().f(a)._1();
       }
     };
@@ -505,7 +506,7 @@ public final class Strategy<A> {
    * @param e The effect that should handle errors.
    * @return A strategy that captures any runtime errors with a side-effect.
    */
-  public Strategy<A> errorStrategy(final Effect<Error> e) {
+  public Strategy<A> errorStrategy(final Effect1<Error> e) {
     return errorStrategy(this, e);
   }
 
@@ -517,7 +518,7 @@ public final class Strategy<A> {
    * @param e The effect that should handle errors.
    * @return A strategy that captures any runtime errors with a side-effect.
    */
-  public static <A> Strategy<A> errorStrategy(final Strategy<A> s, final Effect<Error> e) {
+  public static <A> Strategy<A> errorStrategy(final Strategy<A> s, final Effect1<Error> e) {
     return s.comap(new F<P1<A>, P1<A>>() {
       public P1<A> f(final P1<A> a) {
         return new P1<A>() {
@@ -526,7 +527,7 @@ public final class Strategy<A> {
               return a._1();
             } catch (Throwable t) {
               final Error error = new Error(t);
-              e.e(error);
+              e.f(error);
               throw error;
             }
           }

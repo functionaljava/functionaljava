@@ -5,6 +5,7 @@ import fj.Unit;
 import fj.Effect;
 import fj.control.parallel.Strategy;
 import fj.control.parallel.Actor;
+import fj.function.Effect1;
 
 import java.text.MessageFormat;
 import java.util.concurrent.ExecutorService;
@@ -30,8 +31,8 @@ public class PingPong {
 
     // This actor gives feedback to the user that work is being done
     // and also terminates the program when all work has been completed.
-    callback = Actor.queueActor(s, new Effect<Integer>() {
-      public void e(final Integer i) {
+    callback = Actor.queueActor(s, new Effect1<Integer>() {
+      public void f(final Integer i) {
         done++;
         if (done >= actors) {
           System.out.println("All done.");

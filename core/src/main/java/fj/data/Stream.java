@@ -15,6 +15,7 @@ import fj.Unit;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.Ordering;
+import fj.function.Effect1;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -291,9 +292,9 @@ public abstract class Stream<A> implements Iterable<A> {
    *
    * @param f The side-effect to perform for the given element.
    */
-  public final void foreach(final Effect<A> f) {
+  public final void foreach(final Effect1<A> f) {
     for (Stream<A> xs = this; xs.isNotEmpty(); xs = xs.tail()._1())
-      f.e(xs.head());
+      f.f(xs.head());
   }
 
   /**

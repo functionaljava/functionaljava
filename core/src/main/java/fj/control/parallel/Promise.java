@@ -19,6 +19,7 @@ import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.Stream;
+import fj.function.Effect1;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -50,8 +51,8 @@ public final class Promise<A> {
 
   private static <A> Promise<A> mkPromise(final Strategy<Unit> s) {
     final Actor<P2<Either<P1<A>, Actor<A>>, Promise<A>>> q =
-        queueActor(s, new Effect<P2<Either<P1<A>, Actor<A>>, Promise<A>>>() {
-          public void e(final P2<Either<P1<A>, Actor<A>>, Promise<A>> p) {
+        queueActor(s, new Effect1<P2<Either<P1<A>, Actor<A>>, Promise<A>>>() {
+          public void f(final P2<Either<P1<A>, Actor<A>>, Promise<A>> p) {
             final Promise<A> snd = p._2();
             final Queue<Actor<A>> as = snd.waiting;
             if (p._1().isLeft()) {
@@ -194,8 +195,8 @@ public final class Promise<A> {
    */
   public <B> Promise<B> bind(final F<A, Promise<B>> f) {
     final Promise<B> r = mkPromise(s);
-    final Actor<B> ab = actor(s, new Effect<B>() {
-      public void e(final B b) {
+    final Actor<B> ab = actor(s, new Effect1<B>() {
+      public void f(final B b) {
         r.actor.act(P.p(Either.<P1<B>, Actor<B>>left(P.p(b)), r));
       }
     });

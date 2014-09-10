@@ -7,6 +7,7 @@ import fj.Effect;
 import fj.F;
 import fj.Unit;
 import fj.P1;
+import fj.function.Effect1;
 
 /**
  * Light weight actors for Java. Concurrency is controlled by a parallel Strategy.
@@ -31,8 +32,8 @@ public final class Actor<A> {
    * With respect to an enqueueing actor or thread, this actor will process messages in the same order
    * as they are sent.
    */
-  public static <T> Actor<T> queueActor(final Strategy<Unit> s, final Effect<T> ea) {
-    return actor(Strategy.<Unit>seqStrategy(), new Effect<T>() {
+  public static <T> Actor<T> queueActor(final Strategy<Unit> s, final Effect1<T> ea) {
+    return actor(Strategy.<Unit>seqStrategy(), new Effect1<T>() {
 
       // Lock to ensure the actor only acts on one message at a time
       AtomicBoolean suspended = new AtomicBoolean(true);
@@ -48,7 +49,7 @@ public final class Actor<A> {
           T a = mbox.poll();
           // if there is one, process it
           if (a != null) {
-            ea.e(a);
+            ea.f(a);
             // try again, in case there are more messages
             s.par(this);
           } else {
@@ -62,7 +63,7 @@ public final class Actor<A> {
       };
       
       // Effect's body -- queues up a message and tries to unsuspend the actor
-      @Override public void e(T a) {
+      @Override public void f(T a) {
         mbox.offer(a);
         work();
       }
@@ -92,8 +93,8 @@ public final class Actor<A> {
    * @param e The side-effect to apply to messages passed to the Actor.
    * @return A new actor that uses the given parallelization strategy and has the given side-effect.
    */
-  public static <A> Actor<A> actor(final Strategy<Unit> s, final Effect<A> e) {
-    return new Actor<A>(s, P1.curry(e.e()));
+  public static <A> Actor<A> actor(final Strategy<Unit> s, final Effect1<A> e) {
+    return new Actor<A>(s, P1.curry(Effect.f(e)));
   }
 
   /**
@@ -139,8 +140,8 @@ public final class Actor<A> {
    * @return A new actor, equivalent to this actor, that acts on promises.
    */
   public Actor<Promise<A>> promise() {
-    return actor(s, new Effect<Promise<A>>() {
-      public void e(final Promise<A> b) {
+    return actor(s, new Effect1<Promise<A>>() {
+      public void f(final Promise<A> b) {
         b.to(Actor.this);
       }
     });

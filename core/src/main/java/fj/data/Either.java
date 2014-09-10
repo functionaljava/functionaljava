@@ -10,6 +10,8 @@ import fj.Show;
 import fj.Function;
 import fj.P1;
 import fj.Unit;
+import fj.function.Effect1;
+
 import static fj.Unit.unit;
 import static fj.data.Array.mkArray;
 import static fj.data.List.single;
@@ -230,9 +232,9 @@ public abstract class Either<A, B> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect<A> f) {
+    public void foreach(final Effect1<A> f) {
       if (isLeft())
-        f.e(value());
+        f.f(value());
     }
 
     /**
@@ -463,9 +465,9 @@ public abstract class Either<A, B> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect<B> f) {
+    public void foreach(final Effect1<B> f) {
       if (isRight())
-        f.e(value());
+        f.f(value());
     }
 
     /**

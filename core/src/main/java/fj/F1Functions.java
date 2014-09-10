@@ -4,6 +4,7 @@ import fj.control.parallel.Actor;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.data.*;
+import fj.function.Try1;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -832,22 +833,6 @@ public class F1Functions {
      */
     static public <A, B> ArrayList<B> mapJ(final F<A, B> f, final ArrayList<A> as) {
         return new ArrayList<B>(iterableStream(as).map(f).toCollection());
-    }
-
-    /**
-     * Promotes the TryCatch1 to a Validation that returns an Exception on the failure side and its result on the success side.
-     *
-     * @param t A TryCatch1 to promote
-     * @return A Validation with an Exception on the failure side and its result on the success side.
-     */
-    static public <A, B, E extends Exception> F<A, Validation<E, B>> toF1(final TryCatch1<A, B, E> t) {
-        return a -> {
-            try {
-                return Validation.success(t.f(a));
-            } catch (Exception e) {
-                return Validation.fail((E) e);
-            }
-        };
     }
 
     static public <A, B, C> F<A, C> map(F<A, B> target, F<B, C> f) {

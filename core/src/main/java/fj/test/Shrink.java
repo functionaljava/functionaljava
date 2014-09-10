@@ -1,6 +1,5 @@
 package fj.test;
 
-import fj.Effect;
 import fj.F;
 import static fj.P.p;
 import static fj.P.p2;
@@ -41,6 +40,7 @@ import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
 import fj.data.Stream;
+
 import static fj.data.Stream.cons;
 import static fj.data.Stream.iterate;
 import static fj.data.Stream.nil;
@@ -521,11 +521,7 @@ public final class Shrink<A> {
       @SuppressWarnings({"UseOfObsoleteCollectionType"})
       public Hashtable<K, V> f(final List<P2<K, V>> kvs) {
         final Hashtable<K, V> h = new Hashtable<K, V>();
-        kvs.foreach(new Effect<P2<K, V>>() {
-          public void e(final P2<K, V> kv) {
-            h.put(kv._1(), kv._2());
-          }
-        });
+        kvs.foreachDoEffect(kv -> h.put(kv._1(), kv._2()));
         return h;
       }
     }, new F<Hashtable<K, V>, List<P2<K, V>>>() {

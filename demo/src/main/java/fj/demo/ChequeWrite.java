@@ -1,6 +1,5 @@
 package fj.demo;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.P2;
@@ -8,6 +7,7 @@ import fj.data.List;
 import fj.data.Option;
 import fj.data.Stream;
 import fj.function.Characters;
+import fj.function.Effect1;
 
 import static fj.Equal.charEqual;
 import static fj.Equal.listEqual;
@@ -124,20 +124,20 @@ public final class ChequeWrite {
         final List<P2<List<Character>, Integer>> k = split(cs);
         final int c = k.head()._2();
 
-        k.foreach(new Effect<P2<List<Character>, Integer>>() {
-          public void e(final P2<List<Character>, Integer> z) {
-            final List<Character> w = z._1();
-            final int i = z._2();
+        k.foreachDoEffect(new Effect1<P2<List<Character>, Integer>>() {
+            public void f(final P2<List<Character>, Integer> z) {
+                final List<Character> w = z._1();
+                final int i = z._2();
 
-            if (i == 0 && c > 0 && and(w))
-              x.snoc(fromString("and"));
+                if (i == 0 && c > 0 && and(w))
+                    x.snoc(fromString("and"));
 
-            if (existsNotZero(w)) {
-              x.snoc(show(w));
-              if (i != 0)
-                x.snoc(illion(i - 1));
+                if (existsNotZero(w)) {
+                    x.snoc(show(w));
+                    if (i != 0)
+                        x.snoc(illion(i - 1));
+                }
             }
-          }
         });
 
         x.snoc(fromString(eq(cs, list('1')) ? "dollar" : "dollars"));

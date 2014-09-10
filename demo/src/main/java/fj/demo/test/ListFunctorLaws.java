@@ -1,6 +1,5 @@
 package fj.demo.test;
 
-import fj.Effect;
 import fj.F;
 import fj.F3;
 import fj.Function;
@@ -14,6 +13,8 @@ import static fj.test.Arbitrary.arbInteger;
 import static fj.test.Arbitrary.arbList;
 import static fj.test.Arbitrary.arbLong;
 import static fj.test.Arbitrary.arbString;
+
+import fj.function.Effect1;
 import fj.test.CheckResult;
 import static fj.test.CheckResult.summary;
 import static fj.test.Coarbitrary.coarbInteger;
@@ -59,11 +60,11 @@ public final class ListFunctorLaws {
   // composition: OK, passed 1000 tests.
   @SuppressWarnings("unchecked")
   public static void main(final String[] args) {
-    check(ListFunctorLaws.class).foreach(new Effect<P2<String, CheckResult>>() {
-      public void e(final P2<String, CheckResult> r) {
-        System.out.print(r._1() + ": ");
-        summary.println(r._2());
-      }
+    check(ListFunctorLaws.class).foreachDoEffect(new Effect1<P2<String, CheckResult>>() {
+        public void f(final P2<String, CheckResult> r) {
+            System.out.print(r._1() + ": ");
+            summary.println(r._2());
+        }
     });
   }
 }

@@ -71,3 +71,25 @@ Released: May 2012
 ===
 Released: Jun 2010
 
+2.21
+====
+Released Feb, 2010
+
+* Bug fixes
+* Immutable 2-3 finger tree
+
+2.20
+===
+Unknown
+
+2.19
+===
+Released March 2009
+
+* Comonadic operations on Stream, Tree and others
+* Database monad (java.sql.Connection as a functor)
+* Natural Number data type
+* The Constant Arrow ($)
+* Immutable Tree Map
+* A parallel quick-sort using Functional Java actors
+

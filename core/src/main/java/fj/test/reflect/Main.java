@@ -1,8 +1,9 @@
 package fj.test.reflect;
 
-import fj.Effect;
 import fj.P2;
 import static fj.data.Array.array;
+
+import fj.function.Effect1;
 import fj.test.CheckResult;
 import static fj.test.CheckResult.summary;
 import static fj.test.reflect.Check.check;
@@ -35,11 +36,11 @@ public final class Main {
       exit(441);
     } else {
       try {
-        check(forName(args[0]), array(args).toList().tail()).foreach(new Effect<P2<String, CheckResult>>() {
-          public void e(final P2<String, CheckResult> r) {
-            summary.print(r._2());
-            out.println(" (" + r._1() + ')');
-          }
+        check(forName(args[0]), array(args).toList().tail()).foreachDoEffect(new Effect1<P2<String, CheckResult>>() {
+            public void f(final P2<String, CheckResult> r) {
+                summary.print(r._2());
+                out.println(" (" + r._1() + ')');
+            }
         });
       } catch(ClassNotFoundException e) {
         System.err.println(e);

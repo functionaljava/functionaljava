@@ -33,6 +33,7 @@ import static fj.Ord.intOrd;
 
 import fj.Ordering;
 import fj.control.Trampoline;
+import fj.function.Effect1;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -278,9 +279,9 @@ public abstract class List<A> implements Iterable<A> {
    *
    * @param f The side-effect to perform for the given element.
    */
-  public final void foreach(final Effect<A> f) {
+  public final void foreachDoEffect(final Effect1<A> f) {
     for (List<A> xs = this; xs.isNotEmpty(); xs = xs.tail()) {
-      f.e(xs.head());
+      f.f(xs.head());
     }
   }
 

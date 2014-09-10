@@ -16,6 +16,7 @@ import java.util.Arrays;
 import fj.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
+import fj.function.Try0;
 
 /**
  * IO monad for processing files, with main methods {@link #enumFileLines },
@@ -30,7 +31,7 @@ public class IOFunctions {
   
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-    public static <A> TryCatch0<A, IOException> toTry(IO<A> io) {
+    public static <A> Try0<A, IOException> toTry(IO<A> io) {
         return () -> io.run();
     }
 
@@ -42,7 +43,7 @@ public class IOFunctions {
         return () -> p._1();
     }
 
-    public static <A> IO<A> io(TryCatch0<A, ? extends IOException> t) {
+    public static <A> IO<A> io(Try0<A, ? extends IOException> t) {
         return () -> t.f();
     }
 
@@ -157,7 +158,15 @@ public class IOFunctions {
         return () -> f.f(Unit.unit());
     }
 
-	/**
+    public static final <A> SafeIO<A> lazySafe(final F<Unit, A> f) {
+        return () -> f.f(Unit.unit());
+    }
+
+    public static final <A> SafeIO<A> lazySafe(final P1<A> f) {
+        return () -> f._1();
+    }
+
+    /**
    * A function that feeds an iteratee with lines read from a {@link BufferedReader}.
    */
   public static <A> F<BufferedReader, F<IterV<String, A>, IO<IterV<String, A>>>> lineReader() {
@@ -354,8 +363,8 @@ public class IOFunctions {
 		return bind(io1, io2 -> io2);
 	}
 
-	public static <A> SafeIO<IOException, A> toSafeIO(IO<A> io) {
-		return () -> P1.toP1(() -> io.run())._1();
+	public static <A> SafeIO<Validation<IOException, A>> toSafeIO(IO<A> io) {
+		return () -> Try.f(() -> io.run())._1();
 	}
 
 	public static <A, B> IO<B> append(final IO<A> io1, final IO<B> io2) {

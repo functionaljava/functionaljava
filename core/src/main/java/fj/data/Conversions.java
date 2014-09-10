@@ -1,8 +1,20 @@
 package fj.data;
 
-import fj.Effect;
 import fj.F;
 import fj.P1;
+import fj.Unit;
+import fj.function.TryEffect0;
+import fj.function.Effect0;
+import fj.function.Effect1;
+
+import fj.Try;
+import fj.TryEffect;
+import fj.Effect;
+import fj.function.Try0;
+import fj.function.Try1;
+
+import java.io.IOException;
+import static fj.Unit.unit;
 import static fj.data.List.asString;
 import static fj.data.List.fromString;
 
@@ -167,8 +179,8 @@ public final class Conversions {
   public static final F<Array<Character>, String> Array_String = new F<Array<Character>, String>() {
     public String f(final Array<Character> cs) {
       final StringBuilder sb = new StringBuilder();
-      cs.foreach(new Effect<Character>() {
-        public void e(final Character c) {
+      cs.foreach(new Effect1<Character>() {
+        public void f(final Character c) {
           sb.append(c);
         }
       });
@@ -182,8 +194,8 @@ public final class Conversions {
   public static final F<Array<Character>, StringBuffer> Array_StringBuffer = new F<Array<Character>, StringBuffer>() {
     public StringBuffer f(final Array<Character> cs) {
       final StringBuffer sb = new StringBuffer();
-      cs.foreach(new Effect<Character>() {
-        public void e(final Character c) {
+      cs.foreach(new Effect1<Character>() {
+        public void f(final Character c) {
           sb.append(c);
         }
       });
@@ -198,11 +210,7 @@ public final class Conversions {
       new F<Array<Character>, StringBuilder>() {
         public StringBuilder f(final Array<Character> cs) {
           final StringBuilder sb = new StringBuilder();
-          cs.foreach(new Effect<Character>() {
-            public void e(final Character c) {
-              sb.append(c);
-            }
-          });
+          cs.foreach((Character c) -> sb.append(c));
           return sb;
         }
       };
@@ -273,11 +281,7 @@ public final class Conversions {
   public static final F<Stream<Character>, String> Stream_String = new F<Stream<Character>, String>() {
     public String f(final Stream<Character> cs) {
       final StringBuilder sb = new StringBuilder();
-      cs.foreach(new Effect<Character>() {
-        public void e(final Character c) {
-          sb.append(c);
-        }
-      });
+      cs.foreach((Character c) -> sb.append(c));
       return sb.toString();
     }
   };
@@ -289,11 +293,7 @@ public final class Conversions {
       new F<Stream<Character>, StringBuffer>() {
         public StringBuffer f(final Stream<Character> cs) {
           final StringBuffer sb = new StringBuffer();
-          cs.foreach(new Effect<Character>() {
-            public void e(final Character c) {
-              sb.append(c);
-            }
-          });
+          cs.foreach((Character c) -> sb.append(c));
           return sb;
         }
       };
@@ -305,11 +305,7 @@ public final class Conversions {
       new F<Stream<Character>, StringBuilder>() {
         public StringBuilder f(final Stream<Character> cs) {
           final StringBuilder sb = new StringBuilder();
-          cs.foreach(new Effect<Character>() {
-            public void e(final Character c) {
-              sb.append(c);
-            }
-          });
+          cs.foreach((Character c) -> sb.append(c));
           return sb;
         }
       };
@@ -404,6 +400,48 @@ public final class Conversions {
       };
 
   // END Option ->
+
+    // BEGIN Effect
+
+    public static F<Effect0, P1<Unit>> Effect0_P1() {
+        return e -> Effect0_P1(e);
+    }
+
+    public static P1<Unit> Effect0_P1(Effect0 e) {
+        return Effect.f(e);
+    }
+
+    public static <A> F<A, Unit> Effect1_F(Effect1<A> e) {
+        return Effect.f(e);
+    }
+
+    public static <A> F<Effect1<A>, F<A, Unit>> Effect1_F() {
+        return e -> Effect1_F(e);
+    }
+
+    public static IO<Unit> Effect_IO(Effect0 e) {
+        return () ->{
+            e.f();
+            return Unit.unit();
+        };
+    }
+
+    public static F<Effect0, IO<Unit>> Effect_IO() {
+        return e -> Effect_IO(e);
+    }
+
+    public static SafeIO<Unit> Effect_SafeIO(Effect0 e) {
+        return () -> {
+            e.f();
+            return unit();
+        };
+    }
+
+    public static F<Effect0, SafeIO<Unit>> Effect_SafeIO() {
+        return e -> Effect_SafeIO(e);
+    }
+
+    // END Effect
 
   // BEGIN Either ->
 
@@ -590,6 +628,18 @@ public final class Conversions {
   }
 
   // END Either ->
+
+    // BEGIN F
+
+    public static <A> SafeIO<A> F_SafeIO(F<Unit, A> f) {
+        return () -> f.f(unit());
+    }
+
+    public static <A> F<F<Unit, A>, SafeIO<A>> F_SafeIO() {
+        return f -> F_SafeIO(f);
+    }
+
+    // END F
 
   // BEGIN String ->
 
@@ -820,4 +870,43 @@ public final class Conversions {
   };
 
   // END StringBuilder ->
+
+
+    // BEGIN Try
+
+    public static <A, B, Z extends Exception> SafeIO<Validation<Z, A>> Try_SafeIO(Try0<A, Z> t) {
+        return F_SafeIO(u -> Try.f(t)._1());
+    }
+
+    public static <A, B, Z extends Exception> F<Try0<A, Z>, SafeIO<Validation<Z, A>>> Try_SafeIO() {
+        return t -> Try_SafeIO(t);
+    }
+
+    public static <A, B, Z extends IOException> IO<A> Try_IO(Try0<A, Z> t) {
+        return () -> t.f();
+    }
+
+    public static <A, B, Z extends IOException> F<Try0<A, Z>, IO<A>> Try_IO() {
+        return t -> Try_IO(t);
+    }
+
+    public static <A, B, Z extends IOException> F<A, Validation<Z, B>> Try_F(Try1<A, B, Z> t) {
+        return Try.f(t);
+    }
+
+    public static <A, B, Z extends IOException> F<Try1<A, B, Z>, F<A, Validation<Z, B>>> Try_F() {
+        return t -> Try_F(t);
+    }
+
+    // END Try
+
+    // BEGIN TryEffect
+
+    static public <E extends Exception> P1<Validation<E, Unit>> TryEffect_P(final TryEffect0<E> t) {
+        return TryEffect.f(t);
+    }
+
+
+    // END TryEffect
+
 }

@@ -10,6 +10,8 @@ import fj.data.List;
 import fj.control.parallel.Actor;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
+import fj.function.Effect1;
+
 import static fj.data.List.range;
 import static fj.function.Integers.add;
 import static fj.control.parallel.Promise.join;
@@ -38,8 +40,8 @@ public class Fibs
       final Strategy<Promise<Integer>> spi = Strategy.executorStrategy(pool);
 
       // This actor performs output and detects the termination condition.
-      final Actor<List<Integer>> out = actor(su, new Effect<List<Integer>>()
-        {public void e(final List<Integer> fs)
+      final Actor<List<Integer>> out = actor(su, new Effect1<List<Integer>>()
+        {public void f(final List<Integer> fs)
           {for (final P2<Integer, Integer> p : fs.zipIndex())
                {System.out.println(MessageFormat.format("n={0} => {1}", p._2(), p._1()));}
            pool.shutdown();}});

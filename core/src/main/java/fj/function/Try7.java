@@ -1,4 +1,4 @@
-package fj;
+package fj.function;
 
 
 /**
@@ -6,11 +6,11 @@ package fj;
  *
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to an <code>F7</code>.
  *
- * @see F7Functions#toF7
+ * @see fj.Try#f
  * @version %build.number%
  */
 
-public interface TryCatch7<A, B, C, D, E, F, G, H, Z extends Exception> {
+public interface Try7<A, B, C, D, E, F, G, H, Z extends Exception> {
 
     H f(A a, B b, C c, D d, E e, F f, G g) throws Z;
 

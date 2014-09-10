@@ -1,6 +1,7 @@
 package fj.data;
 
 import fj.*;
+import fj.function.Effect1;
 
 import static fj.Function.curry;
 import static fj.P.p;
@@ -160,7 +161,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @param f The side-effect to execute.
    */
-  public void foreach(final Effect<T> f) {
+  public void foreach(final Effect1<T> f) {
     e.right().foreach(f);
   }
 
@@ -727,6 +728,121 @@ public class Validation<E, T> implements Iterable<T> {
     return toEither().right().iterator();
   }
 
+
+    public Validation<List<E>, T> accumulate() {
+        if (isFail()) {
+            return Validation.fail(List.<E>single(fail()));
+        } else {
+            return Validation.success(success());
+        }
+    }
+
+    public <B> Validation<List<E>, B> accumulate(F<T, B> f) {
+        if (isFail()) {
+            return Validation.fail(List.<E>single(fail()));
+        } else {
+            return Validation.success(f.f(success()));
+        }
+    }
+
+
+    public <B, C> Validation<List<E>, C> accumulate(Validation<E, B> v2, F2<T, B, C> f) {
+        List<E> list = List.nil();
+        if (isFail()) {
+            list = list.cons(fail());
+        }
+        if (v2.isFail()) {
+            list = list.cons(v2.fail());
+        }
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success()));
+        }
+    }
+
+
+
+    public <B, C, D> Validation<List<E>, D> accumulate(Validation<E, B> v2, Validation<E, C> v3, F3<T, B, C, D> f) {
+        List<E> list = fails(List.list(this, v2, v3));
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success(), v3.success()));
+        }
+    }
+
+    public <B, C, D, $E> Validation<List<E>, E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, E> f) {
+        List<E> list = fails(List.list(this, v2, v3, v4));
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success()));
+        }
+    }
+
+    public <B, C, D, $E, $F> Validation<List<E>, $F> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, F5<T, B, C, D, $E, $F> f) {
+        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success()));
+        }
+    }
+
+
+    public <B, C, D, $E, $F, G> Validation<List<E>, G> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, F6<T, B, C, D, $E, $F, G> f) {
+        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success()));
+        }
+    }
+
+    public <B, C, D, $E, $F, G, H> Validation<List<E>, H> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, F7<T, B, C, D, $E, $F, G, H> f) {
+        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success(), v7.success()));
+        }
+    }
+
+    public <B, C, D, $E, $F, G, H, I> Validation<List<E>, I> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, Validation<E, H> v8, F8<T, B, C, D, $E, $F, G, H, I> f) {
+        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        if (!list.isEmpty()) {
+            return Validation.fail(list);
+        } else {
+            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success(), v7.success(), v8.success()));
+        }
+    }
+
+
+
+    public static <A, E> Validation<List<E>, List<A>> sequence(List<Validation<E, A>> list) {
+        F2<Validation<E, A>, Validation<List<E>, List<A>>, Validation<List<E>, List<A>>> f2 = (v, acc) -> {
+            if (acc.isFail() && v.isFail()) {
+                return Validation.validation(acc.toEither().left().map(l -> l.cons(v.fail())));
+            } else if (acc.isSuccess() && v.isSuccess()) {
+                return acc.map(l -> l.cons(v.success()));
+            } else {
+                return acc;
+            }
+        };
+        return list.foldRight(f2, Validation.success(List.nil()));
+    }
+
+
+
+    public static <A, E> List<E> fails(List<Validation<E, ?>> list) {
+        return list.filter(v -> v.isFail()).map(v -> v.fail());
+    }
+
+    public static <A, E> List<A> successes(List<Validation<?, A>> list) {
+        return list.filter(v -> v.isSuccess()).map(v -> v.success());
+    }
+
   /**
    * A failing projection of a validation.
    */
@@ -811,7 +927,7 @@ public class Validation<E, T> implements Iterable<T> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect<E> f) {
+    public void foreach(final Effect1<E> f) {
       v.toEither().left().foreach(f);
     }
 
@@ -849,7 +965,12 @@ public class Validation<E, T> implements Iterable<T> {
       });
     }
 
-    /**
+
+
+
+
+
+	  /**
      * Returns <code>None</code> if this is a success or if the given predicate <code>p</code> does not hold for the
      * failing value, otherwise, returns a fail in <code>Some</code>.
      *
@@ -1177,5 +1298,8 @@ public class Validation<E, T> implements Iterable<T> {
     public String toString() {
         return Show.validationShow(Show.<E>anyShow(), Show.<T>anyShow()).showS(this);
     }
+
+
+
 
 }

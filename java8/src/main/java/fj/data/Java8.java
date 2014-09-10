@@ -1,9 +1,13 @@
 package fj.data;
 
 import fj.*;
+import fj.function.Try0;
+import fj.function.Try1;
+import fj.function.Try2;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -64,28 +68,28 @@ public final class Java8 {
         return f -> (a, b) -> f.f(a, b);
     }
 
-    static public <A, E extends Exception> Supplier<Validation<E, A>> TryCatch0_Supplier(final TryCatch0<A, E> t) {
+    static public <A, E extends Exception> Supplier<Validation<E, A>> TryCatch0_Supplier(final Try0<A, E> t) {
         return Java8.<A, E>TryCatch0_Supplier().f(t);
     }
 
-    static public <A, E extends Exception> F<TryCatch0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
-        return t -> () -> P1.toP1(t)._1();
+    static public <A, E extends Exception> F<Try0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
+        return t -> () -> Try.f(t)._1();
     }
 
-    static public <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final TryCatch1<A, B, E> t) {
+    static public <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final Try1<A, B, E> t) {
         return Java8.<A, B, E>TryCatch1_Function().f(t);
     }
 
-    static public <A, B, E extends Exception> F<TryCatch1<A, B, E>, Function<A, Validation<E, B>>> TryCatch1_Function() {
-        return t -> a -> F1Functions.toF1(t).f(a);
+    static public <A, B, E extends Exception> F<Try1<A, B, E>, Function<A, Validation<E, B>>> TryCatch1_Function() {
+        return t -> a -> Try.f(t).f(a);
     }
 
-    static public <A, B, C, E extends Exception> BiFunction<A, B, Validation<E, C>> TryCatch2_BiFunction(final TryCatch2<A, B, C, E> t) {
+    static public <A, B, C, E extends Exception> BiFunction<A, B, Validation<E, C>> TryCatch2_BiFunction(final Try2<A, B, C, E> t) {
         return Java8.<A, B, C, E>TryCatch2_BiFunction().f(t);
     }
 
-    static public <A, B, C, E extends Exception> F<TryCatch2<A, B, C, E>, BiFunction<A, B, Validation<E, C>>> TryCatch2_BiFunction() {
-        return t -> (a, b) -> F2Functions.toF2(t).f(a, b);
+    static public <A, B, C, E extends Exception> F<Try2<A, B, C, E>, BiFunction<A, B, Validation<E, C>>> TryCatch2_BiFunction() {
+        return t -> (a, b) -> Try.f(t).f(a, b);
     }
 
     static public <A> Option<A> Optional_Option(final Optional<A> o) {
@@ -103,5 +107,17 @@ public final class Java8 {
     static public <A> F<Option<A>, Optional<A>> Option_Optional() {
         return o -> o.isSome() ? Optional.ofNullable(o.some()) : Optional.empty();
     }
+
+    static public <A> F<Consumer<A>, F<A, Unit>> Consumer_F() {
+        return c -> Consumer_F(c);
+    }
+
+    public static <A> F<A, Unit> Consumer_F(Consumer<A> c) {
+        return a -> {
+            c.accept(a);
+            return Unit.unit();
+        };
+    }
+
 
 }
