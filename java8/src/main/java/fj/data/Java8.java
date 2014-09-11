@@ -6,10 +6,13 @@ import fj.function.Try1;
 import fj.function.Try2;
 
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by mperry on 3/06/2014.
@@ -119,5 +122,13 @@ public final class Java8 {
         };
     }
 
+    static public <A> java.util.stream.Stream<A> Stream_JStream(fj.data.Stream<A> s) {
+        Spliterator<A> sit = Spliterators.spliteratorUnknownSize(s.iterator(), 0);
+        return StreamSupport.stream(sit, false);
+    }
+
+    static public <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JStream() {
+        return s -> Stream_JStream(s);
+    }
 
 }
