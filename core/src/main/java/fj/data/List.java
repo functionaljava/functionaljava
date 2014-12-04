@@ -1237,10 +1237,24 @@ public abstract class List<A> implements Iterable<A> {
     return sort(o).group(o.equal()).maximum(intOrd.comap(List.<A>length_())).head();
   }
 
+  /**
+   * Groups the elements of this list by a given keyFunction into a {@link HashMap}.
+   *
+   * @param keyFunction The function to select the keys for the map.
+   * @return A HashMap containing the keys with the accumulated list of matched elements.
+   */
   public final <B> HashMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
     return groupBy(keyFunction, Function.identity());
   }
 
+  /**
+   * Groups the elements of this list by a given keyFunction into a {@link HashMap} and transforms
+   * the matching elements with the given valueFunction.
+   *
+   * @param keyFunction The function to select the keys for the map.
+   * @param valueFunction The function to apply on each matching value.
+   * @return A HashMap containing the keys with the accumulated list of matched and mapped elements.
+   */
   public final <B, C> HashMap<B, List<C>> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction) {
@@ -1253,6 +1267,18 @@ public abstract class List<A> implements Iterable<A> {
         });
   }
 
+  /**
+   * Groups the elements of this list by a given keyFunction, applies the valueFunction and
+   * accumulates the mapped values with the given grouping accumulator function on the grouping
+   * identity.
+   *
+   * @param keyFunction The function to select the keys.
+   * @param valueFunction The function to apply on each element.
+   * @param groupingIdentity The identity, or start value, for the grouping.
+   * @param groupingAcc The accumulator to apply on each matching value.
+   * @return A HashMap containing the keys with the accumulated result of matched and mapped
+   * elements.
+   */
   public final <B, C, D> HashMap<B, D> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction, final D groupingIdentity, final F2<C, D, D> groupingAcc) {
