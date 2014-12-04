@@ -1237,38 +1237,38 @@ public abstract class List<A> implements Iterable<A> {
     return sort(o).group(o.equal()).maximum(intOrd.comap(List.<A>length_())).head();
   }
 
-  public final <K> HashMap<K, List<A>> groupBy(final F<A, K> keyFunction) {
+  public final <B> HashMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
     return groupBy(keyFunction, Function.identity());
   }
 
-  public final <K, V> HashMap<K, List<V>> groupBy(
-      final F<A, K> keyFunction,
-      final F<A, V> valueFunction) {
-    return this.groupBy(keyFunction, valueFunction, List.<V>nil(),
-        new F2<V, List<V>, List<V>>() {
+  public final <B, C> HashMap<B, List<C>> groupBy(
+      final F<A, B> keyFunction,
+      final F<A, C> valueFunction) {
+    return this.groupBy(keyFunction, valueFunction, List.<C>nil(),
+        new F2<C, List<C>, List<C>>() {
           @Override
-          public List<V> f(final V head, final List<V> tail) {
+          public List<C> f(final C head, final List<C> tail) {
             return List.cons(head, tail);
           }
         });
   }
 
-  public final <K, V, R> HashMap<K, R> groupBy(
-      final F<A, K> keyFunction,
-      final F<A, V> valueFunction, final R groupingIdentity, final F2<V, R, R> groupingAcc) {
+  public final <B, C, D> HashMap<B, D> groupBy(
+      final F<A, B> keyFunction,
+      final F<A, C> valueFunction, final D groupingIdentity, final F2<C, D, D> groupingAcc) {
     return this.foldLeft(
-        new F<HashMap<K, R>, F<A, HashMap<K, R>>>() {
+        new F<HashMap<B, D>, F<A, HashMap<B, D>>>() {
           @Override
-          public F<A, HashMap<K, R>> f(final HashMap<K, R> map) {
-            return new F<A, HashMap<K, R>>() {
+          public F<A, HashMap<B, D>> f(final HashMap<B, D> map) {
+            return new F<A, HashMap<B, D>>() {
               @Override
-              public HashMap<K, R> f(final A element) {
-                final K key = keyFunction.f(element);
-                final V value = valueFunction.f(element);
+              public HashMap<B, D> f(final A element) {
+                final B key = keyFunction.f(element);
+                final C value = valueFunction.f(element);
                 map.set(key, map.get(key)
-                    .map(new F<R, R>() {
+                    .map(new F<D, D>() {
                       @Override
-                      public R f(final R existing) {
+                      public D f(final D existing) {
                         return groupingAcc.f(value, existing);
                       }
                     })
@@ -1277,7 +1277,7 @@ public abstract class List<A> implements Iterable<A> {
               }
             };
           }
-        }, HashMap.<K, R>hashMap()
+        }, HashMap.<B, D>hashMap()
     );
   }
 
