@@ -24,7 +24,10 @@ public class Problem1 {
 	}
 
 	public static void java8() {
-		out.println(Stream.range(0, 1000).filter(i -> i % 3 == 0 || i % 5 == 0).foldLeft((acc, i) -> acc + i, 0));
+		// WARNING: In JDK 8, update 20 and 25 (current version) the following code causes an internal JDK compiler error, likely due to https://bugs.openjdk.java.net/browse/JDK-8062253.  The code below is a workaround for this compiler bug.
+//		out.println(Stream.range(0, 1000).filter(i -> i % 3 == 0 || i % 5 == 0).foldLeft((acc, i) -> acc + i, 0));
+		Integer sum = Stream.range(0, 1000).filter(i -> i % 3 == 0 || i % 5 == 0).foldLeft((acc, i) -> acc + i, 0);
+		out.println(sum);
 	}
 
 }
