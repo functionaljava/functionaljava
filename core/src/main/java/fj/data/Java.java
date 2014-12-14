@@ -317,7 +317,7 @@ public final class Java {
     public BitSet f(final Array<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
 
-      bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
+      bs.zipIndex().foreachDoEffect(new Effect1<P2<Boolean, Integer>>() {
         public void f(final P2<Boolean, Integer> bi) {
           s.set(bi._2(), bi._1());
         }
@@ -601,7 +601,7 @@ public final class Java {
   public static final F<Stream<Boolean>, BitSet> Stream_BitSet = new F<Stream<Boolean>, BitSet>() {
     public BitSet f(final Stream<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
-      bs.zipIndex().foreach(new Effect1<P2<Boolean, Integer>>() {
+      bs.zipIndex().foreachDoEffect(new Effect1<P2<Boolean, Integer>>() {
         public void f(final P2<Boolean, Integer> bi) {
           s.set(bi._2(), bi._1());
         }
@@ -849,7 +849,7 @@ public final class Java {
     public BitSet f(final Option<Boolean> bs) {
       final BitSet s = new BitSet(bs.length());
 
-      bs.foreach(new Effect1<Boolean>() {
+      bs.foreachDoEffect(new Effect1<Boolean>() {
         public void f(final Boolean b) {
           if (b)
             s.set(0);

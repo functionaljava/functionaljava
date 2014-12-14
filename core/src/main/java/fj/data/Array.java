@@ -230,7 +230,7 @@ public final class Array<A> implements Iterable<A> {
    * @param f The side-effect to perform for the given element.
    */
   @SuppressWarnings("unchecked")
-  public void foreach(final Effect1<A> f) {
+  public void foreachDoEffect(final Effect1<A> f) {
     for (final Object x : a) {
       f.f((A) x);
     }

@@ -161,8 +161,8 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @param f The side-effect to execute.
    */
-  public void foreach(final Effect1<T> f) {
-    e.right().foreach(f);
+  public void foreachDoEffect(final Effect1<T> f) {
+    e.right().foreachDoEffect(f);
   }
 
   /**
@@ -927,8 +927,8 @@ public class Validation<E, T> implements Iterable<T> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect1<E> f) {
-      v.toEither().left().foreach(f);
+    public void foreachDoEffect(final Effect1<E> f) {
+      v.toEither().left().foreachDoEffect(f);
     }
 
     /**

@@ -232,7 +232,7 @@ public abstract class Either<A, B> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect1<A> f) {
+    public void foreachDoEffect(final Effect1<A> f) {
       if (isLeft())
         f.f(value());
     }
@@ -465,7 +465,7 @@ public abstract class Either<A, B> {
      *
      * @param f The side-effect to execute.
      */
-    public void foreach(final Effect1<B> f) {
+    public void foreachDoEffect(final Effect1<B> f) {
       if (isRight())
         f.f(value());
     }

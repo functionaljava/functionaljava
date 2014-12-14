@@ -292,7 +292,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *
    * @param f The side-effect to perform for the given element.
    */
-  public final void foreach(final Effect1<A> f) {
+  public final void foreachDoEffect(final Effect1<A> f) {
     for (Stream<A> xs = this; xs.isNotEmpty(); xs = xs.tail()._1())
       f.f(xs.head());
   }

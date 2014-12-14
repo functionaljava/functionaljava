@@ -157,7 +157,7 @@ public final class Gen<A> {
    * @param r The random generator to generate the result to apply the side-effect to.
    * @param f The side-effect to execute on the generated value.
    */
-  public void foreach(final Integer i, final Rand r, final Effect1<A> f) {
+  public void foreachDoEffect(final Integer i, final Rand r, final Effect1<A> f) {
     f.f(this.f.f(i).f(r));
   }
 

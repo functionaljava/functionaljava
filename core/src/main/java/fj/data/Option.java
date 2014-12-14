@@ -226,7 +226,7 @@ public abstract class Option<A> implements Iterable<A> {
    *
    * @param f The side-effect to perform for the given element.
    */
-  public final void foreach(final Effect1<A> f) {
+  public final void foreachDoEffect(final Effect1<A> f) {
     if (isSome())
       f.f(some());
   }

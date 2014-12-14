@@ -179,7 +179,7 @@ public final class Conversions {
   public static final F<Array<Character>, String> Array_String = new F<Array<Character>, String>() {
     public String f(final Array<Character> cs) {
       final StringBuilder sb = new StringBuilder();
-      cs.foreach(new Effect1<Character>() {
+      cs.foreachDoEffect(new Effect1<Character>() {
         public void f(final Character c) {
           sb.append(c);
         }
@@ -194,7 +194,7 @@ public final class Conversions {
   public static final F<Array<Character>, StringBuffer> Array_StringBuffer = new F<Array<Character>, StringBuffer>() {
     public StringBuffer f(final Array<Character> cs) {
       final StringBuffer sb = new StringBuffer();
-      cs.foreach(new Effect1<Character>() {
+      cs.foreachDoEffect(new Effect1<Character>() {
         public void f(final Character c) {
           sb.append(c);
         }
@@ -210,7 +210,7 @@ public final class Conversions {
       new F<Array<Character>, StringBuilder>() {
         public StringBuilder f(final Array<Character> cs) {
           final StringBuilder sb = new StringBuilder();
-          cs.foreach((Character c) -> sb.append(c));
+          cs.foreachDoEffect((Character c) -> sb.append(c));
           return sb;
         }
       };
@@ -281,7 +281,7 @@ public final class Conversions {
   public static final F<Stream<Character>, String> Stream_String = new F<Stream<Character>, String>() {
     public String f(final Stream<Character> cs) {
       final StringBuilder sb = new StringBuilder();
-      cs.foreach((Character c) -> sb.append(c));
+      cs.foreachDoEffect((Character c) -> sb.append(c));
       return sb.toString();
     }
   };
@@ -293,7 +293,7 @@ public final class Conversions {
       new F<Stream<Character>, StringBuffer>() {
         public StringBuffer f(final Stream<Character> cs) {
           final StringBuffer sb = new StringBuffer();
-          cs.foreach((Character c) -> sb.append(c));
+          cs.foreachDoEffect((Character c) -> sb.append(c));
           return sb;
         }
       };
@@ -305,7 +305,7 @@ public final class Conversions {
       new F<Stream<Character>, StringBuilder>() {
         public StringBuilder f(final Stream<Character> cs) {
           final StringBuilder sb = new StringBuilder();
-          cs.foreach((Character c) -> sb.append(c));
+          cs.foreachDoEffect((Character c) -> sb.append(c));
           return sb;
         }
       };
