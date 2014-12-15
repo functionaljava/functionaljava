@@ -1,6 +1,9 @@
 package fj
 package data
 
+import java.lang
+
+import fj.Monoid
 import org.scalacheck.Prop._
 import ArbitraryList.arbitraryList
 import ArbitraryP.arbitraryP1
@@ -173,6 +176,25 @@ object CheckList extends Properties("List") {
     listEqual(stringEqual).eq(
       a.foldRight((a: List[String], b: List[String]) => a.append(b), nil[String]),
       join(a)))
+
+  property("groupBy") = forAll((a: List[Int]) => {
+    val result = a.groupBy((x: Int) => (x % 2 == 0): lang.Boolean)
+    result.get(true).forall((xs: List[Int]) => xs.forall((x: Int) => (x % 2 == 0): lang.Boolean): lang.Boolean) &&
+      result.get(false).forall((xs: List[Int]) => xs.forall((x: Int) => (x % 2 != 0): lang.Boolean): lang.Boolean)
+  })
+
+  property("groupByMonoid") = forAll((a: List[Int]) => {
+    val result = a.groupBy((x: Int) => (x % 2 == 0): lang.Boolean, (x: Int) => x: lang.Integer, Monoid.intAdditionMonoid, Ord.booleanOrd)
+    result.get(true).forall((x: lang.Integer) =>
+      x == a.filter((x: Int) => (x % 2 == 0): lang.Boolean).
+        map((x: Int) => x:lang.Integer).
+        foldLeft(Function.uncurryF2[lang.Integer, lang.Integer, lang.Integer](Monoid.intAdditionMonoid.sum), Monoid.intAdditionMonoid.zero()): lang.Boolean) &&
+    result.get(false).forall((x: lang.Integer) =>
+      x == a.filter((x: Int) => (x % 2 != 0): lang.Boolean).
+        map((x: Int) => x:lang.Integer).
+        foldLeft(Function.uncurryF2[lang.Integer, lang.Integer, lang.Integer](Monoid.intAdditionMonoid.sum), Monoid.intAdditionMonoid.zero()): lang.Boolean)
+  })
+
 
   /*property("iterateWhile") = forAll((n: Int) => n > 0 ==>
     (iterateWhile(((x:Int) => x - 1), ((x:Int) => ((x > 0): java.lang.Boolean)), n).length == n))*/
