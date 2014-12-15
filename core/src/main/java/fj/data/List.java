@@ -1238,27 +1238,57 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
-   * Groups the elements of this list by a given keyFunction into a {@link HashMap}.
+   * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
+   * The ordering of the keys is determined by {@link fj.Ord#hashOrd()}.
    *
    * @param keyFunction The function to select the keys for the map.
-   * @return A HashMap containing the keys with the accumulated list of matched elements.
+   * @return A TreeMap containing the keys with the accumulated list of matched elements.
    */
-  public final <B> HashMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
-    return groupBy(keyFunction, Function.identity());
+  public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
+    return groupBy(keyFunction, Ord.hashOrd());
   }
 
   /**
-   * Groups the elements of this list by a given keyFunction into a {@link HashMap} and transforms
-   * the matching elements with the given valueFunction.
+   * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
+   *
+   * @param keyFunction The function to select the keys for the map.
+   * @param keyOrd An order for the keys of the tree map.
+   * @return A TreeMap containing the keys with the accumulated list of matched elements.
+   */
+  public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction, final Ord<B> keyOrd) {
+    return groupBy(keyFunction, Function.identity(), keyOrd);
+  }
+
+  /**
+   * Groups the elements of this list by a given keyFunction into a {@link TreeMap} and transforms
+   * the matching elements with the given valueFunction. The ordering of the keys is determined by
+   * {@link fj.Ord#hashOrd()}.
    *
    * @param keyFunction The function to select the keys for the map.
    * @param valueFunction The function to apply on each matching value.
-   * @return A HashMap containing the keys with the accumulated list of matched and mapped elements.
+   * @return A TreeMap containing the keys with the accumulated list of matched and mapped elements.
    */
-  public final <B, C> HashMap<B, List<C>> groupBy(
+  public final <B, C> TreeMap<B, List<C>> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction) {
-    return this.groupBy(keyFunction, valueFunction, List.<C>nil(), List::cons);
+    return this.groupBy(keyFunction, valueFunction, Ord.hashOrd());
+  }
+
+  /**
+   * Groups the elements of this list by a given keyFunction into a {@link TreeMap} and transforms
+   * the matching elements with the given valueFunction. The ordering of the keys is determined by
+   * the keyOrd parameter.
+   *
+   * @param keyFunction The function to select the keys for the map.
+   * @param valueFunction The function to apply on each matching value.
+   * @param keyOrd An order for the keys of the tree map.
+   * @return A TreeMap containing the keys with the accumulated list of matched and mapped elements.
+   */
+  public final <B, C> TreeMap<B, List<C>> groupBy(
+      final F<A, B> keyFunction,
+      final F<A, C> valueFunction,
+      final Ord<B> keyOrd) {
+    return this.groupBy(keyFunction, valueFunction, List.<C>nil(), List::cons, keyOrd);
   }
 
   /**
@@ -1270,12 +1300,16 @@ public abstract class List<A> implements Iterable<A> {
    * @param valueFunction The function to apply on each element.
    * @param groupingIdentity The identity, or start value, for the grouping.
    * @param groupingAcc The accumulator to apply on each matching value.
-   * @return A HashMap containing the keys with the accumulated result of matched and mapped
+   * @param keyOrd An order for the keys of the tree map.
+   * @return A TreeMap containing the keys with the accumulated result of matched and mapped
    * elements.
    */
-  public final <B, C, D> HashMap<B, D> groupBy(
+  public final <B, C, D> TreeMap<B, D> groupBy(
       final F<A, B> keyFunction,
-      final F<A, C> valueFunction, final D groupingIdentity, final F2<C, D, D> groupingAcc) {
+      final F<A, C> valueFunction,
+      final D groupingIdentity,
+      final F2<C, D, D> groupingAcc,
+      final Ord<B> keyOrd) {
     return this.foldLeft(map -> element -> {
           final B key = keyFunction.f(element);
           final C value = valueFunction.f(element);
@@ -1283,9 +1317,11 @@ public abstract class List<A> implements Iterable<A> {
               .map(existing -> groupingAcc.f(value, existing))
               .orSome(groupingAcc.f(value, groupingIdentity)));
           return map;
-        }, HashMap.<B, D>hashMap()
+        }, TreeMap.<B, D>empty(keyOrd)
     );
   }
+
+
 
   /**
    * Returns whether or not all elements in the list are equal according to the given equality test.
