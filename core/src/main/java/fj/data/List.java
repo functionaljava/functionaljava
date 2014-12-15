@@ -1292,6 +1292,26 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Groups the elements of this list by a given keyFunction into a {@link TreeMap} and transforms
+   * the matching elements with the given valueFunction. The ordering of the keys is determined by
+   * the keyOrd parameter.
+   *
+   * @param keyFunction The function to select the keys for the map.
+   * @param valueFunction The function to apply on each matching value.
+   * @param monoid A monoid, which defines the accumulator for the values and the zero value.
+   * @param keyOrd An order for the keys of the tree map.
+   * @return A TreeMap containing the keys with the accumulated list of matched and mapped elements.
+   */
+  public final <B, C> TreeMap<B, C> groupBy(
+      final F<A, B> keyFunction,
+      final F<A, C> valueFunction,
+      final Monoid<C> monoid,
+      final Ord<B> keyOrd) {
+    return groupBy(keyFunction, valueFunction, monoid.zero(),
+        Function.uncurryF2(monoid.sum()), keyOrd);
+  }
+
+  /**
    * Groups the elements of this list by a given keyFunction, applies the valueFunction and
    * accumulates the mapped values with the given grouping accumulator function on the grouping
    * identity.
