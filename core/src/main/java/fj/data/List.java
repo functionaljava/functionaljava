@@ -1258,13 +1258,7 @@ public abstract class List<A> implements Iterable<A> {
   public final <B, C> HashMap<B, List<C>> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction) {
-    return this.groupBy(keyFunction, valueFunction, List.<C>nil(),
-        new F2<C, List<C>, List<C>>() {
-          @Override
-          public List<C> f(final C head, final List<C> tail) {
-            return List.cons(head, tail);
-          }
-        });
+    return this.groupBy(keyFunction, valueFunction, List.<C>nil(), List::cons);
   }
 
   /**
@@ -1282,27 +1276,13 @@ public abstract class List<A> implements Iterable<A> {
   public final <B, C, D> HashMap<B, D> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction, final D groupingIdentity, final F2<C, D, D> groupingAcc) {
-    return this.foldLeft(
-        new F<HashMap<B, D>, F<A, HashMap<B, D>>>() {
-          @Override
-          public F<A, HashMap<B, D>> f(final HashMap<B, D> map) {
-            return new F<A, HashMap<B, D>>() {
-              @Override
-              public HashMap<B, D> f(final A element) {
-                final B key = keyFunction.f(element);
-                final C value = valueFunction.f(element);
-                map.set(key, map.get(key)
-                    .map(new F<D, D>() {
-                      @Override
-                      public D f(final D existing) {
-                        return groupingAcc.f(value, existing);
-                      }
-                    })
-                    .orSome(groupingAcc.f(value, groupingIdentity)));
-                return map;
-              }
-            };
-          }
+    return this.foldLeft(map -> element -> {
+          final B key = keyFunction.f(element);
+          final C value = valueFunction.f(element);
+          map.set(key, map.get(key)
+              .map(existing -> groupingAcc.f(value, existing))
+              .orSome(groupingAcc.f(value, groupingIdentity)));
+          return map;
         }, HashMap.<B, D>hashMap()
     );
   }
