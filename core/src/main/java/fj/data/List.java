@@ -1333,10 +1333,9 @@ public abstract class List<A> implements Iterable<A> {
     return this.foldLeft(map -> element -> {
           final B key = keyFunction.f(element);
           final C value = valueFunction.f(element);
-          map.set(key, map.get(key)
+          return map.set(key, map.get(key)
               .map(existing -> groupingAcc.f(value, existing))
               .orSome(groupingAcc.f(value, groupingIdentity)));
-          return map;
         }, TreeMap.<B, D>empty(keyOrd)
     );
   }

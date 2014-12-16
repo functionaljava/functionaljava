@@ -180,7 +180,8 @@ object CheckList extends Properties("List") {
   property("groupBy") = forAll((a: List[Int]) => {
     val result = a.groupBy((x: Int) => (x % 2 == 0): lang.Boolean)
     result.get(true).forall((xs: List[Int]) => xs.forall((x: Int) => (x % 2 == 0): lang.Boolean): lang.Boolean) &&
-      result.get(false).forall((xs: List[Int]) => xs.forall((x: Int) => (x % 2 != 0): lang.Boolean): lang.Boolean)
+      result.get(false).forall((xs: List[Int]) => xs.forall((x: Int) => (x % 2 != 0): lang.Boolean): lang.Boolean) &&
+      a.map((x: Int) => (x % 2) == 0: lang.Boolean).nub().length() == result.size()
   })
 
   property("groupByMonoid") = forAll((a: List[Int]) => {
