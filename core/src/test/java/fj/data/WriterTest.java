@@ -35,7 +35,7 @@ public class WriterTest {
     }
 
     final Equal<Writer<String, Integer>> eq = Equal.writerEqual(Equal.stringEqual, Equal.intEqual);
-    final F<Integer, Writer<String, Integer>> defaultWriter = Writer.<Integer>stringLogger();git
+    final F<Integer, Writer<String, Integer>> defaultWriter = Writer.<Integer>stringLogger();
 
     @Test
     public void testTellProp() {
