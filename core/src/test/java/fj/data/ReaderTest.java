@@ -1,16 +1,13 @@
 package fj.data;
 
 import fj.F;
-import fj.F2;
+import fj.data.test.PropertyAssert;
 import fj.test.*;
 import org.junit.Test;
 
 import static fj.F1Functions.bind;
 import static fj.F1Functions.map;
-import static fj.F2Functions.curry;
-import static fj.test.Arbitrary.arbF;
-import static fj.test.Arbitrary.arbF2;
-import static fj.test.Arbitrary.arbInteger;
+import static fj.test.Arbitrary.*;
 import static fj.test.Coarbitrary.coarbInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -41,7 +38,7 @@ public class ReaderTest {
 
     @Test
     public void testMapProp() {
-        CheckResult cr = property(
+        Property p = property(
                 arbF(coarbInteger, arbInteger),
                 arbF(coarbInteger, arbInteger),
                 arbInteger,
@@ -49,84 +46,71 @@ public class ReaderTest {
                     int expected = map(f, g).f(i);
 //                    System.out.println(String.format("input: %d, result: %d", i, expected));
                     return prop(expected == Reader.unit(f).map(g).f(i));
-                }).check();
-        CheckResult.summary.println(cr);
-        assertTrue(cr.isExhausted() || cr.isPassed() || cr.isProven());
+                });
+        PropertyAssert.assertResult(p);
     }
 
     @Test
     public void testFlatMapProp() {
-        CheckResult cr = property(
+        Arbitrary<F<Integer, Reader<Integer, Integer>>> a = arbF(coarbInteger, arbReader());
+        Property p = property(
                 arbF(coarbInteger, arbInteger),
-                arbF2(coarbInteger, coarbInteger, arbInteger),
+                a,
                 arbInteger,
                 (f, g, i) -> {
-                    int expected = bind(f, curry(g)).f(i);
+                    int expected = bind(f, j -> g.f(j).getFunction()).f(i);
 //              System.out.println(String.format("input: %d, result: %d", i, expected));
-                    return prop(expected == Reader.unit(f).flatMap(toBindable(g)).f(i));
+                    return prop(expected == Reader.unit(f).flatMap(g).f(i));
                 }
-        ).check();
-        CheckResult.summary.println(cr);
-        assertTrue(cr.isExhausted() || cr.isPassed() || cr.isProven());
+        );
+        PropertyAssert.assertResult(p);
     }
 
+    // Left identity: return a >>= f == f a
     @Test
     public void testLeftIdentity() {
-        CheckResult cr = Property.property(
+        Property p = Property.property(
                 arbInteger,
-                arbF(coarbInteger, arbInteger),
-                arbF2(coarbInteger, coarbInteger, arbInteger),
-                (i, f, g) -> {
-//            F<Integer, Reader<Integer, Integer>> h = convert(g);
-            int a = Reader.unit(f).flatMap(toBindable(g)).f(i);
-            int b = g.f(f.f(i), i);
-//            System.out.println(String.format("i=%d, a=%d, b=%d, truth=%b", i, a, b, a == b));
-            return prop(a == b);
-        }).check();
-        CheckResult.summary.println(cr);
-        assertTrue(cr.isExhausted() || cr.isPassed() || cr.isProven());
+                arbInteger,
+                arbF(coarbInteger, arbReader()),
+                (i, j, f) -> {
+                    int a = Reader.<Integer, Integer>constant(i).flatMap(f).f(j);
+                    int b = f.f(i).f(j);
+                    return prop(a == b);
+                });
+        PropertyAssert.assertResult(p);
     }
 
-    F<Integer, Reader<Integer, Integer>> toBindable(F2<Integer, Integer, Integer> f) {
-//        F<Integer, Reader<Integer, Integer>> h = map(curry(f), z -> Reader.unit(z));
-        return map(curry(f), z -> Reader.unit(z));
-    }
-
+    // Right identity: m >>= return == m
     @Test
     public void testRightIdentity() {
-        CheckResult cr = Property.property(
+        Property p = Property.property(
                 arbInteger,
-                arbF(coarbInteger, arbInteger),
-                (i, f) -> {
-                    Reader<Integer, Integer> r = Reader.unit(f);
-                    boolean b = r.flatMap(a -> r).f(i) == r.f(i);
-//            System.out.println(String.format("i=%d, a=%d, b=%d, truth=%b", i, a, b, a == b));
-                    return prop(b);
-                }).check();
-        CheckResult.summary.println(cr);
-        assertTrue(cr.isExhausted() || cr.isPassed() || cr.isProven());
+                arbReader(),
+                (i, r2) -> {
+                    return prop(r2.flatMap(a -> Reader.constant(a)).f(i) == r2.f(i));
+                });
+        PropertyAssert.assertResult(p);
     }
 
-
-
+    // Associativity: (m >>= f) >>= g == m >>= (\x -> f x >>= g)
     @Test
     public void testAssociativity() {
-        CheckResult cr = Property.property(
+        Property p = Property.property(
                 arbInteger,
-                arbF(coarbInteger, arbInteger),
-                arbF2(coarbInteger, coarbInteger, arbInteger),
-                arbF2(coarbInteger, coarbInteger, arbInteger),
-                (i, f, g, h) -> {
-                    Reader<Integer, Integer> r = Reader.unit(f);
-                    int a = r.flatMap(toBindable(g)).flatMap(toBindable(h)).f(i);
-                    int b = r.flatMap(x -> toBindable(g).f(x).flatMap(toBindable(h))).f(i);
-//            System.out.println(String.format("i=%d, a=%d, b=%d, truth=%b", i, a, b, a == b));
-                    return prop(a == b);
-                }).check();
-        CheckResult.summary.println(cr);
-        assertTrue(cr.isExhausted() || cr.isPassed() || cr.isProven());
+                arbReader(),
+                arbF(coarbInteger, arbReader()),
+                arbF(coarbInteger, arbReader()),
+                (i, r, f, g) -> {
+                    boolean b2 = r.flatMap(f).flatMap(g).f(i) == r.flatMap(x -> f.f(x).flatMap(g)).f(i);
+                    return prop(b2);
+                });
+        PropertyAssert.assertResult(p);
     }
 
+    public Arbitrary<Reader<Integer, Integer>> arbReader() {
+        return Arbitrary.arbReader(coarbInteger, arbInteger);
+    }
 
 
 }

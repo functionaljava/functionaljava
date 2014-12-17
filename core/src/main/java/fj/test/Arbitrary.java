@@ -19,17 +19,15 @@ import fj.P5;
 import fj.P6;
 import fj.P7;
 import fj.P8;
-import fj.data.Array;
-import fj.data.Either;
+import fj.data.*;
+
 import static fj.data.Either.left;
 import static fj.data.Either.right;
 import static fj.data.Enumerator.charEnumerator;
-import fj.data.List;
 import static fj.data.List.asString;
 import static fj.data.List.list;
-import fj.data.Option;
 import static fj.data.Option.some;
-import fj.data.Stream;
+
 import fj.function.Effect1;
 
 import static fj.data.Stream.range;
@@ -124,6 +122,10 @@ public final class Arbitrary<A> {
       }
     }));
   }
+
+    public static <A, B> Arbitrary<Reader<A, B>> arbReader(Coarbitrary<A> aa, Arbitrary<B> ab) {
+        return arbitrary(Arbitrary.arbF(aa, ab).gen.map(f -> Reader.unit(f)));
+    }
 
   /**
    * An arbitrary for functions.

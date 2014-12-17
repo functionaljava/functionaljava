@@ -15,6 +15,10 @@ public class Reader<A, B> {
 		function = f;
 	}
 
+	public F<A, B> getFunction() {
+		return function;
+	}
+
 	public static <A, B> Reader<A, B> unit(F<A, B> f) {
 		return new Reader<A, B>(f);
 	}

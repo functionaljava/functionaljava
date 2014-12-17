@@ -2,15 +2,13 @@ package fj.data;
 
 import fj.Equal;
 import fj.F;
-import fj.F2;
+import fj.data.test.PropertyAssert;
 import fj.test.Arbitrary;
-import fj.test.CheckResult;
 import fj.test.Property;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static fj.F1Functions.map;
-import static fj.F2Functions.curry;
+import static fj.data.test.PropertyAssert.assertResult;
 import static fj.test.Arbitrary.*;
 import static fj.test.Coarbitrary.coarbInteger;
 import static fj.test.Property.prop;
@@ -37,18 +35,12 @@ public class WriterTest {
     }
 
     final Equal<Writer<String, Integer>> eq = Equal.writerEqual(Equal.stringEqual, Equal.intEqual);
-    final F<Integer, Writer<String, Integer>> defaultWriter = Writer.<Integer>stringLogger();
-
-    void assertProperty(Property p) {
-        CheckResult cr = p.check();
-        CheckResult.summary.println(cr);
-        assertTrue(cr.isExhausted() || cr.isPassed() || cr.isProven());
-    }
+    final F<Integer, Writer<String, Integer>> defaultWriter = Writer.<Integer>stringLogger();git
 
     @Test
     public void testTellProp() {
         Property p = property(arbString, arbString, arbInteger, (s1, s2, i) -> prop(tellTruth(s1, s2, i)));
-        assertProperty(p);
+        assertResult(p);
     }
 
     @Test
@@ -57,7 +49,7 @@ public class WriterTest {
             boolean b = eq.eq(defaultWriter.f(i).map(f), defaultWriter.f(f.f(i)));
             return prop(b);
         });
-        assertProperty(p);
+        assertResult(p);
     }
 
     @Test
@@ -66,7 +58,7 @@ public class WriterTest {
             boolean b = eq.eq(Writer.<Integer>stringLogger().f(i).flatMap(f), f.f(i));
             return prop(b);
         });
-        assertProperty(p);
+        assertResult(p);
 
     }
 
@@ -87,7 +79,7 @@ public class WriterTest {
                 (i, f) -> {
                     return prop(eq.eq(defaultWriter.f(i).flatMap(f), f.f(i)));
                 });
-        assertProperty(p);
+        assertResult(p);
     }
 
     // Right identity: m >>= return == m
@@ -97,7 +89,7 @@ public class WriterTest {
                 arbWriterStringInt(),
                 (w) -> prop(eq.eq(w.flatMap(a -> defaultWriter.f(a)), w))
         );
-        assertProperty(p);
+        assertResult(p);
     }
 
     // Associativity: (m >>= f) >>= g == m >>= (\x -> f x >>= g)
@@ -111,7 +103,7 @@ public class WriterTest {
                     boolean t = eq.eq(w.flatMap(f).flatMap(g), w.flatMap(x -> f.f(x).flatMap(g)));
                     return prop(t);
                 });
-        assertProperty(p);
+        assertResult(p);
     }
 
 

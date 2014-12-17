@@ -3,17 +3,9 @@ package fj.test;
 import static fj.Function.curry;
 import static fj.Function.compose2;
 import static fj.P.p;
-import fj.F;
-import fj.F2;
-import fj.F3;
-import fj.F4;
-import fj.F5;
-import fj.F6;
-import fj.F7;
-import fj.F8;
-import fj.P;
-import fj.P1;
-import fj.P2;
+
+import fj.*;
+
 import static fj.P2.__2;
 import fj.data.List;
 import fj.data.Option;
@@ -1663,4 +1655,7 @@ public final class Property {
       });
     }
   }
+
+
+
 }
