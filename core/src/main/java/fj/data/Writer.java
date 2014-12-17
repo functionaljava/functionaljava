@@ -29,6 +29,10 @@ public class Writer<W, A> {
 		return logValue;
 	}
 
+	public Monoid<W> monoid() {
+		return monoid;
+	}
+
 	public static <W, A> Writer<W, A> unit(A a, W w, Monoid<W> m) {
 		return new Writer<W, A>(a, w, m);
 	}

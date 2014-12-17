@@ -1,17 +1,9 @@
 package fj;
 
 import static fj.Function.curry;
+
+import fj.data.*;
 import fj.data.hlist.HList;
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.LazyString;
-import fj.data.List;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Set;
-import fj.data.Stream;
-import fj.data.Tree;
-import fj.data.Validation;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -667,4 +659,9 @@ public final class Equal<A> {
       }
     }));
   }
+
+  public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {
+    return new Equal<Writer<A, B>>(w1 -> w2 -> Equal.p2Equal(eq1, eq2).eq(w1.run(), w2.run()));
+  }
+
 }
