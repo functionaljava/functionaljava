@@ -4,6 +4,7 @@ import fj.F;
 import fj.F1Functions;
 
 /**
+ * The Reader monad (also called the function monad, so equivalent to the idea of F).
  * Created by MarkPerry on 7/07/2014.
  */
 public class Reader<A, B> {
