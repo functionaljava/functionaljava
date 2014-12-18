@@ -1,11 +1,21 @@
 package fj.data;
 
 import fj.*;
+import fj.test.Arbitrary;
+import fj.test.Coarbitrary;
+import fj.test.Gen;
+import fj.test.Property;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static fj.data.Option.some;
 import static fj.data.Stream.unfold;
+import static fj.data.test.PropertyAssert.assertResult;
+import static fj.test.Arbitrary.*;
+import static fj.test.Coarbitrary.coarbInteger;
+import static fj.test.Property.prop;
+import static fj.test.Property.property;
+import static fj.test.Variant.variant;
 
 /**
  * Created by mperry on 4/08/2014.
@@ -67,5 +77,73 @@ public class TestRngState {
         String expected = "<1,2,3,5,6,7,7,9,10>";
         Assert.assertTrue(list.toString().equals(expected));
     }
+
+    public static Arbitrary<State<LcgRng, Integer>> arbState() {
+        return Arbitrary.arbState(Arbitrary.arbLcgRng(), Coarbitrary.coarbLcgRng(), arbInteger);
+    }
+
+    public static Arbitrary<F<LcgRng, P2<LcgRng, Integer>>> arbStateF() {
+        return arbF(Coarbitrary.coarbLcgRng(), arbP2(arbLcgRng(), arbInteger));
+    }
+
+    public static Coarbitrary<State<LcgRng, Integer>> coarbState() {
+        return Coarbitrary.coarbState(Arbitrary.arbLcgRng(), (LcgRng s, Integer j) -> (long) (j >= 0 ? 2 * j : -2 * j + 1));
+    }
+
+    public static Arbitrary<F<Integer, State<LcgRng, Integer>>> arbBindable() {
+        return arbF(coarbInteger, arbState());
+    }
+
+    // Left identity: return i >>= f == f i
+    @Test
+    public void testLeftIdentity() {
+        Property p = property(
+                arbBindable(),
+                arbInteger,
+                arbLcgRng(),
+                (f, i, r) -> {
+                    int a = State.<LcgRng, Integer>constant(i).flatMap(f).eval(r);
+                    int b = f.f(i).eval(r);
+//                    System.out.println(String.format("a=%d, b=%d", a, b));
+                    return prop(a == b);
+                }
+        );
+        assertResult(p);
+    }
+
+
+    // Right identity: m >>= return == m
+    @Test
+    public void testRightIdentity() {
+        Property p = Property.property(
+                arbState(),
+                arbLcgRng(),
+                (s, r) -> {
+                    int x = s.flatMap(a -> State.constant(a)).eval(r);
+                    int y = s.eval(r);
+//                    System.out.println(String.format("x=%d, y=%d", x, y));
+                    return prop(x == y);
+                }
+        );
+        assertResult(p);
+    }
+
+    // Associativity: (m >>= f) >>= g == m >>= (\x -> f x >>= g)
+    @Test
+    public void testAssociativity() {
+        Property p = Property.property(
+                arbState(),
+                arbBindable(),
+                arbBindable(),
+                arbLcgRng(),
+                (s, f, g, r) -> {
+                    int t = s.flatMap(f).flatMap(g).eval(r);
+                    int u = s.flatMap(x -> f.f(x).flatMap(g)).eval(r);
+//                    System.out.println(String.format("x=%d, y=%d", t, u));
+                    return prop(t == u);
+                });
+        assertResult(p);
+    }
+
 
 }

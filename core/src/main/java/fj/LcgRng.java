@@ -7,7 +7,7 @@ package fj;
  */
 public class LcgRng extends Rng {
 
-	private Long seed;
+	private final Long seed;
 
     public LcgRng() {
         this(System.currentTimeMillis());
@@ -16,6 +16,10 @@ public class LcgRng extends Rng {
 	public LcgRng(long s) {
 		seed = s;
 	}
+
+    public long getSeed() {
+        return seed;
+    }
 
 	public P2<Rng, Integer> nextInt() {
         P2<Rng, Long> p = nextLong();

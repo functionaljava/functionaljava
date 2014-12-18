@@ -20,6 +20,7 @@ import fj.P6;
 import fj.P7;
 import fj.P8;
 import fj.data.*;
+import fj.LcgRng;
 
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -125,6 +126,20 @@ public final class Arbitrary<A> {
 
     public static <A, B> Arbitrary<Reader<A, B>> arbReader(Coarbitrary<A> aa, Arbitrary<B> ab) {
         return arbitrary(Arbitrary.arbF(aa, ab).gen.map(f -> Reader.unit(f)));
+    }
+
+    /**
+     * An arbitrary for state.
+     */
+    public static <S, A> Arbitrary<State<S, A>> arbState(Arbitrary<S> as, Coarbitrary<S> cs, Arbitrary<A> aa) {
+        return arbitrary(arbF(cs, arbP2(as, aa)).gen.map(f -> State.unit(f)));
+    }
+
+    /**
+     * An arbitrary for the LcgRng.
+     */
+    public static <A> Arbitrary<LcgRng> arbLcgRng() {
+        return arbitrary(Arbitrary.arbLong.gen.map(l -> new LcgRng(l)));
     }
 
   /**

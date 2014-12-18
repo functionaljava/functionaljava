@@ -1,31 +1,15 @@
 package fj.test;
 
-import fj.F;
-import fj.F2;
-import fj.F3;
-import fj.F4;
-import fj.F5;
-import fj.F6;
-import fj.F7;
-import fj.F8;
+import fj.*;
+
 import static fj.Function.curry;
 import static fj.P.p;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.P4;
-import fj.P5;
-import fj.P6;
-import fj.P7;
-import fj.P8;
-import fj.data.Array;
+
+import fj.data.*;
+
 import static fj.data.Array.array;
-import fj.data.Either;
-import fj.data.List;
 import static fj.data.List.fromString;
 import static fj.data.List.nil;
-import fj.data.Option;
-import fj.data.Stream;
 
 import static fj.test.Variant.variant;
 
@@ -83,6 +67,7 @@ public abstract class Coarbitrary<A> {
    * @return A new generator with a high probability of being independent.
    */
   public abstract <B> Gen<B> coarbitrary(A a, Gen<B> g);
+
 
   /**
    * A curried version of {@link #coarbitrary(Object, Gen)}.
@@ -468,6 +453,35 @@ public abstract class Coarbitrary<A> {
         return as.isEmpty() ?
             variant(0, g) :
             variant(1, ca.coarbitrary(as.head(), coarbitrary(as.tail()._1(), g)));
+      }
+    };
+  }
+
+  /**
+   * A coarbitrary for the provided LcgRng
+   * @return A coarbitrary for the provided LcgRng.
+   */
+  public static Coarbitrary<LcgRng> coarbLcgRng() {
+    return new Coarbitrary<LcgRng>() {
+      @Override
+      public <B> Gen<B> coarbitrary(LcgRng rng, Gen<B> g) {
+        long i = rng.getSeed();
+        return variant(i >= 0 ? 2 * i : -2 * i + 1, g);
+      }
+    };
+  }
+
+  /**
+   * A coarbitrary for state.
+   */
+  public static <S, A> Coarbitrary<State<S, A>> coarbState(Arbitrary<S> as, F2<S, A, Long> f) {
+    return new Coarbitrary<State<S, A>>() {
+      @Override
+      public <B> Gen<B> coarbitrary(State<S, A> s1, Gen<B> g) {
+        return as.gen.bind(r -> {
+          P2<S, A> p = s1.run(r);
+          return variant(f.f(p._1(), p._2()), g);
+        });
       }
     };
   }
