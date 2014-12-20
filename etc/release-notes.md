@@ -10,9 +10,11 @@ Release target: Aug 2014
     * Added Java 8 examples
     * Added new website
     * Added Option.none_()
-    * Gradle 2.0 support with wrapper
+    * Gradle 2.2.1 support with wrapper
     * Added to Strings: isNullOrEmpty, isNullOrBlank and isNotNullOrBlank
     * Added Try with arity 0-8 for lambdas that throw exceptions
+    * Added Effect with arity 0-8 for lambdas with a void return
+    * Added TryEffect with arity 0-8 for lambdas with a void return that throw an Exception.
     * Conversion from Java 8 types to Functional Java types and vice-versa
     * Added monadic IO methods
     * Support instantiation of IO with lambdas
@@ -29,6 +31,11 @@ Release target: Aug 2014
     * Added Option.toValidation
     * Added map and contramap for F and F2.
     * Added partial application for F1.
+    * Added filter and uncurried foldLeft and foldRight to FingerTree.
+    * Added foldLeft, foldRight and map to Seq.
+    * Accumulate Validation errors in a List.
+    * Convert from fj.data.Stream to java.util.Stream and vice versa.
+    * Added groupBy on List.
 * Fixes
     * Various Javadoc issues
     * Large inserts into TreeMap
@@ -37,6 +44,7 @@ Release target: Aug 2014
     * Exception propagation in test data generators
     * Product memoisation for arities 1 to 8
     * ClassCastException in class fj.data.Java
+    * Fixed performance of Set.member.
 
 4.1
 ===
