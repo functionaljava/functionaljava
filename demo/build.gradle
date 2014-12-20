@@ -1,6 +1,6 @@
 
 apply plugin: 'application'
-apply plugin: 'retrolambda'
+apply plugin: 'me.tatarka.retrolambda'
 
 mainClassName = "fj.demo.euler.Problem2"
 

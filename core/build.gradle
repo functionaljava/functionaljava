@@ -1,5 +1,5 @@
 
-apply plugin: 'retrolambda'
+apply plugin: 'me.tatarka.retrolambda'
 
 ext {
     signModule = true

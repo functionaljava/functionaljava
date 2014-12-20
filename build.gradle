@@ -15,8 +15,8 @@ if (JavaVersion.current().isJava8Compatible()) {
 allprojects {
 
 	ext {
-        isSnapshot = true
-        fjBaseVersion = "4.2-beta-2"
+        isSnapshot = false
+        fjBaseVersion = "4.2"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
@@ -57,7 +57,7 @@ subprojects {
         }
 
         dependencies {
-            classpath 'me.tatarka:gradle-retrolambda:1.3.1'
+            classpath 'me.tatarka:gradle-retrolambda:2.5.0'
         }
     }
 
