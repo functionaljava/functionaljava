@@ -20,7 +20,7 @@ allprojects {
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "4.2-beta-1"
+        fjConsumeVersion = "4.2"
 
         signModule = false
 
