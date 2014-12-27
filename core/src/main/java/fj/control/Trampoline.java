@@ -50,57 +50,21 @@ public abstract class Trampoline<A> {
     // The monadic bind constructs a new Codense whose subcomputation is still `sub`, and Kleisli-composes the
     // continuations.
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
-      return codense(sub, new F<Object, Trampoline<B>>() {
-        public Trampoline<B> f(final Object o) {
-          return suspend(new P1<Trampoline<B>>() {
-            public Trampoline<B> _1() {
-              return cont.f(o).bind(f);
-            }
-          });
+      return codense(sub, o -> suspend(new P1<Trampoline<B>>() {
+        public Trampoline<B> _1() {
+          return cont.f(o).bind(f);
         }
-      });
+      }));
     }
 
     // The resumption of a Codense is the resumption of its subcomputation. If that computation is done, its result
     // gets shifted into the continuation.
     public Either<P1<Trampoline<A>>, A> resume() {
-      return left(sub.resume().either(new F<P1<Trampoline<Object>>, P1<Trampoline<A>>>() {
-            public P1<Trampoline<A>> f(final P1<Trampoline<Object>> p) {
-              return p.map(new F<Trampoline<Object>, Trampoline<A>>() {
-                public Trampoline<A> f(final Trampoline<Object> ot) {
-                  return ot.fold(new F<Normal<Object>, Trampoline<A>>() {
-                        public Trampoline<A> f(final Normal<Object> o) {
-                          return o.foldNormal(new F<Object, Trampoline<A>>() {
-                                public Trampoline<A> f(final Object o) {
-                                  return cont.f(o);
-                                }
-                              }, new F<P1<Trampoline<Object>>, Trampoline<A>>() {
-                            public Trampoline<A> f(final P1<Trampoline<Object>> t) {
-                              return t._1().bind(cont);
-                            }
-                          }
-                          );
-                        }
-                      }, new F<Codense<Object>, Trampoline<A>>() {
-                    public Trampoline<A> f(final Codense<Object> c) {
-                      return codense(c.sub, new F<Object, Trampoline<A>>() {
-                        public Trampoline<A> f(final Object o) {
-                          return c.cont.f(o).bind(cont);
-                        }
-                      });
-                    }
-                  }
-                  );
-                }
-              });
-            }
-          }, new F<Object, P1<Trampoline<A>>>() {
-        public P1<Trampoline<A>> f(final Object o) {
-          return new P1<Trampoline<A>>() {
-            public Trampoline<A> _1() {
-              return cont.f(o);
-            }
-          };
+      return left(sub.resume().either(p -> p.map(ot -> ot.fold(o1 -> o1.foldNormal(o2 -> cont.f(o2), t -> t._1().bind(cont)
+      ), c -> codense(c.sub, o -> c.cont.f(o).bind(cont))
+      )), o3 -> new P1<Trampoline<A>>() {
+        public Trampoline<A> _1() {
+          return cont.f(o3);
         }
       }
       ));
@@ -159,11 +123,7 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `pure`.
    */
   public static <A> F<A, Trampoline<A>> pure() {
-    return new F<A, Trampoline<A>>() {
-      public Trampoline<A> f(final A a) {
-        return pure(a);
-      }
-    };
+    return a -> pure(a);
   }
 
   /**
@@ -190,11 +150,7 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `suspend`.
    */
   public static <A> F<P1<Trampoline<A>>, Trampoline<A>> suspend_() {
-    return new F<P1<Trampoline<A>>, Trampoline<A>>() {
-      public Trampoline<A> f(final P1<Trampoline<A>> trampolineP1) {
-        return suspend(trampolineP1);
-      }
-    };
+    return trampolineP1 -> suspend(trampolineP1);
   }
 
   protected abstract <R> R fold(final F<Normal<A>, R> n, final F<Codense<A>, R> gs);
@@ -221,41 +177,21 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `bind`.
    */
   public static <A, B> F<F<A, Trampoline<B>>, F<Trampoline<A>, Trampoline<B>>> bind_() {
-    return new F<F<A, Trampoline<B>>, F<Trampoline<A>, Trampoline<B>>>() {
-      public F<Trampoline<A>, Trampoline<B>> f(final F<A, Trampoline<B>> f) {
-        return new F<Trampoline<A>, Trampoline<B>>() {
-          public Trampoline<B> f(final Trampoline<A> a) {
-            return a.bind(f);
-          }
-        };
-      }
-    };
+    return f -> a -> a.bind(f);
   }
 
   /**
    * @return The first-class version of `map`.
    */
   public static <A, B> F<F<A, B>, F<Trampoline<A>, Trampoline<B>>> map_() {
-    return new F<F<A, B>, F<Trampoline<A>, Trampoline<B>>>() {
-      public F<Trampoline<A>, Trampoline<B>> f(final F<A, B> f) {
-        return new F<Trampoline<A>, Trampoline<B>>() {
-          public Trampoline<B> f(final Trampoline<A> a) {
-            return a.map(f);
-          }
-        };
-      }
-    };
+    return f -> a -> a.map(f);
   }
 
   /**
    * @return The first-class version of `resume`.
    */
   public static <A> F<Trampoline<A>, Either<P1<Trampoline<A>>, A>> resume_() {
-    return new F<Trampoline<A>, Either<P1<Trampoline<A>>, A>>() {
-      public Either<P1<Trampoline<A>>, A> f(final Trampoline<A> aTrampoline) {
-        return aTrampoline.resume();
-      }
-    };
+    return aTrampoline -> aTrampoline.resume();
   }
 
   /**
@@ -291,11 +227,7 @@ public abstract class Trampoline<A> {
    * @return A new Trampoline after applying the given function through this Trampoline.
    */
   public final <B> Trampoline<B> apply(final Trampoline<F<A, B>> lf) {
-    return lf.bind(new F<F<A, B>, Trampoline<B>>() {
-      public Trampoline<B> f(final F<A, B> f) {
-        return map(f);
-      }
-    });
+    return lf.bind(f -> map(f));
   }
 
   /**
@@ -317,11 +249,7 @@ public abstract class Trampoline<A> {
    * @return The given function, promoted to operate on Trampolines.
    */
   public static <A, B, C> F<Trampoline<A>, F<Trampoline<B>, Trampoline<C>>> liftM2(final F<A, F<B, C>> f) {
-    return curry(new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
-      public Trampoline<C> f(final Trampoline<A> as, final Trampoline<B> bs) {
-        return as.bind(bs, f);
-      }
-    });
+    return curry((as, bs) -> as.bind(bs, f));
   }
 
   /**
@@ -337,22 +265,14 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry(new F2<Trampoline<A>, Trampoline<B>, Trampoline<C>>() {
-          public Trampoline<C> f(final Trampoline<A> ta, final Trampoline<B> tb) {
-            return suspend(new P1<Trampoline<C>>() {
-              public Trampoline<C> _1() {
-                return ta.zipWith(tb, f);
-              }
-            });
+        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(new P1<Trampoline<C>>() {
+          public Trampoline<C> _1() {
+            return ta.zipWith(tb, f);
           }
-        })));
+        }))));
       }
       for (final B y : eb.right()) {
-        return suspend(x.map(new F<Trampoline<A>, Trampoline<C>>() {
-          public Trampoline<C> f(final Trampoline<A> ta) {
-            return ta.map(F2Functions.f(F2Functions.flip(f), y));
-          }
-        }));
+        return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));
       }
     }
     for (final A x : ea.right()) {

@@ -121,32 +121,20 @@ public abstract class Set<A> implements Iterable<A> {
   public final P2<Boolean, Set<A>> update(final A a, final F<A, A> f) {
     return isEmpty()
            ? P.p(false, this)
-           : tryUpdate(a, f).either(new F<A, P2<Boolean, Set<A>>>() {
-             public P2<Boolean, Set<A>> f(final A a2) {
-               return P.p(true, delete(a).insert(a2));
-             }
-           }, Function.<P2<Boolean, Set<A>>>identity());
+           : tryUpdate(a, f).either(a2 -> P.p(true, delete(a).insert(a2)), Function.<P2<Boolean, Set<A>>>identity());
   }
 
   private Either<A, P2<Boolean, Set<A>>> tryUpdate(final A a, final F<A, A> f) {
     if (isEmpty())
       return right(P.p(false, this));
     else if (ord.isLessThan(a, head()))
-      return l().tryUpdate(a, f).right().map(new F<P2<Boolean, Set<A>>, P2<Boolean, Set<A>>>() {
-        public P2<Boolean, Set<A>> f(final P2<Boolean, Set<A>> set) {
-          return set._1() ? P.p(true, (Set<A>) new Tree<A>(ord, color(), set._2(), head(), r())) : set;
-        }
-      });
+      return l().tryUpdate(a, f).right().map(set -> set._1() ? P.p(true, (Set<A>) new Tree<A>(ord, color(), set._2(), head(), r())) : set);
     else if (ord.eq(a, head())) {
       final A h = f.f(head());
       return ord.eq(head(), h) ? Either
           .<A, P2<Boolean, Set<A>>>right(P.p(true, (Set<A>) new Tree<A>(ord, color(), l(), h, r())))
                                : Either.<A, P2<Boolean, Set<A>>>left(h);
-    } else return r().tryUpdate(a, f).right().map(new F<P2<Boolean, Set<A>>, P2<Boolean, Set<A>>>() {
-      public P2<Boolean, Set<A>> f(final P2<Boolean, Set<A>> set) {
-        return set._1() ? P.p(true, (Set<A>) new Tree<A>(ord, color(), l(), head(), set._2())) : set;
-      }
-    });
+    } else return r().tryUpdate(a, f).right().map(set -> set._1() ? P.p(true, (Set<A>) new Tree<A>(ord, color(), l(), head(), set._2())) : set);
   }
 
   /**
@@ -176,11 +164,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @return A function that returns true if the given element if a member of the given set.
    */
   public static <A> F<Set<A>, F<A, Boolean>> member() {
-    return curry(new F2<Set<A>, A, Boolean>() {
-      public Boolean f(final Set<A> s, final A a) {
-        return s.member(a);
-      }
-    });
+    return curry((s, a) -> s.member(a));
   }
 
   /**
@@ -199,11 +183,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @return A function that inserts a given element into a given set.
    */
   public static <A> F<A, F<Set<A>, Set<A>>> insert() {
-    return curry(new F2<A, Set<A>, Set<A>>() {
-      public Set<A> f(final A a, final Set<A> set) {
-        return set.insert(a);
-      }
-    });
+    return curry((a, set) -> set.insert(a));
   }
 
   private Set<A> ins(final A x) {
@@ -326,11 +306,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @see #union(Set)
    */
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> union() {
-    return curry(new F2<Set<A>, Set<A>, Set<A>>() {
-      public Set<A> f(final Set<A> s1, final Set<A> s2) {
-        return s1.union(s2);
-      }
-    });
+    return curry((s1, s2) -> s1.union(s2));
   }
 
   /**
@@ -360,11 +336,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @return A function that deletes a given element from a given set.
    */
   public final F<A, F<Set<A>, Set<A>>> delete() {
-    return curry(new F2<A, Set<A>, Set<A>>() {
-      public Set<A> f(final A a, final Set<A> set) {
-        return set.delete(a);
-      }
-    });
+    return curry((a, set) -> set.delete(a));
   }
 
   /**
@@ -384,11 +356,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @see #intersect(Set)
    */
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> intersect() {
-    return curry(new F2<Set<A>, Set<A>, Set<A>>() {
-      public Set<A> f(final Set<A> s1, final Set<A> s2) {
-        return s1.intersect(s2);
-      }
-    });
+    return curry((s1, s2) -> s1.intersect(s2));
   }
 
   /**
@@ -408,11 +376,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @see #minus(Set)
    */
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> minus() {
-    return curry(new F2<Set<A>, Set<A>, Set<A>>() {
-      public Set<A> f(final Set<A> s1, final Set<A> s2) {
-        return s1.minus(s2);
-      }
-    });
+    return curry((s1, s2) -> s1.minus(s2));
   }
 
   /**

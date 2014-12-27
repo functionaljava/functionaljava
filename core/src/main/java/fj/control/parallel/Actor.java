@@ -79,11 +79,7 @@ public final class Actor<A> {
   
   private Actor(final Strategy<Unit> s, final F<A, P1<Unit>> e) {
     this.s = s;
-    f = new F<A, P1<Unit>>() {
-      public P1<Unit> f(final A a) {
-        return s.par(e.f(a));
-      }
-    };
+    f = a -> s.par(e.f(a));
   }
 
   /**
@@ -127,11 +123,7 @@ public final class Actor<A> {
    * @return A new actor which passes its messages through the given function, to this actor.
    */
   public <B> Actor<B> comap(final F<B, A> f) {
-    return actor(s, new F<B, P1<Unit>>() {
-      public P1<Unit> f(final B b) {
-        return act(f.f(b));
-      }
-    });
+    return actor(s, (B b) -> act(f.f(b)));
   }
 
   /**
@@ -140,11 +132,7 @@ public final class Actor<A> {
    * @return A new actor, equivalent to this actor, that acts on promises.
    */
   public Actor<Promise<A>> promise() {
-    return actor(s, new Effect1<Promise<A>>() {
-      public void f(final Promise<A> b) {
-        b.to(Actor.this);
-      }
-    });
+    return actor(s, (Promise<A> b) -> b.to(Actor.this));
   }
 
 }

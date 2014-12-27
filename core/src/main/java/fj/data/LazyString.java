@@ -168,11 +168,7 @@ public final class LazyString implements CharSequence {
    * @return A function that yields true if the first argument is a prefix of the second.
    */
   public static F<LazyString, F<LazyString, Boolean>> startsWith() {
-    return curry(new F2<LazyString, LazyString, Boolean>() {
-      public Boolean f(final LazyString needle, final LazyString haystack) {
-        return haystack.startsWith(needle);
-      }
-    });
+    return curry((needle, haystack) -> haystack.startsWith(needle));
   }
 
   /**
@@ -310,31 +306,19 @@ public final class LazyString implements CharSequence {
    * First-class conversion from lazy strings to streams.
    */
   public static final F<LazyString, Stream<Character>> toStream =
-      new F<LazyString, Stream<Character>>() {
-        public Stream<Character> f(final LazyString string) {
-          return string.toStream();
-        }
-      };
+          string -> string.toStream();
 
   /**
    * First-class conversion from lazy strings to String.
    */
   public static final F<LazyString, String> toString =
-      new F<LazyString, String>() {
-        public String f(final LazyString string) {
-          return string.toString();
-        }
-      };
+          string -> string.toString();
 
   /**
    * First-class conversion from character streams to lazy strings.
    */
   public static final F<Stream<Character>, LazyString> fromStream =
-      new F<Stream<Character>, LazyString>() {
-        public LazyString f(final Stream<Character> s) {
-          return fromStream(s);
-        }
-      };
+          s -> fromStream(s);
 
   private static final Equal<Stream<Character>> eqS = streamEqual(charEqual);
 

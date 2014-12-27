@@ -31,11 +31,7 @@ public final class Callables {
    * @return A Callable that yields the argument when called.
    */
   public static <A> Callable<A> callable(final A a) {
-    return new Callable<A>() {
-      public A call() throws Exception {
-        return a;
-      }
-    };
+    return () -> a;
   }
 
   /**
@@ -45,10 +41,8 @@ public final class Callables {
    * @return A callable that always throws the given exception.
    */
   public static <A> Callable<A> callable(final Exception e) {
-    return new Callable<A>() {
-      public A call() throws Exception {
-        throw e;
-      }
+    return () -> {
+      throw e;
     };
   }
 
@@ -58,11 +52,7 @@ public final class Callables {
    * @return A function from a value to a Callable that completely preserves that value.
    */
   public static <A> F<A, Callable<A>> callable() {
-    return new F<A, Callable<A>>() {
-      public Callable<A> f(final A a) {
-        return callable(a);
-      }
-    };
+    return a -> callable(a);
   }
 
   /**
@@ -73,15 +63,7 @@ public final class Callables {
    * @return The equivalent function whose return value is wrapped in a Callable.
    */
   public static <A, B> F<A, Callable<B>> callable(final F<A, B> f) {
-    return new F<A, Callable<B>>() {
-      public Callable<B> f(final A a) {
-        return new Callable<B>() {
-          public B call() {
-            return f.f(a);
-          }
-        };
-      }
-    };
+    return a -> () -> f.f(a);
   }
 
   /**
@@ -91,11 +73,7 @@ public final class Callables {
    * @return A transformation from a function to the equivalent Callable-valued function.
    */
   public static <A, B> F<F<A, B>, F<A, Callable<B>>> arrow() {
-    return new F<F<A, B>, F<A, Callable<B>>>() {
-      public F<A, Callable<B>> f(final F<A, B> f) {
-        return callable(f);
-      }
-    };
+    return f -> callable(f);
   }
 
   /**
@@ -106,11 +84,7 @@ public final class Callables {
    * @return The result of applying the function in the second argument to the value of the Callable in the first.
    */
   public static <A, B> Callable<B> bind(final Callable<A> a, final F<A, Callable<B>> f) {
-    return new Callable<B>() {
-      public B call() throws Exception {
-        return f.f(a.call()).call();
-      }
-    };
+    return () -> f.f(a.call()).call();
   }
 
   /**
@@ -120,11 +94,7 @@ public final class Callables {
    * @return That function lifted to a function on Callables.
    */
   public static <A, B> F<Callable<A>, Callable<B>> fmap(final F<A, B> f) {
-    return new F<Callable<A>, Callable<B>>() {
-      public Callable<B> f(final Callable<A> a) {
-        return Callables.bind(a, callable(f));
-      }
-    };
+    return a -> Callables.bind(a, callable(f));
   }
 
   /**
@@ -135,11 +105,7 @@ public final class Callables {
    * @return A new callable after applying the given callable function to the first argument.
    */
   public static <A, B> Callable<B> apply(final Callable<A> ca, final Callable<F<A, B>> cf) {
-    return bind(cf, new F<F<A, B>, Callable<B>>() {
-      public Callable<B> f(final F<A, B> f) {
-        return fmap(f).f(ca);
-      }
-    });
+    return bind(cf, f -> fmap(f).f(ca));
   }
 
   /**
@@ -171,11 +137,7 @@ public final class Callables {
    * @return A function of arity-2 promoted to map over callables.
    */
   public static <A, B, C> F<Callable<A>, F<Callable<B>, Callable<C>>> liftM2(final F<A, F<B, C>> f) {
-    return curry(new F2<Callable<A>, Callable<B>, Callable<C>>() {
-      public Callable<C> f(final Callable<A> ca, final Callable<B> cb) {
-        return bind(ca, cb, f);
-      }
-    });
+    return curry((ca, cb) -> bind(ca, cb, f));
   }
 
   /**
@@ -195,11 +157,7 @@ public final class Callables {
    * @return A function from a List of Callables to a single Callable of a List.
    */
   public static <A> F<List<Callable<A>>, Callable<List<A>>> sequence_() {
-    return new F<List<Callable<A>>, Callable<List<A>>>() {
-      public Callable<List<A>> f(final List<Callable<A>> as) {
-        return sequence(as);
-      }
-    };
+    return as -> sequence(as);
   }
 
   /**
@@ -227,11 +185,7 @@ public final class Callables {
    * @return a function that turns a Callable into an optional value.
    */
   public static <A> F<Callable<A>, P1<Option<A>>> option() {
-    return new F<Callable<A>, P1<Option<A>>>() {
-      public P1<Option<A>> f(final Callable<A> a) {
-        return option(a);
-      }
-    };
+    return a -> option(a);
   }
 
   /**
@@ -258,11 +212,7 @@ public final class Callables {
    * @return a function that turns a Callable into an Either.
    */
   public static <A> F<Callable<A>, P1<Either<Exception, A>>> either() {
-    return new F<Callable<A>, P1<Either<Exception, A>>>() {
-      public P1<Either<Exception, A>> f(final Callable<A> a) {
-        return either(a);
-      }
-    };
+    return a -> either(a);
   }
 
   /**
@@ -289,11 +239,7 @@ public final class Callables {
    * @return a function that turns an Either into a Callable.
    */
   public static <A> F<P1<Either<Exception, A>>, Callable<A>> fromEither() {
-    return new F<P1<Either<Exception, A>>, Callable<A>>() {
-      public Callable<A> f(final P1<Either<Exception, A>> e) {
-        return fromEither(e);
-      }
-    };
+    return e -> fromEither(e);
   }
 
   /**
@@ -321,11 +267,7 @@ public final class Callables {
    *         or throws an exception in the case of no value.
    */
   public static <A> F<P1<Option<A>>, Callable<A>> fromOption() {
-    return new F<P1<Option<A>>, Callable<A>>() {
-      public Callable<A> f(final P1<Option<A>> o) {
-        return fromOption(o);
-      }
-    };
+    return o -> fromOption(o);
   }
 
   /**
@@ -349,11 +291,7 @@ public final class Callables {
    * @return A function that normalises the given Callable by calling it and wrapping the result in a new Callable.
    */
   public static <A> F<Callable<A>, Callable<A>> normalise() {
-    return new F<Callable<A>, Callable<A>>() {
-      public Callable<A> f(final Callable<A> a) {
-        return normalise(a);
-      }
-    };
+    return a -> normalise(a);
   }
 
 }

@@ -300,11 +300,7 @@ public final class HashMap<K, V> implements Iterable<K> {
   }
 
   public List<P2<K, V>> toList() {
-    return keys().map(new F<K, P2<K, V>>() {
-      public P2<K, V> f(final K k) {
-        return p(k, get(k).some());
-      }
-    });
+    return keys().map(k -> p(k, get(k).some()));
   }
 
   /**
