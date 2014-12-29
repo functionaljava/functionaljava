@@ -10,9 +10,11 @@ import static fj.data.vector.V.v;
  */
 public final class MakeTree<V, A> {
   private final Measured<V, A> m;
+  private final Empty<V, A> empty;
 
   MakeTree(final Measured<V, A> m) {
     this.m = m;
+    this.empty = new Empty<V, A>(m);
   }
 
   // Tree constructors
@@ -23,7 +25,7 @@ public final class MakeTree<V, A> {
    * @return The empty tree.
    */
   public FingerTree<V, A> empty() {
-    return new Empty<V, A>(m);
+    return empty;
   }
 
   /**
