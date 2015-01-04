@@ -630,8 +630,7 @@ public final class Ord<A> {
       public F<A, Ordering> f(final A a1) {
         return new F<A, Ordering>() {
           public Ordering f(final A a2) {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
+            return Ordering.fromInt(a1.compareTo(a2));
           }
         };
       }
