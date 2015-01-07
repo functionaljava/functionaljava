@@ -2,9 +2,18 @@
 Release Notes
 =============
 
+4.3
+===
+Target date: To be decided
+
+* Enhancements
+    * To be decided
+* Fixes
+    * To be decided
+
 4.2
 ===
-Release target: Aug 2014
+Released: 20 December, 2014
 
 * Enhancements
     * Added Java 8 examples

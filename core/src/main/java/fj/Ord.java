@@ -474,10 +474,8 @@ public final class Ord<A> {
    * @return An order instance for the <code>Comparable</code> interface.
    */
   public static <A extends Comparable<A>> Ord<A> comparableOrd() {
-    return ord(a1 -> a2 -> {
-      final int x = a1.compareTo(a2);
-      return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-    });
+
+    return ord(a1 -> a2 -> Ordering.fromInt(a1.compareTo(a2)));
   }
 
   /**
