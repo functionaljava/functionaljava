@@ -1036,7 +1036,9 @@ public abstract class List<A> implements Iterable<A> {
     return removeAll(compose(Monoid.disjunctionMonoid.sumLeft(), xs.mapM(curry(eq.eq()))));
   }
 
-  /**
+
+
+    /**
    * Maps the given function of arity-2 across this list and returns a function that applies all the resulting
    * functions to a given argument.
    *
@@ -1188,7 +1190,7 @@ public abstract class List<A> implements Iterable<A> {
       final F<A, B> keyFunction,
       final F<A, C> valueFunction,
       final Ord<B> keyOrd) {
-    return this.groupBy(keyFunction, valueFunction, List.<C>nil(), List::cons, keyOrd);
+    return this.<B, C, List<C>>groupBy(keyFunction, valueFunction, List.<C>nil(), List::cons, keyOrd);
   }
 
   /**
