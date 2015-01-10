@@ -44,11 +44,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A function that returns the given iterable, wrapped.
    */
   public static <A, T extends Iterable<A>> F<T, IterableW<A>> wrap() {
-    return new F<T, IterableW<A>>() {
-      public IterableW<A> f(final T a) {
-        return wrap(a);
-      }
-    };
+    return a -> wrap(a);
   }
 
   /**
@@ -69,11 +65,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return The equivalent function whose return value is iterable.
    */
   public static <A, B> F<A, IterableW<B>> iterable(final F<A, B> f) {
-    return new F<A, IterableW<B>>() {
-      public IterableW<B> f(final A a) {
-        return iterable(f.f(a));
-      }
-    };
+    return a -> iterable(f.f(a));
   }
 
   /**
@@ -83,11 +75,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A transformation from a function to the equivalent Iterable-valued function.
    */
   public static <A, B> F<F<A, B>, F<A, IterableW<B>>> arrow() {
-    return new F<F<A, B>, F<A, IterableW<B>>>() {
-      public F<A, IterableW<B>> f(final F<A, B> f) {
-        return iterable(f);
-      }
-    };
+    return f -> iterable(f);
   }
 
   /**
@@ -97,11 +85,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return an iterable result of binding the given function over the wrapped Iterable.
    */
   public <B, T extends Iterable<B>> IterableW<B> bind(final F<A, T> f) {
-    return wrap(iterableStream(this).bind(new F<A, Stream<B>>() {
-      public Stream<B> f(final A a) {
-        return iterableStream(f.f(a));
-      }
-    }));
+    return wrap(iterableStream(this).bind(a -> iterableStream(f.f(a))));
   }
 
   /**
@@ -111,11 +95,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A new iterable after applying the given iterable function to the wrapped iterable.
    */
   public <B> IterableW<B> apply(final Iterable<F<A, B>> f) {
-    return wrap(f).bind(new F<F<A, B>, Iterable<B>>() {
-      public Iterable<B> f(final F<A, B> f) {
-        return map(f);
-      }
-    });
+    return wrap(f).bind(f1 -> map(f1));
   }
 
   /**
@@ -137,11 +117,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A function of arity-2 promoted to map over iterables.
    */
   public static <A, B, C> F<Iterable<A>, F<Iterable<B>, IterableW<C>>> liftM2(final F<A, F<B, C>> f) {
-    return curry(new F2<Iterable<A>, Iterable<B>, IterableW<C>>() {
-      public IterableW<C> f(final Iterable<A> ca, final Iterable<B> cb) {
-        return bind(ca, cb, f);
-      }
-    });
+    return curry((ca, cb) -> bind(ca, cb, f));
   }
 
   /**
@@ -176,15 +152,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that binds a given function across a given iterable.
    */
   public static <A, B, T extends Iterable<B>> F<IterableW<A>, F<F<A, T>, IterableW<B>>> bind() {
-    return new F<IterableW<A>, F<F<A, T>, IterableW<B>>>() {
-      public F<F<A, T>, IterableW<B>> f(final IterableW<A> a) {
-        return new F<F<A, T>, IterableW<B>>() {
-          public IterableW<B> f(final F<A, T> f) {
-            return a.bind(f);
-          }
-        };
-      }
-    };
+    return a -> f -> a.bind(f);
   }
 
   /**
@@ -204,11 +172,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that joins an Iterable of Iterables into a single Iterable.
    */
   public static <A, T extends Iterable<A>> F<Iterable<T>, IterableW<A>> join() {
-    return new F<Iterable<T>, IterableW<A>>() {
-      public IterableW<A> f(final Iterable<T> a) {
-        return join(a);
-      }
-    };
+    return a -> join(a);
   }
 
   /**
@@ -227,15 +191,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that promotes any function so that it operates on Iterables.
    */
   public static <A, B> F<F<A, B>, F<IterableW<A>, IterableW<B>>> map() {
-    return new F<F<A, B>, F<IterableW<A>, IterableW<B>>>() {
-      public F<IterableW<A>, IterableW<B>> f(final F<A, B> f) {
-        return new F<IterableW<A>, IterableW<B>>() {
-          public IterableW<B> f(final IterableW<A> a) {
-            return a.map(f);
-          }
-        };
-      }
-    };
+    return f -> a -> a.map(f);
   }
 
   /**
@@ -284,11 +240,7 @@ public final class IterableW<A> implements Iterable<A> {
    */
   public <B> B foldRight(final F2<A, B, B> f, final B z) {
     final F<B, B> id = identity();
-    return foldLeft(curry(new F3<F<B, B>, A, B, B>() {
-      public B f(final F<B, B> k, final A a, final B b) {
-        return k.f(f.f(a, b));
-      }
-    }), id).f(z);
+    return foldLeft(curry((k, a, b) -> k.f(f.f(a, b))), id).f(z);
   }
 
   /**

@@ -1,11 +1,8 @@
 package fj.parser;
 
-import fj.F;
+import fj.*;
+
 import static fj.P.p;
-import fj.P1;
-import fj.Semigroup;
-import fj.Unit;
-import fj.Digit;
 import static fj.Unit.unit;
 import fj.data.List;
 import static fj.data.List.cons_;
@@ -45,15 +42,7 @@ public final class Parser<I, A, E> {
    * @return A parser with the new input type.
    */
   public <Z> Parser<Z, A, E> xmap(final F<I, Z> f, final F<Z, I> g) {
-    return parser(new F<Z, Validation<E, Result<Z, A>>>() {
-      public Validation<E, Result<Z, A>> f(final Z z) {
-        return parse(g.f(z)).map(new F<Result<I, A>, Result<Z, A>>() {
-          public Result<Z, A> f(final Result<I, A> r) {
-            return r.mapRest(f);
-          }
-        });
-      }
-    });
+    return parser(z -> parse(g.f(z)).map(r -> r.mapRest(f)));
   }
 
   /**
@@ -63,15 +52,7 @@ public final class Parser<I, A, E> {
    * @return A parser with the new result type.
    */
   public <B> Parser<I, B, E> map(final F<A, B> f) {
-    return parser(new F<I, Validation<E, Result<I, B>>>() {
-      public Validation<E, Result<I, B>> f(final I i) {
-        return parse(i).map(new F<Result<I, A>, Result<I, B>>() {
-          public Result<I, B> f(final Result<I, A> r) {
-            return r.mapValue(f);
-          }
-        });
-      }
-    });
+    return parser(i -> parse(i).map(r -> r.mapValue(f)));
   }
 
   /**
@@ -82,18 +63,12 @@ public final class Parser<I, A, E> {
    * @return A parser that fails with the given error if the result value does not meet the given predicate.
    */
   public Parser<I, A, E> filter(final F<A, Boolean> f, final E e) {
-    return parser(new F<I, Validation<E, Result<I, A>>>() {
-      public Validation<E, Result<I, A>> f(final I i) {
-        return parse(i).bind(new F<Result<I, A>, Validation<E, Result<I, A>>>() {
-          public Validation<E, Result<I, A>> f(final Result<I, A> r) {
-            final A v = r.value();
-            return f.f(v) ?
-                Validation.<E, Result<I, A>>success(result(r.rest(), v)) :
-                Validation.<E, Result<I, A>>fail(e);
-          }
-        });
-      }
-    });
+    return parser(i -> parse(i).bind(r -> {
+      final A v = r.value();
+      return f.f(v) ?
+          Validation.<E, Result<I, A>>success(result(r.rest(), v)) :
+          Validation.<E, Result<I, A>>fail(e);
+    }));
   }
 
   /**
@@ -103,15 +78,7 @@ public final class Parser<I, A, E> {
    * @return A new parser after performing the map, then final join.
    */
   public <B> Parser<I, B, E> bind(final F<A, Parser<I, B, E>> f) {
-    return parser(new F<I, Validation<E, Result<I, B>>>() {
-      public Validation<E, Result<I, B>> f(final I i) {
-        return parse(i).bind(new F<Result<I, A>, Validation<E, Result<I, B>>>() {
-          public Validation<E, Result<I, B>> f(final Result<I, A> r) {
-            return f.f(r.value()).parse(r.rest());
-          }
-        });
-      }
-    });
+    return parser(i -> parse(i).bind(r -> f.f(r.value()).parse(r.rest())));
   }
 
   /**
@@ -233,11 +200,7 @@ public final class Parser<I, A, E> {
    * @return A parser after binding anonymously.
    */
   public <B> Parser<I, B, E> sequence(final Parser<I, B, E> p) {
-    return bind(new F<A, Parser<I, B, E>>() {
-      public Parser<I, B, E> f(final A a) {
-        return p;
-      }
-    });
+    return bind(a -> p);
   }
 
   /**
@@ -247,11 +210,7 @@ public final class Parser<I, A, E> {
    * @return A new parser after function application.
    */
   public <B> Parser<I, B, E> apply(final Parser<I, F<A, B>, E> p) {
-    return p.bind(new F<F<A, B>, Parser<I, B, E>>() {
-      public Parser<I, B, E> f(final F<A, B> f) {
-        return map(f);
-      }
-    });
+    return p.bind((F<F<A, B>, Parser<I, B, E>>) f1 -> map(f1));
   }
 
   /**
@@ -261,11 +220,7 @@ public final class Parser<I, A, E> {
    * @return A parser that tries this parser and if it fails, then tries the given parser.
    */
   public Parser<I, A, E> or(final P1<Parser<I, A, E>> alt) {
-    return parser(new F<I, Validation<E, Result<I, A>>>() {
-      public Validation<E, Result<I, A>> f(final I i) {
-        return parse(i).f().sequence(alt._1().parse(i));
-      }
-    });
+    return parser(i -> parse(i).f().sequence(alt._1().parse(i)));
   }
 
   /**
@@ -287,15 +242,7 @@ public final class Parser<I, A, E> {
    * @return A parser that tries this parser and if it fails, then tries the given parser.
    */
   public Parser<I, A, E> or(final P1<Parser<I, A, E>> alt, final Semigroup<E> s) {
-    return parser(new F<I, Validation<E, Result<I, A>>>() {
-      public Validation<E, Result<I, A>> f(final I i) {
-        return parse(i).f().bind(new F<E, Validation<E, Result<I, A>>>() {
-          public Validation<E, Result<I, A>> f(final E e) {
-            return alt._1().parse(i).f().map(s.sum(e));
-          }
-        });
-      }
-    });
+    return parser(i -> parse(i).f().bind(e -> alt._1().parse(i).f().map(s.sum(e))));
   }
 
   /**
@@ -317,13 +264,9 @@ public final class Parser<I, A, E> {
    * @return A parser that negates this parser.
    */
   public Parser<I, Unit, E> not(final P1<E> e) {
-    return parser(new F<I, Validation<E, Result<I, Unit>>>() {
-      public Validation<E, Result<I, Unit>> f(final I i) {
-        return parse(i).isFail() ?
-            Validation.<E, Result<I, Unit>>success(result(i, unit())) :
-            Validation.<E, Result<I, Unit>>fail(e._1());
-      }
-    });
+    return parser(i -> parse(i).isFail() ?
+        Validation.<E, Result<I, Unit>>success(result(i, unit())) :
+        Validation.<E, Result<I, Unit>>fail(e._1()));
   }
 
   /**
@@ -342,11 +285,7 @@ public final class Parser<I, A, E> {
    * @return A parser that repeats application of this parser zero or many times.
    */
   public Parser<I, Stream<A>, E> repeat() {
-    return repeat1().or(new P1<Parser<I, Stream<A>, E>>() {
-      public Parser<I, Stream<A>, E> _1() {
-        return value(Stream.<A>nil());
-      }
-    });
+    return repeat1().or(P.lazy(u -> value(Stream.<A>nil())));
   }
 
   /**
@@ -355,15 +294,7 @@ public final class Parser<I, A, E> {
    * @return A parser that repeats application of this parser one or many times.
    */
   public Parser<I, Stream<A>, E> repeat1() {
-      return bind(new F<A, Parser<I, Stream<A>, E>>() {
-          public Parser<I, Stream<A>, E> f(final A a) {
-              return repeat().map(new F<Stream<A>, Stream<A>>() {
-                public Stream<A> f(final Stream<A> as) {
-                    return as.cons(a);
-                }
-            });
-          }
-      });
+      return bind(a -> repeat().map(as -> as.cons(a)));
   }
 
   /**
@@ -373,11 +304,7 @@ public final class Parser<I, A, E> {
    * @return A new parser with a new error type.
    */
   public <K> Parser<I, A, K> mapError(final F<E, K> f) {
-    return parser(new F<I, Validation<K, Result<I, A>>>() {
-      public Validation<K, Result<I, A>> f(final I i) {
-        return Parser.this.f.f(i).f().map(f);
-      }
-    });
+    return parser(i -> Parser.this.f.f(i).f().map(f));
   }
 
   /**
@@ -387,7 +314,7 @@ public final class Parser<I, A, E> {
    * @return A parser that computes using the given function.
    */
   public static <I, A, E> Parser<I, A, E> parser(final F<I, Validation<E, Result<I, A>>> f) {
-    return new Parser<I, A, E>(f);
+    return new Parser<>(f);
   }
 
   /**
@@ -397,11 +324,7 @@ public final class Parser<I, A, E> {
    * @return A parser that always returns the given value.
    */
   public static <I, A, E> Parser<I, A, E> value(final A a) {
-    return parser(new F<I, Validation<E, Result<I, A>>>() {
-      public Validation<E, Result<I, A>> f(final I i) {
-        return success(result(i, a));
-      }
-    });
+    return parser(i -> success(result(i, a)));
   }
 
   /**
@@ -411,11 +334,7 @@ public final class Parser<I, A, E> {
    * @return A parser that always fails with the given error.
    */
   public static <I, A, E> Parser<I, A, E> fail(final E e) {
-    return parser(new F<I, Validation<E, Result<I, A>>>() {
-      public Validation<E, Result<I, A>> f(final I i) {
-        return Validation.fail(e);
-      }
-    });
+    return parser(i -> Validation.fail(e));
   }
 
   /**
@@ -427,11 +346,7 @@ public final class Parser<I, A, E> {
   public static <I, A, E> Parser<I, List<A>, E> sequence(final List<Parser<I, A, E>> ps) {
     return ps.isEmpty() ?
         Parser.<I, List<A>, E>value(List.<A>nil()) :
-        ps.head().bind(new F<A, Parser<I, List<A>, E>>() {
-          public Parser<I, List<A>, E> f(final A a) {
-            return sequence(ps.tail()).map(cons_(a));
-          }
-        });
+        ps.head().bind(a -> sequence(ps.tail()).map(cons_(a)));
   }
 
   /**
@@ -449,13 +364,9 @@ public final class Parser<I, A, E> {
      * @return A parser that produces an element from the stream if it is available and fails otherwise.
      */
     public static <I, E> Parser<Stream<I>, I, E> element(final P1<E> e) {
-      return parser(new F<Stream<I>, Validation<E, Result<Stream<I>, I>>>() {
-        public Validation<E, Result<Stream<I>, I>> f(final Stream<I> is) {
-          return is.isEmpty() ?
-              Validation.<E, Result<Stream<I>, I>>fail(e._1()) :
-              Validation.<E, Result<Stream<I>, I>>success(result(is.tail()._1(), is.head()));
-        }
-      });
+      return parser(is -> is.isEmpty() ?
+          Validation.<E, Result<Stream<I>, I>>fail(e._1()) :
+          Validation.<E, Result<Stream<I>, I>>success(result(is.tail()._1(), is.head())));
     }
 
     /**
@@ -478,13 +389,9 @@ public final class Parser<I, A, E> {
      */
     public static <I, E> Parser<Stream<I>, I, E> satisfy(final P1<E> missing, final F<I, E> sat,
                                                          final F<I, Boolean> f) {
-      return StreamParser.<I, E>element(missing).bind(new F<I, Parser<Stream<I>, I, E>>() {
-        public Parser<Stream<I>, I, E> f(final I x) {
-          return f.f(x) ?
-              Parser.<Stream<I>, I, E>value(x) :
-              Parser.<Stream<I>, I, E>fail(sat.f(x));
-        }
-      });
+      return StreamParser.<I, E>element(missing).bind(x -> f.f(x) ?
+          Parser.<Stream<I>, I, E>value(x) :
+          Parser.<Stream<I>, I, E>fail(sat.f(x)));
     }
 
     /**
@@ -538,11 +445,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> character(final P1<E> missing, final F<Character, E> sat,
                                                                         final char c) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character x) {
-          return x == c;
-        }
-      });
+      return StreamParser.satisfy(missing, sat, x -> x == c);
     }
 
     /**
@@ -622,11 +525,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, String, E> string(final P1<E> missing, final F<Character, E> sat,
                                                                   final String s) {
-      return characters(missing, sat, List.fromString(s).toStream()).map(new F<Stream<Character>, String>() {
-        public String f(final Stream<Character> cs) {
-          return List.asString(cs.toList());
-        }
-      });
+      return characters(missing, sat, List.fromString(s).toStream()).map(cs -> List.asString(cs.toList()));
     }
 
     /**
@@ -650,15 +549,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a digit (0 to 9).
      */
     public static <E> Parser<Stream<Character>, Digit, E> digit(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isDigit(c);
-        }
-      }).map(new F<Character, Digit>() {
-        public Digit f(final Character c) {
-          return Digit.fromChar(c).some();
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isDigit(c)).map(c1 -> Digit.fromChar(c1).some());
     }
 
     /**
@@ -681,11 +572,7 @@ public final class Parser<I, A, E> {
      * @see Character#isLowerCase(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> lower(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isLowerCase(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isLowerCase(c));
     }
 
     /**
@@ -709,11 +596,7 @@ public final class Parser<I, A, E> {
      * @see Character#isUpperCase(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> upper(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isUpperCase(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isUpperCase(c));
     }
 
     /**
@@ -737,11 +620,7 @@ public final class Parser<I, A, E> {
      * @see Character#isDefined(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> defined(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isDefined(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isDefined(c));
     }
 
     /**
@@ -766,11 +645,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> highSurrogate(final P1<E> missing,
                                                                             final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isHighSurrogate(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isHighSurrogate(c));
     }
 
     /**
@@ -796,11 +671,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> identifierIgnorable(final P1<E> missing,
                                                                                   final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isIdentifierIgnorable(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isIdentifierIgnorable(c));
     }
 
     /**
@@ -826,11 +697,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> isoControl(final P1<E> missing,
                                                                          final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isISOControl(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isISOControl(c));
     }
 
     /**
@@ -855,11 +722,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> javaIdentifierPart(final P1<E> missing,
                                                                                  final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isJavaIdentifierPart(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isJavaIdentifierPart(c));
     }
 
     /**
@@ -885,11 +748,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> javaIdentifierStart(final P1<E> missing,
                                                                                   final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isJavaIdentifierStart(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isJavaIdentifierStart(c));
     }
 
     /**
@@ -914,11 +773,7 @@ public final class Parser<I, A, E> {
      * @see Character#isLetter(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> alpha(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isLetter(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isLetter(c));
     }
 
     /**
@@ -942,11 +797,7 @@ public final class Parser<I, A, E> {
      * @see Character#isLetterOrDigit(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> alphaNum(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isLetterOrDigit(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isLetterOrDigit(c));
     }
 
     /**
@@ -971,11 +822,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> lowSurrogate(final P1<E> missing,
                                                                            final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isLowSurrogate(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isLowSurrogate(c));
     }
 
     /**
@@ -999,11 +846,7 @@ public final class Parser<I, A, E> {
      * @see Character#isMirrored(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> mirrored(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isMirrored(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isMirrored(c));
     }
 
     /**
@@ -1027,11 +870,7 @@ public final class Parser<I, A, E> {
      * @see Character#isSpace(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> space(final P1<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isSpaceChar(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isSpaceChar(c));
     }
 
     /**
@@ -1056,11 +895,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> titleCase(final P1<E> missing,
                                                                         final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isTitleCase(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isTitleCase(c));
     }
 
     /**
@@ -1085,11 +920,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferPart(final P1<E> missing,
                                                                                    final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isUnicodeIdentifierPart(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isUnicodeIdentifierPart(c));
     }
 
     /**
@@ -1115,11 +946,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferStart(final P1<E> missing,
                                                                                     final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isUnicodeIdentifierStart(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isUnicodeIdentifierStart(c));
     }
 
     /**
@@ -1145,11 +972,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> whitespace(final P1<E> missing,
                                                                          final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, new F<Character, Boolean>() {
-        public Boolean f(final Character c) {
-          return Character.isWhitespace(c);
-        }
-      });
+      return StreamParser.satisfy(missing, sat, c -> Character.isWhitespace(c));
     }
 
     /**

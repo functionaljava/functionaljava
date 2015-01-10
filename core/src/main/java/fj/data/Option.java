@@ -204,11 +204,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that maps a given function across a given optional value.
    */
   public static <A, B> F<F<A, B>, F<Option<A>, Option<B>>> map() {
-    return curry(new F2<F<A, B>, Option<A>, Option<B>>() {
-      public Option<B> f(final F<A, B> abf, final Option<A> option) {
-        return option.map(abf);
-      }
-    });
+    return curry((abf, option) -> option.map(abf));
   }
 
   /**
@@ -656,11 +652,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   public static <T> F<T, Option<T>> some_() {
-    return new F<T, Option<T>>() {
-      public Option<T> f(final T t) {
-        return some(t);
-      }
-    };
+    return t -> some(t);
   }
 
   /**
@@ -674,11 +666,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   public static <T> F<T, Option<T>> none_() {
-    return new F<T, Option<T>>() {
-      public Option<T> f(final T t) {
-        return none();
-      }
-    };
+    return t -> none();
   }
 
   /**
@@ -708,11 +696,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return If <code>t == null</code> then return it in some, otherwise, return none.
    */
   public static <T> F<T, Option<T>> fromNull() {
-    return new F<T, Option<T>>() {
-      public Option<T> f(final T t) {
-        return fromNull(t);
-      }
-    };
+    return t -> fromNull(t);
   }
 
   /**
@@ -735,11 +719,7 @@ public abstract class Option<A> implements Iterable<A> {
   public static <A> Option<List<A>> sequence(final List<Option<A>> a) {
     return a.isEmpty() ?
            some(List.<A>nil()) :
-           a.head().bind(new F<A, Option<List<A>>>() {
-             public Option<List<A>> f(final A aa) {
-               return sequence(a.tail()).map(cons_(aa));
-             }
-           });
+           a.head().bind(aa -> sequence(a.tail()).map(cons_(aa)));
   }
 
   /**
@@ -789,11 +769,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         holds on that argument, or no value otherwise.
    */
   public static <A> F2<F<A, Boolean>, A, Option<A>> iif() {
-    return new F2<F<A, Boolean>, A, Option<A>>() {
-      public Option<A> f(final F<A, Boolean> p, final A a) {
-        return iif(p, a);
-      }
-    };
+    return (p, a) -> iif(p, a);
   }
 
   /**
@@ -803,11 +779,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return All the values in the given list.
    */
   public static <A> List<A> somes(final List<Option<A>> as) {
-    return as.filter(Option.<A>isSome_()).map(new F<Option<A>, A>() {
-      public A f(final Option<A> o) {
-        return o.some();
-      }
-    });
+    return as.filter(Option.<A>isSome_()).map(o -> o.some());
   }
 
 
@@ -818,11 +790,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return All the values in the given stream.
    */
   public static <A> Stream<A> somes(final Stream<Option<A>> as) {
-    return as.filter(Option.<A>isSome_()).map(new F<Option<A>, A>() {
-      public A f(final Option<A> o) {
-        return o.some();
-      }
-    });
+    return as.filter(Option.<A>isSome_()).map(o -> o.some());
   }
 
   /**
@@ -832,11 +800,9 @@ public abstract class Option<A> implements Iterable<A> {
    * @return an optional non-empty string, or no value if the given string is empty.
    */
   public static Option<String> fromString(final String s) {
-    return fromNull(s).bind(new F<String, Option<String>>() {
-      public Option<String> f(final String s) {
-        final Option<String> none = none();
-        return s.length() == 0 ? none : some(s);
-      }
+    return fromNull(s).bind(s1 -> {
+      final Option<String> none = none();
+      return s.length() == 0 ? none : some(s);
     });
   }
 
@@ -848,11 +814,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         or no value if the string is empty.
    */
   public static F<String, Option<String>> fromString() {
-    return new F<String, Option<String>>() {
-      public Option<String> f(final String s) {
-        return fromString(s);
-      }
-    };
+    return s -> fromString(s);
   }
 
   /**
@@ -861,11 +823,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that takes an optional value to a value or errors if there is no value.
    */
   public static <A> F<Option<A>, A> fromSome() {
-    return new F<Option<A>, A>() {
-      public A f(final Option<A> option) {
-        return option.some();
-      }
-    };
+    return option -> option.some();
   }
 
   /**
@@ -875,11 +833,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return The given function promoted to operate on options.
    */
   public static <A, B, C> F<Option<A>, F<Option<B>, Option<C>>> liftM2(final F<A, F<B, C>> f) {
-    return curry(new F2<Option<A>, Option<B>, Option<C>>() {
-      public Option<C> f(final Option<A> a, final Option<B> b) {
-        return a.bind(b, f);
-      }
-    });
+    return curry((a, b) -> a.bind(b, f));
   }
 
   /**
@@ -888,11 +842,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that binds a given function across an option with a final join.
    */
   public static <A, B> F<F<A, Option<B>>, F<Option<A>, Option<B>>> bind() {
-    return curry(new F2<F<A, Option<B>>, Option<A>, Option<B>>() {
-      public Option<B> f(final F<A, Option<B>> f, final Option<A> a) {
-        return a.bind(f);
-      }
-    });
+    return curry((f, a) -> a.bind(f));
   }
 
   /**
@@ -901,64 +851,36 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that joins an Option of an Option to make a single Option.
    */
   public static <A> F<Option<Option<A>>, Option<A>> join() {
-    return new F<Option<Option<A>>, Option<A>>() {
-      public Option<A> f(final Option<Option<A>> option) {
-        return join(option);
-      }
-    };
+    return option -> join(option);
   }
 
   /**
    * A function that parses a string to a byte.
    */
-  public static final F<String, Option<Byte>> parseByte = new F<String, Option<Byte>>() {
-      public Option<Byte> f(final String s) {
-          return parseByte(s).toOption();
-      }
-  };
+  public static final F<String, Option<Byte>> parseByte = s -> parseByte(s).toOption();
 
   /**
    * A function that parses a string to a double.
    */
-  public static final F<String, Option<Double>> parseDouble = new F<String, Option<Double>>() {
-      public Option<Double> f(final String s) {
-          return parseDouble(s).toOption();
-      }
-  };
+  public static final F<String, Option<Double>> parseDouble = s -> parseDouble(s).toOption();
 
   /**
    * A function that parses a string to a float.
    */
-  public static final F<String, Option<Float>> parseFloat = new F<String, Option<Float>>() {
-      public Option<Float> f(final String s) {
-          return parseFloat(s).toOption();
-      }
-  };
+  public static final F<String, Option<Float>> parseFloat = s -> parseFloat(s).toOption();
 
   /**
    * A function that parses a string to an integer.
    */
-  public static final F<String, Option<Integer>> parseInt = new F<String, Option<Integer>>() {
-      public Option<Integer> f(final String s) {
-          return parseInt(s).toOption();
-      }
-  };
+  public static final F<String, Option<Integer>> parseInt = s -> parseInt(s).toOption();
 
   /**
    * A function that parses a string to a long.
    */
-  public static final F<String, Option<Long>> parseLong = new F<String, Option<Long>>() {
-      public Option<Long> f(final String s) {
-          return parseLong(s).toOption();
-      }
-  };
+  public static final F<String, Option<Long>> parseLong = s -> parseLong(s).toOption();
 
   /**
    * A function that parses a string to a short.
    */
-  public static final F<String, Option<Short>> parseShort = new F<String, Option<Short>>() {
-      public Option<Short> f(final String s) {
-          return parseShort(s).toOption();
-      }
-  };
+  public static final F<String, Option<Short>> parseShort = s -> parseShort(s).toOption();
 }

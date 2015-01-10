@@ -93,19 +93,12 @@ public class Effect {
    * @return An effect after a contra-variant map.
    */
   public final <A, B> Effect1<B> comap(Effect1<A> e1, final F<B, A> f) {
-    return new Effect1<B>() {
-      public void f(final B b) {
-        e1.f(f.f(b));
-      }
-    };
+    return b -> e1.f(f.f(b));
   }
   
   public static <A> Effect1<A> lazy(final F<A, Unit> f) {
-    return new Effect1<A>() {
-      public void f(final A a) {
-        f.f(a);
-      }
-    };
+    return a -> f.f(a);
+
   }
 
 //	public static <A> void f(Effect1<A> )

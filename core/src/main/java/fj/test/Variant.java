@@ -53,27 +53,10 @@ public final class Variant {
     final LongGen p = new LongGen(n, g);
     final Gen<?> gx = variantMemo.get(p);
     if(gx == null) {
-      final Gen<A> t = gen(new F<Integer, F<Rand, A>>() {
-        public F<Rand, A> f(final Integer i) {
-          return new F<Rand, A>() {
-            public A f(final Rand r) {
-              return g.gen(i, r.reseed(n));
-            }
-          };
-        }
-      });
+      final Gen<A> t = gen(i -> r -> g.gen(i, r.reseed(n)));
       variantMemo.put(p, t);
       return t;
-    } else return gen(new F<Integer, F<Rand, A>>() {
-      public F<Rand, A> f(final Integer i) {
-        return new F<Rand, A>() {
-          @SuppressWarnings({"unchecked"})
-          public A f(final Rand r) {
-            return (A)gx.gen(i, r);
-          }
-        };
-      }
-    });
+    } else return gen(i -> r -> (A)gx.gen(i, r));
   }
 
   /**
@@ -83,11 +66,7 @@ public final class Variant {
    * @return A curried version of {@link #variant(long, Gen)}.
    */
   public static <A> F<Gen<A>, Gen<A>> variant(final long n) {
-    return new F<Gen<A>, Gen<A>>() {
-      public Gen<A> f(final Gen<A> g) {
-        return variant(n, g);
-      }
-    };
+    return g -> variant(n, g);
   }
 }
 

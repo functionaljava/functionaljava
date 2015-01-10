@@ -92,12 +92,7 @@ public final class Iteratee {
         };
       final F<P2<A, Input<E>>, A> done = P2.<A, Input<E>>__1();
       final F<F<Input<E>, IterV<E, A>>, A> cont =
-        new F<F<Input<E>, IterV<E, A>>, A>() {
-          @Override
-          public A f(final F<Input<E>, IterV<E, A>> k) {
-            return runCont.f(k.f(Input.<E>eof())).valueE("diverging iteratee"); //$NON-NLS-1$
-          }
-        };
+              k -> runCont.f(k.f(Input.<E>eof())).valueE("diverging iteratee");
       return fold(done, cont);
     }
 
@@ -109,36 +104,18 @@ public final class Iteratee {
           public IterV<E, B> f(final P2<A, Input<E>> xe) {
             final Input<E> e = xe._2();
             final F<P2<B, Input<E>>, IterV<E, B>> done =
-              new F<P2<B, Input<E>>, IterV<E, B>>() {
-                @Override
-                public IterV<E, B> f(final P2<B, Input<E>> y_) {
-                  final B y = y_._1();
-                  return done(y, e);
-                }
-              };
+                    y_ -> {
+                      final B y = y_._1();
+                      return done(y, e);
+                    };
             final F<F<Input<E>, IterV<E, B>>, IterV<E, B>> cont =
-              new F<F<Input<E>, IterV<E, B>>, IterV<E, B>>() {
-                @Override
-                public IterV<E, B> f(final F<Input<E>, IterV<E, B>> k) {
-                  return k.f(e);
-                }
-              };
+                    k -> k.f(e);
             final A x = xe._1();
             return f.f(x).fold(done, cont);
           }
         };
       final F<F<Input<E>, IterV<E, A>>, IterV<E, B>> cont =
-        new F<F<Input<E>, IterV<E, A>>, IterV<E, B>>() {
-          @Override
-          public IterV<E, B> f(final F<Input<E>, IterV<E, A>> k) {
-            return cont(new F<Input<E>, IterV<E, B>>() {
-              @Override
-              public IterV<E, B> f(final Input<E> e) {
-                return k.f(e).bind(f);
-              }
-            });
-          }
-        };
+              k -> cont(e -> k.f(e).bind(f));
       return this.fold(done, cont);
     }
 
@@ -171,12 +148,7 @@ public final class Iteratee {
                   return done(acc, Input.<E>eof());
                 }
               };
-            return new F<Input<E>, IterV<E, Integer>>() {
-              @Override
-              public IterV<E, Integer> f(final Input<E> s) {
-                return s.apply(empty, el, eof);
-              }
-            };
+            return s -> s.apply(empty, el, eof);
           }
         };
       return cont(step.f(0));
@@ -237,12 +209,7 @@ public final class Iteratee {
             new P1<F<E, IterV<E, Option<E>>>>() {
               @Override
               public F<E, IterV<E, Option<E>>> _1() {
-                return new F<E, Iteratee.IterV<E, Option<E>>>() {
-                  @Override
-                  public IterV<E, Option<E>> f(final E e) {
-                    return done(Option.<E>some(e), Input.<E>empty());
-                  }
-                };
+                return e -> done(Option.<E>some(e), Input.<E>empty());
               }
             };
           final P1<IterV<E, Option<E>>> eof =
@@ -278,12 +245,7 @@ public final class Iteratee {
             new P1<F<E, IterV<E, Option<E>>>>() {
               @Override
               public F<E, IterV<E, Option<E>>> _1() {
-                return new F<E, Iteratee.IterV<E, Option<E>>>() {
-                  @Override
-                  public IterV<E, Option<E>> f(final E e) {
-                    return done(Option.<E>some(e), Input.<E>el(e));
-                  }
-                };
+                return e -> done(Option.<E>some(e), Input.<E>el(e));
               }
             };
           final P1<IterV<E, Option<E>>> eof =
@@ -322,12 +284,7 @@ public final class Iteratee {
                 new P1<F<E, IterV<E, List<E>>>>() {
                   @Override
                   public F<E, IterV<E, List<E>>> _1() {
-                    return new F<E, Iteratee.IterV<E, List<E>>>() {
-                      @Override
-                      public IterV<E, List<E>> f(final E e) {
-                        return cont(step.f(acc.cons(e)));
-                      }
-                    };
+                    return e -> cont(step.f(acc.cons(e)));
                   }
                 };
               final P1<IterV<E, List<E>>> eof =
@@ -337,12 +294,7 @@ public final class Iteratee {
                     return done(acc, Input.<E>eof());
                   }
                 };
-              return new F<Input<E>, IterV<E, List<E>>>() {
-                @Override
-                public IterV<E, List<E>> f(final Input<E> s) {
-                  return s.apply(empty, el, eof);
-                }
-              };
+              return s -> s.apply(empty, el, eof);
             }
           };
         return cont(step.f(List.<E> nil()));

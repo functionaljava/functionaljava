@@ -29,11 +29,7 @@ public class F1Functions {
      * @return The composed function such that this function is applied last.
      */
     static public <A, B, C> F<C, B> o(final F<A, B> f, final F<C, A> g) {
-        return new F<C, B>() {
-            public B f(final C c) {
-                return f.f(g.f(c));
-            }
-        };
+        return c -> f.f(g.f(c));
     }
 
     /**
@@ -42,11 +38,7 @@ public class F1Functions {
      * @return A function that composes this function with another.
      */
     static public <A, B,C> F<F<C, A>, F<C, B>> o(final F<A, B> f) {
-        return new F<F<C, A>, F<C, B>>() {
-            public F<C, B> f(final F<C, A> g) {
-                return o(f, g);
-            }
-        };
+        return g -> o(f, g);
     }
 
     /**
@@ -66,11 +58,7 @@ public class F1Functions {
      * @return A function that invokes this function and then a given function on the result.
      */
     static public <A, B, C> F<F<B, C>, F<A, C>> andThen(final F<A, B> f) {
-        return new F<F<B, C>, F<A, C>>() {
-            public F<A, C> f(final F<B, C> g) {
-                return andThen(f, g);
-            }
-        };
+        return g -> andThen(f, g);
     }
 
     /**
@@ -80,12 +68,7 @@ public class F1Functions {
      * @return A function that invokes this function on its argument and then the given function on the result.
      */
     static public <A, B, C> F<A, C> bind(final F<A, B> f, final F<B, F<A, C>> g) {
-        return new F<A, C>() {
-            @SuppressWarnings({"unchecked"})
-            public C f(final A a) {
-                return g.f(f.f(a)).f(a);
-            }
-        };
+        return a ->  g.f(f.f(a)).f(a);
     }
 
     /**
@@ -94,11 +77,7 @@ public class F1Functions {
      * @return A function that binds another function across this function.
      */
     static public <A, B, C> F<F<B, F<A, C>>, F<A, C>> bind(final F<A, B> f) {
-        return new F<F<B, F<A, C>>, F<A, C>>() {
-            public F<A, C> f(final F<B, F<A, C>> g) {
-                return bind(f, g);
-            }
-        };
+        return g -> bind(f, g);
     }
 
     /**
@@ -110,12 +89,7 @@ public class F1Functions {
      *         applied to the result of applying this function to the argument.
      */
     static public <A, B, C> F<A, C> apply(final F<A, B> f, final F<A, F<B, C>> g) {
-        return new F<A, C>() {
-            @SuppressWarnings({"unchecked"})
-            public C f(final A a) {
-                return g.f(a).f(f.f(a));
-            }
-        };
+        return a -> g.f(a).f(f.f(a));
     }
 
     /**
@@ -124,11 +98,7 @@ public class F1Functions {
      * @return A function that applies a given function within the environment of this function.
      */
     static public <A, B, C> F<F<A, F<B, C>>, F<A, C>> apply(final F<A, B> f) {
-        return new F<F<A, F<B, C>>, F<A, C>>() {
-            public F<A, C> f(final F<A, F<B, C>> g) {
-                return apply(f, g);
-            }
-        };
+        return g -> apply(f, g);
     }
 
     /**
@@ -138,17 +108,9 @@ public class F1Functions {
      * @return A new function that invokes this function on its arguments before invoking the given function.
      */
     static public <A, B, C> F<A, F<A, C>> on(final F<A, B> f, final F<B, F<B, C>> g) {
-        return new F<A, F<A, C>>() {
-            public F<A, C> f(final A a1) {
-                return new F<A, C>() {
-                    @SuppressWarnings({"unchecked"})
-                    public C f(final A a2) {
-                        return g.f(f.f(a1)).f(f.f(a2));
-                    }
-                };
-            }
-        };
+        return a1 -> a2 -> g.f(f.f(a1)).f(f.f(a2));
     }
+
 
 
     /**
@@ -157,11 +119,7 @@ public class F1Functions {
      * @return A function that applies this function over the arguments of another function.
      */
     static public <A, B, C> F<F<B, F<B, C>>, F<A, F<A, C>>> on(final F<A, B> f) {
-        return new F<F<B, F<B, C>>, F<A, F<A, C>>>() {
-            public F<A, F<A, C>> f(final F<B, F<B, C>> g) {
-                return on(f, g);
-            }
-        };
+        return g -> on(f, g);
     }
 
     /**
@@ -170,15 +128,7 @@ public class F1Functions {
      * @return This function promoted to return its result in a product-1.
      */
     static public <A, B> F<A, P1<B>> lazy(final F<A, B> f) {
-        return new F<A, P1<B>>() {
-            public P1<B> f(final A a) {
-                return new P1<B>() {
-                    public B _1() {
-                        return f.f(a);
-                    }
-                };
-            }
-        };
+       return a -> P.lazy(u -> f.f(a));
     }
 
     /**
@@ -197,11 +147,7 @@ public class F1Functions {
      * @return This function promoted to map over a product-1.
      */
     static public <A, B> F<P1<A>, P1<B>> mapP1(final F<A, B> f) {
-        return new F<P1<A>, P1<B>>() {
-            public P1<B> f(final P1<A> p) {
-                return p.map(f);
-            }
-        };
+        return p -> p.map(f);
     }
 
     /**
@@ -210,11 +156,7 @@ public class F1Functions {
      * @return This function promoted to return its result in an Option.
      */
     static public <A, B> F<A, Option<B>> optionK(final F<A, B> f) {
-        return new F<A, Option<B>>() {
-            public Option<B> f(final A a) {
-                return some(f.f(a));
-            }
-        };
+        return a -> some(f.f(a));
     }
 
     /**
@@ -223,11 +165,7 @@ public class F1Functions {
      * @return This function promoted to map over an optional value.
      */
     static public <A, B> F<Option<A>, Option<B>> mapOption(final F<A, B> f) {
-        return new F<Option<A>, Option<B>>() {
-            public Option<B> f(final Option<A> o) {
-                return o.map(f);
-            }
-        };
+        return o -> o.map(f);
     }
 
     /**
@@ -236,11 +174,7 @@ public class F1Functions {
      * @return This function promoted to return its result in a List.
      */
     static public <A, B> F<A, List<B>> listK(final F<A, B> f) {
-        return new F<A, List<B>>() {
-            public List<B> f(final A a) {
-                return List.single(f.f(a));
-            }
-        };
+        return a -> List.single(f.f(a));
     }
 
     /**
@@ -249,11 +183,7 @@ public class F1Functions {
      * @return This function promoted to map over a List.
      */
     static public <A, B> F<List<A>, List<B>> mapList(final F<A, B> f) {
-        return new F<List<A>, List<B>>() {
-            public List<B> f(final List<A> x) {
-                return x.map(f);
-            }
-        };
+        return x -> x.map(f);
     }
 
     /**
@@ -262,11 +192,7 @@ public class F1Functions {
      * @return This function promoted to return its result in a Stream.
      */
     static public <A, B> F<A, Stream<B>> streamK(final F<A, B> f) {
-        return new F<A, Stream<B>>() {
-            public Stream<B> f(final A a) {
-                return Stream.single(f.f(a));
-            }
-        };
+        return a -> Stream.single(f.f(a));
     }
 
     /**
@@ -275,11 +201,7 @@ public class F1Functions {
      * @return This function promoted to map over a Stream.
      */
     static public <A, B> F<Stream<A>, Stream<B>> mapStream(final F<A, B> f) {
-        return new F<Stream<A>, Stream<B>>() {
-            public Stream<B> f(final Stream<A> x) {
-                return x.map(f);
-            }
-        };
+        return x -> x.map(f);
     }
 
     /**
@@ -288,11 +210,8 @@ public class F1Functions {
      * @return This function promoted to return its result in a Array.
      */
     static public <A, B> F<A, Array<B>> arrayK(final F<A, B> f) {
-        return new F<A, Array<B>>() {
-            public Array<B> f(final A a) {
-                return Array.single(f.f(a));
-            }
-        };
+        return a -> Array.single(f.f(a));
+
     }
 
     /**
@@ -301,11 +220,7 @@ public class F1Functions {
      * @return This function promoted to map over a Array.
      */
     static public <A, B> F<Array<A>, Array<B>> mapArray(final F<A, B> f) {
-        return new F<Array<A>, Array<B>>() {
-            public Array<B> f(final Array<A> x) {
-                return x.map(f);
-            }
-        };
+        return x -> x.map(f);
     }
 
     /**
@@ -314,11 +229,7 @@ public class F1Functions {
      * @return A function that comaps over a given actor.
      */
     static public <A, B> F<Actor<B>, Actor<A>> comapActor(final F<A, B> f) {
-        return new F<Actor<B>, Actor<A>>() {
-            public Actor<A> f(final Actor<B> a) {
-                return a.comap(f);
-            }
-        };
+        return a -> a.comap(f);
     }
 
     /**
@@ -337,11 +248,7 @@ public class F1Functions {
      * @return This function promoted to map over Promises.
      */
     static public <A, B> F<Promise<A>, Promise<B>> mapPromise(final F<A, B> f) {
-        return new F<Promise<A>, Promise<B>>() {
-            public Promise<B> f(final Promise<A> p) {
-                return p.fmap(f);
-            }
-        };
+        return p -> p.fmap(f);
     }
 
     /**
@@ -392,11 +299,7 @@ public class F1Functions {
      * @return a function that returns the left side of a given Either, or this function applied to the right side.
      */
     static public <A, B> F<Either<B, A>, B> onLeft(final F<A, B> f) {
-        return new F<Either<B, A>, B>() {
-            public B f(final Either<B, A> either) {
-                return either.left().on(f);
-            }
-        };
+        return e -> e.left().on(f);
     }
 
     /**
@@ -405,11 +308,7 @@ public class F1Functions {
      * @return a function that returns the right side of a given Either, or this function applied to the left side.
      */
     static public <A, B> F<Either<A, B>, B> onRight(final F<A, B> f) {
-        return new F<Either<A, B>, B>() {
-            public B f(final Either<A, B> either) {
-                return either.right().on(f);
-            }
-        };
+        return e -> e.right().on(f);
     }
 
     /**
@@ -448,11 +347,7 @@ public class F1Functions {
      * @return This function promoted to map over a NonEmptyList.
      */
     static public <A, B> F<NonEmptyList<A>, NonEmptyList<B>> mapNel(final F<A, B> f) {
-        return new F<NonEmptyList<A>, NonEmptyList<B>>() {
-            public NonEmptyList<B> f(final NonEmptyList<A> list) {
-                return list.map(f);
-            }
-        };
+        return list -> list.map(f);
     }
 
     /**
@@ -463,11 +358,7 @@ public class F1Functions {
      */
     static public <A, B> F<A, Set<B>> setK(final F<A, B> f, final Ord<B> o
     ) {
-        return new F<A, Set<B>>() {
-            public Set<B> f(final A a) {
-                return Set.single(o, f.f(a));
-            }
-        };
+        return a -> Set.single(o, f.f(a));
     }
 
     /**
@@ -477,11 +368,7 @@ public class F1Functions {
      * @return This function promoted to map over a Set.
      */
     static public <A, B> F<Set<A>, Set<B>> mapSet(final F<A, B> f, final Ord<B> o) {
-        return new F<Set<A>, Set<B>>() {
-            public Set<B> f(final Set<A> set) {
-                return set.map(o, f);
-            }
-        };
+        return s -> s.map(o, f);
     }
 
     /**
@@ -490,11 +377,7 @@ public class F1Functions {
      * @return This function promoted to return its value in a Tree.
      */
     static public <A, B> F<A, Tree<B>> treeK(final F<A, B> f) {
-        return new F<A, Tree<B>>() {
-            public Tree<B> f(final A a) {
-                return Tree.leaf(f.f(a));
-            }
-        };
+        return a -> Tree.leaf(f.f(a));
     }
 
     /**
@@ -532,11 +415,7 @@ public class F1Functions {
      * @return This function promoted to map over a TreeZipper.
      */
     static public <A, B> F<TreeZipper<A>, TreeZipper<B>> mapTreeZipper(final F<A, B> f) {
-        return new F<TreeZipper<A>, TreeZipper<B>>() {
-            public TreeZipper<B> f(final TreeZipper<A> zipper) {
-                return zipper.map(f);
-            }
-        };
+        return (z) -> z.map(f);
     }
 
     /**
@@ -546,11 +425,8 @@ public class F1Functions {
      * @return This function promoted to return its result on the failure side of a Validation.
      */
     static public <A, B, C> F<A, Validation<B, C>> failK(final F<A, B> f) {
-        return new F<A, Validation<B, C>>() {
-            public Validation<B, C> f(final A a) {
-                return Validation.fail(f.f(a));
-            }
-        };
+        return a -> Validation.fail(f.f(a));
+
     }
 
     /**
@@ -560,11 +436,7 @@ public class F1Functions {
      * @return This function promoted to return its result on the success side of an Validation.
      */
     static public <A, B, C> F<A, Validation<C, B>> successK(final F<A, B> f) {
-        return new F<A, Validation<C, B>>() {
-            public Validation<C, B> f(final A a) {
-                return Validation.success(f.f(a));
-            }
-        };
+        return a -> Validation.success(f.f(a));
     }
 
     /**
@@ -573,11 +445,7 @@ public class F1Functions {
      * @return This function promoted to map over the failure side of a Validation.
      */
     static public <A, B, X> F<Validation<A, X>, Validation<B, X>> mapFail(final F<A, B> f) {
-        return new F<Validation<A, X>, Validation<B, X>>() {
-            public Validation<B, X> f(final Validation<A, X> validation) {
-                return validation.f().map(f);
-            }
-        };
+        return v -> v.f().map(f);
     }
 
     /**
@@ -586,11 +454,7 @@ public class F1Functions {
      * @return This function promoted to map over the success side of a Validation.
      */
     static public <A, B, X> F<Validation<X, A>, Validation<X, B>> mapSuccess(final F<A, B> f) {
-        return new F<Validation<X, A>, Validation<X, B>>() {
-            public Validation<X, B> f(final Validation<X, A> validation) {
-                return validation.map(f);
-            }
-        };
+        return v -> v.map(f);
     }
 
     /**
@@ -601,11 +465,7 @@ public class F1Functions {
      *         or this function applied to the success side.
      */
     static public <A, B> F<Validation<B, A>, B> onFail(final F<A, B> f) {
-        return new F<Validation<B, A>, B>() {
-            public B f(final Validation<B, A> v) {
-                return v.f().on(f);
-            }
-        };
+        return v -> v.f().on(f);
     }
 
     /**
@@ -616,11 +476,7 @@ public class F1Functions {
      *         or this function applied to the failure side.
      */
     static public <A, B> F<Validation<A, B>, B> onSuccess(final F<A, B> f) {
-        return new F<Validation<A, B>, B>() {
-            public B f(final Validation<A, B> v) {
-                return v.on(f);
-            }
-        };
+        return v -> v.on(f);
     }
 
     /**
@@ -629,11 +485,7 @@ public class F1Functions {
      * @return This function promoted to return its value in a Zipper.
      */
     static public <A, B> F<A, Zipper<B>> zipperK(final F<A, B> f) {
-        return andThen(streamK(f), new F<Stream<B>, Zipper<B>>() {
-            public Zipper<B> f(final Stream<B> stream) {
-                return fromStream(stream).some();
-            }
-        });
+        return andThen(streamK(f), s -> fromStream(s).some());
     }
 
     /**
@@ -642,11 +494,7 @@ public class F1Functions {
      * @return This function promoted to map over a Zipper.
      */
     static public <A, B> F<Zipper<A>, Zipper<B>> mapZipper(final F<A, B> f) {
-        return new F<Zipper<A>, Zipper<B>>() {
-            public Zipper<B> f(final Zipper<A> zipper) {
-                return zipper.map(f);
-            }
-        };
+        return z -> z.map(f);
     }
 
     /**
@@ -655,11 +503,7 @@ public class F1Functions {
      * @return This function promoted to map over an Equal as a contravariant functor.
      */
     static public <A, B> F<Equal<B>, Equal<A>> comapEqual(final F<A, B> f) {
-        return new F<Equal<B>, Equal<A>>() {
-            public Equal<A> f(final Equal<B> equal) {
-                return equal.comap(f);
-            }
-        };
+        return e -> e.comap(f);
     }
 
     /**
@@ -668,11 +512,7 @@ public class F1Functions {
      * @return This function promoted to map over a Hash as a contravariant functor.
      */
     static public <A, B> F<Hash<B>, Hash<A>> comapHash(final F<A, B> f) {
-        return new F<Hash<B>, Hash<A>>() {
-            public Hash<A> f(final Hash<B> hash) {
-                return hash.comap(f);
-            }
-        };
+        return h -> h.comap(f);
     }
 
     /**
@@ -681,11 +521,7 @@ public class F1Functions {
      * @return This function promoted to map over a Show as a contravariant functor.
      */
     static public <A, B> F<Show<B>, Show<A>> comapShow(final F<A, B> f) {
-        return new F<Show<B>, Show<A>>() {
-            public Show<A> f(final Show<B> s) {
-                return s.comap(f);
-            }
-        };
+        return s -> s.comap(f);
     }
 
     /**
@@ -712,11 +548,7 @@ public class F1Functions {
      * @return This function promoted to map over both elements of a pair.
      */
     static public <A, B> F<P2<A, A>, P2<B, B>> mapBoth(final F<A, B> f) {
-        return new F<P2<A, A>, P2<B, B>>() {
-            public P2<B, B> f(final P2<A, A> aap2) {
-                return P2.map(f, aap2);
-            }
-        };
+        return p2 -> P2.map(f, p2);
     }
 
     /**

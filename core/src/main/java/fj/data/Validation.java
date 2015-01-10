@@ -342,11 +342,7 @@ public class Validation<E, T> implements Iterable<T> {
    *         <code>None</code>.
    */
   public <A> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va) {
-    return accumulate(s, va, new F2<T, A, Unit>() {
-      public Unit f(final T t, final A a) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, (t, a) -> unit()).f().toOption();
   }
 
   /**
@@ -391,11 +387,7 @@ public class Validation<E, T> implements Iterable<T> {
    *         <code>None</code>.
    */
   public <A, B> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb) {
-    return accumulate(s, va, vb, new F3<T, A, B, Unit>() {
-      public Unit f(final T t, final A a, final B b) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, vb, (t, a, b) -> unit()).f().toOption();
   }
 
   /**
@@ -446,11 +438,7 @@ public class Validation<E, T> implements Iterable<T> {
    */
   public <A, B, C> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb,
                                         final Validation<E, C> vc) {
-    return accumulate(s, va, vb, vc, new F4<T, A, B, C, Unit>() {
-      public Unit f(final T t, final A a, final B b, final C c) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, vb, vc, (t, a, b, c) -> unit()).f().toOption();
   }
 
   /**
@@ -505,11 +493,7 @@ public class Validation<E, T> implements Iterable<T> {
    */
   public <A, B, C, D> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb,
                                            final Validation<E, C> vc, final Validation<E, D> vd) {
-    return accumulate(s, va, vb, vc, vd, new F5<T, A, B, C, D, Unit>() {
-      public Unit f(final T t, final A a, final B b, final C c, final D d) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, vb, vc, vd, (t, a, b, c, d) -> unit()).f().toOption();
   }
 
   /**
@@ -569,11 +553,7 @@ public class Validation<E, T> implements Iterable<T> {
   public <A, B, C, D, E$> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
                                                final Validation<E, B> vb, final Validation<E, C> vc,
                                                final Validation<E, D> vd, final Validation<E, E$> ve) {
-    return accumulate(s, va, vb, vc, vd, ve, new F6<T, A, B, C, D, E$, Unit>() {
-      public Unit f(final T t, final A a, final B b, final C c, final D d, final E$ e) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, vb, vc, vd, ve, (t, a, b, c, d, e1) -> unit()).f().toOption();
   }
 
   /**
@@ -639,11 +619,7 @@ public class Validation<E, T> implements Iterable<T> {
                                                    final Validation<E, B> vb, final Validation<E, C> vc,
                                                    final Validation<E, D> vd, final Validation<E, E$> ve,
                                                    final Validation<E, F$> vf) {
-    return accumulate(s, va, vb, vc, vd, ve, vf, new F7<T, A, B, C, D, E$, F$, Unit>() {
-      public Unit f(final T t, final A a, final B b, final C c, final D d, final E$ e, final F$ f) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, vb, vc, vd, ve, vf, (t, a, b, c, d, e1, f) -> unit()).f().toOption();
   }
 
   /**
@@ -712,11 +688,7 @@ public class Validation<E, T> implements Iterable<T> {
                                                       final Validation<E, B> vb, final Validation<E, C> vc,
                                                       final Validation<E, D> vd, final Validation<E, E$> ve,
                                                       final Validation<E, F$> vf, final Validation<E, G> vg) {
-    return accumulate(s, va, vb, vc, vd, ve, vf, vg, new F8<T, A, B, C, D, E$, F$, G, Unit>() {
-      public Unit f(final T t, final A a, final B b, final C c, final D d, final E$ e, final F$ f, final G g) {
-        return unit();
-      }
-    }).f().toOption();
+    return accumulate(s, va, vb, vc, vd, ve, vf, vg, (t, a, b, c, d, e1, f, g) -> unit()).f().toOption();
   }
 
   /**
@@ -958,11 +930,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @return A new validation value after the final join.
      */
     public <A> Validation<A, T> sequence(final Validation<A, T> v) {
-      return bind(new F<E, Validation<A, T>>() {
-        public Validation<A, T> f(final E e) {
-          return v;
-        }
-      });
+      return bind(e1 -> v);
     }
 
 
@@ -989,11 +957,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @return The result of function application in validation.
      */
     public <A> Validation<A, T> apply(final Validation<F<E, A>, T> v) {
-      return v.f().bind(new F<F<E, A>, Validation<A, T>>() {
-        public Validation<A, T> f(final F<E, A> f) {
-          return map(f);
-        }
-      });
+      return v.f().bind(f -> map(f));
     }
 
     /**
@@ -1094,11 +1058,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A function that constructs a validation with an either.
    */
   public static <E, T> F<Either<E, T>, Validation<E, T>> validation() {
-    return new F<Either<E, T>, Validation<E, T>>() {
-      public Validation<E, T> f(final Either<E, T> e) {
-        return validation(e);
-      }
-    };
+    return e1 -> validation(e1);
   }
 
   /**
@@ -1107,11 +1067,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A function that constructs an either with a validation.
    */
   public static <E, T> F<Validation<E, T>, Either<E, T>> either() {
-    return new F<Validation<E, T>, Either<E, T>>() {
-      public Either<E, T> f(final Validation<E, T> v) {
-        return v.toEither();
-      }
-    };
+    return v -> v.toEither();
   }
 
   /**

@@ -176,36 +176,20 @@ public enum Digit {
   /**
    * First-class conversion from digit to a long.
    */
-  public static final F<Digit, Long> toLong = new F<Digit, Long>() {
-    public Long f(final Digit d) {
-      return d.toLong();
-    }
-  };
+  public static final F<Digit, Long> toLong = d -> d.toLong();
 
   /**
    * First-class conversion from a long to a digit.
    */
-  public static final F<Long, Digit> fromLong = new F<Long, Digit>() {
-    public Digit f(final Long i) {
-      return fromLong(i);
-    }
-  };
+  public static final F<Long, Digit> fromLong = i -> fromLong(i);
 
   /**
    * First-class conversion from a digit to a character.
    */
-  public static final F<Digit, Character> toChar = new F<Digit, Character>() {
-    public Character f(final Digit d) {
-      return d.toChar();
-    }
-  };
+  public static final F<Digit, Character> toChar = d -> d.toChar();
 
   /**
    * First-class conversion from a character to a digit.
    */
-  public static final F<Character, Option<Digit>> fromChar = new F<Character, Option<Digit>>() {
-    public Option<Digit> f(final Character c) {
-      return fromChar(c);
-    }
-  };
+  public static final F<Character, Option<Digit>> fromChar = c -> fromChar(c);
 }

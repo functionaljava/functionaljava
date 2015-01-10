@@ -47,7 +47,7 @@ public final class Hash<A> {
    * @return A new hash.
    */
   public <B> Hash<B> comap(final F<B, A> g) {
-    return new Hash<B>(compose(f, g));
+    return hash(compose(f, g));
   }
 
   /**
@@ -57,7 +57,7 @@ public final class Hash<A> {
    * @return A hash that uses the given function.
    */
   public static <A> Hash<A> hash(final F<A, Integer> f) {
-    return new Hash<A>(f);
+    return new Hash<>(f);
   }
 
   /**
@@ -66,11 +66,7 @@ public final class Hash<A> {
    * @return A hash that uses {@link Object#hashCode()}.
    */
   public static <A> Hash<A> anyHash() {
-    return new Hash<A>(new F<A, Integer>() {
-      public Integer f(final A a) {
-        return a.hashCode();
-      }
-    });
+    return hash(a -> a.hashCode());
   }
 
   /**
@@ -121,31 +117,27 @@ public final class Hash<A> {
   /**
    * A hash instance for the {@link StringBuffer} type.
    */
-  public static final Hash<StringBuffer> stringBufferHash = new Hash<StringBuffer>(new F<StringBuffer, Integer>() {
-    public Integer f(final StringBuffer sb) {
+  public static final Hash<StringBuffer> stringBufferHash = hash(sb -> {
       final int p = 419;
       int r = 239;
 
       for (int i = 0; i < sb.length(); i++)
-        r = p * r + sb.charAt(i);
+          r = p * r + sb.charAt(i);
 
       return r;
-    }
   });
 
   /**
    * A hash instance for the {@link StringBuilder} type.
    */
-  public static final Hash<StringBuilder> stringBuilderHash = new Hash<StringBuilder>(new F<StringBuilder, Integer>() {
-    public Integer f(final StringBuilder sb) {
+  public static final Hash<StringBuilder> stringBuilderHash = hash(sb -> {
       final int p = 419;
       int r = 239;
 
       for (int i = 0; i < sb.length(); i++)
-        r = p * r + sb.charAt(i);
+          r = p * r + sb.charAt(i);
 
       return r;
-    }
   });
 
   /**
@@ -156,11 +148,7 @@ public final class Hash<A> {
    * @return A hash instance for the {@link Either} type.
    */
   public static <A, B> Hash<Either<A, B>> eitherHash(final Hash<A> ha, final Hash<B> hb) {
-    return new Hash<Either<A, B>>(new F<Either<A, B>, Integer>() {
-      public Integer f(final Either<A, B> e) {
-        return e.isLeft() ? ha.hash(e.left().value()) : hb.hash(e.right().value());
-      }
-    });
+    return hash(e -> e.isLeft() ? ha.hash(e.left().value()) : hb.hash(e.right().value()));
   }
 
   /**
@@ -181,19 +169,17 @@ public final class Hash<A> {
    * @return A hash instance for the {@link List} type.
    */
   public static <A> Hash<List<A>> listHash(final Hash<A> ha) {
-    return new Hash<List<A>>(new F<List<A>, Integer>() {
-      public Integer f(final List<A> as) {
+    return hash(as -> {
         final int p = 419;
         int r = 239;
         List<A> aas = as;
 
         while (!aas.isEmpty()) {
-          r = p * r + ha.hash(aas.head());
-          aas = aas.tail();
+            r = p * r + ha.hash(aas.head());
+            aas = aas.tail();
         }
 
         return r;
-      }
     });
   }
 
@@ -214,11 +200,7 @@ public final class Hash<A> {
    * @return A hash instance for the {@link Option} type.
    */
   public static <A> Hash<Option<A>> optionHash(final Hash<A> ha) {
-    return new Hash<Option<A>>(new F<Option<A>, Integer>() {
-      public Integer f(final Option<A> o) {
-        return o.isNone() ? 0 : ha.hash(o.some());
-      }
-    });
+    return hash(o -> o.isNone() ? 0 : ha.hash(o.some()));
   }
 
   /**
@@ -228,19 +210,17 @@ public final class Hash<A> {
    * @return A hash instance for the {@link Stream} type.
    */
   public static <A> Hash<Stream<A>> streamHash(final Hash<A> ha) {
-    return new Hash<Stream<A>>(new F<Stream<A>, Integer>() {
-      public Integer f(final Stream<A> as) {
+    return hash(as -> {
         final int p = 419;
         int r = 239;
         Stream<A> aas = as;
 
         while (!aas.isEmpty()) {
-          r = p * r + ha.hash(aas.head());
-          aas = aas.tail()._1();
+            r = p * r + ha.hash(aas.head());
+            aas = aas.tail()._1();
         }
 
         return r;
-      }
     });
   }
 
@@ -251,17 +231,15 @@ public final class Hash<A> {
    * @return A hash instance for the {@link Array} type.
    */
   public static <A> Hash<Array<A>> arrayHash(final Hash<A> ha) {
-    return new Hash<Array<A>>(new F<Array<A>, Integer>() {
-      public Integer f(final Array<A> as) {
+    return hash(as -> {
         final int p = 419;
         int r = 239;
 
         for (int i = 0; i < as.length(); i++) {
-          r = p * r + ha.hash(as.get(i));
+            r = p * r + ha.hash(as.get(i));
         }
 
         return r;
-      }
     });
   }
 
@@ -293,8 +271,7 @@ public final class Hash<A> {
    * @return A hash instance for a product-2.
    */
   public static <A, B> Hash<P2<A, B>> p2Hash(final Hash<A> ha, final Hash<B> hb) {
-    return new Hash<P2<A, B>>(new F<P2<A, B>, Integer>() {
-      public Integer f(final P2<A, B> p2) {
+    return hash(p2 -> {
         final int p = 419;
         int r = 239;
 
@@ -302,7 +279,6 @@ public final class Hash<A> {
         r = p * r + hb.hash(p2._2());
 
         return r;
-      }
     });
   }
 
@@ -315,8 +291,7 @@ public final class Hash<A> {
    * @return A hash instance for a product-3.
    */
   public static <A, B, C> Hash<P3<A, B, C>> p3Hash(final Hash<A> ha, final Hash<B> hb, final Hash<C> hc) {
-    return new Hash<P3<A, B, C>>(new F<P3<A, B, C>, Integer>() {
-      public Integer f(final P3<A, B, C> p3) {
+    return hash(p3 -> {
         final int p = 419;
         int r = 239;
 
@@ -325,7 +300,6 @@ public final class Hash<A> {
         r = p * r + hc.hash(p3._3());
 
         return r;
-      }
     });
   }
 
@@ -340,18 +314,16 @@ public final class Hash<A> {
    */
   public static <A, B, C, D> Hash<P4<A, B, C, D>> p4Hash(final Hash<A> ha, final Hash<B> hb, final Hash<C> hc,
                                                          final Hash<D> hd) {
-    return new Hash<P4<A, B, C, D>>(new F<P4<A, B, C, D>, Integer>() {
-      public Integer f(final P4<A, B, C, D> p4) {
-        final int p = 419;
-        int r = 239;
+    return hash(p4 -> {
+      final int p = 419;
+      int r = 239;
 
-        r = p * r + ha.hash(p4._1());
-        r = p * r + hb.hash(p4._2());
-        r = p * r + hc.hash(p4._3());
-        r = p * r + hd.hash(p4._4());
+      r = p * r + ha.hash(p4._1());
+      r = p * r + hb.hash(p4._2());
+      r = p * r + hc.hash(p4._3());
+      r = p * r + hd.hash(p4._4());
 
-        return r;
-      }
+      return r;
     });
   }
 
@@ -367,19 +339,17 @@ public final class Hash<A> {
    */
   public static <A, B, C, D, E> Hash<P5<A, B, C, D, E>> p5Hash(final Hash<A> ha, final Hash<B> hb, final Hash<C> hc,
                                                                final Hash<D> hd, final Hash<E> he) {
-    return new Hash<P5<A, B, C, D, E>>(new F<P5<A, B, C, D, E>, Integer>() {
-      public Integer f(final P5<A, B, C, D, E> p5) {
-        final int p = 419;
-        int r = 239;
+    return hash(p5 -> {
+      final int p = 419;
+      int r = 239;
 
-        r = p * r + ha.hash(p5._1());
-        r = p * r + hb.hash(p5._2());
-        r = p * r + hc.hash(p5._3());
-        r = p * r + hd.hash(p5._4());
-        r = p * r + he.hash(p5._5());
+      r = p * r + ha.hash(p5._1());
+      r = p * r + hb.hash(p5._2());
+      r = p * r + hc.hash(p5._3());
+      r = p * r + hd.hash(p5._4());
+      r = p * r + he.hash(p5._5());
 
-        return r;
-      }
+      return r;
     });
   }
 
@@ -397,20 +367,18 @@ public final class Hash<A> {
   public static <A, B, C, D, E, F$> Hash<P6<A, B, C, D, E, F$>> p6Hash(final Hash<A> ha, final Hash<B> hb,
                                                                        final Hash<C> hc, final Hash<D> hd,
                                                                        final Hash<E> he, final Hash<F$> hf) {
-    return new Hash<P6<A, B, C, D, E, F$>>(new F<P6<A, B, C, D, E, F$>, Integer>() {
-      public Integer f(final P6<A, B, C, D, E, F$> p6) {
-        final int p = 419;
-        int r = 239;
+    return hash(p6 -> {
+      final int p = 419;
+      int r = 239;
 
-        r = p * r + ha.hash(p6._1());
-        r = p * r + hb.hash(p6._2());
-        r = p * r + hc.hash(p6._3());
-        r = p * r + hd.hash(p6._4());
-        r = p * r + he.hash(p6._5());
-        r = p * r + hf.hash(p6._6());
+      r = p * r + ha.hash(p6._1());
+      r = p * r + hb.hash(p6._2());
+      r = p * r + hc.hash(p6._3());
+      r = p * r + hd.hash(p6._4());
+      r = p * r + he.hash(p6._5());
+      r = p * r + hf.hash(p6._6());
 
-        return r;
-      }
+      return r;
     });
   }
 
@@ -430,21 +398,19 @@ public final class Hash<A> {
                                                                              final Hash<C> hc, final Hash<D> hd,
                                                                              final Hash<E> he, final Hash<F$> hf,
                                                                              final Hash<G> hg) {
-    return new Hash<P7<A, B, C, D, E, F$, G>>(new F<P7<A, B, C, D, E, F$, G>, Integer>() {
-      public Integer f(final P7<A, B, C, D, E, F$, G> p7) {
-        final int p = 419;
-        int r = 239;
+    return hash(p7 -> {
+      final int p = 419;
+      int r = 239;
 
-        r = p * r + ha.hash(p7._1());
-        r = p * r + hb.hash(p7._2());
-        r = p * r + hc.hash(p7._3());
-        r = p * r + hd.hash(p7._4());
-        r = p * r + he.hash(p7._5());
-        r = p * r + hf.hash(p7._6());
-        r = p * r + hg.hash(p7._7());
+      r = p * r + ha.hash(p7._1());
+      r = p * r + hb.hash(p7._2());
+      r = p * r + hc.hash(p7._3());
+      r = p * r + hd.hash(p7._4());
+      r = p * r + he.hash(p7._5());
+      r = p * r + hf.hash(p7._6());
+      r = p * r + hg.hash(p7._7());
 
-        return r;
-      }
+      return r;
     });
   }
 
@@ -465,22 +431,20 @@ public final class Hash<A> {
                                                                                    final Hash<C> hc, final Hash<D> hd,
                                                                                    final Hash<E> he, final Hash<F$> hf,
                                                                                    final Hash<G> hg, final Hash<H> hh) {
-    return new Hash<P8<A, B, C, D, E, F$, G, H>>(new F<P8<A, B, C, D, E, F$, G, H>, Integer>() {
-      public Integer f(final P8<A, B, C, D, E, F$, G, H> p8) {
-        final int p = 419;
-        int r = 239;
+    return hash(p8 -> {
+      final int p = 419;
+      int r = 239;
 
-        r = p * r + ha.hash(p8._1());
-        r = p * r + hb.hash(p8._2());
-        r = p * r + hc.hash(p8._3());
-        r = p * r + hd.hash(p8._4());
-        r = p * r + he.hash(p8._5());
-        r = p * r + hf.hash(p8._6());
-        r = p * r + hg.hash(p8._7());
-        r = p * r + hh.hash(p8._8());
+      r = p * r + ha.hash(p8._1());
+      r = p * r + hb.hash(p8._2());
+      r = p * r + hc.hash(p8._3());
+      r = p * r + hd.hash(p8._4());
+      r = p * r + he.hash(p8._5());
+      r = p * r + hf.hash(p8._6());
+      r = p * r + hg.hash(p8._7());
+      r = p * r + hh.hash(p8._8());
 
-        return r;
-      }
+      return r;
     });
   }
 
