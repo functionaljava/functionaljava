@@ -52,7 +52,9 @@ public final class Bottom {
    * @return A function that throws an error using the given message, ignoring its argument.
    */
   public static <A, B> F<A, B> errorF(final String s) {
-    return a -> {throw new Error(s);};
+    return a -> {
+        throw new Error(s);
+    };
   }
 
   /**
