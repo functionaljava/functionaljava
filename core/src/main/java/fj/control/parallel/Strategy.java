@@ -322,8 +322,7 @@ public final class Strategy<A> {
    * @return A product-1 that waits for the given future to obtain a value.
    */
   public static <A> P1<A> obtain(final Future<A> t) {
-    return new P1<A>() {
-      public A _1() {
+    return P.lazy(u -> {
         try {
           return t.get();
         } catch (InterruptedException e) {
@@ -332,8 +331,7 @@ public final class Strategy<A> {
         } catch (ExecutionException e) {
           throw new Error(e);
         }
-      }
-    };
+      });
   }
 
   /**
@@ -455,8 +453,7 @@ public final class Strategy<A> {
    * @return A strategy that captures any runtime errors with a side-effect.
    */
   public static <A> Strategy<A> errorStrategy(final Strategy<A> s, final Effect1<Error> e) {
-    return s.comap(a -> new P1<A>() {
-      public A _1() {
+    return s.comap(a -> P.lazy(u -> {
         try {
           return a._1();
         } catch (Throwable t) {
@@ -464,8 +461,8 @@ public final class Strategy<A> {
           e.f(error);
           throw error;
         }
-      }
-    });
+      })
+    );
   }
 
   /**

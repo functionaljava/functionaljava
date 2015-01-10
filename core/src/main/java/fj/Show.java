@@ -150,7 +150,7 @@ public final class Show<A> {
    * @return A show instance.
    */
   public static <A> Show<A> show(final F<A, Stream<Character>> f) {
-    return new Show<A>(f);
+    return new Show<>(f);
   }
 
   /**
@@ -160,7 +160,7 @@ public final class Show<A> {
    * @return A show instance.
    */
   public static <A> Show<A> showS(final F<A, String> f) {
-    return new Show<A>(a -> fromString(f.f(a)));
+    return show(a -> fromString(f.f(a)));
   }
 
   /**
@@ -169,7 +169,7 @@ public final class Show<A> {
    * @return A show instance that uses {@link Object#toString()} to perform the display rendering.
    */
   public static <A> Show<A> anyShow() {
-    return new Show<A>(a -> Stream.fromString((a == null) ? "null" : a.toString()));
+    return show(a -> Stream.fromString((a == null) ? "null" : a.toString()));
   }
 
   /**
@@ -244,7 +244,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Option} type.
    */
   public static <A> Show<Option<A>> optionShow(final Show<A> sa) {
-    return new Show<Option<A>>(o -> o.isNone() ?
+    return show(o -> o.isNone() ?
            fromString("None") :
            fromString("Some(").append(sa.f.f(o.some())).append(single(')')));
   }
@@ -257,7 +257,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Either} type.
    */
   public static <A, B> Show<Either<A, B>> eitherShow(final Show<A> sa, final Show<B> sb) {
-    return new Show<Either<A, B>>(e -> e.isLeft() ?
+    return show(e -> e.isLeft() ?
            fromString("Left(").append(sa.f.f(e.left().value())).append(single(')')) :
            fromString("Right(").append(sb.f.f(e.right().value())).append(single(')')));
   }
@@ -270,7 +270,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Validation} type.
    */
   public static <A, B> Show<Validation<A, B>> validationShow(final Show<A> sa, final Show<B> sb) {
-    return new Show<Validation<A, B>>(v -> v.isFail() ?
+    return show(v -> v.isFail() ?
            fromString("Fail(").append(sa.f.f(v.fail())).append(single(')')) :
            fromString("Success(").append(sb.f.f(v.success())).append(single(')')));
   }
@@ -282,7 +282,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Stream} type.
    */
   public static <A> Show<List<A>> listShow(final Show<A> sa) {
-    return new Show<List<A>>(as -> streamShow(sa).show(as.toStream()));
+    return show(as -> streamShow(sa).show(as.toStream()));
   }
 
   /**
@@ -302,9 +302,9 @@ public final class Show<A> {
    * @return A show instance for the {@link Tree} type.
    */
   public static <A> Show<Tree<A>> treeShow(final Show<A> sa) {
-    return new Show<Tree<A>>(a -> {
+    return show(a -> {
       final Stream<Character> b = sa.f.f(a.root())
-          .append(p1Show(streamShow(treeShow(sa))).f.f(a.subForest()))
+          .append(p1Show(streamShow(Show.<A>treeShow(sa))).f.f(a.subForest()))
           .snoc(')');
       return cons('(', p(b));
     });
@@ -317,7 +317,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Stream} type.
    */
   public static <A> Show<Stream<A>> streamShow(final Show<A> sa) {
-    return new Show<Stream<A>>(as -> join(as.map(sa.show_()).intersperse(fromString(",")).cons(fromString("<")).snoc(p(fromString(">")))));
+    return show(as -> join(as.map(sa.show_()).intersperse(fromString(",")).cons(fromString("<")).snoc(p(fromString(">")))));
   }
 
   /**
@@ -327,7 +327,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Array} type.
    */
   public static <A> Show<Array<A>> arrayShow(final Show<A> sa) {
-    return new Show<Array<A>>(as -> {
+    return show(as -> {
       Stream<Character> b = nil();
 
       for (int i = 0; i < as.length(); i++) {
@@ -349,7 +349,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Class} type.
    */
   public static <A> Show<Class<A>> classShow() {
-    return new Show<Class<A>>(c -> anyShow().show(c.clas()));
+    return show(c -> anyShow().show(c.clas()));
   }
 
   /**
@@ -359,7 +359,7 @@ public final class Show<A> {
    * @return A show instance for the {@link P1 tuple-1} type.
    */
   public static <A> Show<P1<A>> p1Show(final Show<A> sa) {
-    return new Show<P1<A>>(p -> cons('(', p(sa.show(p._1()))).snoc(')'));
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(')'));
   }
 
   /**
@@ -370,7 +370,7 @@ public final class Show<A> {
    * @return A show instance for the {@link P2 tuple-2} type.
    */
   public static <A, B> Show<P2<A, B>> p2Show(final Show<A> sa, final Show<B> sb) {
-    return new Show<P2<A, B>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(')'));
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(')'));
   }
 
   /**
@@ -382,7 +382,7 @@ public final class Show<A> {
    * @return A show instance for the {@link P3 tuple-3} type.
    */
   public static <A, B, C> Show<P3<A, B, C>> p3Show(final Show<A> sa, final Show<B> sb, final Show<C> sc) {
-    return new Show<P3<A, B, C>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
         .append(sc.show(p._3())).snoc(')'));
   }
 
@@ -397,7 +397,7 @@ public final class Show<A> {
    */
   public static <A, B, C, D> Show<P4<A, B, C, D>> p4Show(final Show<A> sa, final Show<B> sb,
                                                          final Show<C> sc, final Show<D> sd) {
-    return new Show<P4<A, B, C, D>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
         .append(sc.show(p._3())).snoc(',').append(sd.show(p._4())).snoc(')'));
   }
 
@@ -413,7 +413,7 @@ public final class Show<A> {
    */
   public static <A, B, C, D, E> Show<P5<A, B, C, D, E>> p5Show(final Show<A> sa, final Show<B> sb,
                                                                final Show<C> sc, final Show<D> sd, final Show<E> se) {
-    return new Show<P5<A, B, C, D, E>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
         .append(sc.show(p._3())).snoc(',').append(sd.show(p._4())).snoc(',').append(se.show(p._5())).snoc(')'));
   }
 
@@ -431,7 +431,7 @@ public final class Show<A> {
   public static <A, B, C, D, E, F$> Show<P6<A, B, C, D, E, F$>> p6Show(final Show<A> sa, final Show<B> sb,
                                                                        final Show<C> sc, final Show<D> sd,
                                                                        final Show<E> se, final Show<F$> sf) {
-    return new Show<P6<A, B, C, D, E, F$>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
         .append(sc.show(p._3())).snoc(',').append(sd.show(p._4())).snoc(',')
         .append(se.show(p._5())).snoc(',').append(sf.show(p._6())).snoc(')'));
   }
@@ -452,7 +452,7 @@ public final class Show<A> {
                                                                              final Show<C> sc, final Show<D> sd,
                                                                              final Show<E> se, final Show<F$> sf,
                                                                              final Show<G> sg) {
-    return new Show<P7<A, B, C, D, E, F$, G>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
         .append(sc.show(p._3())).snoc(',').append(sd.show(p._4())).snoc(',')
         .append(se.show(p._5())).snoc(',').append(sf.show(p._6())).snoc(',').append(sg.show(p._7())).snoc(')'));
   }
@@ -474,7 +474,7 @@ public final class Show<A> {
                                                                                    final Show<C> sc, final Show<D> sd,
                                                                                    final Show<E> se, final Show<F$> sf,
                                                                                    final Show<G> sg, final Show<H> sh) {
-    return new Show<P8<A, B, C, D, E, F$, G, H>>(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
+    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(',')
         .append(sc.show(p._3())).snoc(',').append(sd.show(p._4())).snoc(',')
         .append(se.show(p._5())).snoc(',').append(sf.show(p._6())).snoc(',')
         .append(sg.show(p._7())).snoc(',').append(sh.show(p._8())).snoc(')'));
@@ -562,7 +562,7 @@ public final class Show<A> {
    * @return A show instance for streams that splits into lines.
    */
   public static <A> Show<Stream<A>> unlineShow(final Show<A> sa) {
-    return new Show<Stream<A>>(as -> join(as.map(sa.show_()).intersperse(fromString("\n"))));
+    return show(as -> join(as.map(sa.show_()).intersperse(fromString("\n"))));
   }
 
   /**

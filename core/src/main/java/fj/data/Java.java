@@ -1,11 +1,9 @@
 package fj.data;
 
-import fj.F;
+import fj.*;
+
 import static fj.P.p;
 
-import fj.Function;
-import fj.P1;
-import fj.P2;
 import fj.function.Effect1;
 
 import static fj.data.List.list;
@@ -413,29 +411,25 @@ public final class Java {
    * @return A function that converts streams to iterable.
    */
   public static <A> F<Stream<A>, Iterable<A>> Stream_Iterable() {
-    return as -> new Iterable<A>() {
-      public Iterator<A> iterator() {
-        return new Iterator<A>() {
-          private Stream<A> x = as;
+    return as -> () -> new Iterator<A>() {
+      private Stream<A> x = as;
 
-          public boolean hasNext() {
-            return x.isNotEmpty();
-          }
+      public boolean hasNext() {
+        return x.isNotEmpty();
+      }
 
-          public A next() {
-            if (x.isEmpty())
-              throw new NoSuchElementException("Empty iterator");
-            else {
-              final A a = x.head();
-              x = x.tail()._1();
-              return a;
-            }
-          }
+      public A next() {
+        if (x.isEmpty())
+          throw new NoSuchElementException("Empty iterator");
+        else {
+          final A a = x.head();
+          x = x.tail()._1();
+          return a;
+        }
+      }
 
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
+      public void remove() {
+        throw new UnsupportedOperationException();
       }
     };
   }
@@ -1442,12 +1436,7 @@ public final class Java {
    * @return A function that converts array lists to lists.
    */
   public static <A> F<ArrayList<A>, List<A>> ArrayList_List() {
-    return new F<ArrayList<A>, List<A>>() {
-      @SuppressWarnings({"unchecked"})
-      public List<A> f(final ArrayList<A> as) {
-		  return Collection_List(as);
-      }
-    };
+    return as -> Collection_List(as);
   }
 
   // todo
@@ -1492,7 +1481,7 @@ public final class Java {
 	}
 
 	public static <A> F<Collection<A>, List<A>> Collection_List() {
-		return c -> list(c.toArray(array(c.size())));
+		return c -> List.<A>list(c.toArray(array(c.size())));
 	}
 
 	@SafeVarargs
@@ -1732,11 +1721,7 @@ public final class Java {
   // BEGIN Callable ->
 
   public static <A> F<P1<A>, Callable<A>> P1_Callable() {
-    return a -> new Callable<A>() {
-      public A call() {
-        return a._1();
-      }
-    };
+    return a -> () -> a._1();
   }
 
 // END Callable ->
@@ -1744,9 +1729,7 @@ public final class Java {
 // BEGIN Future ->
 
   public static <A> F<Future<A>, P1<Either<Exception, A>>> Future_P1() {
-    return a -> new P1<Either<Exception, A>>() {
-      @SuppressWarnings({"OverlyBroadCatchBlock"})
-      public Either<Exception, A> _1() {
+    return a -> P.lazy(u -> {
         Either<Exception, A> r;
         try {
           r = Either.right(a.get());
@@ -1755,8 +1738,7 @@ public final class Java {
           r = Either.left(e);
         }
         return r;
-      }
-    };
+      });
   }
 
   // END Future ->

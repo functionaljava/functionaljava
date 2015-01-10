@@ -1,12 +1,8 @@
 package fj.control;
 
-import fj.Bottom;
-import fj.F;
-import fj.F1Functions;
-import fj.F2;
-import fj.P1;
+import fj.*;
 import fj.data.Either;
-import fj.F2Functions;
+
 import static fj.Function.curry;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -50,24 +46,19 @@ public abstract class Trampoline<A> {
     // The monadic bind constructs a new Codense whose subcomputation is still `sub`, and Kleisli-composes the
     // continuations.
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
-      return codense(sub, o -> suspend(new P1<Trampoline<B>>() {
-        public Trampoline<B> _1() {
-          return cont.f(o).bind(f);
-        }
-      }));
+      return codense(sub, o -> suspend(P.lazy(u -> cont.f(o).bind(f))));
     }
 
     // The resumption of a Codense is the resumption of its subcomputation. If that computation is done, its result
     // gets shifted into the continuation.
     public Either<P1<Trampoline<A>>, A> resume() {
-      return left(sub.resume().either(p -> p.map(ot -> ot.fold(o1 -> o1.foldNormal(o2 -> cont.f(o2), t -> t._1().bind(cont)
-      ), c -> codense(c.sub, o -> c.cont.f(o).bind(cont))
-      )), o3 -> new P1<Trampoline<A>>() {
-        public Trampoline<A> _1() {
-          return cont.f(o3);
-        }
-      }
-      ));
+      return left(
+             sub.resume().either(
+                     p -> p.map(ot -> ot.fold(o1 -> o1.foldNormal(o2 -> cont.f(o2), t -> t._1().bind(cont)),
+                     c -> codense(c.sub, o -> c.cont.f(o).bind(cont)))),
+                     o3 -> P.lazy(u -> cont.f(o3))
+             )
+      );
     }
   }
 
@@ -265,11 +256,7 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(new P1<Trampoline<C>>() {
-          public Trampoline<C> _1() {
-            return ta.zipWith(tb, f);
-          }
-        }))));
+        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.<Trampoline<C>>lazy(u -> ta.zipWith(tb, f))))));
       }
       for (final B y : eb.right()) {
         return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));
@@ -277,11 +264,7 @@ public abstract class Trampoline<A> {
     }
     for (final A x : ea.right()) {
       for (final B y : eb.right()) {
-        return suspend(new P1<Trampoline<C>>() {
-          public Trampoline<C> _1() {
-            return pure(f.f(x, y));
-          }
-        });
+        return suspend(P.lazy(u -> pure(f.f(x, y))));
       }
       for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(y.map(liftM2(F2Functions.curry(f)).f(pure(x))));

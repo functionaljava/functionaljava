@@ -85,7 +85,7 @@ public final class Equal<A> {
    *         equality.
    */
   public static <A> Equal<A> anyEqual() {
-    return new Equal<A>(a1 -> a2 -> a1.equals(a2));
+    return equal(a1 -> a2 -> a1.equals(a2));
   }
 
   /**
@@ -147,7 +147,7 @@ public final class Equal<A> {
    * An equal instance for the {@link StringBuffer} type.
    */
   public static final Equal<StringBuffer> stringBufferEqual =
-      new Equal<StringBuffer>(sb1 -> sb2 -> {
+      Equal.equal(sb1 -> sb2 -> {
         if (sb1.length() == sb2.length()) {
           for (int i = 0; i < sb1.length(); i++)
             if (sb1.charAt(i) != sb2.charAt(i))
@@ -161,7 +161,7 @@ public final class Equal<A> {
    * An equal instance for the {@link StringBuilder} type.
    */
   public static final Equal<StringBuilder> stringBuilderEqual =
-      new Equal<StringBuilder>(sb1 -> sb2 -> {
+      Equal.equal(sb1 -> sb2 -> {
         if (sb1.length() == sb2.length()) {
           for (int i = 0; i < sb1.length(); i++)
             if (sb1.charAt(i) != sb2.charAt(i))
@@ -179,7 +179,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Either} type.
    */
   public static <A, B> Equal<Either<A, B>> eitherEqual(final Equal<A> ea, final Equal<B> eb) {
-    return new Equal<Either<A, B>>(e1 -> e2 -> e1.isLeft() && e2.isLeft() && ea.f.f(e1.left().value()).f(e2.left().value()) ||
+    return Equal.equal(e1 -> e2 -> e1.isLeft() && e2.isLeft() && ea.f.f(e1.left().value()).f(e2.left().value()) ||
            e1.isRight() && e2.isRight() && eb.f.f(e1.right().value()).f(e2.right().value()));
   }
 
@@ -201,7 +201,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link List} type.
    */
   public static <A> Equal<List<A>> listEqual(final Equal<A> ea) {
-    return new Equal<List<A>>(a1 -> a2 -> {
+    return Equal.equal(a1 -> a2 -> {
       List<A> x1 = a1;
       List<A> x2 = a2;
 
@@ -234,7 +234,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Option} type.
    */
   public static <A> Equal<Option<A>> optionEqual(final Equal<A> ea) {
-    return new Equal<Option<A>>(o1 -> o2 -> o1.isNone() && o2.isNone() ||
+    return Equal.equal(o1 -> o2 -> o1.isNone() && o2.isNone() ||
            o1.isSome() && o2.isSome() && ea.f.f(o1.some()).f(o2.some()));
   }
 
@@ -245,7 +245,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Stream} type.
    */
   public static <A> Equal<Stream<A>> streamEqual(final Equal<A> ea) {
-    return new Equal<Stream<A>>(a1 -> a2 -> {
+    return Equal.equal(a1 -> a2 -> {
       Stream<A> x1 = a1;
       Stream<A> x2 = a2;
 
@@ -268,7 +268,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Array} type.
    */
   public static <A> Equal<Array<A>> arrayEqual(final Equal<A> ea) {
-    return new Equal<Array<A>>(a1 -> a2 -> {
+    return Equal.equal(a1 -> a2 -> {
       if (a1.length() == a2.length()) {
         for (int i = 0; i < a1.length(); i++) {
           if (!ea.eq(a1.get(i), a2.get(i)))
@@ -287,7 +287,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Tree} type.
    */
   public static <A> Equal<Tree<A>> treeEqual(final Equal<A> ea) {
-    return new Equal<Tree<A>>(curry((t1, t2) -> ea.eq(t1.root(), t2.root()) && p1Equal(streamEqual(treeEqual(ea))).eq(t2.subForest(), t1.subForest())));
+    return Equal.<Tree<A>>equal(curry((t1, t2) -> ea.eq(t1.root(), t2.root()) && p1Equal(streamEqual(treeEqual(ea))).eq(t2.subForest(), t1.subForest())));
   }
 
   /**
@@ -297,7 +297,7 @@ public final class Equal<A> {
    * @return An equal instance for a product-1.
    */
   public static <A> Equal<P1<A>> p1Equal(final Equal<A> ea) {
-    return new Equal<P1<A>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()));
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()));
   }
 
   /**
@@ -308,7 +308,7 @@ public final class Equal<A> {
    * @return An equal instance for a product-2.
    */
   public static <A, B> Equal<P2<A, B>> p2Equal(final Equal<A> ea, final Equal<B> eb) {
-    return new Equal<P2<A, B>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()));
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()));
   }
 
   /**
@@ -320,7 +320,7 @@ public final class Equal<A> {
    * @return An equal instance for a product-3.
    */
   public static <A, B, C> Equal<P3<A, B, C>> p3Equal(final Equal<A> ea, final Equal<B> eb, final Equal<C> ec) {
-    return new Equal<P3<A, B, C>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()));
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()));
   }
 
   /**
@@ -334,7 +334,7 @@ public final class Equal<A> {
    */
   public static <A, B, C, D> Equal<P4<A, B, C, D>> p4Equal(final Equal<A> ea, final Equal<B> eb, final Equal<C> ec,
                                                            final Equal<D> ed) {
-    return new Equal<P4<A, B, C, D>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
            ed.eq(p1._4(), p2._4()));
   }
 
@@ -351,7 +351,7 @@ public final class Equal<A> {
   public static <A, B, C, D, E> Equal<P5<A, B, C, D, E>> p5Equal(final Equal<A> ea, final Equal<B> eb,
                                                                  final Equal<C> ec, final Equal<D> ed,
                                                                  final Equal<E> ee) {
-    return new Equal<P5<A, B, C, D, E>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
            ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()));
   }
 
@@ -369,7 +369,7 @@ public final class Equal<A> {
   public static <A, B, C, D, E, F$> Equal<P6<A, B, C, D, E, F$>> p6Equal(final Equal<A> ea, final Equal<B> eb,
                                                                          final Equal<C> ec, final Equal<D> ed,
                                                                          final Equal<E> ee, final Equal<F$> ef) {
-    return new Equal<P6<A, B, C, D, E, F$>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
            ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()) && ef.eq(p1._6(), p2._6()));
   }
 
@@ -389,7 +389,7 @@ public final class Equal<A> {
                                                                                final Equal<C> ec, final Equal<D> ed,
                                                                                final Equal<E> ee, final Equal<F$> ef,
                                                                                final Equal<G> eg) {
-    return new Equal<P7<A, B, C, D, E, F$, G>>(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
+    return equal(p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
            ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()) && ef.eq(p1._6(), p2._6()) &&
            eg.eq(p1._7(), p2._7()));
   }
@@ -415,7 +415,7 @@ public final class Equal<A> {
                                                                                      final Equal<F$> ef,
                                                                                      final Equal<G> eg,
                                                                                      final Equal<H> eh) {
-    return new Equal<P8<A, B, C, D, E, F$, G, H>>(
+    return Equal.equal(
             p1 -> p2 -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
                    ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()) && ef.eq(p1._6(), p2._6()) &&
                    eg.eq(p1._7(), p2._7()) && eh.eq(p1._8(), p2._8()));

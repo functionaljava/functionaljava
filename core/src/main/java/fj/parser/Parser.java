@@ -1,11 +1,8 @@
 package fj.parser;
 
-import fj.F;
+import fj.*;
+
 import static fj.P.p;
-import fj.P1;
-import fj.Semigroup;
-import fj.Unit;
-import fj.Digit;
 import static fj.Unit.unit;
 import fj.data.List;
 import static fj.data.List.cons_;
@@ -288,11 +285,7 @@ public final class Parser<I, A, E> {
    * @return A parser that repeats application of this parser zero or many times.
    */
   public Parser<I, Stream<A>, E> repeat() {
-    return repeat1().or(new P1<Parser<I, Stream<A>, E>>() {
-      public Parser<I, Stream<A>, E> _1() {
-        return value(Stream.<A>nil());
-      }
-    });
+    return repeat1().or(P.lazy(u -> value(Stream.<A>nil())));
   }
 
   /**
@@ -301,11 +294,7 @@ public final class Parser<I, A, E> {
    * @return A parser that repeats application of this parser one or many times.
    */
   public Parser<I, Stream<A>, E> repeat1() {
-      return bind(a -> repeat().map(new F<Stream<A>, Stream<A>>() {
-        public Stream<A> f(final Stream<A> as) {
-            return as.cons(a);
-        }
-    }));
+      return bind(a -> repeat().map(as -> as.cons(a)));
   }
 
   /**
@@ -325,7 +314,7 @@ public final class Parser<I, A, E> {
    * @return A parser that computes using the given function.
    */
   public static <I, A, E> Parser<I, A, E> parser(final F<I, Validation<E, Result<I, A>>> f) {
-    return new Parser<I, A, E>(f);
+    return new Parser<>(f);
   }
 
   /**

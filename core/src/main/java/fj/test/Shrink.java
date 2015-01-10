@@ -1,6 +1,7 @@
 package fj.test;
 
-import fj.F;
+import fj.*;
+
 import static fj.P.p;
 import static fj.P.p2;
 import static fj.P.p3;
@@ -10,15 +11,6 @@ import static fj.P.p6;
 import static fj.P.p7;
 import static fj.P.p8;
 
-import fj.Function;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.P4;
-import fj.P5;
-import fj.P6;
-import fj.P7;
-import fj.P8;
 import static fj.Primitive.Byte_Long;
 import static fj.Primitive.Character_Long;
 import static fj.Primitive.Double_Long;
@@ -114,7 +106,7 @@ public final class Shrink<A> {
    * @return A shrink from this shrink and the given symmetric transformations.
    */
   public <B> Shrink<B> map(final F<A, B> f, final F<B, A> g) {
-    return new Shrink<B>(b -> Shrink.this.f.f(g.f(b)).map(f));
+    return shrink(b -> Shrink.this.f.f(g.f(b)).map(f));
   }
 
 
@@ -136,27 +128,19 @@ public final class Shrink<A> {
    * @return A shrink strategy that cannot be reduced further.
    */
   public static <A> Shrink<A> empty() {
-    return new Shrink<A>(a -> nil());
+    return shrink(a -> nil());
   }
 
   /**
    * A shrink strategy for longs using 0 as the bottom of the shrink.
    */
-  public static final Shrink<Long> shrinkLong = new Shrink<Long>(i -> {
+  public static final Shrink<Long> shrinkLong = shrink(i -> {
     if (i == 0L)
       return nil();
     else {
-      final Stream<Long> is = cons(0L, new P1<Stream<Long>>() {
-        public Stream<Long> _1() {
-          return iterate(x -> x / 2L, i).takeWhile(x2 -> x2 != 0L).map(x1 -> i - x1);
-        }
-      });
+      final Stream<Long> is = cons(0L, P.lazy(u -> iterate(x -> x / 2L, i).takeWhile(x2 -> x2 != 0L).map(x1 -> i - x1)));
 
-      return i < 0L ? cons(-i, new P1<Stream<Long>>() {
-        public Stream<Long> _1() {
-          return is;
-        }
-      }) : is;
+      return i < 0L ? cons(-i, P.lazy(u -> is)) : is;
     }
   });
 
@@ -204,7 +188,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for optional values.
    */
   public static <A> Shrink<Option<A>> shrinkOption(final Shrink<A> sa) {
-    return new Shrink<Option<A>>(o -> o.isNone() ?
+    return shrink(o -> o.isNone() ?
            Stream.<Option<A>>nil() :
            cons(Option.<A>none(), new P1<Stream<Option<A>>>() {
              public Stream<Option<A>> _1() {
@@ -221,13 +205,9 @@ public final class Shrink<A> {
    * @return A shrink strategy for either values.
    */
   public static <A, B> Shrink<Either<A, B>> shrinkEither(final Shrink<A> sa, final Shrink<B> sb) {
-    return new Shrink<Either<A, B>>(new F<Either<A, B>, Stream<Either<A, B>>>() {
-      public Stream<Either<A, B>> f(final Either<A, B> e) {
-        return e.isLeft() ?
-               sa.shrink(e.left().value()).map(Either.<A, B>left_()) :
-               sb.shrink(e.right().value()).map(Either.<A, B>right_());
-      }
-    });
+    return shrink(e -> e.isLeft() ?
+           sa.shrink(e.left().value()).map(Either.<A, B>left_()) :
+           sb.shrink(e.right().value()).map(Either.<A, B>right_()));
   }
 
   /**
@@ -249,16 +229,19 @@ public final class Shrink<A> {
 
           final List<A> as1 = as.take(n1);
           final F<List<A>, Boolean> isNotEmpty = isNotEmpty_();
-          return cons(as1, new P1<Stream<List<A>>>() {
-            public Stream<List<A>> _1() {
-              final List<A> as2 = as.drop(n1);
-              return cons(as2, new P1<Stream<List<A>>>() {
-                public Stream<List<A>> _1() {
-                  return removeChunks(n1, as1).filter(isNotEmpty).map(aas1 -> aas1.append(as2)).interleave(removeChunks(n2, as2).filter(isNotEmpty).map(aas -> as1.append(aas)));
-                }
-              });
-            }
-          });
+          return cons(
+                  as1,
+                  P.lazy(u ->
+                  {
+                          final List<A> as2 = as.drop(n1);
+                          return cons(as2, P.lazy(u1 -> removeChunks(n1, as1)
+                                                           .filter(isNotEmpty)
+                                                           .map(aas1 -> aas1.append(as2))
+                                                           .interleave(removeChunks(n2, as2)
+                                                                   .filter(isNotEmpty)
+                                                                   .map(aas -> as1.append(aas)))));
+                  })
+          );
         }
       }
 
@@ -271,7 +254,7 @@ public final class Shrink<A> {
       }
     }
 
-    return new Shrink<List<A>>(as -> {
+    return shrink(as -> {
       final Util u = new Util();
       return u.removeChunks(as.length(), as).append(u.shrinkOne(as));
     });
@@ -723,7 +706,7 @@ public final class Shrink<A> {
    * @return a shrinking strategy for product-1 values.
    */
   public static <A> Shrink<P1<A>> shrinkP1(final Shrink<A> sa) {
-    return new Shrink<P1<A>>(p -> sa.shrink(p._1()).map(a -> p(a)));
+    return shrink(p -> sa.shrink(p._1()).map(a -> p(a)));
   }
 
   /**
@@ -734,7 +717,7 @@ public final class Shrink<A> {
    * @return a shrinking strategy for product-2 values.
    */
   public static <A, B> Shrink<P2<A, B>> shrinkP2(final Shrink<A> sa, final Shrink<B> sb) {
-    return new Shrink<P2<A, B>>(p -> {
+    return shrink(p -> {
       final F<A, F<B, P2<A, B>>> p2 = p2();
       return sa.shrink(p._1()).bind(sb.shrink(p._2()), p2);
     });
@@ -749,7 +732,7 @@ public final class Shrink<A> {
    * @return a shrinking strategy for product-3 values.
    */
   public static <A, B, C> Shrink<P3<A, B, C>> shrinkP3(final Shrink<A> sa, final Shrink<B> sb, final Shrink<C> sc) {
-    return new Shrink<P3<A, B, C>>(p -> {
+    return shrink(p -> {
       final F<A, F<B, F<C, P3<A, B, C>>>> p3 = p3();
       return sa.shrink(p._1()).bind(sb.shrink(p._2()), sc.shrink(p._3()), p3);
     });
@@ -766,7 +749,7 @@ public final class Shrink<A> {
    */
   public static <A, B, C, D> Shrink<P4<A, B, C, D>> shrinkP4(final Shrink<A> sa, final Shrink<B> sb, final Shrink<C> sc,
                                                              final Shrink<D> sd) {
-    return new Shrink<P4<A, B, C, D>>(p -> {
+    return shrink(p -> {
       final F<A, F<B, F<C, F<D, P4<A, B, C, D>>>>> p4 = p4();
       return sa.shrink(p._1()).bind(sb.shrink(p._2()), sc.shrink(p._3()), sd.shrink(p._4()), p4);
     });
@@ -785,7 +768,7 @@ public final class Shrink<A> {
   public static <A, B, C, D, E> Shrink<P5<A, B, C, D, E>> shrinkP5(final Shrink<A> sa, final Shrink<B> sb,
                                                                    final Shrink<C> sc, final Shrink<D> sd,
                                                                    final Shrink<E> se) {
-    return new Shrink<P5<A, B, C, D, E>>(p -> {
+    return shrink(p -> {
       final F<A, F<B, F<C, F<D, F<E, P5<A, B, C, D, E>>>>>> p5 = p5();
       return sa.shrink(p._1()).bind(sb.shrink(p._2()), sc.shrink(p._3()), sd.shrink(p._4()), se.shrink(p._5()), p5);
     });
@@ -805,7 +788,7 @@ public final class Shrink<A> {
   public static <A, B, C, D, E, F$> Shrink<P6<A, B, C, D, E, F$>> shrinkP6(final Shrink<A> sa, final Shrink<B> sb,
                                                                            final Shrink<C> sc, final Shrink<D> sd,
                                                                            final Shrink<E> se, final Shrink<F$> sf) {
-    return new Shrink<P6<A, B, C, D, E, F$>>(p -> {
+    return shrink(p -> {
       final F<A, F<B, F<C, F<D, F<E, F<F$, P6<A, B, C, D, E, F$>>>>>>> p6 = p6();
       return sa.shrink(p._1())
           .bind(sb.shrink(p._2()), sc.shrink(p._3()), sd.shrink(p._4()), se.shrink(p._5()), sf.shrink(p._6()), p6);
@@ -829,7 +812,7 @@ public final class Shrink<A> {
                                                                                  final Shrink<E> se,
                                                                                  final Shrink<F$> sf,
                                                                                  final Shrink<G> sg) {
-    return new Shrink<P7<A, B, C, D, E, F$, G>>(p -> {
+    return shrink(p -> {
       final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, P7<A, B, C, D, E, F$, G>>>>>>>> p7 = p7();
       return sa.shrink(p._1())
           .bind(sb.shrink(p._2()), sc.shrink(p._3()), sd.shrink(p._4()), se.shrink(p._5()), sf.shrink(p._6()),
@@ -858,7 +841,7 @@ public final class Shrink<A> {
                                                                                        final Shrink<F$> sf,
                                                                                        final Shrink<G> sg,
                                                                                        final Shrink<H> sh) {
-    return new Shrink<P8<A, B, C, D, E, F$, G, H>>(
+    return shrink(
             p -> {
               final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, P8<A, B, C, D, E, F$, G, H>>>>>>>>> p8 = p8();
               return sa.shrink(p._1())

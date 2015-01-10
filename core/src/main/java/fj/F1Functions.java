@@ -128,11 +128,7 @@ public class F1Functions {
      * @return This function promoted to return its result in a product-1.
      */
     static public <A, B> F<A, P1<B>> lazy(final F<A, B> f) {
-       return a -> new P1<B>(){
-           public B _1() {
-               return f.f(a);
-           }
-       };
+       return a -> P.lazy(u -> f.f(a));
     }
 
     /**
