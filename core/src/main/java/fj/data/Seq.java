@@ -2,7 +2,6 @@ package fj.data;
 
 import fj.F;
 import fj.F2;
-import fj.F2Functions;
 import fj.Function;
 import static fj.Bottom.error;
 import static fj.Monoid.intAdditionMonoid;
@@ -17,8 +16,13 @@ import fj.data.fingertrees.Measured;
  * the head and tail, as well as O(log n) random access and concatenation of sequences.
  */
 public final class Seq<A> {
+  private static final Measured<Integer, Object> ELEM_MEASURED = measured(intAdditionMonoid, Function.constant(1));
+  private static final MakeTree<Integer, Object> MK_TREE = FingerTree.mkTree(ELEM_MEASURED);
+  private static final Seq<Object> EMPTY = new Seq<Object>(MK_TREE.empty());
+
+  @SuppressWarnings("unchecked")
   private static <A> MakeTree<Integer, A> mkTree() {
-    return FingerTree.mkTree(Seq.<A>elemMeasured());
+    return (MakeTree<Integer, A>) MK_TREE;
   }
 
   private final FingerTree<Integer, A> ftree;
@@ -27,8 +31,9 @@ public final class Seq<A> {
     this.ftree = ftree;
   }
 
+  @SuppressWarnings("unchecked")
   private static <A> Measured<Integer, A> elemMeasured() {
-    return measured(intAdditionMonoid, Function.<A, Integer>constant(1));
+    return (Measured<Integer, A>) ELEM_MEASURED;
   }
 
   /**
@@ -36,8 +41,9 @@ public final class Seq<A> {
    *
    * @return A sequence with no elements.
    */
+  @SuppressWarnings("unchecked")
   public static <A> Seq<A> empty() {
-    return new Seq<A>(Seq.<A>mkTree().empty());
+    return (Seq<A>) EMPTY;
   }
 
   /**

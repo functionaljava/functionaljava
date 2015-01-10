@@ -2,7 +2,6 @@ package fj.data;
 
 import static fj.Bottom.error;
 import fj.F2Functions;
-import fj.Effect;
 import fj.Equal;
 import fj.F;
 import fj.F2;
@@ -1423,6 +1422,8 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   private static final class Nil<A> extends List<A> {
+    public static final Nil<Object> INSTANCE = new Nil<Object>();
+
     public A head() {
       throw error("head on empty list");
     }
@@ -1469,8 +1470,9 @@ public abstract class List<A> implements Iterable<A> {
    *
    * @return An empty list.
    */
+  @SuppressWarnings("unchecked")
   public static <A> List<A> nil() {
-    return new Nil<A>();
+    return (Nil<A>) Nil.INSTANCE;
   }
 
   /**
