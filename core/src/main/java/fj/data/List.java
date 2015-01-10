@@ -78,7 +78,10 @@ public abstract class List<A> implements Iterable<A> {
    * @return The length of this list.
    */
   public final int length() {
-    return foldLeft(i -> a -> i + 1, 0);
+    // WARNING: In JDK 8, update 25 (current version) the following code triggers an internal JDK compiler error, likely due to https://bugs.openjdk.java.net/browse/JDK-8062253.   The code below is a workaround for this compiler bug.
+    //    return foldLeft(i -> a -> i + 1, 0);
+    F2<Integer, A, Integer> f = (i, a) -> i + 1;
+    return foldLeft(f, 0);
   }
 
   /**
