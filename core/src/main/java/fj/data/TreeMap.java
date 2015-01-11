@@ -41,6 +41,32 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   }
 
   /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param p2s The elements to construct the tree map with.
+   * @return a TreeMap with the given elements.
+   */
+  public static <K, V> TreeMap<K, V> map(final Ord<K> keyOrd, final P2<K, V> ... p2s) {
+    return map(keyOrd, List.list(p2s));
+  }
+
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param list The elements to construct the tree map with.
+   * @return a TreeMap with the given elements.
+   */
+  public static <K, V> TreeMap<K, V> map(final Ord<K> keyOrd, final List<P2<K, V>> list) {
+    TreeMap<K, V> tm = empty(keyOrd);
+    for (final P2<K, V> p2 : list) {
+      tm = tm.set(p2._1(), p2._2());
+    }
+    return tm;
+  }
+
+  /**
    * Returns a potential value that the given key maps to.
    *
    * @param k The key to look up in the tree map.
