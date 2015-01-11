@@ -8,6 +8,8 @@ import fj.data.Natural;
 import fj.data.NonEmptyList;
 import fj.data.Option;
 import fj.data.Stream;
+import fj.data.Set;
+import fj.data.TreeMap;
 import fj.data.Tree;
 import fj.data.Validation;
 import fj.data.hlist.HList;
@@ -282,7 +284,7 @@ public final class Show<A> {
    * @return A show instance for the {@link Stream} type.
    */
   public static <A> Show<List<A>> listShow(final Show<A> sa) {
-    return show(as -> streamShow(sa).show(as.toStream()));
+    return show(as -> streamShow(sa, "List(", ",", ")").show(as.toStream()));
   }
 
   /**
@@ -303,11 +305,61 @@ public final class Show<A> {
    */
   public static <A> Show<Tree<A>> treeShow(final Show<A> sa) {
     return show(a -> {
-      final Stream<Character> b = sa.f.f(a.root())
-          .append(p1Show(streamShow(Show.<A>treeShow(sa))).f.f(a.subForest()))
-          .snoc(')');
-      return cons('(', p(b));
+      Stream<Character> result = sa.f.f(a.root());
+      if (!a.subForest()._1().isEmpty()) {
+        result = result.append(fromString(",")).append(streamShow(treeShow(sa), "", ",", "").f.f(a.subForest()._1()));
+      }
+      return fromString("Tree(").append(p(result)).append(fromString(")"));
     });
+  }
+
+  /**
+   * A show instance for the {@link Set} type.
+   *
+   * @param sa Show for the elements of the set.
+   * @return A show instance for the {@link Set} type.
+   */
+  public static <A> Show<Set<A>> setShow(final Show<A> sa) {
+    return show(s -> streamShow(sa, "Set(", ",", ")").show(s.toStream()));
+  }
+
+  /**
+   * A show instance for the {@link TreeMap} type.
+   *
+   * @param sk Show for the keys of the TreeMap.
+   * @param sv Show for the values of the TreeMap.
+   * @return A show instance for the {@link TreeMap} type.
+   */
+  public static <K, V> Show<TreeMap<K, V>> treeMapShow(final Show<K> sk, final Show<V> sv) {
+    return show(tm -> {
+      Stream<P2<K, V>> stream = Stream.iteratorStream(tm.iterator());
+      return streamShow(Show.p2MapShow(sk, sv), "TreeMap(", ",", ")").show(stream);
+    });
+  }
+
+  /**
+   * A show instance for the {@link P2 tuple-2} type in the style of a mapping from A to B.
+   *
+   * @param sa Show for the first element of the tuple.
+   * @param sb Show for the second element of the tuple.
+   * @return A show instance for the {@link P2 tuple-2} type.
+   */
+  public static <A, B> Show<P2<A, B>> p2MapShow(final Show<A> sa, final Show<B> sb) {
+    return p2Show(sa, sb, "(", ":", ")");
+  }
+
+  /**
+   * A show instance for the {@link P2 tuple-2} type.
+   *
+   * @param sa Show for the first element of the tuple.
+   * @param sb Show for the second element of the tuple.
+   * @param start Prefix string for the show.
+   * @param sep Separator string between elements of the tuple.
+   * @param end Suffix string for the show.
+   * @return A show instance for the {@link P2 tuple-2} type.
+   */
+  public static <A, B> Show<P2<A, B>> p2Show(final Show<A> sa, final Show<B> sb, String start, String sep, String end) {
+    return show(p -> fromString(start).append(p(sa.show(p._1()))).append(fromString(sep)).append(sb.show(p._2())).append(fromString(end)));
   }
 
   /**
@@ -317,7 +369,27 @@ public final class Show<A> {
    * @return A show instance for the {@link Stream} type.
    */
   public static <A> Show<Stream<A>> streamShow(final Show<A> sa) {
-    return show(as -> join(as.map(sa.show_()).intersperse(fromString(",")).cons(fromString("<")).snoc(p(fromString(">")))));
+    return streamShow(sa, "Stream(", ",", ")");
+  }
+
+  /**
+   * A show instance for the {@link Stream} type.
+   *
+   * @param sa Show for the first element of the tuple.
+   * @param start Prefix string for the show.
+   * @param sep Separator string between elements of the stream.
+   * @param end Suffix string for the show.
+   * @return A show instance for the {@link Stream} type.
+   */
+  public static <A> Show<Stream<A>> streamShow(final Show<A> sa, String start, String sep, String end) {
+    return show(streamShow_(sa, start, sep, end));
+  }
+
+  /**
+   * Returns the transformation equivalent for the stream show.
+   */
+  public static <A> F<Stream<A>, Stream<Character>> streamShow_(final Show<A> sa, String start, String sep, String end) {
+    return as -> join(as.map(sa.show_()).intersperse(fromString(sep)).cons(fromString(start)).snoc(p(fromString(end))));
   }
 
   /**
@@ -334,12 +406,12 @@ public final class Show<A> {
         b = b.append(sa.f.f(as.get(i)));
 
         if (i != as.length() - 1)
-          b = b.snoc(',');
+          b = b.append(fromString(","));
       }
 
-      b = b.snoc('}');
+      b = b.append(fromString("Array("));
 
-      return cons('{', p(b));
+      return fromString(")").append(p(b));
     });
   }
 
@@ -370,7 +442,7 @@ public final class Show<A> {
    * @return A show instance for the {@link P2 tuple-2} type.
    */
   public static <A, B> Show<P2<A, B>> p2Show(final Show<A> sa, final Show<B> sb) {
-    return show(p -> cons('(', p(sa.show(p._1()))).snoc(',').append(sb.show(p._2())).snoc(')'));
+      return p2Show(sa, sb, "(", ",", ")");
   }
 
   /**
@@ -487,7 +559,7 @@ public final class Show<A> {
    * @return A show instance for a vector-2.
    */
   public static <A> Show<V2<A>> v2Show(final Show<A> ea) {
-    return streamShow(ea).comap(V2.<A>toStream_());
+    return streamShow(ea, "V2(", ",", ")").comap(V2.<A>toStream_());
   }
 
   /**
@@ -497,7 +569,7 @@ public final class Show<A> {
    * @return A show instance for a vector-3.
    */
   public static <A> Show<V3<A>> v3Show(final Show<A> ea) {
-    return streamShow(ea).comap(V3.<A>toStream_());
+    return streamShow(ea, "V3(", ",", ")").comap(V3.<A>toStream_());
   }
 
   /**
@@ -507,7 +579,7 @@ public final class Show<A> {
    * @return A show instance for a vector-4.
    */
   public static <A> Show<V4<A>> v4Show(final Show<A> ea) {
-    return streamShow(ea).comap(V4.<A>toStream_());
+    return streamShow(ea, "V4(", ",", ")").comap(V4.<A>toStream_());
   }
 
   /**
@@ -517,7 +589,7 @@ public final class Show<A> {
    * @return A show instance for a vector-5.
    */
   public static <A> Show<V5<A>> v5Show(final Show<A> ea) {
-    return streamShow(ea).comap(V5.<A>toStream_());
+    return streamShow(ea, "V5(", ",", ")").comap(V5.<A>toStream_());
   }
 
   /**
@@ -527,7 +599,7 @@ public final class Show<A> {
    * @return A show instance for a vector-6.
    */
   public static <A> Show<V6<A>> v6Show(final Show<A> ea) {
-    return streamShow(ea).comap(V6.<A>toStream_());
+    return streamShow(ea, "V6(", ",", ")").comap(V6.<A>toStream_());
   }
 
   /**
@@ -537,7 +609,7 @@ public final class Show<A> {
    * @return A show instance for a vector-7.
    */
   public static <A> Show<V7<A>> v7Show(final Show<A> ea) {
-    return streamShow(ea).comap(V7.<A>toStream_());
+    return streamShow(ea, "V7(", ",", ")").comap(V7.<A>toStream_());
   }
 
   /**
@@ -547,7 +619,7 @@ public final class Show<A> {
    * @return A show instance for a vector-8.
    */
   public static <A> Show<V8<A>> v8Show(final Show<A> ea) {
-    return streamShow(ea).comap(V8.<A>toStream_());
+    return streamShow(ea, "V8(", ",", ")").comap(V8.<A>toStream_());
   }
 
   /**
@@ -583,6 +655,6 @@ public final class Show<A> {
    * @return a show instance for heterogeneous Streams.
    */
   public static <E, L extends HList<L>> Show<HList.HCons<E, L>> HListShow(final Show<E> e, final Show<L> l) {
-    return show(c -> e.show(c.head()).cons('[').append(l.show(c.tail())).snoc(']'));
+    return show(c -> fromString("HList(").append(e.show(c.head())).append(l.show(c.tail())).append(fromString(")")));
   }
 }

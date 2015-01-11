@@ -1587,21 +1587,21 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A stream from the given iterable.
    */
   public static <A> Stream<A> iterableStream(final Iterable<A> i) {
-    final class Util {
-      public <A> Stream<A> iteratorStream(final Iterator<A> i) {
-        if (i.hasNext()) {
-          final A a = i.next();
-          return cons(a, new P1<Stream<A>>() {
-            public Stream<A> _1() {
-              return iteratorStream(i);
-            }
-          });
-        } else
-          return nil();
-      }
-    }
+    return iteratorStream(i.iterator());
+  }
 
-    return new Util().iteratorStream(i.iterator());
+  /**
+   * Takes the given iterator to a stream.
+   *
+   * @param i The iterator to take to a stream.
+   * @return A stream from the given iterator.
+   */
+  public static <A> Stream<A> iteratorStream(final Iterator<A> i) {
+    if (i.hasNext()) {
+      final A a = i.next();
+      return cons(a, P.lazy(u -> iteratorStream(i)));
+    } else
+      return nil();
   }
 
   /**
