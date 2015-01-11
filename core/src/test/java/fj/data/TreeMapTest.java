@@ -5,7 +5,6 @@ import fj.Ord;
 import fj.P3;
 import fj.Show;
 import fj.P;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static fj.data.Option.some;
@@ -22,7 +21,7 @@ public class TreeMapTest {
         int pivot = 4;
         int max = 5;
         List<Integer> l = List.range(1, max + 1);
-        TreeMap<Integer, String> m2 = TreeMap.map(Ord.intOrd, l.zip(l.map(i -> i.toString())));
+        TreeMap<Integer, String> m2 = TreeMap.treeMap(Ord.intOrd, l.zip(l.map(i -> i.toString())));
         P3<Set<String>, Option<String>, Set<String>> p = m2.split(Ord.stringOrd, pivot);
 
         // print debug info
@@ -53,14 +52,14 @@ public class TreeMapTest {
         int pivot = 4;
         int max = 5;
         List<Integer> l = List.range(1, max + 1);
-        TreeMap<Integer, String> m2 = TreeMap.map(Ord.intOrd, l.zip(l.map(i -> i.toString())));
+        TreeMap<Integer, String> m2 = TreeMap.treeMap(Ord.intOrd, l.zip(l.map(i -> i.toString())));
         P3<TreeMap<Integer, String>, Option<String>, TreeMap<Integer, String>> p3 = m2.splitLookup(pivot);
 
         // create expected output
         List<Integer> leftList = List.range(1, pivot);
-        TreeMap<Integer, String> leftMap = TreeMap.map(Ord.intOrd, leftList.zip(leftList.map(i -> i.toString())));
+        TreeMap<Integer, String> leftMap = TreeMap.treeMap(Ord.intOrd, leftList.zip(leftList.map(i -> i.toString())));
         List<Integer> rightList = List.range(pivot + 1, max + 1);
-        TreeMap<Integer, String> rightMap = TreeMap.map(Ord.intOrd, rightList.zip(rightList.map(i -> i.toString())));
+        TreeMap<Integer, String> rightMap = TreeMap.treeMap(Ord.intOrd, rightList.zip(rightList.map(i -> i.toString())));
 
         // debug info
         if (true) {

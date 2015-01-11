@@ -47,8 +47,8 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @param p2s The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
-  public static <K, V> TreeMap<K, V> map(final Ord<K> keyOrd, final P2<K, V> ... p2s) {
-    return map(keyOrd, List.list(p2s));
+  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
+    return treeMap(keyOrd, List.list(p2s));
   }
 
   /**
@@ -58,7 +58,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @param list The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
-  public static <K, V> TreeMap<K, V> map(final Ord<K> keyOrd, final List<P2<K, V>> list) {
+  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final List<P2<K, V>> list) {
     TreeMap<K, V> tm = empty(keyOrd);
     for (final P2<K, V> p2 : list) {
       tm = tm.set(p2._1(), p2._2());
@@ -249,7 +249,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @param s The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
-  private static <K, V> TreeMap<K, V> map(Ord<K> ord, Set<P2<K, Option<V>>> s) {
+  private static <K, V> TreeMap<K, V> treeMap(Ord<K> ord, Set<P2<K, Option<V>>> s) {
     TreeMap<K, V> empty = TreeMap.<K, V>empty(ord);
     TreeMap<K, V> tree = s.toList().foldLeft((tm, p2) -> {
       Option<V> opt = p2._2();
@@ -278,7 +278,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   public P3<TreeMap<K, V>, Option<V>, TreeMap<K, V>> splitLookup(final K k) {
     P3<Set<P2<K, Option<V>>>, Option<P2<K, Option<V>>>, Set<P2<K, Option<V>>>> p3 = tree.split(P.p(k, get(k)));
     Ord<K> o = tree.ord().<K>comap(k2 -> P.p(k2, Option.<V>none()));
-    return P.p(map(o, p3._1()), get(k), map(o, p3._3()));
+    return P.p(treeMap(o, p3._1()), get(k), treeMap(o, p3._3()));
   }
 
   /**
