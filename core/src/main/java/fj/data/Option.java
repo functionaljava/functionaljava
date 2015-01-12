@@ -718,7 +718,7 @@ public abstract class Option<A> implements Iterable<A> {
   public static <A> Option<List<A>> sequence(final List<Option<A>> a) {
     return a.isEmpty() ?
            some(List.<A>nil()) :
-           Option.<A, A, A>map2(a.head(), sequence(a.tail()), List::cons);
+           Option.<A, A, A>map2(List::cons, a.head(), sequence(a.tail()));
   }
 
     /**
@@ -731,11 +731,11 @@ public abstract class Option<A> implements Iterable<A> {
     public static <A> Option<List<A>> traverse(final List<A> a, final F<A, Option<A>> f) {
         return a.isEmpty() ?
                 some(List.<A>nil()) :
-                Option.<A, A, A>map2(f.f(a.head()), traverse(a.tail(), f), List::cons);
+                Option.<A, A, A>map2(List::cons, f.f(a.head()), traverse(a.tail(), f));
 
     }
 
-    private static <A, B, C> Option<List<C>> map2(final Option<A> opt1, final Option<List<B>> opt2, F2<A, List<B>, List<C>> f) {
+    private static <A, B, C> Option<List<C>> map2(F2<A, List<B>, List<C>> f, final Option<A> opt1, final Option<List<B>> opt2) {
         return opt1.bind(o1 -> opt2.map(o2 -> f.f(o1, o2)));
     }
   /**
