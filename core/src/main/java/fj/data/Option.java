@@ -718,26 +718,9 @@ public abstract class Option<A> implements Iterable<A> {
   public static <A> Option<List<A>> sequence(final List<Option<A>> a) {
     return a.isEmpty() ?
            some(List.<A>nil()) :
-           Option.<A, A, A>map2(List::cons, a.head(), sequence(a.tail()));
+            a.head().bind(aa -> sequence(a.tail()).map(cons_(aa)));
   }
 
-    /**
-     * Traverse through the option monad.
-     *
-     * @param a The list of elements of type A.
-     * @param f The function that would produce an Option value.
-     * @return The option of list after traversing.
-     */
-    public static <A> Option<List<A>> traverse(final List<A> a, final F<A, Option<A>> f) {
-        return a.isEmpty() ?
-                some(List.<A>nil()) :
-                Option.<A, A, A>map2(List::cons, f.f(a.head()), traverse(a.tail(), f));
-
-    }
-
-    private static <A, B, C> Option<List<C>> map2(F2<A, List<B>, List<C>> f, final Option<A> opt1, final Option<List<B>> opt2) {
-        return opt1.bind(o1 -> opt2.map(o2 -> f.f(o1, o2)));
-    }
   /**
    * Returns an optional value that has a value of the given argument, if the given predicate holds
    * on that argument, otherwise, returns no value.

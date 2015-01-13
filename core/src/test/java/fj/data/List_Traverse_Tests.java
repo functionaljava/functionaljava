@@ -11,7 +11,7 @@ import static fj.data.Option.some;
 /**
  * Created by amar on 28/12/14.
  */
-public class OptionTests {
+public class List_Traverse_Tests {
 
     @Test
     public void ShouldTraverseListWithGivenFunction(){
@@ -23,7 +23,7 @@ public class OptionTests {
                 return Option.none();
         };
 
-        Option<List<String>> optStr = Option.traverse(strings, f);
+        Option<List<String>> optStr = strings.traverse(f);
         Assert.assertEquals("optStr should be none", Option.none(), optStr);
     }
 
@@ -37,27 +37,9 @@ public class OptionTests {
                 return Option.none();
         };
 
-        Option<List<String>> optStr = Option.traverse(strings, f);
+        Option<List<String>> optStr = strings.traverse(f);
         Assert.assertEquals("optStr should be some", optStr.isSome(), true);
         Assert.assertArrayEquals(optStr.some().toArray().array(), new String[]{"some1", "some2", "some3"});
     }
 
-    @Test
-    public void ShouldSequenceListOfOptionalContexts(){
-        List<Option<String>> strings = list(some("some1"), some("some2"), some("some3"));
-
-
-        Option<List<String>> optStr = Option.sequence(strings);
-        Assert.assertEquals("should be some", optStr.isSome(), true);
-        Assert.assertArrayEquals(optStr.some().toArray().array(), new String[]{"some1", "some2", "some3"});
-    }
-
-    @Test
-    public void ShouldSequenceListOfOptionalContexts2(){
-        List<Option<String>> strings = list(some("some1"), some("some2"), none());
-
-
-        Option<List<String>> optStr = Option.sequence(strings);
-        Assert.assertEquals("should be some", optStr.isNone(), true);
-    }
 }

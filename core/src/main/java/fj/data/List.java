@@ -563,7 +563,27 @@ public abstract class List<A> implements Iterable<A> {
     return bind(c);
   }
 
-  /**
+    /**
+     * Traverse through the List.
+     *
+     * @param f The function that might fail.
+     * @return  none if applying f fails to any element of the list or f mapped list in some .
+     */
+    public Option<List<A>> traverse(final F<A, Option<A>> f) {
+        return traverse(this, f);
+    }
+
+    private Option<List<A>> traverse(final List<A> a, final F<A, Option<A>> f){
+        return a.isEmpty() ?
+                some(List.<A>nil()) :
+                map2(List::cons, f.f(a.head()), traverse(a.tail(), f));
+    }
+
+    private static <A, B, C> Option<List<C>> map2(F2<A, List<B>, List<C>> f, final Option<A> opt1, final Option<List<B>> opt2) {
+        return opt1.bind(o1 -> opt2.map(o2 -> f.f(o1, o2)));
+    }
+
+    /**
    * Performs function application within a list (applicative functor pattern).
    *
    * @param lf The list of functions to apply.
@@ -1035,7 +1055,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return a list of all the items in this list that do not appear in the given list.
    */
   public final List<A> minus(final Equal<A> eq, final List<A> xs) {
-    return removeAll(compose(Monoid.disjunctionMonoid.sumLeft(), xs.mapM(curry(eq.eq()))));
+    return this.removeAll(compose(Monoid.disjunctionMonoid.sumLeft(), xs.mapM(Function.<A, A, Boolean>curry(eq.eq()))));
   }
 
 
@@ -1497,7 +1517,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of the given value replicated the given number of times.
    */
   public static <A> List<A> replicate(final int n, final A a) {
-    return n <= 0 ? List.<A>nil() : replicate(n - 1, a).cons(a);
+    return n <= 0 ? List.<A>nil() : List.<A>replicate(n - 1, a).cons(a);
   }
 
   /**
@@ -1838,6 +1858,6 @@ public abstract class List<A> implements Iterable<A> {
      * @return a String representation of the list
      */
     @Override public String toString() {
-        return Show.listShow( Show.<A>anyShow() ).show( this ).foldLeft((s, c) -> s + c, "" );
+        return Show.listShow(Show.<A>anyShow() ).show( this ).foldLeft((s, c) -> s + c, "" );
     }
 }
