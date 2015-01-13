@@ -5,7 +5,6 @@ import fj.F2Functions;
 import fj.Equal;
 import fj.F;
 import fj.F2;
-import fj.F3;
 import fj.Function;
 import fj.Hash;
 import fj.Monoid;
@@ -564,23 +563,14 @@ public abstract class List<A> implements Iterable<A> {
   }
 
     /**
-     * Traverse through the List.
+     * Traverse through the List with a might-fail function.
      *
      * @param f The function that might fail.
      * @return  none if applying f fails to any element of the list or f mapped list in some .
      */
-    public Option<List<A>> traverseOption(final F<A, Option<A>> f) {
-        return traverse(this, f);
-    }
-
-    private Option<List<A>> traverse(final List<A> a, final F<A, Option<A>> f){
-        return a.isEmpty() ?
-                some(List.<A>nil()) :
-                map2(List::cons, f.f(a.head()), traverse(a.tail(), f));
-    }
-
-    private static <A, B, C> Option<List<C>> map2(F2<A, List<B>, List<C>> f, final Option<A> opt1, final Option<List<B>> opt2) {
-        return opt1.bind(o1 -> opt2.map(o2 -> f.f(o1, o2)));
+    public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
+        return foldRight((a, as) -> f.f(a).bind(b -> as.map(bs -> bs.cons(b))),
+                Option.some(List.<B>nil()));
     }
 
     /**
