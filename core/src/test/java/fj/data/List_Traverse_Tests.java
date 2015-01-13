@@ -14,7 +14,7 @@ import static fj.data.Option.some;
 public class List_Traverse_Tests {
 
     @Test
-    public void ShouldTraverseListWithGivenFunction(){
+    public void shouldTraverseListWithGivenFunction(){
         List<String> strings = list("some1", "some2", "some3", "not_some", "  ");
         F<String, Option<String>> f = s -> {
             if(s.startsWith("some"))
@@ -28,7 +28,7 @@ public class List_Traverse_Tests {
     }
 
     @Test
-    public void ShouldTraverseListWithGivenFunction2(){
+    public void shouldTraverseListWithGivenFunction2(){
         List<String> strings = list("some1", "some2", "some3");
         F<String, Option<String>> f = s -> {
             if(s.startsWith("some"))
