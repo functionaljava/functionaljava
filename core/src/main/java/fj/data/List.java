@@ -583,7 +583,7 @@ public abstract class List<A> implements Iterable<A> {
      * @param f The function that produces Either value.
      * @return  error in left if applying f fails to any element of the list or f mapped list in right.
      */
-    public <B, E> Either<E, List<B>> traverseEitherRight(final F<A, Either<E, B>> f) {
+    public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
         F2<A, Either<E, List<B>>, Either<E, List<B>>> f2 = (A a, Either<E, List<B>> as) -> List.<B, B, B, E>map2Either(List::cons, f.f(a), as);
         return foldRight(f2, Either.<E, List<B>>right(List.<B>nil()));
     }
