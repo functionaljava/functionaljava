@@ -658,30 +658,14 @@ public abstract class Either<A, B> {
    * @return A function that maps another function across an either's left projection.
    */
   public static <A, B, X> F<F<A, X>, F<Either<A, B>, Either<X, B>>> leftMap_() {
-    return new F<F<A, X>, F<Either<A, B>, Either<X, B>>>() {
-      public F<Either<A, B>, Either<X, B>> f(final F<A, X> axf) {
-        return new F<Either<A, B>, Either<X, B>>() {
-          public Either<X, B> f(final Either<A, B> e) {
-            return e.left().map(axf);
-          }
-        };
-      }
-    };
+    return axf -> e -> e.left().map(axf);
   }
 
   /**
    * @return A function that maps another function across an either's right projection.
    */
   public static <A, B, X> F<F<B, X>, F<Either<A, B>, Either<A, X>>> rightMap_() {
-    return new F<F<B, X>, F<Either<A, B>, Either<A, X>>>() {
-      public F<Either<A, B>, Either<A, X>> f(final F<B, X> axf) {
-        return new F<Either<A, B>, Either<A, X>>() {
-          public Either<A, X> f(final Either<A, B> e) {
-            return e.right().map(axf);
-          }
-        };
-      }
-    };
+    return axf -> e -> e.right().map(axf);
   }
 
   /**
@@ -785,15 +769,7 @@ public abstract class Either<A, B> {
    * @return All the right values in the given list.
    */
   public static <A, B> List<B> rights(final List<Either<A, B>> es) {
-    return es.foldRight(new F<Either<A, B>, F<List<B>, List<B>>>() {
-      public F<List<B>, List<B>> f(final Either<A, B> e) {
-        return new F<List<B>, List<B>>() {
-          public List<B> f(final List<B> bs) {
-            return e.isRight() ? bs.cons(e.right().value()) : bs;
-          }
-        };
-      }
-    }, List.<B>nil());
+    return es.foldRight(e -> bs -> e.isRight() ? bs.cons(e.right().value()) : bs, List.<B>nil());
   }
 
     public String toString() {

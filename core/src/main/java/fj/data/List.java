@@ -569,8 +569,27 @@ public abstract class List<A> implements Iterable<A> {
      * @return  none if applying f fails to any element of the list or f mapped list in some .
      */
     public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
-        return foldRight((a, as) -> f.f(a).bind(b -> as.map(bs -> bs.cons(b))),
-                Option.some(List.<B>nil()));
+        F2<A, Option<List<B>>, Option<List<B>>> f2 = (a, as) -> map2Option(List::cons, f.f(a), as);
+        return foldRight(f2, Option.some(List.<B>nil()));
+    }
+
+    private static <A, B, C> Option<List<C>> map2Option(F2<A, List<B>, List<C>> f, final Option<A> opt1, final Option<List<B>> opt2) {
+        return opt1.bind(o1 -> opt2.map(o2 -> f.f(o1, o2)));
+    }
+
+    /**
+     * Traverse through the List with a might-fail function.
+     *
+     * @param f The function that produces Either value.
+     * @return  error in left if applying f fails to any element of the list or f mapped list in right.
+     */
+    public <B, E> Either<E, List<B>> traverseEitherRight(final F<A, Either<E, B>> f) {
+        F2<A, Either<E, List<B>>, Either<E, List<B>>> f2 = (A a, Either<E, List<B>> as) -> List.<B, B, B, E>map2Either(List::cons, f.f(a), as);
+        return foldRight(f2, Either.<E, List<B>>right(List.<B>nil()));
+    }
+
+    private static <A, B, C, E> Either<E, List<C>> map2Either(F2<A, List<B>, List<C>> f, final Either<E, A> either1, final Either<E, List<B>> either2) {
+        return either1.right().bind(o1 -> either2.right().map(o2 -> f.f(o1, o2)));
     }
 
     /**
