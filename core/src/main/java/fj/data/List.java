@@ -569,7 +569,7 @@ public abstract class List<A> implements Iterable<A> {
      * @param f The function that might fail.
      * @return  none if applying f fails to any element of the list or f mapped list in some .
      */
-    public Option<List<A>> traverse(final F<A, Option<A>> f) {
+    public Option<List<A>> traverseOption(final F<A, Option<A>> f) {
         return traverse(this, f);
     }
 

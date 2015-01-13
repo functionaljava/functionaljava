@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static fj.data.List.list;
-import static fj.data.Option.none;
 import static fj.data.Option.some;
 
 /**
@@ -23,7 +22,7 @@ public class List_Traverse_Tests {
                 return Option.none();
         };
 
-        Option<List<String>> optStr = strings.traverse(f);
+        Option<List<String>> optStr = strings.traverseOption(f);
         Assert.assertEquals("optStr should be none", Option.none(), optStr);
     }
 
@@ -37,7 +36,7 @@ public class List_Traverse_Tests {
                 return Option.none();
         };
 
-        Option<List<String>> optStr = strings.traverse(f);
+        Option<List<String>> optStr = strings.traverseOption(f);
         Assert.assertEquals("optStr should be some", optStr.isSome(), true);
         Assert.assertArrayEquals(optStr.some().toArray().array(), new String[]{"some1", "some2", "some3"});
     }
