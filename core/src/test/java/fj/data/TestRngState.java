@@ -22,8 +22,9 @@ import static fj.test.Variant.variant;
  */
 public class TestRngState {
 
-	static String expected1 = "<4,4,2,2,2,5,3,3,1,5>";
+	static List<Integer> expected1 = List.list(4,4,2,2,2,5,3,3,1,5);
 	static int size = 10;
+    static final Equal<List<Integer>> listIntEqual = Equal.listEqual(Equal.intEqual);
 
     static Rng defaultRng() {
         return new LcgRng(1);
@@ -48,10 +49,10 @@ public class TestRngState {
 	@Test
     public void testUnfold() {
         Stream<Integer> s = unfold(r -> some(num(r).swap()), defaultRng());
-		Assert.assertTrue(s.take(size).toList().toString().equals(expected1));
+		Assert.assertTrue(listIntEqual.eq(s.take(size).toList(), expected1));
     }
 
-	@Test
+    @Test
     public void testTransitions() {
 		P2<List<State<Rng, Integer>>, State<Rng, Integer>> p = List.replicate(size, nextState()).foldLeft(
 			(P2<List<State<Rng, Integer>>, State<Rng, Integer>> p2, F<State<Rng, Integer>, State<Rng, Integer>> f) -> {
@@ -61,21 +62,21 @@ public class TestRngState {
 				, P.p(List.nil(),  defaultState())
 		);
 		List<Integer> ints = p._1().map(s -> s.eval(defaultRng()));
-		Assert.assertTrue(ints.toString().equals(expected1));
+		Assert.assertTrue(listIntEqual.eq(ints, expected1));
     }
 
 	@Test
 	public void testSequence() {
 		List<Integer> list = State.sequence(List.replicate(size, defaultState())).eval(defaultRng());
-		Assert.assertTrue(list.toString().equals(expected1));
+		Assert.assertTrue(listIntEqual.eq(list, expected1));
 	}
 
     @Test
     public void testTraverse() {
         List<Integer> list = State.traverse(List.range(1, 10), a -> (State.unit((Rng s) -> num(s, a)))).eval(defaultRng());
 //        System.out.println(list.toString());
-        String expected = "<1,2,3,5,6,7,7,9,10>";
-        Assert.assertTrue(list.toString().equals(expected));
+        List<Integer> expected = List.list(1,2,3,5,6,7,7,9,10);
+        Assert.assertTrue(listIntEqual.eq(list, expected));
     }
 
     public static Arbitrary<State<LcgRng, Integer>> arbState() {

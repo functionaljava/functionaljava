@@ -522,6 +522,10 @@ public final class Equal<A> {
     return equal(curry((Set<A> a, Set<A> b) -> streamEqual(e).eq(a.toStream(), b.toStream())));
   }
 
+  public static <K, V> Equal<TreeMap<K, V>> treeMapEqual(Equal<K> k, Equal<V> v) {
+    return equal(t1 -> t2 -> Equal.streamEqual(p2Equal(k, v)).eq(t1.toStream(), t2.toStream()));
+  }
+
   public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {
     return equal(w1 -> w2 -> p2Equal(eq1, eq2).eq(w1.run(), w2.run()));
   }

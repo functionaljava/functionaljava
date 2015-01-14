@@ -41,6 +41,32 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   }
 
   /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param p2s The elements to construct the tree map with.
+   * @return a TreeMap with the given elements.
+   */
+  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
+    return treeMap(keyOrd, List.list(p2s));
+  }
+
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param list The elements to construct the tree map with.
+   * @return a TreeMap with the given elements.
+   */
+  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final List<P2<K, V>> list) {
+    TreeMap<K, V> tm = empty(keyOrd);
+    for (final P2<K, V> p2 : list) {
+      tm = tm.set(p2._1(), p2._2());
+    }
+    return tm;
+  }
+
+  /**
    * Returns a potential value that the given key maps to.
    *
    * @param k The key to look up in the tree map.
@@ -143,6 +169,9 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
     return m;
   }
 
+  public Stream<P2<K, V>> toStream() {
+    return Stream.iteratorStream(iterator());
+  }
   /**
    * An immutable projection of the given mutable map.
    *
@@ -208,11 +237,48 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    *         key in this map, all the elements in the second set are mapped to keys greater than the given key,
    *         and the optional value is the value associated with the given key if present, otherwise None.
    */
-  public P3<Set<V>, Option<V>, Set<V>> split(final K k) {
-    final F<Set<P2<K, Option<V>>>, Set<V>> getSome = F1Functions.mapSet(F1Functions.o(Option.<V>fromSome(), P2.<K, Option<V>>__2())
-        , tree.ord().comap(F1Functions.o(P.<K, Option<V>>p2().f(k), Option.<V>some_())));
+  public P3<Set<V>, Option<V>, Set<V>> split(Ord<V> ord, final K k) {
+    final F<Set<P2<K, Option<V>>>, Set<V>> getSome = F1Functions.mapSet(F1Functions.o(Option.<V>fromSome(), P2.<K, Option<V>>__2()), ord);
     return tree.split(p(k, Option.<V>none())).map1(getSome).map3(getSome)
         .map2(F1Functions.o(Option.<V>join(), F1Functions.mapOption(P2.<K, Option<V>>__2())));
+  }
+
+  /**
+   * Internal construction of a TreeMap from the given set.
+   * @param ord An order for the keys of the tree map.
+   * @param s The elements to construct the tree map with.
+   * @return a TreeMap with the given elements.
+   */
+  private static <K, V> TreeMap<K, V> treeMap(Ord<K> ord, Set<P2<K, Option<V>>> s) {
+    TreeMap<K, V> empty = TreeMap.<K, V>empty(ord);
+    TreeMap<K, V> tree = s.toList().foldLeft((tm, p2) -> {
+      Option<V> opt = p2._2();
+      if (opt.isSome()) {
+        return tm.set(p2._1(), opt.some());
+      }
+      return tm;
+    }, empty);
+    return tree;
+  }
+
+  /**
+   * Splits this TreeMap at the given key. Returns a triple of:
+   * <ul>
+   * <li>A tree map containing all the values of this map associated with keys less than the given key.</li>
+   * <li>An option of a value mapped to the given key, if it exists in this map, otherwise None.
+   * <li>A tree map containing all the values of this map associated with keys greater than the given key.</li>
+   * </ul>
+   *
+   * @param k A key at which to split this map.
+   * @return Two tree maps and an optional value, where all keys in the first tree map are mapped
+   * to keys less than the given key in this map, all the keys in the second tree map are mapped
+   * to keys greater than the given key, and the optional value is the value associated with the
+   * given key if present, otherwise None.
+   */
+  public P3<TreeMap<K, V>, Option<V>, TreeMap<K, V>> splitLookup(final K k) {
+    P3<Set<P2<K, Option<V>>>, Option<P2<K, Option<V>>>, Set<P2<K, Option<V>>>> p3 = tree.split(P.p(k, get(k)));
+    Ord<K> o = tree.ord().<K>comap(k2 -> P.p(k2, Option.<V>none()));
+    return P.p(treeMap(o, p3._1()), get(k), treeMap(o, p3._3()));
   }
 
   /**
