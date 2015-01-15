@@ -683,7 +683,7 @@ public abstract class Option<A> implements Iterable<A> {
    * return none, otherwise, return the given value in some.
    *
    * @param t The unsafe nullable value.
-   * @return If <code>t == null</code> then return it in some, otherwise, return none.
+   * @return If <code>t == null</code> then return none, otherwise, return it in some.
    */
   public static <T> Option<T> fromNull(final T t) {
     return t == null ? Option.<T>none() : some(t);
@@ -693,7 +693,7 @@ public abstract class Option<A> implements Iterable<A> {
    * Turns an unsafe nullable value into a safe optional value. If <code>t == null</code> then
    * return none, otherwise, return the given value in some.
    *
-   * @return If <code>t == null</code> then return it in some, otherwise, return none.
+   * @return If <code>t == null</code> then return none, otherwise, return it in some.
    */
   public static <T> F<T, Option<T>> fromNull() {
     return t -> fromNull(t);
