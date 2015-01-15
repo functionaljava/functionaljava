@@ -295,4 +295,20 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
     return new TreeMap<K, W>(tree.map(TreeMap.<K, Option<W>>ord(o), g));
   }
 
+  /**
+   * Extend this TreeMap to include all mapping from another TreeMap.  Where a
+   * mapping exists in both this TreeMap and the other one, the value from the
+   * other one will replace the value in this one.
+   *
+   * @param other
+   * @return
+   */
+	public Object setAll(TreeMap<K, V> other) {
+		TreeMap<K, V> result = this;
+		for(P2<K,V> p : other) {
+			result = result.set(p._1(), p._2());
+		}
+		return result;
+	}
+
 }
