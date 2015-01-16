@@ -78,6 +78,18 @@ public abstract class Either<A, B> {
            right.f(right().value());
   }
 
+  @Override
+  public boolean equals(Object other) {
+
+    return !Equal.equalsValidationCheck(this, other) ? false :
+            Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.eitherHash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
+  }
+
   /**
    * If this is a left, then return the left value in right, or vice versa.
    *

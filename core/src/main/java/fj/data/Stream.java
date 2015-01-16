@@ -2,6 +2,8 @@ package fj.data;
 
 import fj.Effect;
 import fj.Equal;
+import fj.Hash;
+import fj.Show;
 import fj.F;
 import fj.F2;
 import fj.F3;
@@ -1233,6 +1235,22 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public final boolean forall(final F<A, Boolean> f) {
     return isEmpty() || f.f(head()) && tail()._1().forall(f);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return !Equal.equalsValidationCheck(this, other) ? false :
+            Equal.streamEqual(Equal.<A>anyEqual()).eq(this, (Stream<A>) other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.streamHash(Hash.<A>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.streamShow(Show.<A>anyShow()).showS(this);
   }
 
   /**

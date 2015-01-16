@@ -1,17 +1,6 @@
 package fj;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.LazyString;
-import fj.data.List;
-import fj.data.Natural;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Stream;
-import fj.data.Set;
-import fj.data.TreeMap;
-import fj.data.Tree;
-import fj.data.Validation;
+import fj.data.*;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -311,6 +300,10 @@ public final class Show<A> {
       }
       return fromString("Tree(").append(p(result)).append(fromString(")"));
     });
+  }
+
+  public static <A> Show<Seq<A>> seqShow(final Show<A> sa) {
+    return show(s -> streamShow(sa, "Seq(", ",", ")").show(s.toStream()));
   }
 
   /**

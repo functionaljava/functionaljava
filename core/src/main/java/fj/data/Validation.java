@@ -250,6 +250,17 @@ public class Validation<E, T> implements Iterable<T> {
     return e.right().exists(f);
   }
 
+  @Override
+  public boolean equals(Object other) {
+    return !Equal.equalsValidationCheck(this, other) ? false :
+            Equal.validationEqual(Equal.<E>anyEqual(), Equal.<T>anyEqual()).eq(this, (Validation<E, T>) other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.validationHash(Hash.<E>anyHash(), Hash.<T>anyHash()).hash(this);
+  }
+
   /**
    * Returns a single element list if this is a success value, otherwise an empty list.
    *
@@ -1277,6 +1288,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
   };
 
+    @Override
     public String toString() {
         return Show.validationShow(Show.<E>anyShow(), Show.<T>anyShow()).showS(this);
     }

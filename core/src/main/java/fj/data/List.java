@@ -1863,11 +1863,12 @@ public abstract class List<A> implements Iterable<A> {
     //Suppress the warning for cast to <code>List<A></code> because the type is checked in the previous line.
     @SuppressWarnings({ "unchecked" })
     @Override public boolean equals( final Object obj ) {
-        if ( obj == null || !( obj instanceof List ) ) { return false; }
 
         //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
         //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
-        return Equal.listEqual( Equal.<A>anyEqual() ).eq( this, (List<A>) obj );
+
+        return !Equal.equalsValidationCheck(this, obj) ? false :
+                Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj);
     }
 
     /**
@@ -1876,7 +1877,8 @@ public abstract class List<A> implements Iterable<A> {
      *
      * @return the hash code for this list.
      */
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Hash.listHash( Hash.<A>anyHash() ).hash( this );
     }
 
@@ -1887,6 +1889,13 @@ public abstract class List<A> implements Iterable<A> {
      * @return a String representation of the list
      */
     @Override public String toString() {
-        return Show.listShow(Show.<A>anyShow() ).show( this ).foldLeft((s, c) -> s + c, "" );
+        return Show.listShow(Show.<A>anyShow()).showS(this);
+    }
+
+    /**
+     * True if and only if the list has one element. Runs in constant time.
+     */
+    public boolean isSingle() {
+        return isNotEmpty() && tail().isEmpty();
     }
 }
