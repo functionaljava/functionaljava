@@ -1840,4 +1840,11 @@ public abstract class List<A> implements Iterable<A> {
     @Override public String toString() {
         return Show.listShow( Show.<A>anyShow() ).show( this ).foldLeft((s, c) -> s + c, "" );
     }
+
+    /**
+     * True if and only if the list has one element. Runs in constant time.
+     */
+    public boolean isSingle() {
+        return isNotEmpty() && tail().isEmpty();
+    }
 }
