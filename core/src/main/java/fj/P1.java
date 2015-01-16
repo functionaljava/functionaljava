@@ -23,11 +23,7 @@ public abstract class P1<A> {
      * @return A function that returns the first element of a product.
      */
     public static <A> F<P1<A>, A> __1() {
-        return new F<P1<A>, A>() {
-            public A f(final P1<A> p) {
-                return p._1();
-            }
-        };
+        return p -> p._1();
     }
 
     /**
@@ -37,11 +33,7 @@ public abstract class P1<A> {
      * @return A function promoted to operate on P1s.
      */
     public static <A, B> F<P1<A>, P1<B>> fmap(final F<A, B> f) {
-        return new F<P1<A>, P1<B>>() {
-            public P1<B> f(final P1<A> a) {
-                return a.map(f);
-            }
-        };
+        return a -> a.map(f);
     }
 
     /**
@@ -66,13 +58,9 @@ public abstract class P1<A> {
      * @return A function whose result is wrapped in a P1.
      */
     public static <A, B> F<A, P1<B>> curry(final F<A, B> f) {
-        return new F<A, P1<B>>() {
-            public P1<B> f(final A a) {
-                return new P1<B>() {
-                    public B _1() {
-                        return f.f(a);
-                    }
-                };
+        return a -> new P1<B>() {
+            public B _1() {
+                return f.f(a);
             }
         };
     }
@@ -85,11 +73,7 @@ public abstract class P1<A> {
      */
     public <B> P1<B> apply(final P1<F<A, B>> cf) {
         P1<A> self = this;
-        return cf.bind(new F<F<A, B>, P1<B>>() {
-            public P1<B> f(final F<A, B> f) {
-                return fmap(f).f(self);
-            }
-        });
+        return cf.bind(f -> fmap(f).f(self));
     }
 
     /**
@@ -120,11 +104,7 @@ public abstract class P1<A> {
      * @return A function of arity-2 promoted to map over P1s.
      */
     public static <A, B, C> F<P1<A>, F<P1<B>, P1<C>>> liftM2(final F<A, F<B, C>> f) {
-        return Function.curry(new F2<P1<A>, P1<B>, P1<C>>() {
-            public P1<C> f(final P1<A> pa, final P1<B> pb) {
-                return pa.bind(pb, f);
-            }
-        });
+        return Function.curry((pa, pb) -> pa.bind(pb, f));
     }
 
     /**
@@ -143,11 +123,7 @@ public abstract class P1<A> {
      * @return A function from a List of P1s to a single P1 of a List.
      */
     public static <A> F<List<P1<A>>, P1<List<A>>> sequenceList() {
-        return new F<List<P1<A>>, P1<List<A>>>() {
-            public P1<List<A>> f(final List<P1<A>> as) {
-                return sequence(as);
-            }
-        };
+        return as -> sequence(as);
     }
 
     /**
@@ -225,11 +201,7 @@ public abstract class P1<A> {
        */
       public <B> F<B, A> constant() {
 
-        return new F<B, A>() {
-          public A f(final B b) {
-              return P1.this._1();
-          }
-        };
+        return b -> P1.this._1();
       }
 
     public String toString() {

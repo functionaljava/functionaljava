@@ -209,11 +209,7 @@ public abstract class P2<A, B> {
    * @return A function that splits a given product between the two given functions and combines their output.
    */
   public static <A, B, C, D> F<P2<A, B>, P2<C, D>> split_(final F<A, C> f, final F<B, D> g) {
-    return new F<P2<A, B>, P2<C, D>>() {
-      public P2<C, D> f(final P2<A, B> p) {
-        return p.split(f, g);
-      }
-    };
+    return p -> p.split(f, g);
   }
 
   /**
@@ -223,11 +219,7 @@ public abstract class P2<A, B> {
    * @return The given function, promoted to map the first element of products.
    */
   public static <A, B, X> F<P2<A, B>, P2<X, B>> map1_(final F<A, X> f) {
-    return new F<P2<A, B>, P2<X, B>>() {
-      public P2<X, B> f(final P2<A, B> p) {
-        return p.map1(f);
-      }
-    };
+    return p -> p.map1(f);
   }
 
   /**
@@ -237,11 +229,7 @@ public abstract class P2<A, B> {
    * @return The given function, promoted to map the second element of products.
    */
   public static <A, B, X> F<P2<A, B>, P2<A, X>> map2_(final F<B, X> f) {
-    return new F<P2<A, B>, P2<A, X>>() {
-      public P2<A, X> f(final P2<A, B> p) {
-        return p.map2(f);
-      }
-    };
+    return p -> p.map2(f);
   }
 
   /**

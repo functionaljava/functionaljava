@@ -578,7 +578,7 @@ public abstract class List<A> implements Iterable<A> {
     }
 
     /**
-     * Traverse through the List with a might-fail function.
+     * Traverse through the List with a function that might fail with reporting an error.
      *
      * @param f The function that produces Either value.
      * @return  error in left if applying f fails to any element of the list or f mapped list in right.
@@ -590,6 +590,16 @@ public abstract class List<A> implements Iterable<A> {
 
     private static <A, B, C, E> Either<E, List<C>> map2Either(F2<A, List<B>, List<C>> f, final Either<E, A> either1, final Either<E, List<B>> either2) {
         return either1.right().bind(o1 -> either2.right().map(o2 -> f.f(o1, o2)));
+    }
+
+    /**
+     * Map each element of a structure to an action, evaluate these actions from left to right
+     * and collect the results.
+     */
+    public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
+        F2<A, IO<List<B>>, IO<List<B>>> f2 = (a, acc) ->
+                IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b)));
+        return this.foldRight(f2, IOFunctions.unit(List.<B>nil()));
     }
 
     /**
@@ -1088,7 +1098,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A possible list of values after binding through the Option monad.
    */
   public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
-    return foldRight((a, bs) -> f.f(a).bind(b -> bs.map(bbs -> bbs.cons(b))), Option.<List<B>>some(List.<B>nil()));
+    return traverseOption(f);
   }
 
   /**
