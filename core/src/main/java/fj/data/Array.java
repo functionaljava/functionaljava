@@ -6,6 +6,9 @@ import fj.F2;
 import fj.P;
 import fj.P1;
 import fj.P2;
+import fj.Equal;
+import fj.Show;
+import fj.Hash;
 import fj.Unit;
 import fj.function.Effect1;
 
@@ -55,6 +58,11 @@ public final class Array<A> implements Iterable<A> {
   @SuppressWarnings("unchecked")
   public A get(final int index) {
     return (A) a[index];
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.arrayHash(Hash.<A>anyHash()).hash(this);
   }
 
   /**
@@ -171,6 +179,11 @@ public final class Array<A> implements Iterable<A> {
             : Option.<P2<A, Integer>>none();
       }
     }, 0);
+  }
+
+  @Override
+  public String toString() {
+    return Show.arrayShow(Show.<A>anyShow()).showS(this);
   }
 
   /**
@@ -666,6 +679,13 @@ public final class Array<A> implements Iterable<A> {
         return true;
 
     return false;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return !
+            Equal.equalsValidationCheck(this, o) ? false :
+            Equal.arrayEqual(Equal.<A>anyEqual()).eq(this, (Array<A>) o);
   }
 
   /**

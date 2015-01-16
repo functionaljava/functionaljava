@@ -1,15 +1,9 @@
 package fj.data;
 
-import fj.F;
-import fj.F2;
-import fj.F2Functions;
-import fj.P;
-import fj.P1;
-import fj.P2;
+import fj.*;
+
 import static fj.Function.*;
 import static fj.data.Stream.*;
-import fj.Monoid;
-import fj.Show;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -263,6 +257,22 @@ public final class Tree<A> implements Iterable<A> {
 
   private Stream<String> drawTree(final Show<A> s) {
     return drawSubTrees(s, subForest._1()).cons(s.showS(root));
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return !Equal.equalsValidationCheck(this, other) ? false :
+            Equal.treeEqual(Equal.<A>anyEqual()).eq(this, (Tree<A>) other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.treeHash(Hash.<A>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.treeShow(Show.<A>anyShow()).showS(this);
   }
 
   /**
