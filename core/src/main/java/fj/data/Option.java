@@ -17,6 +17,8 @@ import fj.P8;
 import fj.Unit;
 import fj.Show;
 import fj.function.Effect1;
+import fj.Equal;
+import fj.Ord;
 
 import static fj.Function.*;
 import static fj.P.p;
@@ -413,6 +415,47 @@ public abstract class Option<A> implements Iterable<A> {
   public final <B> Option<B> sequence(final Option<B> o) {
     final F<A, Option<B>> c = constant(o);
     return bind(c);
+  }
+
+  public <L, B> Either<L, Option<B>> traverseEither(F<A, Either<L, B>> f) {
+    return map(a -> f.f(a).right().map(b -> some(b))).orSome(Either.right(none()));
+  }
+
+  public <B> IO<Option<B>> traverseIO(F<A, IO<B>> f) {
+    return map(a -> IOFunctions.map(f.f(a), b -> some(b))).orSome(IOFunctions.lazy(u -> none()));
+  }
+
+  public <B> List<Option<B>> traverseList(F<A, List<B>> f) {
+    return map(a -> f.f(a).map(b -> some(b))).orSome(List.list());
+  }
+
+  public <B> Option<Option<B>> traverseOption(F<A, Option<B>> f) {
+    return map(f);
+  }
+
+  public <B> Stream<Option<B>> traverseStream(F<A, Stream<B>> f) {
+    return map(a -> f.f(a).map(b -> some(b))).orSome(Stream.nil());
+  }
+
+  public <B> P1<Option<B>> traverseP1(F<A, P1<B>> f) {
+    return map(a -> f.f(a).map(b -> some(b))).orSome(P.p(none()));
+  }
+
+  public <B> Seq<Option<B>> traverseSeq(F<A, Seq<B>> f) {
+    return map(a -> f.f(a).map(b -> some(b))).orSome(Seq.empty());
+  }
+
+  public <B> Set<Option<B>> traverseSet(Ord<B> ord, F<A, Set<B>> f) {
+    Ord<Option<B>> optOrd = Ord.optionOrd(ord);
+    return map(a -> f.f(a).map(optOrd, b -> some(b))).orSome(Set.empty(optOrd));
+  }
+
+  public <B> F2<Ord<B>, F<A, Set<B>>, Set<Option<B>>> traverseSet() {
+    return (o, f) -> traverseSet(o, f);
+  }
+
+  public <E, B> Validation<E, Option<B>> traverseValidation(F<A, Validation<E, B>> f) {
+    return map(a -> f.f(a).map(b -> some(b))).orSome(Validation.success(none()));
   }
 
   /**
