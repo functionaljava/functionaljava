@@ -349,16 +349,6 @@ public class IOFunctions {
 	}
 
 
-	/**
-	 * Map each element of a structure to an action, evaluate these actions from left to right
-	 * and collect the results.
-	 */
-	public static <A, B> IO<List<B>> traverse(List<A> list, F<A, IO<B>> f) {
-		F2<A, IO<List<B>>, IO<List<B>>> f2 = (a, acc) ->
-				bind(acc, (bs) -> map(f.f(a), b -> bs.append(List.list(b))));
-		return list.foldRight(f2, IOFunctions.unit(List.<B>nil()));
-	}
-
 	public static <A> IO<A> join(IO<IO<A>> io1) {
 		return bind(io1, io2 -> io2);
 	}
