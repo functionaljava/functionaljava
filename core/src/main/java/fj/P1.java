@@ -232,7 +232,20 @@ public abstract class P1<A> {
         };
       }
 
+    @Override
     public String toString() {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}
+
+    @Override
+    public boolean equals(Object other) {
+        return !Equal.equalsValidationCheck(this, other) ? false :
+                Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Hash.p1Hash(Hash.<A>anyHash()).hash(this);
+    }
+
 }

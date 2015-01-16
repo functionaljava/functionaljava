@@ -24,6 +24,16 @@ public abstract class P2<A, B> {
    */
   public abstract B _2();
 
+  @Override
+  public boolean equals(Object other) {
+    return Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (P2<A, B>) other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.p2Hash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
+  }
+
   /**
    * Swaps the elements around in this product.
    *
@@ -344,6 +354,7 @@ public abstract class P2<A, B> {
     };
   }
 
+    @Override
 	public String toString() {
 		return Show.p2Show(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
 	}

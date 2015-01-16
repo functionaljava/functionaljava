@@ -19,6 +19,7 @@ import fj.Show;
 import fj.function.Effect1;
 import fj.Equal;
 import fj.Ord;
+import fj.Hash;
 
 import static fj.Function.*;
 import static fj.P.p;
@@ -48,9 +49,9 @@ public abstract class Option<A> implements Iterable<A> {
 
   }
 
+  @Override
   public String toString() {
-    final Show<A> s = anyShow();
-    return optionShow(s).showS(this);
+    return optionShow(Show.<A>anyShow()).showS(this);
   }
 
   /**
@@ -625,6 +626,12 @@ public abstract class Option<A> implements Iterable<A> {
     return isSome() && f.f(some());
   }
 
+  @Override
+  public boolean equals(Object other) {
+    return !Equal.equalsValidationCheck(this, other) ? false :
+            Equal.optionEqual(Equal.<A>anyEqual()).eq(this, (Option<A>) other);
+  }
+
   /**
    * Projects an immutable collection of this optional value.
    *
@@ -638,61 +645,20 @@ public abstract class Option<A> implements Iterable<A> {
     public A some() {
       throw error("some on None");
     }
-
-    @Override
-    public int hashCode() {
-       return 31;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-       if (this == obj)
-          return true;
-       if (obj == null)
-          return false;
-       if (getClass() != obj.getClass())
-          return false;
-       return true;
-    }
   }
 
-  private static final class Some<A> extends Option<A> {
-    private final A a;
+    private static final class Some<A> extends Option<A> {
+      private final A a;
 
-    Some(final A a) {
-      this.a = a;
+      Some(final A a) {
+        this.a = a;
+      }
+
+      public A some() {
+        return a;
+      }
     }
 
-    public A some() {
-      return a;
-    }
-
-    @Override
-    public int hashCode() {
-       final int prime = 31;
-       int result = 1;
-       result = prime * result + ((a == null) ? 0 : a.hashCode());
-       return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-       if (this == obj)
-          return true;
-       if (obj == null)
-          return false;
-       if (getClass() != obj.getClass())
-          return false;
-       Some<?> other = (Some<?>) obj;
-       if (a == null) {
-          if (other.a != null)
-             return false;
-       } else if (!a.equals(other.a))
-          return false;
-       return true;
-    }
-
-  }
 
   public static <T> F<T, Option<T>> some_() {
     return t -> some(t);
@@ -847,6 +813,11 @@ public abstract class Option<A> implements Iterable<A> {
       final Option<String> none = none();
       return s.length() == 0 ? none : some(s);
     });
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.optionHash(Hash.<A>anyHash()).hash(this);
   }
 
   /**

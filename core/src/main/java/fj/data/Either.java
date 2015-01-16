@@ -1,15 +1,12 @@
 package fj.data;
 
 import static fj.Bottom.error;
-import fj.Effect;
-import fj.F;
+
+import fj.*;
+
 import static fj.Function.identity;
 import static fj.P.p;
 
-import fj.Show;
-import fj.Function;
-import fj.P1;
-import fj.Unit;
 import fj.function.Effect1;
 
 import static fj.Unit.unit;
@@ -78,6 +75,18 @@ public abstract class Either<A, B> {
     return isLeft() ?
            left.f(left().value()) :
            right.f(right().value());
+  }
+
+  @Override
+  public boolean equals(Object other) {
+
+    return !Equal.equalsValidationCheck(this, other) ? false :
+            Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other);
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.eitherHash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
   }
 
   /**
