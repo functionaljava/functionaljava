@@ -592,10 +592,20 @@ public abstract class List<A> implements Iterable<A> {
         return either1.right().bind(o1 -> either2.right().map(o2 -> f.f(o1, o2)));
     }
 
-    /**
-     * Map each element of a structure to an action, evaluate these actions from left to right
-     * and collect the results.
-     */
+    public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
+        F2<A, Stream<List<B>>, Stream<List<B>>> f2 = (A a, Stream<List<B>> as) -> List.<B, B, B>map2Stream(List::cons, f.f(a), as);
+        return foldRight(f2, Stream.<List<B>>nil());
+    }
+
+    private static <A, B, C> Stream<List<C>> map2Stream(F2<A, List<B>, List<C>> f, final Stream<A> stream1, final Stream<List<B>> stream2) {
+        return stream1.bind(o1 -> stream2.map(o2 -> f.f(o1, o2)));
+    }
+
+    public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
+        F2<A, P1<List<B>>, P1<List<B>>> f2 = (A a, P1<List<B>> ps) -> f.f(a).bind(b -> ps.map(bs -> bs.cons(b)));
+        return foldRight(f2, P.p(List.<B>nil()));
+    }
+
     public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
         F2<A, IO<List<B>>, IO<List<B>>> f2 = (a, acc) ->
                 IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b)));

@@ -1,15 +1,12 @@
 package fj.data;
 
 import static fj.Bottom.error;
-import fj.Effect;
-import fj.F;
+
+import fj.*;
+
 import static fj.Function.identity;
 import static fj.P.p;
 
-import fj.Show;
-import fj.Function;
-import fj.P1;
-import fj.Unit;
 import fj.function.Effect1;
 
 import static fj.Unit.unit;
@@ -543,6 +540,18 @@ public abstract class Either<A, B> {
           return isRight() ?
                   IOFunctions.map(f.f(value()), x -> Either.<A, C>right(x)) :
                   IOFunctions.unit(Either.<A, C>left(e.left().value()));
+      }
+
+      public <C> P1<Either<A, C>> traverseP1(final F<B, P1<C>> f) {
+          return isRight() ?
+                  f.f(value()).map(x -> Either.<A, C>right(x)) :
+                  P.p(Either.<A, C>left(e.left().value()));
+      }
+
+      public <C> Option<Either<A, C>> traverseOption(final F<B, Option<C>> f) {
+          return isRight() ?
+                  f.f(value()).map(x -> Either.<A, C>right(x)) :
+                  Option.some(Either.<A, C>left(e.left().value()));
       }
 
     /**
