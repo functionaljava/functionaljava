@@ -1,0 +1,10 @@
+= Release 3.2
+
+Released: 30 May, 2014
+
+* Added methods to HashMap: toList, toStream, toOption, toArray, map, mapKeys, foreach, convert to/from java.util.Map.
+* Convert from java.util.List to List.
+* Fixed findChild method in TreeZipper to handle empty stream.
+* Fixed stack overflow when sorting and zipping.
+* Fixed stack overflow in Stream's bind method.
+* Small Javadoc fixes.
