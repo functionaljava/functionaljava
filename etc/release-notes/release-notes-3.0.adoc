@@ -1,0 +1,7 @@
+= Release 3.0
+
+Released: Jun 2010
+
+A crucial change has been made to the F interfaces, which are now abstract classes and containing useful methods. This means some other methods (fj.Function) are redundant and will be removed in a release soon (perhaps with a @Deprecated first).
+
+There are other minor additions and bug fixes.
