@@ -2,10 +2,7 @@ package fj;
 
 import java.lang.ref.SoftReference;
 
-import fj.data.Array;
-import fj.data.List;
-import fj.data.Stream;
-import fj.data.Validation;
+import fj.data.*;
 import fj.function.Try0;
 
 public abstract class P1<A> {
@@ -44,11 +41,7 @@ public abstract class P1<A> {
      */
     public <B> P1<B> bind(final F<A, P1<B>> f) {
         P1<A> self = this;
-        return new P1<B>() {
-            public B _1() {
-                return f.f(self._1())._1();
-            }
-        };
+        return P.lazy(u -> f.f(self._1())._1());
     }
 
     /**
@@ -58,11 +51,7 @@ public abstract class P1<A> {
      * @return A function whose result is wrapped in a P1.
      */
     public static <A, B> F<A, P1<B>> curry(final F<A, B> f) {
-        return a -> new P1<B>() {
-            public B _1() {
-                return f.f(a);
-            }
-        };
+        return a -> P.lazy(u -> f.f(a));
     }
 
     /**
@@ -143,11 +132,57 @@ public abstract class P1<A> {
      * @return A single P1 for the given array.
      */
     public static <A> P1<Array<A>> sequence(final Array<P1<A>> as) {
-        return new P1<Array<A>>() {
-            public Array<A> _1() {
-                return as.map(P1.<A>__1());
-            }
-        };
+        return P.lazy(u -> as.map(P1.<A>__1()));
+    }
+
+    /**
+     * Traversable instance of P1 for List
+     *
+     * @param f The function that takes A and produces a List<B> (non-deterministic result)
+     * @return A List of P1<B>
+     */
+    public <B> List<P1<B>> traverseList(final F<A, List<B>>  f){
+        return f.f(_1()).map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Either
+     *
+     * @param f The function might successfully return B or might fail with an error notification of type X
+     * @return An Either of  P1<B>
+     */
+    public <B, X> Either<X, P1<B>> traverseEither(final F<A, Either<X, B>>  f){
+        return f.f(_1()).right().map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Option
+     *
+     * @param f The function might successfully might fail
+     * @return An Option of  P1<B>
+     */
+    public <B> List<P1<B>> traverseOption(final F<A, List<B>>  f){
+        return f.f(_1()).map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Validation
+     *
+     * @param f The function might successfully return B or might fail with an error notification of type X
+     * @return An Validation  of P1<B>
+     */
+    public <B, E> Validation<E, P1<B>> traverseValidation(final F<A, Validation<E, B>> f){
+        return f.f(_1()).map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Either
+     *
+     * @param f The function might successfully return B or might fail with an error notification of type X
+     * @return An Stream of  P1<B>
+     */
+    public <B> List<P1<B>> traverseStream(final F<A, List<B>>  f){
+        return f.f(_1()).map(b -> P.p(b));
     }
 
     /**
@@ -158,11 +193,7 @@ public abstract class P1<A> {
        */
       public <X> P1<X> map(final F<A, X> f) {
           final P1<A> self = this;
-        return new P1<X>() {
-          public X _1() {
-            return f.f(self._1());
-          }
-        };
+        return P.lazy(u -> f.f(self._1()));
       }
 
     /**
@@ -171,12 +202,12 @@ public abstract class P1<A> {
        * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
        */
       public P1<A> memo() {
-          final P1<A> self = this;
+        final P1<A> self = this;
         return new P1<A>() {
           private final Object latch = new Object();
           @SuppressWarnings({"InstanceVariableMayNotBeInitialized"})
           private volatile SoftReference<A> v;
-    
+
           public A _1() {
             A a = v != null ? v.get() : null;
             if (a == null)
@@ -209,10 +240,11 @@ public abstract class P1<A> {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object other) {
-        return !Equal.equalsValidationCheck(this, other) ? false :
-                Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other);
+        return Equal.equalsValidationCheck(this, other)
+                && Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other);
     }
 
     @Override
