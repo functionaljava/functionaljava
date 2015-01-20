@@ -161,7 +161,7 @@ public abstract class P1<A> {
      * @param f The function might successfully might fail
      * @return An Option of  P1<B>
      */
-    public <B> List<P1<B>> traverseOption(final F<A, List<B>>  f){
+    public <B> Option<P1<B>> traverseOption(final F<A, Option<B>>  f){
         return f.f(_1()).map(b -> P.p(b));
     }
 
@@ -181,7 +181,7 @@ public abstract class P1<A> {
      * @param f The function might successfully return B or might fail with an error notification of type X
      * @return An Stream of  P1<B>
      */
-    public <B> List<P1<B>> traverseStream(final F<A, List<B>>  f){
+    public <B> Stream<P1<B>> traverseStream(final F<A, Stream<B>>  f){
         return f.f(_1()).map(b -> P.p(b));
     }
 
