@@ -402,6 +402,18 @@ public abstract class Either<A, B> {
     public Collection<A> toCollection() {
       return toList().toCollection();
     }
+
+   public <C> Option<Either<C,B>> traverseOption(F<A, Option<C>> f) {
+       return isLeft() ?
+               f.f(value()).map(x -> Either.<C, B>left(x)) :
+               Option.some(Either.<C, B>right(e.right().value()));
+   }
+
+  public <C> Stream<Either<C, B>> traverseStream(F<A, Stream<C>> f) {
+      return isLeft() ?
+              f.f(value()).map(c -> Either.<C, B>left(c)) :
+              Stream.single(Either.<C, B>right(e.right().value()));
+  }
   }
 
   /**
@@ -543,7 +555,7 @@ public abstract class Either<A, B> {
       }
 
       /**
-       * Anonymous bind through this projection.
+       * Traverse with a function that has IO effect
        *
        * @param f the function to traverse with
        * @return An either after traversing through this projection.
@@ -551,7 +563,7 @@ public abstract class Either<A, B> {
       public <C> IO<Either<A, C>> traverseIO(final F<B, IO<C>> f) {
           return isRight() ?
                   IOFunctions.map(f.f(value()), x -> Either.<A, C>right(x)) :
-                  IOFunctions.unit(Either.<A, C>left(e.left().value()));
+                  IOFunctions.lazy(u -> Either.<A, C>left(e.left().value()));
       }
 
       public <C> P1<Either<A, C>> traverseP1(final F<B, P1<C>> f) {
@@ -667,6 +679,13 @@ public abstract class Either<A, B> {
     public Collection<B> toCollection() {
       return toList().toCollection();
     }
+
+      public <C> Stream<Either<A, C>> traverseStream(F<B, Stream<C>> f) {
+          return isRight() ?
+                  f.f(value()).map(x -> Either.right(x)) :
+                  Stream.<Either<A,C>>single(Either.left(e.left().value()));
+
+      }
   }
 
   /**
@@ -766,6 +785,80 @@ public abstract class Either<A, B> {
            Either.<X, List<B>>right(List.<B>nil()) :
            a.head().right().bind(bb -> sequenceRight(a.tail()).right().map(cons_(bb)));
   }
+
+  /**
+   * Traversable instance of RightProjection of Either for List.
+   *
+   * @return traversed value
+   */
+  public <C> List<Either<A, C>> traverseListRight(final F<B, List<C>> f) {
+    return right().<C>traverseList(f);
+  }
+
+  /**
+     * Traversable instance of LeftProjection of Either for List.
+     *
+     * @return traversed value
+  */
+    public <C> List<Either<C, B>> traverseListLeft(final F<A, List<C>> f) {
+        return left().<C>traverseList(f);
+    }
+
+  /**
+   * Traversable instance of RightProjection of Either for IO.
+   *
+   * @return traversed value
+   */
+  public <C> IO<Either<A, C>> traverseIORight(final F<B, IO<C>> f) {
+    return right().<C>traverseIO(f);
+  }
+
+  /**
+   * Traversable instance of LeftProjection of Either for IO.
+   *
+   * @return traversed value
+   */
+  public <C> IO<Either<C, B>> traverseIOLeft(final F<A, IO<C>> f) {
+    return left().<C>traverseIO(f);
+  }
+
+  /**
+   * Traversable instance of RightProjection of Either for Option.
+   *
+   * @return traversed value
+   */
+  public <C> Option<Either<A, C>> traverseOptionRight(final F<B, Option<C>> f) {
+    return right().<C>traverseOption(f);
+  }
+
+  /**
+   * Traversable instance of LeftProjection of Either for Option.
+   *
+   * @return traversed value
+   */
+  public <C> Option<Either<C, B>> traverseOptionLeft(final F<A, Option<C>> f) {
+    return left().<C>traverseOption(f);
+  }
+
+  /**
+   * Traversable instance of RightProjection of Either for Stream.
+   *
+   * @return traversed value
+   */
+  public <C> Stream<Either<A, C>> traverseStreamRight(final F<B, Stream<C>> f) {
+    return right().<C>traverseStream(f);
+  }
+
+  /**
+   * Traversable instance of LeftProjection of Either for Stream.
+   *
+   * @return traversed value
+   */
+  public <C> Stream<Either<C, B>> traverseStreamLeft(final F<A, Stream<C>> f) {
+    return left().<C>traverseStream(f);
+  }
+
+
 
   /**
    * Takes an <code>Either</code> to its contained value within left or right.
