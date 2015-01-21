@@ -819,32 +819,32 @@ public class Validation<E, T> implements Iterable<T> {
 
     public <C> List<Validation<E, C>> traverseList(F<T, List<C>> f){
         return isSuccess() ?
-            f.f(success()).map(c -> Validation.<E, C>success(c)) :
-            list(Validation.<E, C>fail(e.left().value()));
+            f.f(success()).map(Validation::success) :
+            list(fail(e.left().value()));
     }
 
     public <C> Stream<Validation<E, C>> traverseStream(F<T, Stream<C>> f){
         return isSuccess() ?
-            f.f(success()).map(c -> Validation.<E, C>success(c)) :
-            Stream.stream(Validation.<E, C>fail(e.left().value()));
+            f.f(success()).map(Validation::success) :
+            Stream.stream(fail(e.left().value()));
     }
 
     public <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f){
         return isSuccess() ?
-            f.f(success()).map(c -> Validation.<E, C>success(c)) :
-            Option.some(Validation.<E, C>fail(e.left().value()));
+            f.f(success()).map(Validation::success) :
+            Option.some(fail(e.left().value()));
     }
 
     public <C> IO<Validation<E, C>> traverseIO(F<T, IO<C>> f){
         return isSuccess() ?
-            IOFunctions.map(f.f(success()), c -> Validation.<E, C>success(c)) :
-            IOFunctions.unit(Validation.<E, C>fail(e.left().value()));
+            IOFunctions.map(f.f(success()), Validation::success) :
+            IOFunctions.unit(fail(e.left().value()));
     }
 
     public <C> P1<Validation<E, C>> traverseP1(F<T, P1<C>> f){
         return isSuccess() ?
-                f.f(success()).map(c -> Validation.<E, C>success(c)) :
-                P.p(Validation.<E, C>fail(e.left().value()));
+                f.f(success()).map(Validation::success) :
+                P.p(fail(e.left().value()));
     }
 
 

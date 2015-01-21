@@ -563,18 +563,16 @@ public abstract class List<A> implements Iterable<A> {
   }
 
     /**
-     * Traverse through the List with a might-fail function.
+     * Traverses through the List with the given function
      *
      * @param f The function that might fail.
      * @return  none if applying f fails to any element of the list or f mapped list in some .
      */
     public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
-        F2<A, Option<List<B>>, Option<List<B>>> f2 = (a, as) -> map2Option(List::cons, f.f(a), as);
-        return foldRight(f2, Option.some(List.<B>nil()));
-    }
-
-    private static <A, B, C> Option<List<C>> map2Option(F2<A, List<B>, List<C>> f, final Option<A> opt1, final Option<List<B>> opt2) {
-        return opt1.bind(o1 -> opt2.map(o2 -> f.f(o1, o2)));
+        return foldRight(
+                (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
+                Option.some(List.<B>nil())
+        );
     }
 
     /**
@@ -584,32 +582,31 @@ public abstract class List<A> implements Iterable<A> {
      * @return  error in left if applying f fails to any element of the list or f mapped list in right.
      */
     public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
-        F2<A, Either<E, List<B>>, Either<E, List<B>>> f2 = (A a, Either<E, List<B>> as) -> List.<B, B, B, E>map2Either(List::cons, f.f(a), as);
-        return foldRight(f2, Either.<E, List<B>>right(List.<B>nil()));
-    }
-
-    private static <A, B, C, E> Either<E, List<C>> map2Either(F2<A, List<B>, List<C>> f, final Either<E, A> either1, final Either<E, List<B>> either2) {
-        return either1.right().bind(o1 -> either2.right().map(o2 -> f.f(o1, o2)));
+        return foldRight(
+                (a, acc) -> f.f(a).right().bind(e -> acc.right().map(es -> es.cons(e))),
+                Either.<E, List<B>>right(List.<B>nil())
+        );
     }
 
     public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
-        F2<A, Stream<List<B>>, Stream<List<B>>> f2 = (A a, Stream<List<B>> as) -> List.<B, B, B>map2Stream(List::cons, f.f(a), as);
-        return foldRight(f2, Stream.<List<B>>nil());
-    }
-
-    private static <A, B, C> Stream<List<C>> map2Stream(F2<A, List<B>, List<C>> f, final Stream<A> stream1, final Stream<List<B>> stream2) {
-        return stream1.bind(o1 -> stream2.map(o2 -> f.f(o1, o2)));
+        return foldRight(
+                (a, acc) -> f.f(a).bind(s -> acc.map(ss -> ss.cons(s))),
+                Stream.<List<B>>nil()
+        );
     }
 
     public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
-        F2<A, P1<List<B>>, P1<List<B>>> f2 = (A a, P1<List<B>> ps) -> f.f(a).bind(b -> ps.map(bs -> bs.cons(b)));
-        return foldRight(f2, P.p(List.<B>nil()));
+        return foldRight(
+                (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+                P.p(List.<B>nil())
+        );
     }
 
     public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
-        F2<A, IO<List<B>>, IO<List<B>>> f2 = (a, acc) ->
-                IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b)));
-        return this.foldRight(f2, IOFunctions.unit(List.<B>nil()));
+        return this.foldRight(
+                (a, acc) -> IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b))),
+                IOFunctions.unit(List.<B>nil())
+        );
     }
 
     /**
@@ -1084,7 +1081,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return a list of all the items in this list that do not appear in the given list.
    */
   public final List<A> minus(final Equal<A> eq, final List<A> xs) {
-    return this.removeAll(compose(Monoid.disjunctionMonoid.sumLeft(), xs.mapM(Function.<A, A, Boolean>curry(eq.eq()))));
+    return removeAll(compose(Monoid.disjunctionMonoid.sumLeft(), xs.mapM(curry(eq.eq()))));
   }
 
 
@@ -1546,7 +1543,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of the given value replicated the given number of times.
    */
   public static <A> List<A> replicate(final int n, final A a) {
-    return n <= 0 ? List.<A>nil() : List.<A>replicate(n - 1, a).cons(a);
+    return n <= 0 ? List.<A>nil() : replicate(n - 1, a).cons(a);
   }
 
   /**
@@ -1879,7 +1876,7 @@ public abstract class List<A> implements Iterable<A> {
      */
     @Override
     public int hashCode() {
-        return Hash.listHash( Hash.<A>anyHash() ).hash( this );
+        return Hash.listHash(Hash.<A>anyHash()).hash(this);
     }
 
     /**

@@ -727,7 +727,7 @@ public abstract class Option<A> implements Iterable<A> {
   public static <A> Option<List<A>> sequence(final List<Option<A>> a) {
     return a.isEmpty() ?
            some(List.<A>nil()) :
-            a.head().bind(aa -> sequence(a.tail()).map(cons_(aa)));
+           a.head().bind(aa -> sequence(a.tail()).map(cons_(aa)));
   }
 
   /**
