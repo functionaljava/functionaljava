@@ -1,0 +1,7 @@
+= Release 2.22
+
+Released: March 2010
+
+* Bug fixes
+* Documentation fixes
+* Built against JDK 1.5 (not 1.6)
