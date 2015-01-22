@@ -1,12 +1,7 @@
 package fj.control.parallel;
 
-import fj.Effect;
-import fj.F;
-import fj.F2;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.Unit;
+import fj.*;
+
 import static fj.P.p;
 import static fj.Function.curry;
 import static fj.Function.identity;
@@ -353,11 +348,7 @@ public final class Promise<A> {
     return new F<Stream<A>, Promise<B>>() {
       public Promise<B> f(final Stream<A> as) {
         return as.isEmpty() ? promise(s, P.p(b)) : liftM2(f).f(promise(s, P.p(as.head()))).f(
-            Promise.<P1<B>>join(s, new P1<Promise<P1<B>>>() {
-              public Promise<P1<B>> _1() {
-                return f(as.tail()._1()).fmap(P.<B>p1());
-              }
-            }));
+                Promise.<P1<B>>join(s, P.lazy(u -> f(as.tail()._1()).fmap(P.<B>p1()))));
       }
     };
   }

@@ -8,7 +8,12 @@ import fj.data.Stream;
 import fj.data.Validation;
 import fj.function.Try0;
 
-public abstract class P1<A> {
+public abstract class P1<A> implements F0<A> {
+
+    @Override
+    public A f() {
+        return _1();
+    }
 
     /**
      * Access the first element of the product.

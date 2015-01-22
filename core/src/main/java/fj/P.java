@@ -675,13 +675,17 @@ public final class P {
     };
   }
 
-    public static <A> P1<A> lazy(F<Unit, A> f) {
+    public static <A> P1<A> lazy(F0<A> f) {
         return new P1<A>() {
             @Override
             public A _1() {
-                return f.f(unit());
+                return f.f();
             }
         };
+    }
+
+    public static <A> P1<A> lazy(F<Unit, A> f) {
+        return lazy(() -> f.f(unit()));
     }
 
     public static <A, B> P2<A, B> lazy(F<Unit, A> fa, F<Unit, B> fb) {
