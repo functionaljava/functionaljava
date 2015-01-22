@@ -435,8 +435,7 @@ public abstract class P6<A, B, C, D, E, F> {
 
   @Override
   public boolean equals(Object other) {
-    return !Equal.equalsValidationCheck(this, other) ? false :
-            Equal.p6Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual()).eq(this, (P6<A, B, C, D, E, F>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p6Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual()).eq(this, (P6<A, B, C, D, E, F>) other)));
   }
 
   @Override

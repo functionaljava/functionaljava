@@ -48,8 +48,7 @@ public final class Seq<A> {
   @Override
   public boolean equals(Object other) {
 
-    return !Equal.equalsValidationCheck(this, other) ? false :
-            Equal.seqEqual(Equal.<A>anyEqual()).eq(this, (Seq<A>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.seqEqual(Equal.<A>anyEqual()).eq(this, (Seq<A>) other)));
   }
 
   /**

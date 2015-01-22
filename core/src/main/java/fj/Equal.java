@@ -535,19 +535,19 @@ public final class Equal<A> {
   }
 
   /**
-   * Can the objects be checked for equality?
-   * @return True if the objects are not null and are an instance of the provided class.
+   * @return Returns none if no equality can be determined by checking the nullity and reference values, else the equality
    */
-  public static boolean equalsValidationCheck(Object o1, Object o2) {
-    java.lang.Class<?> c = o1.getClass();
-    if (o1 == null || !c.isInstance(o1)) {
-      return false;
+  public static Option<Boolean> shallowEqualsO(Object o1, Object o2) {
+    if (o1 == null && o2 == null) {
+      return Option.some(true);
+    } else if (o1 == o2) {
+      return Option.some(true);
+    } else if (o1 != null && o2 != null) {
+      java.lang.Class<?> c = o1.getClass();
+      return c.isInstance(o2) ? Option.none() : Option.some(false);
+    } else {
+      return Option.some(false);
     }
-    if (o2 == null || !c.isInstance(o2)) {
-      return false;
-    }
-    return true;
-
   }
 
 }

@@ -5,8 +5,6 @@ import java.lang.ref.SoftReference;
 import fj.data.Array;
 import fj.data.List;
 import fj.data.Stream;
-import fj.data.Validation;
-import fj.function.Try0;
 
 public abstract class P1<A> implements F0<A> {
 
@@ -244,8 +242,7 @@ public abstract class P1<A> implements F0<A> {
 
     @Override
     public boolean equals(Object other) {
-        return !Equal.equalsValidationCheck(this, other) ? false :
-                Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other);
+        return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other)));
     }
 
     @Override

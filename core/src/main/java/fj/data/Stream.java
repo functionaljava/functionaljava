@@ -1,12 +1,10 @@
 package fj.data;
 
-import fj.Effect;
 import fj.Equal;
 import fj.Hash;
 import fj.Show;
 import fj.F;
 import fj.F2;
-import fj.F3;
 import fj.Function;
 import fj.Monoid;
 import fj.Ord;
@@ -1239,8 +1237,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return !Equal.equalsValidationCheck(this, other) ? false :
-            Equal.streamEqual(Equal.<A>anyEqual()).eq(this, (Stream<A>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.streamEqual(Equal.<A>anyEqual()).eq(this, (Stream<A>) other)));
   }
 
   @Override

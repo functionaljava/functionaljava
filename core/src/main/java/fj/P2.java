@@ -26,7 +26,7 @@ public abstract class P2<A, B> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (P2<A, B>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (P2<A, B>) other)));
   }
 
   @Override

@@ -80,8 +80,7 @@ public abstract class Either<A, B> {
   @Override
   public boolean equals(Object other) {
 
-    return !Equal.equalsValidationCheck(this, other) ? false :
-            Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other)));
   }
 
   @Override

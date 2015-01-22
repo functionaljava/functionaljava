@@ -16,9 +16,15 @@ public class ListTest {
 
         int max = 5;
         List<Integer> list = List.range(1, max);
+
+        assertTrue(list.equals(list));
         assertTrue(list.equals(List.range(1, max)));
+
         assertFalse(list.equals(List.single(1)));
         assertFalse(list.equals(true));
+        assertFalse(list.equals(null));
+
+
 
         assertTrue(List.list(1, 2).toString().equals("List(1,2)"));
 

@@ -1,6 +1,5 @@
 package fj.data;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.P;
@@ -683,9 +682,7 @@ public final class Array<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object o) {
-    return !
-            Equal.equalsValidationCheck(this, o) ? false :
-            Equal.arrayEqual(Equal.<A>anyEqual()).eq(this, (Array<A>) o);
+    return Equal.shallowEqualsO(this, o).orSome(P.lazy(u -> Equal.arrayEqual(Equal.<A>anyEqual()).eq(this, (Array<A>) o)));
   }
 
   /**
