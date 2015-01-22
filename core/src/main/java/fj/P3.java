@@ -192,8 +192,7 @@ public abstract class P3<A, B, C> {
 
   @Override
   public boolean equals(Object other) {
-    return !Equal.equalsValidationCheck(this, other) ? false :
-            Equal.p3Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual()).eq(this, (P3<A, B, C>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p3Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual()).eq(this, (P3<A, B, C>) other)));
   }
 
   @Override

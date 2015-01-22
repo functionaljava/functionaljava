@@ -142,7 +142,7 @@ public abstract class Set<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return !Equal.equalsValidationCheck(this, other) ? false : Equal.setEqual(Equal.<A>anyEqual()).eq(this, (Set<A>) other);
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.setEqual(Equal.<A>anyEqual()).eq(this, (Set<A>) other)));
   }
 
   @Override

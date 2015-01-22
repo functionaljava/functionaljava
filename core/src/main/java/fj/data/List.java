@@ -5,7 +5,6 @@ import fj.F2Functions;
 import fj.Equal;
 import fj.F;
 import fj.F2;
-import fj.F3;
 import fj.Function;
 import fj.Hash;
 import fj.Monoid;
@@ -1818,8 +1817,7 @@ public abstract class List<A> implements Iterable<A> {
         //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
         //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
 
-        return !Equal.equalsValidationCheck(this, obj) ? false :
-                Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj);
+        return Equal.shallowEqualsO(this, obj).orSome(P.lazy(u -> Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj)));
     }
 
     /**
