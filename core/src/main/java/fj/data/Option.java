@@ -2,7 +2,6 @@ package fj.data;
 
 import static fj.Bottom.error;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.P;
