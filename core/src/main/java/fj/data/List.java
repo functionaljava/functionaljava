@@ -566,7 +566,7 @@ public abstract class List<A> implements Iterable<A> {
      * Traverses through the List with the given function
      *
      * @param f The function that produces Option value
-     * @return  none if applying f fails to any element of the list or f mapped list in some .
+     * @return  none if applying f returns none to any element of the list or f mapped list in some .
      */
     public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
         return foldRight(
