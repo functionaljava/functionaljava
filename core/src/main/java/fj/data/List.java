@@ -576,7 +576,7 @@ public abstract class List<A> implements Iterable<A> {
     }
 
     /**
-     * Traverse through the List with a function that might fail with reporting an error.
+     * Traverse through the List with given function.
      *
      * @param f The function that produces Either value.
      * @return  error in left if applying f fails to any element of the list or f mapped list in right.
