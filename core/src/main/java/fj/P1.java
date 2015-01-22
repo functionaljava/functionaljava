@@ -148,7 +148,7 @@ public abstract class P1<A> {
     /**
      * Traversable instance of P1 for Either
      *
-     * @param f The function might successfully return B or might fail with an error notification of type X
+     * @param f The function produces Either
      * @return An Either of  P1<B>
      */
     public <B, X> Either<X, P1<B>> traverseEither(final F<A, Either<X, B>>  f){
@@ -158,7 +158,7 @@ public abstract class P1<A> {
     /**
      * Traversable instance of P1 for Option
      *
-     * @param f The function might successfully might fail
+     * @param f The function that produces Option
      * @return An Option of  P1<B>
      */
     public <B> Option<P1<B>> traverseOption(final F<A, Option<B>>  f){
@@ -168,7 +168,7 @@ public abstract class P1<A> {
     /**
      * Traversable instance of P1 for Validation
      *
-     * @param f The function might successfully return B or might fail with an error notification of type X
+     * @param f The function might produces Validation
      * @return An Validation  of P1<B>
      */
     public <B, E> Validation<E, P1<B>> traverseValidation(final F<A, Validation<E, B>> f){
@@ -176,9 +176,9 @@ public abstract class P1<A> {
     }
 
     /**
-     * Traversable instance of P1 for Either
+     * Traversable instance of P1 for Stream
      *
-     * @param f The function might successfully return B or might fail with an error notification of type X
+     * @param f The function that produces Stream
      * @return An Stream of  P1<B>
      */
     public <B> Stream<P1<B>> traverseStream(final F<A, Stream<B>>  f){

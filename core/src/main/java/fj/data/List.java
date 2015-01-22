@@ -579,7 +579,7 @@ public abstract class List<A> implements Iterable<A> {
      * Traverse through the List with given function.
      *
      * @param f The function that produces Either value.
-     * @return  error in left if applying f fails to any element of the list or f mapped list in right.
+     * @return  error in left or f mapped list in right.
      */
     public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
         return foldRight(
