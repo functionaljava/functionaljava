@@ -5,6 +5,11 @@ import java.lang.ref.SoftReference;
 import fj.data.Array;
 import fj.data.List;
 import fj.data.Stream;
+import fj.data.Either;
+import fj.data.Option;
+import fj.data.Validation;
+//import fj.data.*;
+import fj.function.Try0;
 
 public abstract class P1<A> implements F0<A> {
 
@@ -26,11 +31,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function that returns the first element of a product.
      */
     public static <A> F<P1<A>, A> __1() {
-        return new F<P1<A>, A>() {
-            public A f(final P1<A> p) {
-                return p._1();
-            }
-        };
+        return p -> p._1();
     }
 
     /**
@@ -40,11 +41,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function promoted to operate on P1s.
      */
     public static <A, B> F<P1<A>, P1<B>> fmap(final F<A, B> f) {
-        return new F<P1<A>, P1<B>>() {
-            public P1<B> f(final P1<A> a) {
-                return a.map(f);
-            }
-        };
+        return a -> a.map(f);
     }
 
     /**
@@ -55,11 +52,7 @@ public abstract class P1<A> implements F0<A> {
      */
     public <B> P1<B> bind(final F<A, P1<B>> f) {
         P1<A> self = this;
-        return new P1<B>() {
-            public B _1() {
-                return f.f(self._1())._1();
-            }
-        };
+        return P.lazy(u -> f.f(self._1())._1());
     }
 
     /**
@@ -69,15 +62,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function whose result is wrapped in a P1.
      */
     public static <A, B> F<A, P1<B>> curry(final F<A, B> f) {
-        return new F<A, P1<B>>() {
-            public P1<B> f(final A a) {
-                return new P1<B>() {
-                    public B _1() {
-                        return f.f(a);
-                    }
-                };
-            }
-        };
+        return a -> P.lazy(u -> f.f(a));
     }
 
     /**
@@ -88,11 +73,7 @@ public abstract class P1<A> implements F0<A> {
      */
     public <B> P1<B> apply(final P1<F<A, B>> cf) {
         P1<A> self = this;
-        return cf.bind(new F<F<A, B>, P1<B>>() {
-            public P1<B> f(final F<A, B> f) {
-                return fmap(f).f(self);
-            }
-        });
+        return cf.bind(f -> fmap(f).f(self));
     }
 
     /**
@@ -123,11 +104,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function of arity-2 promoted to map over P1s.
      */
     public static <A, B, C> F<P1<A>, F<P1<B>, P1<C>>> liftM2(final F<A, F<B, C>> f) {
-        return Function.curry(new F2<P1<A>, P1<B>, P1<C>>() {
-            public P1<C> f(final P1<A> pa, final P1<B> pb) {
-                return pa.bind(pb, f);
-            }
-        });
+        return Function.curry((pa, pb) -> pa.bind(pb, f));
     }
 
     /**
@@ -146,11 +123,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function from a List of P1s to a single P1 of a List.
      */
     public static <A> F<List<P1<A>>, P1<List<A>>> sequenceList() {
-        return new F<List<P1<A>>, P1<List<A>>>() {
-            public P1<List<A>> f(final List<P1<A>> as) {
-                return sequence(as);
-            }
-        };
+        return as -> sequence(as);
     }
 
     /**
@@ -170,11 +143,57 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given array.
      */
     public static <A> P1<Array<A>> sequence(final Array<P1<A>> as) {
-        return new P1<Array<A>>() {
-            public Array<A> _1() {
-                return as.map(P1.<A>__1());
-            }
-        };
+        return P.lazy(u -> as.map(P1.<A>__1()));
+    }
+
+    /**
+     * Traversable instance of P1 for List
+     *
+     * @param f The function that takes A and produces a List<B> (non-deterministic result)
+     * @return A List of P1<B>
+     */
+    public <B> List<P1<B>> traverseList(final F<A, List<B>>  f){
+        return f.f(_1()).map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Either
+     *
+     * @param f The function produces Either
+     * @return An Either of  P1<B>
+     */
+    public <B, X> Either<X, P1<B>> traverseEither(final F<A, Either<X, B>>  f){
+        return f.f(_1()).right().map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Option
+     *
+     * @param f The function that produces Option
+     * @return An Option of  P1<B>
+     */
+    public <B> Option<P1<B>> traverseOption(final F<A, Option<B>>  f){
+        return f.f(_1()).map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Validation
+     *
+     * @param f The function might produces Validation
+     * @return An Validation  of P1<B>
+     */
+    public <B, E> Validation<E, P1<B>> traverseValidation(final F<A, Validation<E, B>> f){
+        return f.f(_1()).map(b -> P.p(b));
+    }
+
+    /**
+     * Traversable instance of P1 for Stream
+     *
+     * @param f The function that produces Stream
+     * @return An Stream of  P1<B>
+     */
+    public <B> Stream<P1<B>> traverseStream(final F<A, Stream<B>>  f){
+        return f.f(_1()).map(b -> P.p(b));
     }
 
     /**
@@ -185,11 +204,7 @@ public abstract class P1<A> implements F0<A> {
        */
       public <X> P1<X> map(final F<A, X> f) {
           final P1<A> self = this;
-        return new P1<X>() {
-          public X _1() {
-            return f.f(self._1());
-          }
-        };
+        return P.lazy(u -> f.f(self._1()));
       }
 
     /**
@@ -198,12 +213,12 @@ public abstract class P1<A> implements F0<A> {
        * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
        */
       public P1<A> memo() {
-          final P1<A> self = this;
+        final P1<A> self = this;
         return new P1<A>() {
           private final Object latch = new Object();
           @SuppressWarnings({"InstanceVariableMayNotBeInitialized"})
           private volatile SoftReference<A> v;
-    
+
           public A _1() {
             A a = v != null ? v.get() : null;
             if (a == null)
@@ -228,11 +243,7 @@ public abstract class P1<A> implements F0<A> {
        */
       public <B> F<B, A> constant() {
 
-        return new F<B, A>() {
-          public A f(final B b) {
-              return P1.this._1();
-          }
-        };
+        return b -> P1.this._1();
       }
 
     @Override
@@ -240,6 +251,7 @@ public abstract class P1<A> implements F0<A> {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object other) {
         return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other)));

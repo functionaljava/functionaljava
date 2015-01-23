@@ -562,7 +562,54 @@ public abstract class List<A> implements Iterable<A> {
     return bind(c);
   }
 
-  /**
+    /**
+     * Traverses through the List with the given function
+     *
+     * @param f The function that produces Option value
+     * @return  none if applying f returns none to any element of the list or f mapped list in some .
+     */
+    public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
+        return foldRight(
+                (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
+                Option.some(List.<B>nil())
+        );
+    }
+
+    /**
+     * Traverse through the List with given function.
+     *
+     * @param f The function that produces Either value.
+     * @return  error in left or f mapped list in right.
+     */
+    public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
+        return foldRight(
+                (a, acc) -> f.f(a).right().bind(e -> acc.right().map(es -> es.cons(e))),
+                Either.<E, List<B>>right(List.<B>nil())
+        );
+    }
+
+    public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
+        return foldRight(
+                (a, acc) -> f.f(a).bind(s -> acc.map(ss -> ss.cons(s))),
+                Stream.<List<B>>nil()
+        );
+    }
+
+    public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
+        return foldRight(
+                (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+                P.p(List.<B>nil())
+        );
+    }
+
+    public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
+        return this.foldRight(
+                (a, acc) -> IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b))),
+                IOFunctions.unit(List.<B>nil())
+        );
+    }
+
+    /**
    * Performs function application within a list (applicative functor pattern).
    *
    * @param lf The list of functions to apply.
@@ -1058,7 +1105,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A possible list of values after binding through the Option monad.
    */
   public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
-    return foldRight((a, bs) -> f.f(a).bind(b -> bs.map(bbs -> bbs.cons(b))), Option.<List<B>>some(List.<B>nil()));
+    return traverseOption(f);
   }
 
   /**
@@ -1828,7 +1875,7 @@ public abstract class List<A> implements Iterable<A> {
      */
     @Override
     public int hashCode() {
-        return Hash.listHash( Hash.<A>anyHash() ).hash( this );
+        return Hash.listHash(Hash.<A>anyHash()).hash(this);
     }
 
     /**
