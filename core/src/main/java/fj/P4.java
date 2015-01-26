@@ -258,8 +258,19 @@ public abstract class P4<A, B, C, D> {
     };
   }
 
+  @Override
 	public String toString() {
 		return Show.p4Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow()).showS(this);
 	}
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p4Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual()).eq(this, (P4<A, B, C, D>) other)));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.p4Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash(), Hash.<D>anyHash()).hash(this);
+  }
 
 }

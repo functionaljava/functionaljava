@@ -628,8 +628,19 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
     };
   }
 
+  @Override
 	public String toString() {
 		return Show.p8Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow(), Show.<G>anyShow(), Show.<H>anyShow()).showS(this);
 	}
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p8Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual(), Equal.<H>anyEqual()).eq(this, (P8<A, B, C, D, E, F, G, H>) other)));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.p8Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash(), Hash.<D>anyHash(), Hash.<E>anyHash(), Hash.<F>anyHash(), Hash.<G>anyHash(), Hash.<H>anyHash()).hash(this);
+  }
 
 }

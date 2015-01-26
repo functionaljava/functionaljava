@@ -1,0 +1,33 @@
+= Release 3.1
+
+Released: May 2012
+
+Administrivia:
+
+* Sources have been moved to GitHub: https://github.com/functionaljava/functionaljava
+* Built has been converted to SBT
+
+New features:
+
+* List.mapMOption - list traversal in the Option monad.
+* List.allEqual - Returns whether or not all elements in the list are equal.
+* Added a monoid for Double.
+* Tree.bottomUp - Grows a tree from another tree by folding it from the bottom up.
+* Strings.isNotNullOrEmpty - does what it says.
+* Ord.hashOrd - an order instance that uses hashCode() for the order.
+* Ord.hashEqualsOrd - same as above but also uses .equals()
+* Set.set - A vararg Set factory method.
+* Added first-class functions for Set intersect, union, and minus.
+* First-class LazyString.toString.
+* Added hashCode() and equals() to Option.
+* Iteratees and an IO monad.
+* Trampoline - a general solution for tail-call elimination in Java.
+* List.equals(), List.hashCode(), and List.toString().
+
+Bug fixes:
+
+* Stream.inits should always be nonempty.
+* Stream was not compiling in Eclipse.
+* Stream.length is now tail-recursive.
+* TreeZipper.delete was flipping lefts and rights.
+* Fixed naturalOrd Javadoc.

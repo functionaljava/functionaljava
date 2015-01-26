@@ -1,11 +1,6 @@
 package fj.data;
 
-import fj.F;
-import fj.F1Functions;
-import fj.P;
-import fj.P2;
-import fj.P3;
-import fj.Ord;
+import fj.*;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -38,6 +33,21 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   public static <K, V> TreeMap<K, V> empty(final Ord<K> keyOrd) {
     return new TreeMap<K, V>(Set.empty(TreeMap.<K, Option<V>>ord(keyOrd)));
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.treeMapEqual(Equal.<K>anyEqual(), Equal.<V>anyEqual()).eq(this, (TreeMap<K, V>) other)));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.treeMapHash(Hash.<K>anyHash(), Hash.<V>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.treeMapShow(Show.<K>anyShow(), Show.<V>anyShow()).showS(this);
   }
 
   /**

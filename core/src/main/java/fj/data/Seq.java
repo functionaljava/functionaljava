@@ -1,8 +1,7 @@
 package fj.data;
 
-import fj.F;
-import fj.F2;
-import fj.Function;
+import fj.*;
+
 import static fj.Bottom.error;
 import static fj.Monoid.intAdditionMonoid;
 import static fj.data.fingertrees.FingerTree.measured;
@@ -46,6 +45,12 @@ public final class Seq<A> {
     return (Seq<A>) EMPTY;
   }
 
+  @Override
+  public boolean equals(Object other) {
+
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.seqEqual(Equal.<A>anyEqual()).eq(this, (Seq<A>) other)));
+  }
+
   /**
    * A singleton sequence.
    *
@@ -54,6 +59,14 @@ public final class Seq<A> {
    */
   public static <A> Seq<A> single(final A a) {
     return new Seq<A>(Seq.<A>mkTree().single(a));
+  }
+
+  public static <A>Seq<A> seq(final A... as) {
+    return seq(List.list(as));
+  }
+
+  public static <A>Seq<A> seq(final List<A> list) {
+    return list.foldLeft((b, a) -> b.snoc(a), Seq.<A>empty());
   }
 
   /**
@@ -74,6 +87,15 @@ public final class Seq<A> {
    */
   public Seq<A> snoc(final A a) {
     return new Seq<A>(ftree.snoc(a));
+  }
+
+  public Stream<A> toStream() {
+    return ftree.foldLeft((b, a) -> b.cons(a), Stream.<A>nil()).reverse();
+  }
+
+  @Override
+  public String toString() {
+    return Show.seqShow(Show.<A>anyShow()).showS(this);
   }
 
   /**
@@ -122,6 +144,11 @@ public final class Seq<A> {
 
     public <B> B foldRight(final F2<A, B, B> f, final B z) {
         return ftree.foldRight(f, z);
+    }
+
+    @Override
+    public int hashCode() {
+      return Hash.seqHash(Hash.<A>anyHash()).hash(this);
     }
 
     public <B> Seq<B> map(F<A, B> f) {

@@ -238,6 +238,10 @@ public final class Equal<A> {
            o1.isSome() && o2.isSome() && ea.f.f(o1.some()).f(o2.some()));
   }
 
+  public static <A> Equal<Seq<A>> seqEqual(final Equal<A> e) {
+    return equal(s1 -> s2 -> streamEqual(e).eq(s1.toStream(), s2.toStream()));
+  }
+
   /**
    * An equal instance for the {@link Stream} type.
    *
@@ -528,6 +532,22 @@ public final class Equal<A> {
 
   public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {
     return equal(w1 -> w2 -> p2Equal(eq1, eq2).eq(w1.run(), w2.run()));
+  }
+
+  /**
+   * @return Returns none if no equality can be determined by checking the nullity and reference values, else the equality
+   */
+  public static Option<Boolean> shallowEqualsO(Object o1, Object o2) {
+    if (o1 == null && o2 == null) {
+      return Option.some(true);
+    } else if (o1 == o2) {
+      return Option.some(true);
+    } else if (o1 != null && o2 != null) {
+      java.lang.Class<?> c = o1.getClass();
+      return c.isInstance(o2) ? Option.none() : Option.some(false);
+    } else {
+      return Option.some(false);
+    }
   }
 
 }

@@ -1,19 +1,12 @@
 package fj.data;
 
-import fj.F;
-import fj.F2;
-import fj.Function;
-import fj.Monoid;
-import fj.Ord;
-import fj.P;
-import fj.P2;
-import fj.P3;
+import fj.*;
+
 import static fj.Function.*;
 import static fj.data.Either.right;
 import static fj.data.Option.some;
 import static fj.function.Booleans.not;
 
-import fj.Ordering;
 import static fj.Ordering.GT;
 import static fj.Ordering.LT;
 
@@ -145,6 +138,21 @@ public abstract class Set<A> implements Iterable<A> {
    */
   public static <A> Set<A> empty(final Ord<A> ord) {
     return new Empty<A>(ord);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.setEqual(Equal.<A>anyEqual()).eq(this, (Set<A>) other)));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.setHash(Hash.<A>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.setShow(Show.<A>anyShow()).showS(this);
   }
 
   /**

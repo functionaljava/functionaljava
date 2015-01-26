@@ -5,7 +5,6 @@ import fj.F2Functions;
 import fj.Equal;
 import fj.F;
 import fj.F2;
-import fj.F3;
 import fj.Function;
 import fj.Hash;
 import fj.Monoid;
@@ -563,7 +562,54 @@ public abstract class List<A> implements Iterable<A> {
     return bind(c);
   }
 
-  /**
+    /**
+     * Traverses through the List with the given function
+     *
+     * @param f The function that produces Option value
+     * @return  none if applying f returns none to any element of the list or f mapped list in some .
+     */
+    public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
+        return foldRight(
+                (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
+                Option.some(List.<B>nil())
+        );
+    }
+
+    /**
+     * Traverse through the List with given function.
+     *
+     * @param f The function that produces Either value.
+     * @return  error in left or f mapped list in right.
+     */
+    public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
+        return foldRight(
+                (a, acc) -> f.f(a).right().bind(e -> acc.right().map(es -> es.cons(e))),
+                Either.<E, List<B>>right(List.<B>nil())
+        );
+    }
+
+    public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
+        return foldRight(
+                (a, acc) -> f.f(a).bind(s -> acc.map(ss -> ss.cons(s))),
+                Stream.<List<B>>nil()
+        );
+    }
+
+    public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
+        return foldRight(
+                (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+                P.p(List.<B>nil())
+        );
+    }
+
+    public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
+        return this.foldRight(
+                (a, acc) -> IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b))),
+                IOFunctions.unit(List.<B>nil())
+        );
+    }
+
+    /**
    * Performs function application within a list (applicative functor pattern).
    *
    * @param lf The list of functions to apply.
@@ -1059,7 +1105,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A possible list of values after binding through the Option monad.
    */
   public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
-    return foldRight((a, bs) -> f.f(a).bind(b -> bs.map(bbs -> bbs.cons(b))), Option.<List<B>>some(List.<B>nil()));
+    return traverseOption(f);
   }
 
   /**
@@ -1814,11 +1860,11 @@ public abstract class List<A> implements Iterable<A> {
     //Suppress the warning for cast to <code>List<A></code> because the type is checked in the previous line.
     @SuppressWarnings({ "unchecked" })
     @Override public boolean equals( final Object obj ) {
-        if ( obj == null || !( obj instanceof List ) ) { return false; }
 
         //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
         //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
-        return Equal.listEqual( Equal.<A>anyEqual() ).eq( this, (List<A>) obj );
+
+        return Equal.shallowEqualsO(this, obj).orSome(P.lazy(u -> Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj)));
     }
 
     /**
@@ -1827,8 +1873,9 @@ public abstract class List<A> implements Iterable<A> {
      *
      * @return the hash code for this list.
      */
-    @Override public int hashCode() {
-        return Hash.listHash( Hash.<A>anyHash() ).hash( this );
+    @Override
+    public int hashCode() {
+        return Hash.listHash(Hash.<A>anyHash()).hash(this);
     }
 
     /**
@@ -1838,6 +1885,13 @@ public abstract class List<A> implements Iterable<A> {
      * @return a String representation of the list
      */
     @Override public String toString() {
-        return Show.listShow( Show.<A>anyShow() ).show( this ).foldLeft((s, c) -> s + c, "" );
+        return Show.listShow(Show.<A>anyShow()).showS(this);
+    }
+
+    /**
+     * True if and only if the list has one element. Runs in constant time.
+     */
+    public boolean isSingle() {
+        return isNotEmpty() && tail().isEmpty();
     }
 }

@@ -2,14 +2,7 @@ package fj;
 
 import static fj.Function.compose;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.List;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Stream;
-import fj.data.Tree;
-import fj.data.Validation;
+import fj.data.*;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -203,6 +196,14 @@ public final class Hash<A> {
     return hash(o -> o.isNone() ? 0 : ha.hash(o.some()));
   }
 
+    public static <A> Hash<Seq<A>> seqHash(final Hash<A> h) {
+        return hash(s -> streamHash(h).hash(s.toStream()));
+    }
+
+    public static <A> Hash<Set<A>> setHash(final Hash<A> h) {
+        return hash(s -> streamHash(h).hash(s.toStream()));
+    }
+
   /**
    * A hash instance for the {@link Stream} type.
    *
@@ -252,6 +253,10 @@ public final class Hash<A> {
   public static <A> Hash<Tree<A>> treeHash(final Hash<A> ha) {
     return streamHash(ha).comap(Tree.<A>flatten_());
   }
+
+    public static <K, V> Hash<TreeMap<K, V>> treeMapHash(final Hash<K> h, final Hash<V> v) {
+        return hash(t -> streamHash(Hash.p2Hash(h, v)).hash(t.toStream()));
+    }
 
   /**
    * A hash instance for a product-1.

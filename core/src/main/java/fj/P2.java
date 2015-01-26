@@ -1,8 +1,8 @@
 package fj;
 
 import static fj.Function.*;
-import fj.data.List;
-import fj.data.Stream;
+
+import fj.data.*;
 
 /**
  * A product-2.
@@ -23,6 +23,16 @@ public abstract class P2<A, B> {
    * @return The second element of the product.
    */
   public abstract B _2();
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (P2<A, B>) other)));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.p2Hash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
+  }
 
   /**
    * Swaps the elements around in this product.
@@ -146,6 +156,26 @@ public abstract class P2<A, B> {
     return cs.toList();
   }
 
+  public final <C> List<P2<A, C>> traverseList(final F<B, List<C>> f) {
+        return f.f(_2()).map(x -> P.p(_1(), x));
+  }
+
+  public final <C> Stream<P2<A, C>> traverseStream(final F<B, Stream<C>> f) {
+        return f.f(_2()).map(x -> P.p(_1(), x));
+  }
+
+  public final <C> IO<P2<A, C>> traverseIO(final F<B, IO<C>> f) {
+        return IOFunctions.map(f.f(_2()), x -> P.p(_1(), x));
+  }
+
+  public final <C> Option<P2<A, C>> traverseOption(final F<B, Option<C>> f) {
+        return f.f(_2()).map(x -> P.p(_1(), x));
+  }
+
+  public final <C, X> Either<X, P2<A, C>> traverseEither(final F<B, Either<X, C>> f) {
+        return f.f(_2()).right().map(x -> P.p(_1(), x));
+  }
+
   /**
    * Applies a stream of comonadic functions to this product, returning a stream of values.
    *
@@ -209,11 +239,7 @@ public abstract class P2<A, B> {
    * @return A function that splits a given product between the two given functions and combines their output.
    */
   public static <A, B, C, D> F<P2<A, B>, P2<C, D>> split_(final F<A, C> f, final F<B, D> g) {
-    return new F<P2<A, B>, P2<C, D>>() {
-      public P2<C, D> f(final P2<A, B> p) {
-        return p.split(f, g);
-      }
-    };
+    return p -> p.split(f, g);
   }
 
   /**
@@ -223,11 +249,7 @@ public abstract class P2<A, B> {
    * @return The given function, promoted to map the first element of products.
    */
   public static <A, B, X> F<P2<A, B>, P2<X, B>> map1_(final F<A, X> f) {
-    return new F<P2<A, B>, P2<X, B>>() {
-      public P2<X, B> f(final P2<A, B> p) {
-        return p.map1(f);
-      }
-    };
+    return p -> p.map1(f);
   }
 
   /**
@@ -237,11 +259,7 @@ public abstract class P2<A, B> {
    * @return The given function, promoted to map the second element of products.
    */
   public static <A, B, X> F<P2<A, B>, P2<A, X>> map2_(final F<B, X> f) {
-    return new F<P2<A, B>, P2<A, X>>() {
-      public P2<A, X> f(final P2<A, B> p) {
-        return p.map2(f);
-      }
-    };
+    return p -> p.map2(f);
   }
 
   /**
@@ -273,11 +291,7 @@ public abstract class P2<A, B> {
    * @return A curried form of {@link #swap()}.
    */
   public static <A, B> F<P2<A, B>, P2<B, A>> swap_() {
-    return new F<P2<A, B>, P2<B, A>>() {
-      public P2<B, A> f(final P2<A, B> p) {
-        return p.swap();
-      }
-    };
+    return p -> p.swap();
   }
 
   /**
@@ -286,11 +300,7 @@ public abstract class P2<A, B> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B> F<P2<A, B>, A> __1() {
-    return new F<P2<A, B>, A>() {
-      public A f(final P2<A, B> p) {
-        return p._1();
-      }
-    };
+    return p -> p._1();
   }
 
   /**
@@ -299,11 +309,7 @@ public abstract class P2<A, B> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B> F<P2<A, B>, B> __2() {
-    return new F<P2<A, B>, B>() {
-      public B f(final P2<A, B> p) {
-        return p._2();
-      }
-    };
+    return p -> p._2();
   }
 
   /**
@@ -313,11 +319,7 @@ public abstract class P2<A, B> {
    * @return The function, transformed to operate on on a product-2
    */
   public static <A, B, C> F<P2<A, B>, C> tuple(final F<A, F<B, C>> f) {
-    return new F<P2<A, B>, C>() {
-      public C f(final P2<A, B> p) {
-        return f.f(p._1()).f(p._2());
-      }
-    };
+    return p -> f.f(p._1()).f(p._2());
   }
 
   /**
@@ -337,13 +339,10 @@ public abstract class P2<A, B> {
    * @return The function, transformed to an uncurried function of arity-2.
    */
   public static <A, B, C> F2<A, B, C> untuple(final F<P2<A, B>, C> f) {
-    return new F2<A, B, C>() {
-      public C f(final A a, final B b) {
-        return f.f(P.p(a, b));
-      }
-    };
+    return (a, b) -> f.f(P.p(a, b));
   }
 
+    @Override
 	public String toString() {
 		return Show.p2Show(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
 	}

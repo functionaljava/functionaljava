@@ -1,9 +1,6 @@
 package fj.demo.concurrent;
 
-import fj.F;
-import fj.F1Functions;
-import fj.P1;
-import fj.Unit;
+import fj.*;
 import fj.control.parallel.ParModule;
 import static fj.control.parallel.ParModule.parModule;
 import fj.control.parallel.Promise;
@@ -58,11 +55,7 @@ public class MapReduce {
                     throw new Error(e);
                 }
                 if (s.isSome())
-                    return fromString(s.some()).append(new P1<Stream<Character>>() {
-                        public Stream<Character> _1() {
-                            return f(reader);
-                        }
-                    });
+                    return fromString(s.some()).append(P.lazy(sc -> f(reader)));
                 else {
                     try {
                         reader.close();
