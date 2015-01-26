@@ -321,4 +321,21 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
 		return result;
 	}
 
+  	/**
+	 * The expression <code>t1.union(t2)</code> takes the left-biased union of <code>t1</code>
+	 * and <code>t2</code>. It prefers <code>t1</code> when duplicate keys are encountered.
+	 *
+	 * @param t2 The other list/set of pairs we wish to combine with this one
+	 * @return The combined TreeMap
+	 */
+	public TreeMap<K, V> union(Iterable<P2<K, V>> t2) {
+		TreeMap<K, V> result = this;
+		for(P2<K,V> p : t2) {
+			if(!this.contains(p._1())) {
+				result = result.set(p._1(), p._2());
+			}
+		}
+		return result;
+	}
+
 }
