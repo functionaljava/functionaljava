@@ -216,7 +216,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   public P2<Boolean, TreeMap<K, V>> update(final K k, final F<V, V> f) {
     final P2<Boolean, Set<P2<K, Option<V>>>> up =
-        tree.update(p(k, Option.<V>none()), P2.<K, Option<V>, Option<V>>map2_(Option.<V, V>map().f(f)));
+        tree.update(p(k, Option.<V>none()), compose(P2.tuple(P.p2()), P2.<K, Option<V>, Option<V>>map2_(Option.<V, V>map().f(f))));
     return P.p(up._1(), new TreeMap<K, V>(up._2()));
   }
 
