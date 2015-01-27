@@ -14,6 +14,8 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 
+	defaultTasks "build"
+
 	ext {
         isSnapshot = true
         fjBaseVersion = "4.3"
@@ -45,34 +47,38 @@ allprojects {
 
 	version = fjVersion
 	group = "org.functionaljava"
+
 }
 
 subprojects {
 
-    defaultTasks "build"
+	buildscript {
+		repositories {
+			mavenCentral()
+		}
 
-    buildscript {
-        repositories {
-            mavenCentral()
-        }
+		dependencies {
+			classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+		}
+	}
 
-        dependencies {
-            classpath 'me.tatarka:gradle-retrolambda:2.5.0'
-        }
-    }
+	apply from: "$rootDir/lib.gradle"
+	apply plugin: "java"
+	apply plugin: "eclipse"
 
-    repositories {
-        mavenCentral()
+	repositories {
+		mavenCentral()
 		maven {
 			url sonatypeRepositoryUrl
 		}
-
 	}
+}
 
-    apply from: "$rootDir/lib.gradle"
+configure(subprojects.findAll {it.name != 'tests'}) {
+
     apply plugin: "maven"
-    apply plugin: "java"
     apply plugin: "signing"
+    apply plugin: "osgi"
 
     sourceCompatibility = "1.8"
 
@@ -95,11 +101,33 @@ subprojects {
     jar {
         version project.fjVersion
         manifest {
-            attributes 'Signature-Version': project.fjVersion
+            name = 'Functional Java'
+            instruction 'Signature-Version', project.fjVersion
+            instruction 'Bundle-ActivationPolicy', 'lazy'
+            instruction 'Bundle-Vendor', 'functionaljava.org'
+			if(project.name != "core") {
+				instruction 'Require-Bundle', 'org.functionaljava;bundle-version="'+project.fjBaseVersion+'"'
+			}
         }
     }
 
+    eclipse {
+      project {
+        natures 'org.eclipse.pde.PluginNature'
+        buildCommand 'org.eclipse.pde.ManifestBuilder'
+        buildCommand 'org.eclipse.pde.SchemaBuilder'
+      }
+    }
+
+    // Output MANIFEST.MF statically so eclipse can see it for plugin development
+    task eclipsePluginManifest(dependsOn: jar) << {
+      file("META-INF").mkdirs()
+      jar.manifest.writeTo(file("META-INF/MANIFEST.MF"))
+    }
+
+    eclipseProject.dependsOn eclipsePluginManifest
 }
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
