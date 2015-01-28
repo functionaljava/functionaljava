@@ -5,6 +5,7 @@ import fj.function.Try0;
 import fj.function.Try1;
 import fj.function.Try2;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -95,6 +96,10 @@ public final class Java8 {
         return t -> (a, b) -> Try.f(t).f(a, b);
     }
 
+    public static <A> java.util.stream.Stream<A> List_JavaStream(List<A> list) {
+        return Iterable_JavaStream(list);
+    }
+
     static public <A> Option<A> Optional_Option(final Optional<A> o) {
         return Java8.<A>Optional_Option().f(o);
     }
@@ -122,13 +127,32 @@ public final class Java8 {
         };
     }
 
-    static public <A> java.util.stream.Stream<A> Stream_JStream(fj.data.Stream<A> s) {
-        Spliterator<A> sit = Spliterators.spliteratorUnknownSize(s.iterator(), 0);
-        return StreamSupport.stream(sit, false);
+    static public <A> java.util.stream.Stream<A> Stream_JavaStream(fj.data.Stream<A> s) {
+        return Iterable_JavaStream(s);
     }
 
-    static public <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JStream() {
-        return s -> Stream_JStream(s);
+    static public <A> java.util.stream.Stream<A> Iterable_JavaStream(Iterable<A> it) {
+        return StreamSupport.stream(it.spliterator(), false);
+    }
+
+    static public <A> java.util.stream.Stream<A> Iterator_JavaStream(Iterator<A> it) {
+        return Iterable_JavaStream(() -> it);
+    }
+
+    static public <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JavaStream() {
+        return s -> Stream_JavaStream(s);
+    }
+
+    static public <A> Stream<A> JavaStream_Stream(java.util.stream.Stream<A> s) {
+        return s.collect(Collectors.toStream());
+    }
+
+    static public <A> List<A> JavaStream_List(java.util.stream.Stream<A> s) {
+        return s.collect(Collectors.toList());
+    }
+
+    static public <A> Array<A> JavaStream_Array(java.util.stream.Stream<A> s) {
+        return s.collect(Collectors.toArray());
     }
 
 }

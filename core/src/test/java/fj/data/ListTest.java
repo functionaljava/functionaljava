@@ -1,7 +1,8 @@
 package fj.data;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +28,14 @@ public class ListTest {
 
 
         assertTrue(List.list(1, 2).toString().equals("List(1,2)"));
+
+    }
+
+    @Test
+    public void integration() {
+        java.util.List<Integer> ul = Arrays.asList(1, 2, 3);
+        List<Integer> dl = List.list(ul);
+        assertTrue(ul.equals(dl.toJavaList()));
 
     }
 

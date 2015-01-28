@@ -1331,6 +1331,10 @@ public abstract class List<A> implements Iterable<A> {
     return foldLeft1(o.min);
   }
 
+  public final java.util.List<A> toJavaList() {
+    return new java.util.LinkedList<A>(toCollection());
+  }
+
   /**
    * Projects an immutable collection of this list.
    *
@@ -1410,6 +1414,15 @@ public abstract class List<A> implements Iterable<A> {
    */
   public static <A> List<A> list(final A... as) {
     return Array.array(as).toList();
+  }
+
+
+  public static <A> List<A> list(final Iterable<A> i) {
+    return iterableList(i);
+  }
+
+  public static <A> List<A> list(final Iterator<A> it) {
+    return iterableList(() -> it);
   }
 
   /**
