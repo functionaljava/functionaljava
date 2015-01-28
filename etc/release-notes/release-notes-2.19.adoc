@@ -1,0 +1,11 @@
+= Release 2.19
+
+Released: March 2009
+
+* Comonadic operations on Stream, Tree and others
+* Database monad (java.sql.Connection as a functor)
+* Natural Number data type
+* The Constant Arrow ($)
+* Immutable Tree Map
+* A parallel quick-sort using Functional Java actors
+

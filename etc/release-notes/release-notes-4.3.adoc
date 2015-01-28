@@ -5,8 +5,27 @@ Released: Unreleased
 
 == Enhancements
 
-TODO
+* Added toInt and fromInt to fj.Ordering (#71)
+* Added Java 8 collectors (#69)
+* Made Seq.empty() and List.nil() return singleton instances (#70)
+* Made anonymous classes using lamdas (#67)
+* Improved show for list, tree, set, treemap, stream, array, V arity 2 to 8, HList (#77)
+* Added TreeMap.splitLookup (#4)
+* Add union to TreeMap (#83)
+* Added List.isSingle (#84)
+* Added Option traverse family of methods (#85)
+* Added equals, hashCode and toString to classes P's, Array, Either, List, Option, Seq, Set, Stream, Tree, TreeMap, Validation (#75, 86)
+* Added release notes as asciidoc (#`2)
+* Added F0 interface (#93)
+* Added wrapper functions for function arity 1 and 2 (#94)
+* Enhanced implementation of equals for standard classes (#95)
+* Added traverse method family to P1, P2, Either, List, Validation (#80)
+* Enhanced integration with basic Java types (#99)
 
 == Fixes
 
-TODO
+* Fixed TreeMap.split (#4, #79)
+* Fixed Option.fromNull javadoc (#73)
+* Fixed Try javadoc (#91)
+
+

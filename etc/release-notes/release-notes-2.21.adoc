@@ -1,0 +1,6 @@
+= Release 2.21
+
+Released: Feb, 2010
+
+* Bug fixes
+* Immutable 2-3 finger tree
