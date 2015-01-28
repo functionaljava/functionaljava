@@ -714,6 +714,16 @@ public abstract class Stream<A> implements Iterable<A> {
                                                 : some(P.p(as[i], P.p(as, i + 1)))), P.p(as, 0));
   }
 
+
+  public static <A> Stream<A> stream(Iterable<A> it) {
+    return iterableStream(it);
+  }
+
+  public static <A> Stream<A> stream(Iterator<A> it) {
+    return iteratorStream(it);
+  }
+
+
   /**
    * Returns a stream that is either infinite or bounded up to the maximum value of the given iterator starting at the
    * given value and stepping at increments of <code>1</code>.

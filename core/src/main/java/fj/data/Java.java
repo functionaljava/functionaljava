@@ -1445,13 +1445,22 @@ public final class Java {
 
   /**
    * A function that converts Java lists to lists.
+   * @deprecated As of 4.3, use {@link #JavaList_List}
    *
    * @return A function that converts Java lists to lists.
    */
   public static <A> F<java.util.List<A>, List<A>> JUList_List() {
-    return as -> Collection_List(as);
+    return as -> JavaList_List(as);
   }
-  
+
+  public static <A> F<java.util.List<A>, List<A>> JavaList_List() {
+    return as -> JavaList_List(as);
+  }
+
+  public static <A> List<A> JavaList_List(java.util.List<A> list) {
+    return List.list(list);
+  }
+
   // BEGIN BitSet ->
 
   /**
