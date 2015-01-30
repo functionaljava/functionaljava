@@ -1,11 +1,11 @@
 package fj.function;
 
-import fj.F;
-import fj.F2;
-import fj.F3;
+
 import static fj.Function.*;
 
+import fj.F;
 import fj.Monoid;
+import fj.Semigroup;
 import fj.data.List;
 import fj.data.Stream;
 
@@ -42,20 +42,12 @@ public final class Booleans {
   /**
    * Logical negation.
    */
-  public static final F<Boolean, Boolean> not = new F<Boolean, Boolean>() {
-    public Boolean f(final Boolean p) {
-      return !p;
-    }
-  };
+  public static final F<Boolean, Boolean> not = p -> !p;
 
   /**
    * Curried form of logical "only if" (material implication).
    */
-  public static final F<Boolean, F<Boolean, Boolean>> implies = curry(new F2<Boolean, Boolean, Boolean>() {
-    public Boolean f(final Boolean p, final Boolean q) {
-      return !p || q;
-    }
-  });
+  public static final F<Boolean, F<Boolean, Boolean>> implies = curry((p, q) -> !p || q);
 
   /**
    * Curried form of logical "if" (reverse material implication).
@@ -92,6 +84,56 @@ public final class Booleans {
     return Monoid.conjunctionMonoid.sumLeft(l);
   }
 
+    /**
+     * maps function on given predicate function
+     * @param p predicate to be mapped over
+     * @param f function
+     * @return predicate function
+     */
+    public static <A, B>  F<B, Boolean> contramap(F<B, A> f, F<A, Boolean> p){
+        return compose(p, f);
+    }
+
+    /**
+     * checks if given predicate does not hold for given function
+     * @param p predicate to be mapped over
+     * @param f function
+     * @return predicate function
+     */
+    public static <A, B>  F<B, Boolean> isnot(F<B, A> f, F<A, Boolean> p){
+        return compose(not, contramap(f, p));
+    }
+
+    /**
+     * composes given predicates using conjunction
+     * @param p1 first predicate
+     * @param p2 second predicate
+     * @return composed predicate function
+     */
+    public static <A>  F<A, Boolean> and(F<A, Boolean> p1, F<A, Boolean> p2){
+        return Semigroup.<A, Boolean>functionSemigroup(conjunctionSemigroup).sum(p1, p2);
+    }
+
+    /**
+     * composes given predicates using exclusive disjunction
+     * @param p1 first predicate
+     * @param p2 second predicate
+     * @return composed predicate function
+     */
+    public static <A>  F<A, Boolean> xor(F<A, Boolean> p1, F<A, Boolean> p2){
+        return Semigroup.<A, Boolean>functionSemigroup(exclusiveDisjunctionSemiGroup).sum(p1, p2);
+    }
+
+    /**
+     * returns composes given predicates using disjunction
+     * @param p1 first predicate
+     * @param p2 second predicate
+     * @return composed predicate function
+     */
+    public static <A>  F<A, Boolean> or(F<A, Boolean> p1, F<A, Boolean> p2){
+        return Semigroup.<A, Boolean>functionSemigroup(disjunctionSemigroup).sum(p1, p2);
+    }
+
   /**
    * Returns true if all the elements of the given stream are true.
    *
@@ -100,6 +142,46 @@ public final class Booleans {
    */
   public static boolean and(final Stream<Boolean> l) {
     return Monoid.conjunctionMonoid.sumLeft(l);
+  }
+
+  /**
+   * Returns a composed predicate of given Stream of predicates
+   *
+   * @param l A stream of predicate functions
+   * @return composed predicate function
+   */
+  public static <A> F<A, Boolean> andAll(final Stream<F<A, Boolean>> l) {
+    return Monoid.<A, Boolean>functionMonoid(Monoid.conjunctionMonoid).sumLeft(l);
+  }
+
+  /**
+   * Returns a composed predicate of given List of predicates
+   *
+   * @param l A list of predicate functions
+   * @return composed predicate function
+   */
+  public static <A> F<A, Boolean> andAll(final List<F<A, Boolean>> l) {
+    return Monoid.<A, Boolean>functionMonoid(Monoid.conjunctionMonoid).sumLeft(l);
+  }
+
+  /**
+   * Returns a composed predicate of given List of predicates
+   *
+   * @param l A list of predicate functions
+   * @return composed predicate function
+   */
+  public static <A> F<A, Boolean> orAll(final List<F<A, Boolean>> l) {
+    return Monoid.<A, Boolean>functionMonoid(Monoid.disjunctionMonoid).sumLeft(l);
+  }
+
+  /**
+   * Returns a composed predicate of given Stream of predicates
+   *
+   * @param l A stream of predicate functions
+   * @return composed predicate function
+   */
+  public static <A> F<A, Boolean> orAll(final Stream<F<A, Boolean>> l) {
+    return Monoid.<A, Boolean>functionMonoid(Monoid.disjunctionMonoid).sumLeft(l);
   }
 
   /**
@@ -139,10 +221,6 @@ public final class Booleans {
    * @return A function that returns its second argument if the first argument is true, otherwise the third argument.
    */
   public static <A> F<Boolean, F<A, F<A, A>>> cond() {
-    return curry(new F3<Boolean, A, A, A>() {
-      public A f(final Boolean p, final A a1, final A a2) {
-        return p ? a1 : a2;
-      }
-    });
+    return curry((p, a1, a2) -> p ? a1 : a2);
   }
 }
