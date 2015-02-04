@@ -85,7 +85,7 @@ public final class Booleans {
   }
 
     /**
-     * maps function on given predicate function
+     * maps given function to the predicate function
      * @param p predicate to be mapped over
      * @param f function
      * @return predicate function
@@ -95,7 +95,7 @@ public final class Booleans {
     }
 
     /**
-     * checks if given predicate does not hold for given function
+     * returns inverse of contramap
      * @param p predicate to be mapped over
      * @param f function
      * @return predicate function
@@ -105,7 +105,7 @@ public final class Booleans {
     }
 
     /**
-     * composes given predicates using conjunction
+     * composes the given predicate using conjunction
      * @param p1 first predicate
      * @param p2 second predicate
      * @return composed predicate function
@@ -115,7 +115,7 @@ public final class Booleans {
     }
 
     /**
-     * composes given predicates using exclusive disjunction
+     * composes the given predicate using exclusive disjunction
      * @param p1 first predicate
      * @param p2 second predicate
      * @return composed predicate function
@@ -125,10 +125,10 @@ public final class Booleans {
     }
 
     /**
-     * returns composes given predicates using disjunction
+     * returns composed predicate using disjunction
      * @param p1 first predicate
      * @param p2 second predicate
-     * @return composed predicate function
+     * @return composed predicate
      */
     public static <A>  F<A, Boolean> or(F<A, Boolean> p1, F<A, Boolean> p2){
         return Semigroup.<A, Boolean>functionSemigroup(disjunctionSemigroup).sum(p1, p2);
@@ -145,10 +145,10 @@ public final class Booleans {
   }
 
   /**
-   * Returns a composed predicate of given Stream of predicates
+   * Returns composed predicate
    *
-   * @param l A stream of predicate functions
-   * @return composed predicate function
+   * @param l A stream of predicates
+   * @return composed predicate
    */
   public static <A> F<A, Boolean> andAll(final Stream<F<A, Boolean>> l) {
     return Monoid.<A, Boolean>functionMonoid(Monoid.conjunctionMonoid).sumLeft(l);
