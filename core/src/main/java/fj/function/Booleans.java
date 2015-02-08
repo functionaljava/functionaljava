@@ -95,6 +95,16 @@ public final class Booleans {
     }
 
     /**
+     * alias for contramap
+     * @param p predicate to be mapped over
+     * @param f function
+     * @return predicate function
+     */
+    public static <A, B>  F<B, Boolean> is(F<B, A> f, F<A, Boolean> p){
+        return contramap(f, p);
+    }
+
+    /**
      * returns inverse of contramap
      * @param p predicate to be mapped over
      * @param f function
