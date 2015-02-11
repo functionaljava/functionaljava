@@ -223,9 +223,12 @@ public abstract class P1<A> implements F0<A> {
             A a = v != null ? v.get() : null;
             if (a == null)
               synchronized (latch) {
-                if (v == null || v.get() == null)
+                if (v == null || v.get() == null) {
                   a = self._1();
-                v = new SoftReference<A>(a);
+                  v = new SoftReference<A>(a);
+                } else {
+                  a = v.get();
+                }
               }
             return a;
           }
