@@ -1,7 +1,7 @@
 
 = Release 4.3
 
-Released: Some future date
+Released: 14 February 2015
 
 == Enhancements
 
@@ -30,6 +30,7 @@ Released: Some future date
 * Fixed Option.fromNull javadoc (#73)
 * Fixed Try javadoc (#91)
 * Fixed stack overflow in TreeMap.update (#97)
+* Fixed concurrency issue with P1.memo (#105)
 
 == Breaking Changes
 
