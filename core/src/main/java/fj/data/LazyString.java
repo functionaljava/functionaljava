@@ -108,7 +108,7 @@ public final class LazyString implements CharSequence {
    * @return The String representation of this lazy string.
    */
   public String toString() {
-    return new StringBuilder(this).toString();
+    return new StringBuilder(length() + 16).append(this).toString();
   }
 
   /**
