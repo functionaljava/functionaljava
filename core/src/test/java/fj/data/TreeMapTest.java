@@ -1,13 +1,17 @@
 package fj.data;
 
+import java.util.Map;
+
 import fj.Equal;
 import fj.Ord;
 import fj.P3;
 import fj.Show;
 import fj.P;
+
 import org.junit.Test;
 
 import static fj.data.Option.some;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -74,4 +78,12 @@ public class TreeMapTest {
         assertTrue(eq.eq(p3, P.p(leftMap, some(Integer.toString(pivot)), rightMap)));
     }
 
+    @Test
+    public void toMutableMap() {
+        int max = 5;
+        List<List<Integer>> l = List.range(1, max + 1).map(n -> List.single(n));
+        TreeMap<List<Integer>, String> m2 = TreeMap.treeMap(Ord.listOrd(Ord.intOrd), l.zip(l.map(i -> i.toString())));
+        Map<List<Integer>, String> mm = m2.toMutableMap();
+        assertEquals(m2.keys().reverse(), List.iterableList(mm.keySet()));
+    }
 }
