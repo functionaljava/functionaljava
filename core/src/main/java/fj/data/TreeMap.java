@@ -2,6 +2,7 @@ package fj.data;
 
 import fj.*;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -172,7 +173,9 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return A new mutable map isomorphic to this tree map.
    */
   public Map<K, V> toMutableMap() {
-    final Map<K, V> m = new java.util.TreeMap<K, V>();
+    final F<K, P2<K, Option<V>>> fakePair = k -> P.p(k, Option.none());
+	final Comparator<K> comparator = tree.ord().comap(fakePair).toComparator();
+	final Map<K, V> m = new java.util.TreeMap<K, V>(comparator);
     for (final P2<K, V> e : this) {
       m.put(e._1(), e._2());
     }

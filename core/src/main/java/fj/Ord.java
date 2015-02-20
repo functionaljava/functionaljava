@@ -12,6 +12,7 @@ import fj.data.Validation;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Comparator;
 
 import static fj.Function.curry;
 
@@ -503,4 +504,14 @@ public final class Ord<A> {
     });
   }
 
+  class OrdComparator implements Comparator<A> {
+	@Override
+    public int compare(A o1, A o2) {
+	    return Ord.this.compare(o1, o2).toInt();
+    }
+  }
+
+  public Comparator<A> toComparator() {
+	  return new OrdComparator();
+  }
 }
