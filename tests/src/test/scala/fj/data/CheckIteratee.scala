@@ -27,11 +27,10 @@ object CheckIteratee extends Properties("Iteratee") {
   property("head") = forAll((a: List[Int]) =>
     enumerate(a, IterV.head[Int]).run == a.toOption)
 
-  property("drop") = forAll((a: List[String], n: Int) => {
-    (n >= 0 && n <= a.length) ==> {
-      val actual = enumerate(a, IterV.drop(n).bind(Function.constant(IterV.list[String]))).run.reverse
-      listEqual(stringEqual).eq(actual, a.drop(n))
-    }
+  property("drop") = forAll((a: List[String], x: Byte) => (a.length > 0) ==> {
+    val n = math.abs(x) % a.length
+    val actual = enumerate(a, IterV.drop(n).bind(Function.constant(IterV.list[String]))).run.reverse
+    listEqual(stringEqual).eq(actual, a.drop(n))
   })
 
   property("list") = forAll((a: List[String]) =>

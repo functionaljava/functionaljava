@@ -128,9 +128,11 @@ object CheckStream extends Properties("Stream") {
       (a append b).reverse,
       b.reverse.append(a.reverse)))
 
-  property("index") = forAll((a: Stream[String], n: Int) =>
-    (n > 0 && n < a.length) ==>
-    (a.index(n) == a.tail._1.index(n - 1)))
+  property("index") = forAll((a: Stream[String], x: Byte) =>
+    (a.length > 0) ==> {
+      val n = math.abs(x) % a.length + 1
+      (n < a.length) ==> (a.index(n) == a.tail._1.index(n - 1))
+    })
 
   property("forall") = forAll((a: Stream[Int]) =>
     a.forall((x: Int) => ((x % 2 == 0): java.lang.Boolean)) ==

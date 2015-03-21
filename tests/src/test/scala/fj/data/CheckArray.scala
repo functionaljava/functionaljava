@@ -107,9 +107,11 @@ object CheckArray extends Properties("Array") {
       a.reverse.reverse,
       a))
 
-  property("reverse") = forAll((a: Array[String], n: Int) =>
-    (n >= 0 && n < a.length) ==>
-    (a.reverse.get(n) == a.get(a.length - 1 - n)))
+  property("reverse") = forAll((a: Array[String], x: Byte) =>
+    (a.length > 0) ==> {
+      val n = math.abs(x) % a.length
+      (a.reverse.get(n) == a.get(a.length - 1 - n))
+    })
 
   property("appendLeftIdentity") = forAll((a: Array[String]) =>
     arrayEqual(stringEqual).eq(a.append(empty[String]), a))
@@ -123,9 +125,11 @@ object CheckArray extends Properties("Array") {
   property("appendLength") = forAll((a: Array[String], b: Array[String]) =>
     a.append(b).length == a.length + b.length)
 
-  property("array") = forAll((a: scala.Array[String], n: Int) =>
-    (n >= 0 && n < a.length) ==>
-    (array[String](a: _*).length == a.length && array[String](a: _*).get(n) == a(n)))
+  property("array") = forAll((a: scala.Array[String], x: Byte) =>
+    (a.length > 0) ==> {
+      val n = math.abs(x) % a.length
+      array[String](a: _*).length == a.length && array[String](a: _*).get(n) == a(n)
+    })
 
   property("join") = forAll((a: Array[Array[String]]) =>
     arrayEqual(stringEqual).eq(
