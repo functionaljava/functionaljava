@@ -1,5 +1,7 @@
 = Functional Java
 
+image:https://travis-ci.org/functionaljava/functionaljava.svg?branch=master["Build Status", link="https://travis-ci.org/functionaljava/functionaljava"]
+
 image::http://www.functionaljava.org/img/logo-600x144.png[]
 
 Functional Java is an open source library facilitating functional programming in Java. The library implements numerous basic and advanced programming abstractions that assist composition oriented development. Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language.
