@@ -2,21 +2,21 @@
 apply plugin: 'scala'
 
 ext {
-	scalaVersion = "2.10.3"
-    scalacheckScalaVersion = "2.10"
-	scalacheckVersion = "1.10.1"
+    scalaVersion = "2.11.6"
+    scalacheckScalaVersion = "2.11"
+    scalacheckVersion = "1.12.2"
 }
 
 tasks.withType(ScalaCompile) {
-	scalaCompileOptions.useAnt = false
+    scalaCompileOptions.useAnt = false
 }
 
 dependencies {
-	compile project(":core")
-	compile "org.scala-lang:scala-library:$scalaVersion"
+    compile project(":core")
+    compile "org.scala-lang:scala-library:$scalaVersion"
 
-	testCompile "org.scala-lang:scala-library:$scalaVersion"
-	testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
+    testCompile "org.scala-lang:scala-library:$scalaVersion"
+    testCompile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
     testCompile dependencyJunit
 }
 

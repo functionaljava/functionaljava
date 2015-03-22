@@ -2,9 +2,8 @@ package fj
 package control
 package parallel
 
-import control._
 import org.scalacheck.Arbitrary
-import org.scalacheck.Gen.value
+import org.scalacheck.Gen.const
 import Strategy.executorStrategy
 import java.util.concurrent.Executors.newFixedThreadPool
 import java.util.concurrent._
@@ -20,5 +19,5 @@ object ArbitraryStrategy {
   })
 
   implicit def arbitraryStrategy[A]: Arbitrary[Strategy[A]] =
-    Arbitrary(value(executorStrategy[A](executor)))
+    Arbitrary(const(executorStrategy[A](executor)))
 }
