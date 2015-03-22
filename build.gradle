@@ -4,6 +4,24 @@ defaultTasks 'build'
 ext {
 }
 
+buildscript {
+    ext {
+        uptodateVersion = "1.3.1"
+        retrolambdaVersion = "2.5.0"
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
+        classpath "me.tatarka:gradle-retrolambda:$retrolambdaVersion"
+    }
+}
+
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
@@ -52,21 +70,14 @@ allprojects {
 
 subprojects {
 
-	buildscript {
-		repositories {
-			mavenCentral()
-		}
-
-		dependencies {
-			classpath 'me.tatarka:gradle-retrolambda:2.5.0'
-		}
-	}
-
 	apply from: "$rootDir/lib.gradle"
 	apply plugin: "java"
 	apply plugin: "eclipse"
+    apply plugin: "com.ofg.uptodate"
 
 	repositories {
+        mavenLocal()
+        jcenter()
 		mavenCentral()
 		maven {
 			url sonatypeRepositoryUrl
