@@ -23,7 +23,6 @@ object Tests {
   }
 
   import org.scalacheck.Prop
-  import org.scalacheck.ConsoleReporter._
   import org.scalacheck.Test
   import org.scalacheck.Test.check
 
@@ -35,10 +34,6 @@ object Tests {
           case Test.Proved(_) => println("Proved " + name)
           case f @ Test.Failed(_, _) => sys.error(name + ": " + f)
           case Test.Exhausted => println("Exhausted " + name)
-          case f @ Test.GenException(e) => {
-            e.printStackTrace
-            sys.error(name + ": " + f)
-          }
           case f @ Test.PropException(_, e, _) => {
             e.printStackTrace
             sys.error(name + ": " + f)
