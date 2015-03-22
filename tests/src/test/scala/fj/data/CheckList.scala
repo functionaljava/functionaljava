@@ -118,9 +118,11 @@ object CheckList extends Properties("List") {
       (a append b).reverse,
       b.reverse.append(a.reverse)))
 
-  property("index") = forAll((a: List[String], n: Int) =>
-    (n > 0 && n < a.length) ==>
-    (a.index(n) == a.tail.index(n - 1)))
+  property("index") = forAll((a: List[String], x: Byte) =>
+    (a.length > 0) ==> {
+      val n = math.abs(x) % a.length + 1
+      (n < a.length) ==> (a.index(n) == a.tail.index(n - 1))
+    })
 
   property("snoc") = forAll((a: List[String], s: String) =>
     listEqual(stringEqual).eq(

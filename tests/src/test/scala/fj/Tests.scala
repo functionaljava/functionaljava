@@ -29,7 +29,7 @@ object Tests {
 
   def run(tests: List[(String, Prop)]) =
     tests foreach { case (name, p) => {
-        val c = check(new Test.Parameters.Default { }, p)
+        val c = check(new Test.Parameters.Default { override val maxSize = 20 }, p)
         c.status match {
           case Test.Passed => println("Passed " + name)
           case Test.Proved(_) => println("Proved " + name)
