@@ -5,8 +5,6 @@ ext {
 	scalaVersion = "2.10.3"
     scalacheckScalaVersion = "2.10"
 	scalacheckVersion = "1.10.1"
-    scalatestScalaVersion= "2.10"
-    scalatestVersion = "1.9.2"
 }
 
 tasks.withType(ScalaCompile) {
