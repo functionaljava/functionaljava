@@ -30,10 +30,10 @@ The Functional Java artifact is published to Maven Central using the group `org.
 * the core library (`functionaljava`)
 * Java 8 specific support (`functionaljava-java8`)
 
-The latest version is `4.2`.  This can be added to your Gradle project by adding the dependencies:
+The latest version is `4.3`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.2"
-compile "org.functionaljava:functionaljava-java8:4.2"
+compile "org.functionaljava:functionaljava:4.3"
+compile "org.functionaljava:functionaljava-java8:4.3"
 ----
 
 and in Maven:
@@ -41,12 +41,12 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.2</version>
+    <version>4.3</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java8</artifactId>
-    <version>4.2</version>
+    <version>4.3</version>
 </dependency>
 ----
 
