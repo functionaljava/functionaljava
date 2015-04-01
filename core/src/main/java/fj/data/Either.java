@@ -78,6 +78,19 @@ public abstract class Either<A, B> {
            right.f(right().value());
   }
 
+  /**
+   * Map the given functions across the appropriate side.
+   * 
+   * @param left  The function to map if this is left.
+   * @param right The function to map if this is right.
+   * @return A new either value after mapping with the appropriate function applied.
+   */
+  public final <X, Y> Either<X, Y> bimap(final F<A, X> left, final F<B, Y> right) {
+    return isLeft() ?
+           left(left.f(left().value())) :
+           right(right.f(right().value()));
+  }
+
   @Override
   public boolean equals(Object other) {
 
