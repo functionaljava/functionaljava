@@ -1872,7 +1872,7 @@ public abstract class List<A> implements Iterable<A> {
      */
     @Override public boolean equals( final Object obj ) {
 
-        return Equal.equals0(List.class, this, obj, u -> Equal.listEqual(Equal.<A>anyEqual()));
+        return Equal.equals0(List.class, this, obj, () -> Equal.listEqual(Equal.<A>anyEqual()));
     }
 
     /**

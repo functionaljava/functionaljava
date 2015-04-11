@@ -261,7 +261,7 @@ public final class Tree<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(Tree.class, this, other, u -> Equal.treeEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(Tree.class, this, other, () -> Equal.treeEqual(Equal.<A>anyEqual()));
   }
 
   @Override

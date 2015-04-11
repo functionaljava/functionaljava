@@ -636,7 +636,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P8.class, this, other,
-        u -> Equal.p8Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual(), Equal.<H>anyEqual()));
+        () -> Equal.p8Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual(), Equal.<H>anyEqual()));
   }
 
   @Override

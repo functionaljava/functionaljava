@@ -256,7 +256,7 @@ public abstract class P1<A> implements F0<A> {
 
     @Override
     public boolean equals(Object other) {
-        return Equal.equals0(P1.class, this, other, u -> Equal.p1Equal(Equal.<A>anyEqual()));
+        return Equal.equals0(P1.class, this, other, () -> Equal.p1Equal(Equal.<A>anyEqual()));
     }
 
     @Override

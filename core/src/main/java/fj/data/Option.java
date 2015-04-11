@@ -626,7 +626,7 @@ public abstract class Option<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(Option.class, this, other, u -> Equal.optionEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(Option.class, this, other, () -> Equal.optionEqual(Equal.<A>anyEqual()));
   }
 
   /**

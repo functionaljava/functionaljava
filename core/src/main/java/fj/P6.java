@@ -436,7 +436,7 @@ public abstract class P6<A, B, C, D, E, F> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P6.class, this, other,
-        u -> Equal.p6Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual()));
+        () -> Equal.p6Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual()));
   }
 
   @Override

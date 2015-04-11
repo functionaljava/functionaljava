@@ -26,7 +26,7 @@ public abstract class P2<A, B> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(P2.class, this, other, u -> Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
+    return Equal.equals0(P2.class, this, other, () -> Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
   }
 
   @Override

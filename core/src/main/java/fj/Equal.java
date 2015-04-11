@@ -1,7 +1,6 @@
 package fj;
 
 import static fj.Function.curry;
-import static fj.Unit.unit;
 
 import fj.data.*;
 import fj.data.hlist.HList;
@@ -562,7 +561,7 @@ public final class Equal<A> {
    */
   @SuppressWarnings("unchecked")
   public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final Equal<A> equal) {
-    return self == other ? true : clazz.isInstance(other) ? equal.eq(self, (A) other) : false;
+    return self == other || clazz.isInstance(other) && equal.eq(self, (A) other);
   }
   
   /**
@@ -575,8 +574,8 @@ public final class Equal<A> {
    * @return true if self and other are equal
    */
   @SuppressWarnings("unchecked")
-  public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final F<Unit, Equal<A>> equal) {
-    return self == other ? true : clazz.isInstance(other) ? equal.f(unit()).eq(self, (A) other) : false;
+  public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final F0<Equal<A>> equal) {
+    return self == other || clazz.isInstance(other) && equal.f().eq(self, (A) other);
   }
 
 }

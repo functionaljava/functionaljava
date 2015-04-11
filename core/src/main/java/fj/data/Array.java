@@ -682,7 +682,7 @@ public final class Array<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object o) {
-    return Equal.equals0(Array.class, this, o, u -> Equal.arrayEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(Array.class, this, o, () -> Equal.arrayEqual(Equal.<A>anyEqual()));
   }
 
   /**

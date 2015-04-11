@@ -193,7 +193,7 @@ public abstract class P3<A, B, C> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P3.class, this, other, 
-        u -> Equal.p3Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual()));
+        () -> Equal.p3Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual()));
   }
 
   @Override

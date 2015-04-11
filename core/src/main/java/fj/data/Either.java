@@ -94,7 +94,7 @@ public abstract class Either<A, B> {
   @Override
   public boolean equals(Object other) {
 
-    return Equal.equals0(Either.class, this, other, u -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
+    return Equal.equals0(Either.class, this, other, () -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
   }
 
   @Override
