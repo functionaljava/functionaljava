@@ -1247,7 +1247,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.streamEqual(Equal.<A>anyEqual()).eq(this, (Stream<A>) other)));
+    return Equal.equals0(Stream.class, this, other, u -> Equal.streamEqual(Equal.<A>anyEqual()));
   }
 
   @Override

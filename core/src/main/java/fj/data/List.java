@@ -1870,14 +1870,9 @@ public abstract class List<A> implements Iterable<A> {
      * @param obj the other object to check for equality against.
      * @return true if this list is equal to the provided argument
      */
-    //Suppress the warning for cast to <code>List<A></code> because the type is checked in the previous line.
-    @SuppressWarnings({ "unchecked" })
     @Override public boolean equals( final Object obj ) {
 
-        //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
-        //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
-
-        return Equal.shallowEqualsO(this, obj).orSome(P.lazy(u -> Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj)));
+        return Equal.equals0(List.class, this, obj, u -> Equal.listEqual(Equal.<A>anyEqual()));
     }
 
     /**
