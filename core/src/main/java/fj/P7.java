@@ -528,8 +528,10 @@ public abstract class P7<A, B, C, D, E, F, G> {
 	}
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p7Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual()).eq(this, (P7<A, B, C, D, E, F, G>) other)));
+    return other == this
+        || (other instanceof P7) && Equal.p7Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual()).eq(this, (P7<A, B, C, D, E, F, G>) other);
   }
 
   @Override

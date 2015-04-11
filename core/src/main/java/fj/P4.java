@@ -264,8 +264,10 @@ public abstract class P4<A, B, C, D> {
 	}
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p4Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual()).eq(this, (P4<A, B, C, D>) other)));
+    return other == this
+        || (other instanceof P4) &&  Equal.p4Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual()).eq(this, (P4<A, B, C, D>) other);
   }
 
   @Override
