@@ -13,5 +13,4 @@ build
 .DS_Store
 MANIFEST.MF
 */bin/**
-
-
+*~

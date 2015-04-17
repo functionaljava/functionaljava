@@ -1,7 +1,6 @@
 package fj;
 
 import static fj.Function.curry;
-import static fj.Function.compose;
 import static fj.Function.flip;
 import fj.data.Array;
 import fj.data.List;
@@ -20,7 +19,7 @@ import java.math.BigDecimal;
  * <ul>
  * <li><em>Left Identity</em>; forall x. sum(zero(), x) == x</li>
  * <li><em>Right Identity</em>; forall x. sum(x, zero()) == x</li>
- * <li><em>Associativity</em>; forall x. forall y. forall z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
+ * <li><em>Associativity</em>; forall x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
  *
  * @version %build.number%
@@ -32,6 +31,14 @@ public final class Monoid<A> {
   private Monoid(final F<A, F<A, A>> sum, final A zero) {
     this.sum = sum;
     this.zero = zero;
+  }
+
+  /**
+   * Composes this monoid with another.
+   */
+  public <B> Monoid<P2<A,B>>compose(Monoid<B> m) {
+    return monoid((P2<A,B> x) -> (P2<A,B> y) ->
+      P.p(sum(x._1(), y._1()), m.sum(x._2(), y._2())), P.p(zero, m.zero));
   }
 
   /**
@@ -176,7 +183,7 @@ public final class Monoid<A> {
     final Stream<A> s = iterableStream(as);
     return s.isEmpty() ?
            zero :
-           s.foldLeft1(compose(sum, flip(sum).f(a)));
+           s.foldLeft1(Function.compose(sum, flip(sum).f(a)));
   }
 
   /**
