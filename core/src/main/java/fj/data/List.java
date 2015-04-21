@@ -1152,7 +1152,7 @@ public abstract class List<A> implements Iterable<A> {
     List<A> ys = this;
     final Buffer<A> a = empty();
     while(ys.isNotEmpty() && ys.tail().isNotEmpty()) {
-      a.snoc(head());
+      a.snoc(ys.head());
       ys = ys.tail();
     }
     return a.toList();
