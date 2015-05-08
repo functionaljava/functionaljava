@@ -1,11 +1,11 @@
 package fj.data.optic;
 
 import fj.F;
-import fj.F2;
 import fj.F3;
 import fj.F4;
 import fj.F5;
 import fj.F6;
+import fj.F7;
 import fj.Function;
 import fj.Monoid;
 import fj.P;
@@ -464,63 +464,63 @@ public abstract class PTraversal<S, T, A, B> {
     };
   }
 
-  public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F2<B, B, T> set) {
-    final F<B, F<B, T>> curriedSet = Function.curry(set);
+  public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2,
+      final F3<B, B, S, T> set) {
     return new PTraversal<S, T, A, B>() {
 
       @Override
       public <C> F<S, F<C, T>> modifyFunctionF(final F<A, F<C, B>> f) {
-        return s -> Function.apply(Function.compose(curriedSet, f.f(get1.f(s))), f.f(get2.f(s)));
+        return s -> Function.apply(Function.compose(b1 -> b2 -> set.f(b1, b2, s), f.f(get1.f(s))), f.f(get2.f(s)));
       }
 
       @Override
       public <L> F<S, Either<L, T>> modifyEitherF(final F<A, Either<L, B>> f) {
-        return s -> f.f(get2.f(s)).right().apply(f.f(get1.f(s)).right().map(curriedSet));
+        return s -> f.f(get2.f(s)).right().apply(f.f(get1.f(s)).right().map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, IO<T>> modifyIOF(final F<A, IO<B>> f) {
-        return s -> IOFunctions.apply(f.f(get2.f(s)), IOFunctions.map(f.f(get1.f(s)), curriedSet));
+        return s -> IOFunctions.apply(f.f(get2.f(s)), IOFunctions.map(f.f(get1.f(s)), b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Trampoline<T>> modifyTrampolineF(final F<A, Trampoline<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Promise<T>> modifyPromiseF(final F<A, Promise<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).fmap(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).fmap(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, List<T>> modifyListF(final F<A, List<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Option<T>> modifyOptionF(final F<A, Option<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Stream<T>> modifyStreamF(final F<A, Stream<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, P1<T>> modifyP1F(final F<A, P1<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, V2<T>> modifyV2F(final F<A, V2<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(curriedSet));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
@@ -531,26 +531,27 @@ public abstract class PTraversal<S, T, A, B> {
   }
 
   public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
-      final F3<B, B, B, T> set) {
-    return fromCurried(pTraversal(get1, get2, (b1, b2) -> b3 -> set.f(b1, b2, b3)), get3);
+      final F4<B, B, B, S, T> set) {
+    return fromCurried(pTraversal(get1, get2, (b1, b2, s) -> (b3 -> set.f(b1, b2, b3, s))), get3);
   }
 
   public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
       final F<S, A> get4,
-      final F4<B, B, B, B, T> set) {
-    return fromCurried(pTraversal(get1, get2, get3, (b1, b2, b3) -> b4 -> set.f(b1, b2, b3, b4)), get4);
+      final F5<B, B, B, B, S, T> set) {
+    return fromCurried(pTraversal(get1, get2, get3, (b1, b2, b3, s) -> b4 -> set.f(b1, b2, b3, b4, s)), get4);
   }
 
   public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
       final F<S, A> get4, final F<S, A> get5,
-      final F5<B, B, B, B, B, T> set) {
-    return fromCurried(pTraversal(get1, get2, get3, get4, (b1, b2, b3, b4) -> b5 -> set.f(b1, b2, b3, b4, b5)), get5);
+      final F6<B, B, B, B, B, S, T> set) {
+    return fromCurried(pTraversal(get1, get2, get3, get4, (b1, b2, b3, b4, s) -> b5 -> set.f(b1, b2, b3, b4, b5, s)), get5);
   }
 
   public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
       final F<S, A> get4, final F<S, A> get5, final F<S, A> get6,
-      final F6<B, B, B, B, B, B, T> set) {
-    return fromCurried(pTraversal(get1, get2, get3, get4, get5, (b1, b2, b3, b4, b5) -> b6 -> set.f(b1, b2, b3, b4, b5, b6)),
+      final F7<B, B, B, B, B, B, S, T> set) {
+    return fromCurried(
+        pTraversal(get1, get2, get3, get4, get5, (b1, b2, b3, b4, b5, s) -> b6 -> set.f(b1, b2, b3, b4, b5, b6, s)),
         get6);
   }
 
