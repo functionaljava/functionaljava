@@ -106,6 +106,10 @@ public abstract class Fold<S, A> {
     return composeFold(other.asFold());
   }
 
+  public static <A> Fold<A, A> id() {
+    return PIso.<A, A> pId().asFold();
+  }
+
   public static final <A> Fold<Either<A, A>, A> codiagonal() {
     return new Fold<Either<A, A>, A>() {
       @Override

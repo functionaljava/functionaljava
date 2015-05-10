@@ -90,6 +90,10 @@ public abstract class Getter<S, A> {
     };
   }
 
+  public static <A> Getter<A, A> id() {
+    return PIso.<A, A> pId().asGetter();
+  }
+
   public static final <A> Getter<Either<A, A>, A> codiagonal() {
     return getter(e -> e.either(Function.identity(), Function.identity()));
   }
