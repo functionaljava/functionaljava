@@ -475,52 +475,53 @@ public abstract class PTraversal<S, T, A, B> {
 
       @Override
       public <L> F<S, Either<L, T>> modifyEitherF(final F<A, Either<L, B>> f) {
-        return s -> f.f(get2.f(s)).right().apply(f.f(get1.f(s)).right().map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).right().apply(f.f(get1.f(s)).right().<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, IO<T>> modifyIOF(final F<A, IO<B>> f) {
-        return s -> IOFunctions.apply(f.f(get2.f(s)), IOFunctions.map(f.f(get1.f(s)), b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> IOFunctions.apply(f.f(get2.f(s)),
+            IOFunctions.<B, F<B, T>> map(f.f(get1.f(s)), b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Trampoline<T>> modifyTrampolineF(final F<A, Trampoline<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Promise<T>> modifyPromiseF(final F<A, Promise<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).fmap(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> fmap(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, List<T>> modifyListF(final F<A, List<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Option<T>> modifyOptionF(final F<A, Option<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, Stream<T>> modifyStreamF(final F<A, Stream<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, P1<T>> modifyP1F(final F<A, P1<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public F<S, V2<T>> modifyV2F(final F<A, V2<B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
       public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).map(b1 -> b2 -> set.f(b1, b2, s)));
+        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
