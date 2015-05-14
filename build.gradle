@@ -85,7 +85,7 @@ subprojects {
 	}
 }
 
-configure(subprojects.findAll {it.name != 'tests'}) {
+configure(subprojects) {
 
     apply plugin: "maven"
     apply plugin: "signing"
