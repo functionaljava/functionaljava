@@ -110,12 +110,12 @@ public abstract class POptional<S, T, A, B> {
    * matching
    */
   public final F<S, Option<T>> modifyOption(final F<A, B> f) {
-    return s -> getOption(s).map(__ -> modify(f).f(s));
+    return s -> getOption(s).map(Function.constant(modify(f).f(s)));
   }
 
   /** set polymorphically the target of a {@link POptional} with a value. return empty if the {@link POptional} is not matching */
   public final F<S, Option<T>> setOption(final B b) {
-    return modifyOption(__ -> b);
+    return modifyOption(Function.constant(b));
   }
 
   /** check if a {@link POptional} has a target */
@@ -385,89 +385,89 @@ public abstract class POptional<S, T, A, B> {
 
       @Override
       public <C> F<S, F<C, T>> modifyFunctionF(final F<A, F<C, B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             Function.constant(),
-            a -> Function.compose(b -> set(b).f(s), f.f(a))
+            a -> Function.compose(b -> set.f(b).f(s), f.f(a))
             );
       }
 
       @Override
       public <L> F<S, Either<L, T>> modifyEitherF(final F<A, Either<L, B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             Either.right_(),
-            t -> f.f(t).right().map(b -> set(b).f(s))
+            t -> f.f(t).right().map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, IO<T>> modifyIOF(final F<A, IO<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             IOFunctions::unit,
-            t -> IOFunctions.<B, T> map(f.f(t), b -> set(b).f(s))
+            t -> IOFunctions.<B, T> map(f.f(t), b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Trampoline<T>> modifyTrampolineF(final F<A, Trampoline<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             Trampoline.pure(),
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Promise<T>> modifyPromiseF(final F<A, Promise<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             t -> Promise.promise(Strategy.idStrategy(), P.p(t)),
-            t -> f.f(t).fmap(b -> set(b).f(s))
+            t -> f.f(t).fmap(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, List<T>> modifyListF(final F<A, List<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             List::single,
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Option<T>> modifyOptionF(final F<A, Option<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             Option.some_(),
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Stream<T>> modifyStreamF(final F<A, Stream<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             Stream.single(),
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, P1<T>> modifyP1F(final F<A, P1<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             P.p1(),
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             t -> Validation.<E, T> success(t),
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, V2<T>> modifyV2F(final F<A, V2<B>> f) {
-        return s -> getOrModify(s).either(
+        return s -> getOrModify.f(s).either(
             t -> V2.p(P.p(t, t)),
-            t -> f.f(t).map(b -> set(b).f(s))
+            t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
