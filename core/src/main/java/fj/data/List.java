@@ -652,7 +652,7 @@ public abstract class List<A> implements Iterable<A> {
 
   public <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
     return foldRight(
-        (a, acc) -> acc.apply(f.f(a).map(e -> es -> es.cons(e))),
+        (a, acc) -> acc.apply(f.f(a).<F<List<B>, List<B>>> map(e -> es -> es.cons(e))),
         v(List.<B> nil(), List.<B> nil()));
   }
 
