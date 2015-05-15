@@ -1,8 +1,10 @@
 package fj;
 
 import static fj.Function.*;
-
+import static fj.data.optic.PLens.pLens;
 import fj.data.*;
+import fj.data.optic.Lens;
+import fj.data.optic.PLens;
 
 /**
  * A product-2.
@@ -340,6 +342,34 @@ public abstract class P2<A, B> {
    */
   public static <A, B, C> F2<A, B, C> untuple(final F<P2<A, B>, C> f) {
     return (a, b) -> f.f(P.p(a, b));
+  }
+
+  /**
+   * Polyomorphic lens targeted on _1.
+   */
+  public static <A, B, C> PLens<P2<A, B>, P2<C, B>, A, C> _1pLens() {
+    return pLens(__1(), a -> p2 -> P.p(a, p2._2()));
+  }
+
+  /**
+   * Monomorphic lens targeted on _1.
+   */
+  public static <A, B, C> Lens<P2<A, B>, A> _1Lens() {
+    return new Lens<>(_1pLens());
+  }
+
+  /**
+   * Polyomorphic lens targeted on _2.
+   */
+  public static <A, B, C> PLens<P2<A, B>, P2<A, C>, B, C> _2pLens() {
+    return pLens(__2(), b -> p2 -> P.p(p2._1(), b));
+  }
+
+  /**
+   * Monomorphic lens targeted on _1.
+   */
+  public static <A, B, C> Lens<P2<A, B>, B> _2Lens() {
+    return new Lens<>(_2pLens());
   }
 
     @Override

@@ -2,6 +2,7 @@ package fj
 
 object Tests {
   def tests = List (
+    CheckP2.properties,
     fj.data.CheckArray.properties,
     fj.data.CheckIO.properties,
     fj.data.CheckIteratee.properties,
