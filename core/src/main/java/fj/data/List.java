@@ -26,11 +26,21 @@ import static fj.data.Array.mkArray;
 import static fj.data.List.Buffer.*;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static fj.data.optic.Optional.optional;
+import static fj.data.optic.Prism.prism;
+import static fj.data.vector.V.v;
 import static fj.function.Booleans.not;
 import static fj.Ordering.GT;
 import static fj.Ord.intOrd;
 import fj.Ordering;
 import fj.control.Trampoline;
+import fj.control.parallel.Promise;
+import fj.control.parallel.Strategy;
+import fj.data.optic.Optional;
+import fj.data.optic.PTraversal;
+import fj.data.optic.Prism;
+import fj.data.optic.Traversal;
+import fj.data.vector.V2;
 import fj.function.Effect1;
 
 import java.util.AbstractCollection;
@@ -608,6 +618,119 @@ public abstract class List<A> implements Iterable<A> {
         );
     }
 
+  public <C, B> F<C, List<B>> traverseF(F<A, F<C, B>> f) {
+    return this.foldRight(
+        (a, acc) -> Function.bind(acc,
+            (bs) -> Function.<C, B, List<B>> compose(b -> bs.cons(b), f.f(a))),
+        Function.constant(List.<B> nil())
+        );
+  }
+
+  public <B> Trampoline<List<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+        Trampoline.pure(List.<B> nil()));
+  }
+
+  public <B> Promise<List<B>> traversePromise(final F<A, Promise<B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.fmap(bs -> bs.cons(b))),
+        Promise.promise(Strategy.idStrategy(), p(List.<B> nil())));
+  }
+
+  public <B> List<List<B>> traverseList(final F<A, List<B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+        List.single(List.<B> nil()));
+  }
+
+  public <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+        Validation.success(List.<B> nil()));
+  }
+
+  public <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
+    return foldRight(
+        (a, acc) -> acc.apply(f.f(a).map(e -> es -> es.cons(e))),
+        v(List.<B> nil(), List.<B> nil()));
+  }
+
+  /**
+   * polymorphic traversal
+   */
+  public static <A, B> PTraversal<List<A>, List<B>, A, B> _pTraversal() {
+    return new PTraversal<List<A>, List<B>, A, B>() {
+
+      @Override
+      public <C> F<List<A>, F<C, List<B>>> modifyFunctionF(F<A, F<C, B>> f) {
+        return l -> l.traverseF(f);
+      }
+
+      @Override
+      public <L> F<List<A>, Either<L, List<B>>> modifyEitherF(F<A, Either<L, B>> f) {
+        return l -> l.traverseEither(f);
+      }
+
+      @Override
+      public F<List<A>, IO<List<B>>> modifyIOF(F<A, IO<B>> f) {
+        return l -> l.traverseIO(f);
+      }
+
+      @Override
+      public F<List<A>, Trampoline<List<B>>> modifyTrampolineF(F<A, Trampoline<B>> f) {
+        return l -> l.traverseTrampoline(f);
+      }
+
+      @Override
+      public F<List<A>, Promise<List<B>>> modifyPromiseF(F<A, Promise<B>> f) {
+        return l -> l.traversePromise(f);
+      }
+
+      @Override
+      public F<List<A>, List<List<B>>> modifyListF(F<A, List<B>> f) {
+        return l -> l.traverseList(f);
+      }
+
+      @Override
+      public F<List<A>, Option<List<B>>> modifyOptionF(F<A, Option<B>> f) {
+        return l -> l.traverseOption(f);
+      }
+
+      @Override
+      public F<List<A>, Stream<List<B>>> modifyStreamF(F<A, Stream<B>> f) {
+        return l -> l.traverseStream(f);
+      }
+
+      @Override
+      public F<List<A>, P1<List<B>>> modifyP1F(F<A, P1<B>> f) {
+        return l -> l.traverseP1(f);
+      }
+
+      @Override
+      public <E> F<List<A>, Validation<E, List<B>>> modifyValidationF(F<A, Validation<E, B>> f) {
+        return l -> l.traverseValidation(f);
+      }
+
+      @Override
+      public F<List<A>, V2<List<B>>> modifyV2F(F<A, V2<B>> f) {
+        return l -> l.traverseV2(f);
+      }
+
+      @Override
+      public <M> F<List<A>, M> foldMap(Monoid<M> monoid, F<A, M> f) {
+        return l -> monoid.sumLeft(l.map(f));
+      }
+    };
+  }
+
+  /**
+   * monomorphic traversal
+   */
+  public static <A> Traversal<List<A>, A> _traversal() {
+    return new Traversal<>(_pTraversal());
+  }
+
     /**
    * Performs function application within a list (applicative functor pattern).
    *
@@ -1055,12 +1178,27 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Optional targeted on Cons head.
+   */
+  public static <A> Optional<List<A>, A> _head() {
+    return optional(l -> l.toOption(), a -> l -> l.<List<A>> list(l, constant(cons_(a))));
+  }
+
+  /**
    * First-class head function.
    *
    * @return A function that gets the head of a given list.
    */
   public static <A> F<List<A>, A> head_() {
     return list -> list.head();
+  }
+
+  /**
+   * Optional targeted on Cons tail.
+   */
+  public static <A> Optional<List<A>, List<A>> _tail() {
+    return optional(l -> l.<Option<List<A>>> list(none(), h -> tail -> some(tail)),
+        tail -> l -> l.list(l, h -> constant(cons(h, tail))));
   }
 
   /**
@@ -1435,12 +1573,26 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Nil prism
+   */
+  public static <A> Prism<List<A>, Unit> _nil() {
+    return prism(l -> l.isEmpty() ? some(unit()) : none(), constant(nil()));
+  }
+
+  /**
    * Returns a function that prepends (cons) an element to a list to produce a new list.
    *
    * @return A function that prepends (cons) an element to a list to produce a new list.
    */
   public static <A> F<A, F<List<A>, List<A>>> cons() {
     return a -> tail -> cons(a, tail);
+  }
+
+  /**
+   * Cons prism
+   */
+  public static <A> Prism<List<A>, P2<A, List<A>>> _cons() {
+    return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(P.p(h, tail))), c -> cons(c._1(), c._2()));
   }
 
   public static <A> F2<A, List<A>, List<A>> cons_() {
