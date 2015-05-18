@@ -206,10 +206,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public F<S, IO<S>> modifyIOF(final F<A, IO<A>> f) {
-        return s -> getOrModify(s).either(
-            IOFunctions::unit,
-            t -> IOFunctions.<A, S> map(f.f(t), b -> set.f(b).f(s))
-            );
+        return s -> getOption.f(s).option(IOFunctions.unit(s), a -> IOFunctions.<A, S> map(f.f(a), b -> set.f(b).f(s)));
       }
 
       @Override
@@ -278,7 +275,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public F<S, S> modify(final F<A, A> f) {
-        return s -> getOrModify(s).either(Function.identity(), a -> set.f(f.f(a)).f(s));
+        return s -> getOption.f(s).option(s, a -> set.f(f.f(a)).f(s));
       }
 
     });
