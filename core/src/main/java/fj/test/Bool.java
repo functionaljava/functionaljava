@@ -1,5 +1,6 @@
 package fj.test;
 
+import fj.F0;
 import fj.P1;
 import static fj.test.Property.prop;
 
@@ -43,7 +44,7 @@ public final class Bool {
    * @param p The property to return if this value is true.
    * @return a property that produces a result only if this value is true.
    */
-  public Property implies(final P1<Property> p) {
+  public Property implies(final F0<Property> p) {
     return Property.implies(b, p);
   }
 

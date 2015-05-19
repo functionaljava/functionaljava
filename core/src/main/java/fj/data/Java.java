@@ -1738,7 +1738,7 @@ public final class Java {
 // BEGIN Future ->
 
   public static <A> F<Future<A>, P1<Either<Exception, A>>> Future_P1() {
-    return a -> P.lazy(u -> {
+    return a -> P.lazy(() -> {
         Either<Exception, A> r;
         try {
           r = Either.right(a.get());

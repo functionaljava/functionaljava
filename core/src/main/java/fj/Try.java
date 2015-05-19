@@ -22,7 +22,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     static public <A, E extends Exception> P1<Validation<E, A>> f(final Try0<A, E> t) {
-        return P.lazy(u -> {
+        return P.lazy(() -> {
             try {
                 return success(t.f());
             } catch (Exception e) {

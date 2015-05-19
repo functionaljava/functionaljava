@@ -128,7 +128,7 @@ public final class Property {
    * @param r             The random generator to use for checking.
    * @param minSuccessful The minimum number of successful tests before a result is reached.
    * @param maxDiscarded  The maximum number of tests discarded because they did not satisfy
-   *                      pre-conditions (i.e. {@link #implies(boolean, P1)}).
+   *                      pre-conditions (i.e. {@link #implies(boolean, F0)}).
    * @param minSize       The minimum size to use for checking.
    * @param maxSize       The maximum size to use for checking.
    * @return A result after checking this property.
@@ -189,7 +189,7 @@ public final class Property {
    *
    * @param minSuccessful The minimum number of successful tests before a result is reached.
    * @param maxDiscarded  The maximum number of tests discarded because they did not satisfy
-   *                      pre-conditions (i.e. {@link #implies(boolean, P1)}).
+   *                      pre-conditions (i.e. {@link #implies(boolean, F0)}).
    * @param minSize       The minimum size to use for checking.
    * @param maxSize       The maximum size to use for checking.
    * @return A result after checking this property.
@@ -276,7 +276,7 @@ public final class Property {
    * successful checks, the given maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @param maxDiscarded The maximum number of tests discarded because they did not satisfy
-   *                     pre-conditions (i.e. {@link #implies(boolean, P1)}).
+   *                     pre-conditions (i.e. {@link #implies(boolean, F0)}).
    * @return A result after checking this property.
    */
   public CheckResult maxDiscarded(final int maxDiscarded) {
@@ -289,7 +289,7 @@ public final class Property {
    *
    * @param r            The random generator.
    * @param maxDiscarded The maximum number of tests discarded because they did not satisfy
-   *                     pre-conditions (i.e. {@link #implies(boolean, P1)}).
+   *                     pre-conditions (i.e. {@link #implies(boolean, F0)}).
    * @return A result after checking this property.
    */
   public CheckResult maxDiscarded(final Rand r, final int maxDiscarded) {
@@ -350,8 +350,8 @@ public final class Property {
    * @param p The property to return if the condition satisfies.
    * @return A property that produces a result only if the given condition satisfies.
    */
-  public static Property implies(final boolean b, final P1<Property> p) {
-    return b ? p._1() : new Property(new F<Integer, F<Rand, Result>>() {
+  public static Property implies(final boolean b, final F0<Property> p) {
+    return b ? p.f() : new Property(new F<Integer, F<Rand, Result>>() {
       public F<Rand, Result> f(final Integer i) {
         return new F<Rand, Result>() {
           public Result f(final Rand r) {
@@ -457,11 +457,7 @@ public final class Property {
                   public Boolean f(final Option<P2<A, Result>> o) {
                     return failed(o);
                   }
-                }).orSome(new P1<Option<P2<A, Result>>>() {
-                  public Option<P2<A, Result>> _1() {
-                    return results.head();
-                  }
-                });
+                }).orSome(() -> results.head());
               }
 
               public boolean failed(final Option<P2<A, Result>> o) {
@@ -1640,9 +1636,9 @@ public final class Property {
    * @return A property that has a result of exception, if the evaluation of the given property
    *         throws an exception; otherwise, the given property is returned.
    */
-  public static Property exception(final P1<Property> p) {
+  public static Property exception(final F0<Property> p) {
     try {
-      return p._1();
+      return p.f();
     } catch (final Throwable t) {
       return new Property(new F<Integer, F<Rand, Result>>() {
         public F<Rand, Result> f(final Integer i) {

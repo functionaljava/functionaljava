@@ -94,7 +94,7 @@ public abstract class Either<A, B> {
   @Override
   public boolean equals(Object other) {
 
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other)));
+    return Equal.shallowEqualsO(this, other).orSome(() -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other));
   }
 
   @Override
@@ -177,12 +177,12 @@ public abstract class Either<A, B> {
      * @param err The error message to fail with.
      * @return The value of this projection
      */
-    public A valueE(final P1<String> err) {
+    public A valueE(final F0<String> err) {
       if (e.isLeft())
         //noinspection CastToConcreteClass
         return ((Left<A, B>) e).a;
       else
-        throw error(err._1());
+        throw error(err.f());
     }
 
     /**
@@ -210,8 +210,8 @@ public abstract class Either<A, B> {
      * @param a The value to return if this projection has no value.
      * @return The value of this projection or the given argument.
      */
-    public A orValue(final P1<A> a) {
-      return isLeft() ? value() : a._1();
+    public A orValue(final F0<A> a) {
+      return isLeft() ? value() : a.f();
     }
 
     /**
@@ -462,12 +462,12 @@ public abstract class Either<A, B> {
      * @param err The error message to fail with.
      * @return The value of this projection
      */
-    public B valueE(final P1<String> err) {
+    public B valueE(final F0<String> err) {
       if (e.isRight())
         //noinspection CastToConcreteClass
         return ((Right<A, B>) e).b;
       else
-        throw error(err._1());
+        throw error(err.f());
     }
 
     /**
@@ -485,8 +485,8 @@ public abstract class Either<A, B> {
      * @param b The value to return if this projection has no value.
      * @return The value of this projection or the given argument.
      */
-    public B orValue(final P1<B> b) {
-      return isRight() ? value() : b._1();
+    public B orValue(final F0<B> b) {
+      return isRight() ? value() : b.f();
     }
 
     /**
@@ -575,7 +575,7 @@ public abstract class Either<A, B> {
       public <C> IO<Either<A, C>> traverseIO(final F<B, IO<C>> f) {
           return isRight() ?
                   IOFunctions.map(f.f(value()), x -> Either.<A, C>right(x)) :
-                  IOFunctions.lazy(u -> Either.<A, C>left(e.left().value()));
+                  IOFunctions.lazy(() -> Either.<A, C>left(e.left().value()));
       }
 
       public <C> P1<Either<A, C>> traverseP1(final F<B, P1<C>> f) {
@@ -890,8 +890,8 @@ public abstract class Either<A, B> {
    * @param left  The left value to use if the condition does not satisfy.
    * @return A constructed either based on the given condition.
    */
-  public static <A, B> Either<A, B> iif(final boolean c, final P1<B> right, final P1<A> left) {
-    return c ? new Right<A, B>(right._1()) : new Left<A, B>(left._1());
+  public static <A, B> Either<A, B> iif(final boolean c, final F0<B> right, final F0<A> left) {
+    return c ? new Right<A, B>(right.f()) : new Left<A, B>(left.f());
   }
 
   /**

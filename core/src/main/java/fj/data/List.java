@@ -1,6 +1,7 @@
 package fj.data;
 
 import static fj.Bottom.error;
+import fj.F0;
 import fj.F2Functions;
 import fj.Equal;
 import fj.F;
@@ -28,7 +29,6 @@ import static fj.data.Option.some;
 import static fj.function.Booleans.not;
 import static fj.Ordering.GT;
 import static fj.Ord.intOrd;
-
 import fj.Ordering;
 import fj.control.Trampoline;
 import fj.function.Effect1;
@@ -118,8 +118,8 @@ public abstract class List<A> implements Iterable<A> {
    * @param a The argument to return if this list is empty.
    * @return The head of this list if there is one or the given argument if this list is empty.
    */
-  public final A orHead(final P1<A> a) {
-    return isEmpty() ? a._1() : head();
+  public final A orHead(final F0<A> a) {
+    return isEmpty() ? a.f() : head();
   }
 
   /**
@@ -128,8 +128,8 @@ public abstract class List<A> implements Iterable<A> {
    * @param as The argument to return if this list is empty.
    * @return The tail of this list if there is one or the given argument if this list is empty.
    */
-  public final List<A> orTail(final P1<List<A>> as) {
-    return isEmpty() ? as._1() : tail();
+  public final List<A> orTail(final F0<List<A>> as) {
+    return isEmpty() ? as.f() : tail();
   }
 
   /**
@@ -149,8 +149,8 @@ public abstract class List<A> implements Iterable<A> {
    * @param x The value to return in left if this list is empty.
    * @return An either projection of this list.
    */
-  public final <X> Either<X, A> toEither(final P1<X> x) {
-    return isEmpty() ? Either.<X, A>left(x._1()) : Either.<X, A>right(head());
+  public final <X> Either<X, A> toEither(final F0<X> x) {
+    return isEmpty() ? Either.<X, A>left(x.f()) : Either.<X, A>right(head());
   }
 
   /**
@@ -1877,7 +1877,7 @@ public abstract class List<A> implements Iterable<A> {
         //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
         //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
 
-        return Equal.shallowEqualsO(this, obj).orSome(P.lazy(u -> Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj)));
+        return Equal.shallowEqualsO(this, obj).orSome(() -> Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj));
     }
 
     /**

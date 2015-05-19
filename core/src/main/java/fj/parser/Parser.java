@@ -219,8 +219,8 @@ public final class Parser<I, A, E> {
    * @param alt The parser to try if this parser fails.
    * @return A parser that tries this parser and if it fails, then tries the given parser.
    */
-  public Parser<I, A, E> or(final P1<Parser<I, A, E>> alt) {
-    return parser(i -> parse(i).f().sequence(alt._1().parse(i)));
+  public Parser<I, A, E> or(final F0<Parser<I, A, E>> alt) {
+    return parser(i -> parse(i).f().sequence(alt.f().parse(i)));
   }
 
   /**
@@ -241,8 +241,8 @@ public final class Parser<I, A, E> {
    * @param s   The semigroup to append error messages if both parsers fail.
    * @return A parser that tries this parser and if it fails, then tries the given parser.
    */
-  public Parser<I, A, E> or(final P1<Parser<I, A, E>> alt, final Semigroup<E> s) {
-    return parser(i -> parse(i).f().bind(e -> alt._1().parse(i).f().map(s.sum(e))));
+  public Parser<I, A, E> or(final F0<Parser<I, A, E>> alt, final Semigroup<E> s) {
+    return parser(i -> parse(i).f().bind(e -> alt.f().parse(i).f().map(s.sum(e))));
   }
 
   /**
@@ -263,10 +263,10 @@ public final class Parser<I, A, E> {
    * @param e The error message to fail with if this parser succeeds.
    * @return A parser that negates this parser.
    */
-  public Parser<I, Unit, E> not(final P1<E> e) {
+  public Parser<I, Unit, E> not(final F0<E> e) {
     return parser(i -> parse(i).isFail() ?
         Validation.<E, Result<I, Unit>>success(result(i, unit())) :
-        Validation.<E, Result<I, Unit>>fail(e._1()));
+        Validation.<E, Result<I, Unit>>fail(e.f()));
   }
 
   /**
@@ -285,7 +285,7 @@ public final class Parser<I, A, E> {
    * @return A parser that repeats application of this parser zero or many times.
    */
   public Parser<I, Stream<A>, E> repeat() {
-    return repeat1().or(P.lazy(u -> value(Stream.<A>nil())));
+    return repeat1().or(() -> value(Stream.<A>nil()));
   }
 
   /**
@@ -363,9 +363,9 @@ public final class Parser<I, A, E> {
      * @param e The error to fail with if no element is available.
      * @return A parser that produces an element from the stream if it is available and fails otherwise.
      */
-    public static <I, E> Parser<Stream<I>, I, E> element(final P1<E> e) {
+    public static <I, E> Parser<Stream<I>, I, E> element(final F0<E> e) {
       return parser(is -> is.isEmpty() ?
-          Validation.<E, Result<Stream<I>, I>>fail(e._1()) :
+          Validation.<E, Result<Stream<I>, I>>fail(e.f()) :
           Validation.<E, Result<Stream<I>, I>>success(result(is.tail()._1(), is.head())));
     }
 
@@ -387,7 +387,7 @@ public final class Parser<I, A, E> {
      * @param f       The predicate that the element should satisfy.
      * @return A parser that produces an element from the stream that satisfies the given predicate, or fails.
      */
-    public static <I, E> Parser<Stream<I>, I, E> satisfy(final P1<E> missing, final F<I, E> sat,
+    public static <I, E> Parser<Stream<I>, I, E> satisfy(final F0<E> missing, final F<I, E> sat,
                                                          final F<I, Boolean> f) {
       return StreamParser.<I, E>element(missing).bind(x -> f.f(x) ?
           Parser.<Stream<I>, I, E>value(x) :
@@ -421,7 +421,7 @@ public final class Parser<I, A, E> {
      * @param e The error to fail with if a character is unavailable.
      * @return A parser that produces a character if one is available or fails with the given error.
      */
-    public static <E> Parser<Stream<Character>, Character, E> character(final P1<E> e) {
+    public static <E> Parser<Stream<Character>, Character, E> character(final F0<E> e) {
       return StreamParser.element(e);
     }
 
@@ -443,7 +443,7 @@ public final class Parser<I, A, E> {
      * @param c       The character to produce in the parser.
      * @return A parser that produces the given character or fails otherwise.
      */
-    public static <E> Parser<Stream<Character>, Character, E> character(final P1<E> missing, final F<Character, E> sat,
+    public static <E> Parser<Stream<Character>, Character, E> character(final F0<E> missing, final F<Character, E> sat,
                                                                         final char c) {
       return StreamParser.satisfy(missing, sat, x -> x == c);
     }
@@ -468,7 +468,7 @@ public final class Parser<I, A, E> {
      * @param n       The number of characters to produce in the parse result.
      * @return A parser that produces the given number of characters, or fails with the given error.
      */
-    public static <E> Parser<Stream<Character>, Stream<Character>, E> characters(final P1<E> missing, final int n) {
+    public static <E> Parser<Stream<Character>, Stream<Character>, E> characters(final F0<E> missing, final int n) {
       return n <= 0 ?
           Parser.<Stream<Character>, Stream<Character>, E>value(Stream.<Character>nil()) :
           character(missing).bind(characters(missing, n - 1), Stream.<Character>cons_());
@@ -493,7 +493,7 @@ public final class Parser<I, A, E> {
      * @param cs      The stream of characters to produce.
      * @return A parser that produces the given stream of characters or fails otherwise.
      */
-    public static <E> Parser<Stream<Character>, Stream<Character>, E> characters(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Stream<Character>, E> characters(final F0<E> missing,
                                                                                  final F<Character, E> sat,
                                                                                  final Stream<Character> cs) {
       return cs.isEmpty() ?
@@ -523,7 +523,7 @@ public final class Parser<I, A, E> {
      * @param s       The string to produce.
      * @return A parser that produces the given string or fails otherwise.
      */
-    public static <E> Parser<Stream<Character>, String, E> string(final P1<E> missing, final F<Character, E> sat,
+    public static <E> Parser<Stream<Character>, String, E> string(final F0<E> missing, final F<Character, E> sat,
                                                                   final String s) {
       return characters(missing, sat, List.fromString(s).toStream()).map(cs -> List.asString(cs.toList()));
     }
@@ -548,7 +548,7 @@ public final class Parser<I, A, E> {
      * @param sat     The error if the produced character is not a digit.
      * @return A parser that produces a digit (0 to 9).
      */
-    public static <E> Parser<Stream<Character>, Digit, E> digit(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Digit, E> digit(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isDigit(c)).map(c1 -> Digit.fromChar(c1).some());
     }
 
@@ -571,7 +571,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a lower-case character.
      * @see Character#isLowerCase(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> lower(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> lower(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isLowerCase(c));
     }
 
@@ -595,7 +595,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a upper-case character.
      * @see Character#isUpperCase(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> upper(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> upper(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isUpperCase(c));
     }
 
@@ -619,7 +619,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a defined character.
      * @see Character#isDefined(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> defined(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> defined(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isDefined(c));
     }
 
@@ -643,7 +643,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a high-surrogate character.
      * @see Character#isHighSurrogate(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> highSurrogate(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> highSurrogate(final F0<E> missing,
                                                                             final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isHighSurrogate(c));
     }
@@ -669,7 +669,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces an identifier-ignorable character.
      * @see Character#isIdentifierIgnorable(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> identifierIgnorable(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> identifierIgnorable(final F0<E> missing,
                                                                                   final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isIdentifierIgnorable(c));
     }
@@ -695,7 +695,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces an ISO control character.
      * @see Character#isISOControl(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> isoControl(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> isoControl(final F0<E> missing,
                                                                          final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isISOControl(c));
     }
@@ -720,7 +720,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a Java identifier part character.
      * @see Character#isJavaIdentifierPart(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> javaIdentifierPart(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> javaIdentifierPart(final F0<E> missing,
                                                                                  final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isJavaIdentifierPart(c));
     }
@@ -746,7 +746,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a Java identifier start character.
      * @see Character#isJavaIdentifierStart(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> javaIdentifierStart(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> javaIdentifierStart(final F0<E> missing,
                                                                                   final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isJavaIdentifierStart(c));
     }
@@ -772,7 +772,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces an alpha character.
      * @see Character#isLetter(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> alpha(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> alpha(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isLetter(c));
     }
 
@@ -796,7 +796,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces an alpha-numeric character.
      * @see Character#isLetterOrDigit(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> alphaNum(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> alphaNum(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isLetterOrDigit(c));
     }
 
@@ -820,7 +820,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a low-surrogate character.
      * @see Character#isLowSurrogate(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> lowSurrogate(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> lowSurrogate(final F0<E> missing,
                                                                            final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isLowSurrogate(c));
     }
@@ -845,7 +845,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a mirrored character.
      * @see Character#isMirrored(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> mirrored(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> mirrored(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isMirrored(c));
     }
 
@@ -869,7 +869,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a space character.
      * @see Character#isSpace(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> space(final P1<E> missing, final F<Character, E> sat) {
+    public static <E> Parser<Stream<Character>, Character, E> space(final F0<E> missing, final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isSpaceChar(c));
     }
 
@@ -893,7 +893,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a title-case character.
      * @see Character#isTitleCase(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> titleCase(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> titleCase(final F0<E> missing,
                                                                         final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isTitleCase(c));
     }
@@ -918,7 +918,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a unicode identifier part character.
      * @see Character#isUnicodeIdentifierPart(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferPart(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferPart(final F0<E> missing,
                                                                                    final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isUnicodeIdentifierPart(c));
     }
@@ -944,7 +944,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a unicode identifier start character.
      * @see Character#isUnicodeIdentifierStart(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferStart(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferStart(final F0<E> missing,
                                                                                     final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isUnicodeIdentifierStart(c));
     }
@@ -970,7 +970,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a white-space character.
      * @see Character#isWhitespace(char)
      */
-    public static <E> Parser<Stream<Character>, Character, E> whitespace(final P1<E> missing,
+    public static <E> Parser<Stream<Character>, Character, E> whitespace(final F0<E> missing,
                                                                          final F<Character, E> sat) {
       return StreamParser.satisfy(missing, sat, c -> Character.isWhitespace(c));
     }

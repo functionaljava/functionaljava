@@ -38,7 +38,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.treeMapEqual(Equal.<K>anyEqual(), Equal.<V>anyEqual()).eq(this, (TreeMap<K, V>) other)));
+    return Equal.shallowEqualsO(this, other).orSome(() -> Equal.treeMapEqual(Equal.<K>anyEqual(), Equal.<V>anyEqual()).eq(this, (TreeMap<K, V>) other));
   }
 
   @Override

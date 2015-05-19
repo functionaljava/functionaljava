@@ -22,7 +22,7 @@ public class Effect {
 	private Effect() {}
 
     public static P1<Unit> f(Effect0 e) {
-        return P.lazy(u -> unit());
+        return P.lazy(() -> unit());
     }
 
     /**

@@ -39,8 +39,8 @@ public class IOFunctions {
         return Try.f(toTry(io));
     }
 
-    public static <A> IO<A> io(P1<A> p) {
-        return () -> p._1();
+    public static <A> IO<A> io(F0<A> p) {
+        return p::f;
     }
 
     public static <A> IO<A> io(Try0<A, ? extends IOException> t) {
@@ -150,8 +150,8 @@ public class IOFunctions {
     };
   }
 
-	public static final <A> IO<A> lazy(final P1<A> p) {
-		return () -> p._1();
+	public static final <A> IO<A> lazy(final F0<A> p) {
+		return io(p);
 	}
 
     public static final <A> IO<A> lazy(final F<Unit, A> f) {
@@ -162,8 +162,8 @@ public class IOFunctions {
         return () -> f.f(Unit.unit());
     }
 
-    public static final <A> SafeIO<A> lazySafe(final P1<A> f) {
-        return () -> f._1();
+    public static final <A> SafeIO<A> lazySafe(final F0<A> f) {
+        return f::f;
     }
 
     /**
@@ -344,7 +344,7 @@ public class IOFunctions {
 
 	public static <A> IO<Stream<A>> sequence(Stream<IO<A>> stream) {
 		F2<IO<Stream<A>>, IO<A>, IO<Stream<A>>> f2 = (ioList, io) ->
-			IOFunctions.bind(ioList, (xs) -> map(io, x -> Stream.cons(x, P.lazy(u -> xs))));
+			IOFunctions.bind(ioList, (xs) -> map(io, x -> Stream.cons(x, P.lazy(() -> xs))));
 		return stream.foldLeft(f2, IOFunctions.unit(Stream.<A>nil()));
 	}
 

@@ -1,8 +1,8 @@
 package fj.data;
 
 import static fj.Bottom.error;
-
 import fj.F;
+import fj.F0;
 import fj.F2;
 import fj.P;
 import fj.P1;
@@ -19,7 +19,6 @@ import fj.function.Effect1;
 import fj.Equal;
 import fj.Ord;
 import fj.Hash;
-
 import static fj.Function.*;
 import static fj.P.p;
 import static fj.Unit.unit;
@@ -130,8 +129,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @param f The function to apply to the value of this optional value.
    * @return A reduction on this optional value.
    */
-  public final <B> B option(final P1<B> b, final F<A, B> f) {
-    return isSome() ? f.f(some()) : b._1();
+  public final <B> B option(final F0<B> b, final F<A, B> f) {
+    return isSome() ? f.f(some()) : b.f();
   }
 
   /**
@@ -149,8 +148,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @param a The argument to return if this optiona value has no value.
    * @return The value of this optional value or the given argument.
    */
-  public final A orSome(final P1<A> a) {
-    return isSome() ? some() : a._1();
+  public final A orSome(final F0<A> a) {
+    return isSome() ? some() : a.f();
   }
 
   /**
@@ -169,11 +168,11 @@ public abstract class Option<A> implements Iterable<A> {
    * @param message The message to fail with if this optional value has no value.
    * @return The value of this optional value if there there is one.
    */
-  public final A valueE(final P1<String> message) {
+  public final A valueE(final F0<String> message) {
     if(isSome())
       return some();
     else
-      throw error(message._1());
+      throw error(message.f());
   }
 
   /**
@@ -421,7 +420,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   public <B> IO<Option<B>> traverseIO(F<A, IO<B>> f) {
-    return map(a -> IOFunctions.map(f.f(a), b -> some(b))).orSome(IOFunctions.lazy(u -> none()));
+    return map(a -> IOFunctions.map(f.f(a), b -> some(b))).orSome(IOFunctions.lazy(() -> none()));
   }
 
   public <B> List<Option<B>> traverseList(F<A, List<B>> f) {
@@ -482,8 +481,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @param o The optional value to return if this optional value has no value.
    * @return This optional value if there is one, otherwise, returns the argument optional value.
    */
-  public final Option<A> orElse(final P1<Option<A>> o) {
-    return isSome() ? this : o._1();
+  public final Option<A> orElse(final F0<Option<A>> o) {
+    return isSome() ? this : o.f();
   }
 
   /**
@@ -503,8 +502,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @param x The value to return in left if this optional value has no value.
    * @return An either projection of this optional value.
    */
-  public final <X> Either<X, A> toEither(final P1<X> x) {
-    return isSome() ? Either.<X, A>right(some()) : Either.<X, A>left(x._1());
+  public final <X> Either<X, A> toEither(final F0<X> x) {
+    return isSome() ? Either.<X, A>right(some()) : Either.<X, A>left(x.f());
   }
 
   /**
@@ -626,7 +625,7 @@ public abstract class Option<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.optionEqual(Equal.<A>anyEqual()).eq(this, (Option<A>) other)));
+    return Equal.shallowEqualsO(this, other).orSome(() -> Equal.optionEqual(Equal.<A>anyEqual()).eq(this, (Option<A>) other));
   }
 
   /**
@@ -751,8 +750,8 @@ public abstract class Option<A> implements Iterable<A> {
    * @return An optional value that has a value of the given argument if the given boolean is true, otherwise, returns
    *         no value.
    */
-  public static <A> Option<A> iif(final boolean p, final P1<A> a) {
-    return p ? some(a._1()) : Option.<A>none();
+  public static <A> Option<A> iif(final boolean p, final F0<A> a) {
+    return p ? some(a.f()) : Option.<A>none();
   }
 
   /**

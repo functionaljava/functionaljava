@@ -15,7 +15,7 @@ public class TryEffect {
     private TryEffect(){}
 
     public static <A, Z extends Exception> P1<Validation<Z, Unit>> f(TryEffect0<Z> t) {
-        return P.lazy(u -> {
+        return P.lazy(() -> {
             try {
                 t.f();
                 return Validation.success(Unit.unit());
