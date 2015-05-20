@@ -286,7 +286,7 @@ public final class CheckResult {
   public static Show<CheckResult> summaryEx(final Show<Arg<?>> sa) {
     return showS(new F<CheckResult, String>() {
       public String f(final CheckResult r) {
-        final String s = summary(sa).show(r).toString();
+        final String s = summary(sa).showS(r);
         if (r.isProven() || r.isPassed() || r.isExhausted())
           return s;
         else if (r.isFalsified() || r.isPropException() || r.isGenException())
