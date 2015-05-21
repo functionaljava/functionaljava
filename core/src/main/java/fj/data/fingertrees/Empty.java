@@ -1,7 +1,10 @@
 package fj.data.fingertrees;
 
 import fj.F;
+import fj.P;
 import fj.P2;
+import fj.P3;
+
 import static fj.Bottom.error;
 
 /**
@@ -20,13 +23,19 @@ public final class Empty<V, A> extends FingerTree<V, A> {
     return cons(a);
   }
 
+  @Override public A head() { throw error("Selection of head in empty tree"); }
+
+  @Override public A last() { throw error("Selection of last in empty tree"); }
+
+  @Override public FingerTree<V, A> tail() { throw error("Selection of tail in empty tree"); }
+
+  @Override public FingerTree<V, A> init() { throw error("Selection of init in empty tree"); }
+
   @Override public FingerTree<V, A> append(final FingerTree<V, A> t) {
     return t;
   }
 
-  @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) {
-    throw error("Lookup of empty tree.");
-  }
+  @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) { throw error("Lookup of empty tree."); }
 
   @Override public <B> B foldRight(final F<A, F<B, B>> aff, final B z) {
     return z;
@@ -65,5 +74,7 @@ public final class Empty<V, A> extends FingerTree<V, A> {
     return empty.f(this);
   }
 
-
+  @Override P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc) {
+    throw error("Splitting an empty tree");
+  }
 }

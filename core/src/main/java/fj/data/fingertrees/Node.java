@@ -3,6 +3,9 @@ package fj.data.fingertrees;
 import fj.F;
 import fj.F2;
 import fj.P2;
+import fj.P3;
+import fj.data.Option;
+
 import static fj.Function.curry;
 
 /**
@@ -62,6 +65,8 @@ public abstract class Node<V, A> {
   Measured<V, A> measured() {
     return m;
   }
+
+  abstract P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc);
 
   public abstract P2<Integer, A> lookup(final F<V, Integer> o, final int i);
 

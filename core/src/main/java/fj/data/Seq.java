@@ -10,11 +10,15 @@ import fj.data.fingertrees.FingerTree;
 import fj.data.fingertrees.MakeTree;
 import fj.data.fingertrees.Measured;
 
+import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * Provides an immutable finite sequence, implemented as a finger tree. This structure gives O(1) access to
  * the head and tail, as well as O(log n) random access and concatenation of sequences.
  */
-public final class Seq<A> {
+public final class Seq<A> implements Iterable<A> {
   private static final Measured<Integer, Object> ELEM_MEASURED = measured(intAdditionMonoid, Function.constant(1));
   private static final MakeTree<Integer, Object> MK_TREE = FingerTree.mkTree(ELEM_MEASURED);
   private static final Seq<Object> EMPTY = new Seq<Object>(MK_TREE.empty());
@@ -89,8 +93,77 @@ public final class Seq<A> {
     return new Seq<A>(ftree.snoc(a));
   }
 
+  /**
+   * The first element of this sequence. This is an O(1) operation.
+   *
+   * @return The first element if this sequence is nonempty, otherwise throws an error.
+   */
+  public A head() { return ftree.head(); }
+
+  /**
+   * The last element of this sequence. This is an O(1) operation.
+   *
+   * @return The last element if this sequence is nonempty, otherwise throws an error.
+   */
+  public A last() { return ftree.last(); }
+
+  /**
+   * The sequence without the first element. This is an O(1) operation.
+   *
+   * @return The sequence without the first element if this sequence is nonempty, otherwise throws an error.
+   */
+  public Seq<A> tail() {
+    return (length() == 1) ? empty() : new Seq<>(ftree.tail());
+  }
+
+  /**
+   * The sequence without the last element. This is an O(1) operation.
+   *
+   * @return The sequence without the last element if this sequence is nonempty, otherwise throws an error.
+   */
+  public Seq<A> init() {
+    return (length() == 1) ? empty() : new Seq<>(ftree.init());
+  }
+
   public Stream<A> toStream() {
     return ftree.foldLeft((b, a) -> b.cons(a), Stream.<A>nil()).reverse();
+  }
+
+  public final java.util.List<A> toJavaList() {
+    return new AbstractList<A>() {
+      @Override public A get(int i) { return index(i); }
+      @Override public Iterator<A> iterator() { return Seq.this.iterator(); }
+      @Override public int size() { return length(); }
+    };
+  }
+
+  /**
+   * Returns an iterator for this seq. This method exists to permit the use in a <code>for</code>-each loop.
+   *
+   * @return A iterator for this seq.
+   */
+  public final Iterator<A> iterator() {
+    return new Iterator<A>() {
+      private FingerTree<Integer, A> ftree = Seq.this.ftree;
+
+      public boolean hasNext() {
+        return !ftree.isEmpty();
+      }
+
+      public A next() {
+        if (ftree.isEmpty())
+          throw new NoSuchElementException();
+        else {
+          final A a = ftree.head();
+          ftree = ftree.tail();
+          return a;
+        }
+      }
+
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 
   @Override
@@ -126,15 +199,20 @@ public final class Seq<A> {
     return ftree.measure();
   }
 
+  public P2<Seq<A>, Seq<A>> split(final int i) {
+    final P2<FingerTree<Integer, A>, FingerTree<Integer, A>> lr = ftree.split(index -> index > i);
+    return P.p(new Seq<>(lr._1()), new Seq<>(lr._2()));
+  }
+
   /**
-   * Returns the element at the given index.
+   * Returns the element at the given index. This is an O(log(n)) operation.
    *
    * @param i The index of the element to return.
    * @return The element at the given index, or throws an error if the index is out of bounds.
    */
   public A index(final int i) {
     if (i < 0 || i >= length())
-      throw error("Index " + i + "out of bounds.");
+      throw error("Index " + i + " is out of bounds.");
     return ftree.lookup(Function.<Integer>identity(), i)._2();
   }
 
