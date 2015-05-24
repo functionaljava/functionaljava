@@ -681,8 +681,10 @@ public final class Array<A> implements Iterable<A> {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(Object o) {
-    return Equal.shallowEqualsO(this, o).orSome(P.lazy(u -> Equal.arrayEqual(Equal.<A>anyEqual()).eq(this, (Array<A>) o)));
+    return o == this
+        || (o instanceof Array) && Equal.arrayEqual(Equal.<A>anyEqual()).eq(this, (Array<A>) o);
   }
 
   /**

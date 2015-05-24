@@ -46,9 +46,11 @@ public final class Seq<A> {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(Object other) {
 
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.seqEqual(Equal.<A>anyEqual()).eq(this, (Seq<A>) other)));
+    return other == this
+        || (other instanceof Seq) && Equal.seqEqual(Equal.<A>anyEqual()).eq(this, (Seq<A>) other);
   }
 
   /**

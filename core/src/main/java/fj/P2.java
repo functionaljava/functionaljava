@@ -25,8 +25,10 @@ public abstract class P2<A, B> {
   public abstract B _2();
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (P2<A, B>) other)));
+    return other == this
+        || (other instanceof P2) && Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (P2<A, B>) other);
   }
 
   @Override

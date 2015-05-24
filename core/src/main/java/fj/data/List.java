@@ -1877,7 +1877,8 @@ public abstract class List<A> implements Iterable<A> {
         //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
         //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
 
-        return Equal.shallowEqualsO(this, obj).orSome(P.lazy(u -> Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj)));
+        return obj == this
+            || (obj instanceof List) && Equal.listEqual(Equal.<A>anyEqual()).eq(this, (List<A>) obj);
     }
 
     /**

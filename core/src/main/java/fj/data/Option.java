@@ -625,8 +625,10 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.optionEqual(Equal.<A>anyEqual()).eq(this, (Option<A>) other)));
+    return other == this
+        || (other instanceof Option) && Equal.optionEqual(Equal.<A>anyEqual()).eq(this, (Option<A>) other);
   }
 
   /**
