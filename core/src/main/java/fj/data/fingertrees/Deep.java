@@ -5,6 +5,8 @@ import fj.data.Option;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
+
+import static fj.Function.constant;
 import static fj.data.List.list;
 import static fj.Function.flip;
 
@@ -152,23 +154,18 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 
   @Override public FingerTree<V, A> append(final FingerTree<V, A> t) {
     final Measured<V, A> m = measured();
-    return t.match(Function.<Empty<V, A>, FingerTree<V, A>>constant(t), new F<Single<V, A>, FingerTree<V, A>>() {
-      public FingerTree<V, A> f(final Single<V, A> single) {
-        return t.snoc(single.value());
-      }
-    }, new F<Deep<V, A>, FingerTree<V, A>>() {
-      public FingerTree<V, A> f(final Deep<V, A> deep) {
-        return new Deep<V, A>(m, m.sum(measure(), deep.measure()), prefix,
-                              addDigits0(m, middle, suffix, deep.prefix, deep.middle), deep.suffix);
-      }
-    });
+    return t.match(
+      constant(t),
+      single -> snoc(single.value()),
+      deep -> new Deep<>(m, m.sum(measure(), deep.measure()), prefix,
+        addDigits0(m, middle, suffix, deep.prefix, deep.middle), deep.suffix));
   }
 
   @Override P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc) {
     final Measured<V, A> m = measured();
     final V accL = m.sum(acc, prefix.measure());
     if (predicate.f(accL)) {
-      final P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> lxr = prefix.split1(predicate, accL);
+      final P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> lxr = prefix.split1(predicate, acc);
       return P.p(lxr._1().option(new Empty<>(m), Digit::toTree), lxr._2(), deepL(m, lxr._3(), middle, suffix));
     } else {
       final V accM = m.sum(accL, middle.measure());

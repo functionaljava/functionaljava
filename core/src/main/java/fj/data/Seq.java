@@ -211,10 +211,25 @@ public final class Seq<A> implements Iterable<A> {
    * @return The element at the given index, or throws an error if the index is out of bounds.
    */
   public A index(final int i) {
-    if (i < 0 || i >= length())
-      throw error("Index " + i + " is out of bounds.");
+    checkBounds(i);
     return ftree.lookup(Function.<Integer>identity(), i)._2();
   }
+
+  /**
+   * Replace the element at the given index with the supplied value. This is an O(log(n)) operation.
+   *
+   * @param i The index of the element to update.
+   * @param a The new value.
+   *
+   * @return The updated sequence, or throws an error if the index is out of bounds.
+   */
+  public Seq<A> update(final int i, final A a) {
+    checkBounds(i);
+    final P3<FingerTree<Integer, A>, A, FingerTree<Integer, A>> lxr = ftree.split1(index -> index > i);
+    return new Seq<>(lxr._1().append(lxr._3().cons(a)));
+  }
+
+  private void checkBounds(final int i) { if (i < 0 || i >= length()) throw error("Index " + i + " is out of bounds."); }
 
     public <B> B foldLeft(final F2<B, A, B> f, final B z) {
         return ftree.foldLeft(f, z);
