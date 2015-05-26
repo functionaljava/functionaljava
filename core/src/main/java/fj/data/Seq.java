@@ -229,6 +229,24 @@ public final class Seq<A> implements Iterable<A> {
     return new Seq<>(lxr._1().append(lxr._3().cons(a)));
   }
 
+  /**
+   * Takes the given number of elements from the head of this sequence if they are available.
+   *
+   * @param n The maximum number of elements to take from this sequence.
+   * @return A sequence consisting only of the first n elements of this sequence, or else the whole sequence,
+   *   if it has less than n elements.
+   */
+  public Seq<A> take(final int n) { return split(n)._1(); }
+
+  /**
+   * Drops the given number of elements from the head of this sequence if they are available.
+   *
+   * @param n The number of elements to drop from this sequence.
+   * @return A sequence consisting of all elements of this sequence except the first n ones, or else the empty sequence,
+   *   if this sequence has less than n elements.
+   */
+  public Seq<A> drop(final int n) { return split(n)._2(); }
+
   private void checkBounds(final int i) { if (i < 0 || i >= length()) throw error("Index " + i + " is out of bounds."); }
 
     public <B> B foldLeft(final F2<B, A, B> f, final B z) {
