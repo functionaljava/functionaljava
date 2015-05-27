@@ -386,13 +386,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after performing the map, then final join.
    */
   public final <B> Stream<B> bind(final F<A, Stream<B>> f) {
-    return map(f).foldLeft((accumulator, element) -> {
-        Stream<B> result = accumulator;
-        for (B single : element) {
-            result = result.cons(single);
-        }
-        return result;
-    }, Stream.<B>nil()).reverse();
+    return foldRight(h -> (t -> f.f(h).append(t)), nil());
   }
 
   /**
@@ -1554,9 +1548,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param o The stream of streams to join.
    * @return A new stream that is the join of the given streams.
    */
-  public static <A> Stream<A> join(final Stream<Stream<A>> o) {
-    return Monoid.<A>streamMonoid().sumRight(o);
-  }
+  public static <A> Stream<A> join(final Stream<Stream<A>> o) { return o.bind(identity()); }
 
   /**
    * A first-class version of join
