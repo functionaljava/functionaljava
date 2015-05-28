@@ -9,7 +9,7 @@ import fj.data.Either;
 import fj.data.Option;
 import fj.data.Validation;
 //import fj.data.*;
-import fj.function.Try0;
+
 
 public abstract class P1<A> implements F0<A> {
 
@@ -216,22 +216,28 @@ public abstract class P1<A> implements F0<A> {
         final P1<A> self = this;
         return new P1<A>() {
           private final Object latch = new Object();
-          @SuppressWarnings({"InstanceVariableMayNotBeInitialized"})
-          private volatile SoftReference<A> v;
+          private volatile SoftReference<Option<A>> v = null;
 
+          @Override
           public A _1() {
-            A a = v != null ? v.get() : null;
-            if (a == null)
+            Option<A> o = v != null ? v.get() : null;
+            if (o == null) {
               synchronized (latch) {
-                if (v == null || v.get() == null) {
-                  a = self._1();
-                  v = new SoftReference<A>(a);
-                } else {
-                  a = v.get();
+                o = v != null ? v.get() : null;
+                if (o == null) {
+                  o = Option.some(self._1());
+                  v = new SoftReference<>(o);
                 }
               }
-            return a;
+            }
+            return o.some();
           }
+
+          @Override
+          public P1<A> memo() {
+              return this;
+          }
+
         };
       }
 
