@@ -536,7 +536,9 @@ public final class Equal<A> {
 
   /**
    * @return Returns none if no equality can be determined by checking the nullity and reference values, else the equality
+   * @deprecated see issue #122.
    */
+  @Deprecated
   public static Option<Boolean> shallowEqualsO(Object o1, Object o2) {
     if (o1 == null && o2 == null) {
       return Option.some(true);
@@ -544,6 +546,7 @@ public final class Equal<A> {
       return Option.some(true);
     } else if (o1 != null && o2 != null) {
       java.lang.Class<?> c = o1.getClass();
+      // WARNING: this may return some(false) for two instance of same type (and thus comparable) but of different class (typicaly anonymous class instance).
       return c.isInstance(o2) ? Option.none() : Option.some(false);
     } else {
       return Option.some(false);
