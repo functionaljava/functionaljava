@@ -138,9 +138,9 @@ public final class Shrink<A> {
     if (i == 0L)
       return nil();
     else {
-      final Stream<Long> is = cons(0L, P.lazy(u -> iterate(x -> x / 2L, i).takeWhile(x2 -> x2 != 0L).map(x1 -> i - x1)));
+      final Stream<Long> is = cons(0L, P.lazy(() -> iterate(x -> x / 2L, i).takeWhile(x2 -> x2 != 0L).map(x1 -> i - x1)));
 
-      return i < 0L ? cons(-i, P.lazy(u -> is)) : is;
+      return i < 0L ? cons(-i, P.lazy(() -> is)) : is;
     }
   });
 
@@ -231,10 +231,10 @@ public final class Shrink<A> {
           final F<List<A>, Boolean> isNotEmpty = isNotEmpty_();
           return cons(
                   as1,
-                  P.lazy(u ->
+                  P.lazy(() ->
                   {
                           final List<A> as2 = as.drop(n1);
-                          return cons(as2, P.lazy(u1 -> removeChunks(n1, as1)
+                          return cons(as2, P.lazy(() -> removeChunks(n1, as1)
                                                            .filter(isNotEmpty)
                                                            .map(aas1 -> aas1.append(as2))
                                                            .interleave(removeChunks(n2, as2)

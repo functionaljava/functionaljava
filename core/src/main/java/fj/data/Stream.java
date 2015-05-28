@@ -1,6 +1,7 @@
 package fj.data;
 
 import fj.Equal;
+import fj.F0;
 import fj.Hash;
 import fj.Show;
 import fj.F;
@@ -207,8 +208,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param a The argument to return if this stream is empty.
    * @return The head of this stream if there is one or the given argument if this stream is empty.
    */
-  public final A orHead(final P1<A> a) {
-    return isEmpty() ? a._1() : head();
+  public final A orHead(final F0<A> a) {
+    return isEmpty() ? a.f() : head();
   }
 
   /**
@@ -325,8 +326,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param as The stream to append to this one.
    * @return A new stream that has appended the given stream.
    */
-  public final Stream<A> append(final P1<Stream<A>> as) {
-    return isEmpty() ? as._1() : cons(head(), new P1<Stream<A>>() {
+  public final Stream<A> append(final F0<Stream<A>> as) {
+    return isEmpty() ? as.f() : cons(head(), new P1<Stream<A>>() {
       public Stream<A> _1() {
         return tail()._1().append(as);
       }
@@ -900,8 +901,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param x The value to return in left if this stream is empty.
    * @return An either projection of this stream.
    */
-  public final <X> Either<X, A> toEither(final P1<X> x) {
-    return isEmpty() ? Either.<X, A>left(x._1()) : Either.<X, A>right(head());
+  public final <X> Either<X, A> toEither(final F0<X> x) {
+    return isEmpty() ? Either.<X, A>left(x.f()) : Either.<X, A>right(head());
   }
 
   /**
@@ -1029,12 +1030,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param a The element to append.
    * @return A new stream with the given element at the end.
    */
-  public final Stream<A> snoc(final P1<A> a) {
-    return append(new P1<Stream<A>>() {
-      public Stream<A> _1() {
-        return single(a._1());
-      }
-    });
+  public final Stream<A> snoc(final F0<A> a) {
+    return append(() -> single(a.f()));
   }
 
   /**
@@ -1323,11 +1320,7 @@ public abstract class Stream<A> implements Iterable<A> {
         return nil();
       }
     });
-    return isEmpty() ? nil : nil.append(new P1<Stream<Stream<A>>>() {
-      public Stream<Stream<A>> _1() {
-        return tail()._1().inits().map(Stream.<A>cons_().f(head()));
-      }
-    });
+    return isEmpty() ? nil : nil.append(() -> tail()._1().inits().map(Stream.<A>cons_().f(head())));
   }
 
   /**
@@ -1624,7 +1617,7 @@ public abstract class Stream<A> implements Iterable<A> {
   public static <A> Stream<A> iteratorStream(final Iterator<A> i) {
     if (i.hasNext()) {
       final A a = i.next();
-      return cons(a, P.lazy(u -> iteratorStream(i)));
+      return cons(a, P.lazy(() -> iteratorStream(i)));
     } else
       return nil();
   }
@@ -1653,11 +1646,7 @@ public abstract class Stream<A> implements Iterable<A> {
     if (as.isEmpty())
       throw error("cycle on empty list");
     else
-      return as.append(new P1<Stream<A>>() {
-        public Stream<A> _1() {
-          return cycle(as);
-        }
-      });
+      return as.append(() -> cycle(as));
   }
 
   /**

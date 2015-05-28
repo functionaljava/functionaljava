@@ -14,7 +14,7 @@ import fj.data.Validation;
 public abstract class P1<A> implements F0<A> {
 
     @Override
-    public A f() {
+    public final A f() {
         return _1();
     }
 
@@ -52,7 +52,7 @@ public abstract class P1<A> implements F0<A> {
      */
     public <B> P1<B> bind(final F<A, P1<B>> f) {
         P1<A> self = this;
-        return P.lazy(u -> f.f(self._1())._1());
+        return P.lazy(() -> f.f(self._1())._1());
     }
 
     /**
@@ -62,7 +62,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function whose result is wrapped in a P1.
      */
     public static <A, B> F<A, P1<B>> curry(final F<A, B> f) {
-        return a -> P.lazy(u -> f.f(a));
+        return a -> P.lazy(() -> f.f(a));
     }
 
     /**
@@ -143,7 +143,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given array.
      */
     public static <A> P1<Array<A>> sequence(final Array<P1<A>> as) {
-        return P.lazy(u -> as.map(P1.<A>__1()));
+        return P.lazy(() -> as.map(P1.<A>__1()));
     }
 
     /**
@@ -204,7 +204,7 @@ public abstract class P1<A> implements F0<A> {
        */
       public <X> P1<X> map(final F<A, X> f) {
           final P1<A> self = this;
-        return P.lazy(u -> f.f(self._1()));
+        return P.lazy(() -> f.f(self._1()));
       }
 
     /**

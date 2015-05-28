@@ -1,6 +1,7 @@
 package fj.control.parallel;
 
 import fj.F;
+import fj.F0;
 import fj.F2;
 import fj.Function;
 import static fj.Function.curry;
@@ -221,10 +222,10 @@ public final class Callables {
    * @param e Either an exception or a value to wrap in a Callable
    * @return A Callable equivalent to the given Either value.
    */
-  public static <A> Callable<A> fromEither(final P1<Either<Exception, A>> e) {
+  public static <A> Callable<A> fromEither(final F0<Either<Exception, A>> e) {
     return new Callable<A>() {
       public A call() throws Exception {
-        final Either<Exception, A> e1 = e._1();
+        final Either<Exception, A> e1 = e.f();
         if (e1.isLeft())
           throw e1.left().value();
         else
@@ -248,10 +249,10 @@ public final class Callables {
    * @param o An optional value to turn into a Callable.
    * @return A Callable that yields some value or throws an exception in the case of no value.
    */
-  public static <A> Callable<A> fromOption(final P1<Option<A>> o) {
+  public static <A> Callable<A> fromOption(final F0<Option<A>> o) {
     return new Callable<A>() {
       public A call() throws Exception {
-        final Option<A> o1 = o._1();
+        final Option<A> o1 = o.f();
         if (o1.isSome())
           return o1.some();
         else

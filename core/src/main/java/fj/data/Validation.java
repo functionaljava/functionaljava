@@ -103,7 +103,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param err The error message to fail with.
    * @return The success value.
    */
-  public T successE(final P1<String> err) {
+  public T successE(final F0<String> err) {
     return e.right().valueE(err);
   }
 
@@ -123,7 +123,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param t The value to return if this is failure.
    * @return The success value or the given value.
    */
-  public T orSuccess(final P1<T> t) {
+  public T orSuccess(final F0<T> t) {
     return e.right().orValue(t);
   }
 
@@ -880,7 +880,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @param err The error message to fail with.
      * @return The failing value.
      */
-    public E failE(final P1<String> err) {
+    public E failE(final F0<String> err) {
       return v.toEither().left().valueE(err);
     }
 
@@ -900,7 +900,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @param e The value to return if this is success.
      * @return The failing value or the given value.
      */
-    public E orFail(final P1<E> e) {
+    public E orFail(final F0<E> e) {
       return v.toEither().left().orValue(e);
     }
 

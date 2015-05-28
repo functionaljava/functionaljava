@@ -47,7 +47,6 @@ public final class Seq<A> {
 
   @Override
   public boolean equals(Object other) {
-
     return Equal.equals0(Seq.class, this, other, () -> Equal.seqEqual(Equal.<A>anyEqual()));
   }
 

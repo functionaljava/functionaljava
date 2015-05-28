@@ -46,7 +46,7 @@ public abstract class Trampoline<A> {
     // The monadic bind constructs a new Codense whose subcomputation is still `sub`, and Kleisli-composes the
     // continuations.
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
-      return codense(sub, o -> suspend(P.lazy(u -> cont.f(o).bind(f))));
+      return codense(sub, o -> suspend(P.lazy(() -> cont.f(o).bind(f))));
     }
 
     // The resumption of a Codense is the resumption of its subcomputation. If that computation is done, its result
@@ -61,7 +61,7 @@ public abstract class Trampoline<A> {
           F<Codense<Object>, Trampoline<A>> g = c -> codense(c.sub, o -> c.cont.f(o).bind(cont));
           return ot.fold(f, g);
         });
-      }, o -> P.lazy(u -> cont.f(o))));
+      }, o -> P.lazy(() -> cont.f(o))));
     }
   }
 
@@ -259,7 +259,7 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.<Trampoline<C>>lazy(u -> ta.zipWith(tb, f))))));
+        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.<Trampoline<C>>lazy(() -> ta.zipWith(tb, f))))));
       }
       for (final B y : eb.right()) {
         return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));
@@ -267,7 +267,7 @@ public abstract class Trampoline<A> {
     }
     for (final A x : ea.right()) {
       for (final B y : eb.right()) {
-        return suspend(P.lazy(u -> pure(f.f(x, y))));
+        return suspend(P.lazy(() -> pure(f.f(x, y))));
       }
       for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(y.map(liftM2(F2Functions.curry(f)).f(pure(x))));
