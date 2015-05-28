@@ -52,7 +52,7 @@ public final class Seq<A> implements Iterable<A> {
   @Override
   public boolean equals(Object other) {
 
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.seqEqual(Equal.<A>anyEqual()).eq(this, (Seq<A>) other)));
+    return Equal.equals0(Seq.class, this, other, () -> Equal.seqEqual(Equal.<A>anyEqual()));
   }
 
   /**

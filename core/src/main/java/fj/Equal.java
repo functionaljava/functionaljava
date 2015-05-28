@@ -536,7 +536,9 @@ public final class Equal<A> {
 
   /**
    * @return Returns none if no equality can be determined by checking the nullity and reference values, else the equality
+   * @deprecated see issue #122.
    */
+  @Deprecated
   public static Option<Boolean> shallowEqualsO(Object o1, Object o2) {
     if (o1 == null && o2 == null) {
       return Option.some(true);
@@ -544,10 +546,39 @@ public final class Equal<A> {
       return Option.some(true);
     } else if (o1 != null && o2 != null) {
       java.lang.Class<?> c = o1.getClass();
+      // WARNING: this may return some(false) for two instance of same type (and thus comparable) but of different class (typicaly anonymous class instance).
       return c.isInstance(o2) ? Option.none() : Option.some(false);
     } else {
       return Option.some(false);
     }
+  }
+  
+  /**
+   * Helper method to implement {@link Object#equals(Object)} correctly. DO NOT USE it for any other purpose.
+   *
+   * @param clazz the class in which the {@link Object#equals(Object)} is implemented
+   * @param self a reference to 'this'
+   * @param other the other object of the comparison
+   * @param equal an equal instance for the type of self (that use {@link #anyEqual()} if generic type).
+   * @return true if self and other are equal
+   */
+  @SuppressWarnings("unchecked")
+  public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final Equal<A> equal) {
+    return self == other || clazz.isInstance(other) && equal.eq(self, (A) other);
+  }
+  
+  /**
+   * Helper method to implement {@link Object#equals(Object)} correctly. DO NOT USE it for any other purpose.
+   *
+   * @param clazz the class in which the {@link Object#equals(Object)} is implemented
+   * @param self a reference to 'this'
+   * @param other the other object of the comparison
+   * @param equal a lazy equal instance for the type (that use {@link #anyEqual()} if generic type)..
+   * @return true if self and other are equal
+   */
+  @SuppressWarnings("unchecked")
+  public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final F0<Equal<A>> equal) {
+    return self == other || clazz.isInstance(other) && equal.f().eq(self, (A) other);
   }
 
 }
