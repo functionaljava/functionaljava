@@ -254,10 +254,9 @@ public abstract class P1<A> implements F0<A> {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object other) {
-        return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.p1Equal(Equal.<A>anyEqual()).eq(this, (P1<A>) other)));
+        return Equal.equals0(P1.class, this, other, () -> Equal.p1Equal(Equal.<A>anyEqual()));
     }
 
     @Override

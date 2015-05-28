@@ -549,5 +549,33 @@ public final class Equal<A> {
       return Option.some(false);
     }
   }
+  
+  /**
+   * Helper method to implement {@link Object#equals(Object)} correctly. DO NOT USE it for any other purpose.
+   *
+   * @param clazz the class in which the {@link Object#equals(Object)} is implemented
+   * @param self a reference to 'this'
+   * @param other the other object of the comparison
+   * @param equal an equal instance for the type of self (that use {@link #anyEqual()} if generic type).
+   * @return true if self and other are equal
+   */
+  @SuppressWarnings("unchecked")
+  public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final Equal<A> equal) {
+    return self == other || clazz.isInstance(other) && equal.eq(self, (A) other);
+  }
+  
+  /**
+   * Helper method to implement {@link Object#equals(Object)} correctly. DO NOT USE it for any other purpose.
+   *
+   * @param clazz the class in which the {@link Object#equals(Object)} is implemented
+   * @param self a reference to 'this'
+   * @param other the other object of the comparison
+   * @param equal a lazy equal instance for the type (that use {@link #anyEqual()} if generic type)..
+   * @return true if self and other are equal
+   */
+  @SuppressWarnings("unchecked")
+  public static <A> boolean equals0(final java.lang.Class<? super A> clazz, final A self, final Object other, final F0<Equal<A>> equal) {
+    return self == other || clazz.isInstance(other) && equal.f().eq(self, (A) other);
+  }
 
 }

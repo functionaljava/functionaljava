@@ -252,7 +252,7 @@ public class Validation<E, T> implements Iterable<T> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.validationEqual(Equal.<E>anyEqual(), Equal.<T>anyEqual()).eq(this, (Validation<E, T>) other)));
+    return Equal.equals0(Validation.class, this, other, () -> Equal.validationEqual(Equal.<E>anyEqual(), Equal.<T>anyEqual()));
   }
 
   @Override

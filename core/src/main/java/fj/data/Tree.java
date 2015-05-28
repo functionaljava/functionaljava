@@ -261,7 +261,7 @@ public final class Tree<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.treeEqual(Equal.<A>anyEqual()).eq(this, (Tree<A>) other)));
+    return Equal.equals0(Tree.class, this, other, () -> Equal.treeEqual(Equal.<A>anyEqual()));
   }
 
   @Override

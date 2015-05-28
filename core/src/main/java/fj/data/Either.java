@@ -94,7 +94,7 @@ public abstract class Either<A, B> {
   @Override
   public boolean equals(Object other) {
 
-    return Equal.shallowEqualsO(this, other).orSome(P.lazy(u -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()).eq(this, (Either<A, B>) other)));
+    return Equal.equals0(Either.class, this, other, () -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
   }
 
   @Override

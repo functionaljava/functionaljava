@@ -28,4 +28,24 @@ public final class P1Test {
 
     org.junit.Assert.assertEquals("Race condition in P1.memo()", 0, nullCounter.get());
   }
+  
+  @Test
+  public void bug122() throws Exception {
+    final P1<Integer> p1a = new P1<Integer>() {
+
+      @Override
+      public Integer _1() {
+        return 1;
+      }
+    };
+    final P1<Integer> p1b = new P1<Integer>() {
+
+      @Override
+      public Integer _1() {
+        return 1;
+      }
+    };
+
+    org.junit.Assert.assertTrue(p1a + " and " + p1b + " should be equal by Object.equals", p1a.equals(p1b));
+  }
 }
