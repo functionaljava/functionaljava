@@ -174,6 +174,9 @@ object CheckList extends Properties("List") {
   property("nub") = forAll((a: List[String], b: List[String]) =>
     listEqual(stringEqual).eq(a append b nub, a.nub.append(b.nub).nub))
 
+  property("init") = forAll((a: List[String], b: String) =>
+    listEqual(stringEqual).eq(a.snoc(b).init(), a))
+
   property("join") = forAll((a: List[List[String]]) =>
     listEqual(stringEqual).eq(
       a.foldRight((a: List[String], b: List[String]) => a.append(b), nil[String]),
