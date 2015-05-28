@@ -1,6 +1,7 @@
 package fj.data;
 
 import fj.F;
+import fj.F0;
 import fj.F2;
 import fj.P;
 import fj.P1;
@@ -10,7 +11,6 @@ import fj.Show;
 import fj.Hash;
 import fj.Unit;
 import fj.function.Effect1;
-
 import static fj.Function.*;
 import static fj.P.p;
 import static fj.P.p2;
@@ -18,7 +18,6 @@ import static fj.Unit.unit;
 import static fj.data.List.iterableList;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-
 import static java.lang.Math.min;
 import static java.lang.System.arraycopy;
 
@@ -145,8 +144,8 @@ public final class Array<A> implements Iterable<A> {
    * @return An either projection of this array.
    */
   @SuppressWarnings("unchecked")
-  public <X> Either<X, A> toEither(final P1<X> x) {
-    return a.length == 0 ? Either.<X, A>left(x._1()) : Either.<X, A>right((A) a[0]);
+  public <X> Either<X, A> toEither(final F0<X> x) {
+    return a.length == 0 ? Either.<X, A> left(x.f()) : Either.<X, A> right((A) a[0]);
   }
 
   /**
@@ -926,7 +925,7 @@ public final class Array<A> implements Iterable<A> {
      * @param x The value to return in left if this array is empty.
      * @return An either projection of this array.
      */
-    public <X> Either<X, A> toEither(final P1<X> x) {
+    public <X> Either<X, A> toEither(final F0<X> x) {
       return a.toEither(x);
     }
 

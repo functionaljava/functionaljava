@@ -348,7 +348,7 @@ public final class Promise<A> {
     return new F<Stream<A>, Promise<B>>() {
       public Promise<B> f(final Stream<A> as) {
         return as.isEmpty() ? promise(s, P.p(b)) : liftM2(f).f(promise(s, P.p(as.head()))).f(
-                Promise.<P1<B>>join(s, P.lazy(u -> f(as.tail()._1()).fmap(P.<B>p1()))));
+                Promise.<P1<B>>join(s, P.lazy(() -> f(as.tail()._1()).fmap(P.<B>p1()))));
       }
     };
   }

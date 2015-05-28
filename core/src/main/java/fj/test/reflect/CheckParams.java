@@ -29,10 +29,10 @@ public @interface CheckParams {
 
   /**
    * The maximum number of tests discarded because they did not satisfy pre-conditions
-   * (i.e. {@link Property#implies(boolean, P1)}).
+   * (i.e. {@link Property#implies(boolean, F0)}).
    *
    * @return The maximum number of tests discarded because they did not satisfy pre-conditions
-   * (i.e. {@link Property#implies(boolean, P1)}).
+   * (i.e. {@link Property#implies(boolean, F0)}).
    */
   int maxDiscarded() default 500;
 

@@ -1,6 +1,7 @@
 package fj.data;
 
 import fj.F;
+import fj.F0;
 import fj.F1Functions;
 import fj.Function;
 import fj.P;
@@ -18,14 +19,14 @@ public final class Iteratee {
 
     Input() {} // sealed
 
-    public abstract <Z> Z apply(final P1<Z> empty, final P1<F<E, Z>> el, final P1<Z> eof);
+    public abstract <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof);
 
     /** Input that has no values available */
     public static final <E> Input<E> empty() {
       return new Input<E>() {
         @Override
-        public <Z> Z apply(final P1<Z> empty, final P1<F<E, Z>> el, final P1<Z> eof) {
-          return empty._1();
+        public <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof) {
+          return empty.f();
         }
       };
     }
@@ -34,8 +35,8 @@ public final class Iteratee {
     public static final <E> Input<E> eof() {
       return new Input<E>() {
         @Override
-        public <Z> Z apply(final P1<Z> empty, final P1<F<E, Z>> el, final P1<Z> eof) {
-          return eof._1();
+        public <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof) {
+          return eof.f();
         }
       };
     }
@@ -44,8 +45,8 @@ public final class Iteratee {
     public static final <E> Input<E> el(final E element) {
       return new Input<E>() {
         @Override
-        public <Z> Z apply(final P1<Z> empty, final P1<F<E, Z>> el, final P1<Z> eof) {
-          return el._1().f(element);
+        public <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof) {
+          return el.f().f(element);
         }
       };
     }
@@ -127,27 +128,12 @@ public final class Iteratee {
 
           @Override
           public F<Input<E>, IterV<E, Integer>> f(final Integer acc) {
-            final P1<IterV<E, Integer>> empty =
-              new P1<IterV<E, Integer>>() {
-                @Override
-                public IterV<E, Integer> _1() {
-                  return cont(step.f(acc));
-                }
-              };
-            final P1<F<E, IterV<E, Integer>>> el =
-              new P1<F<E, IterV<E, Integer>>>() {
-                @Override
-                public F<E, IterV<E, Integer>> _1() {
-                  return P.p(cont(step.f(acc + 1))).constant();
-                }
-              };
-            final P1<IterV<E, Integer>> eof =
-              new P1<IterV<E, Integer>>() {
-                @Override
-                public IterV<E, Integer> _1() {
-                  return done(acc, Input.<E>eof());
-                }
-              };
+            final F0<IterV<E, Integer>> empty = () -> cont(step.f(acc));
+
+            final F0<F<E, IterV<E, Integer>>> el = () -> P.p(cont(step.f(acc + 1))).constant();
+
+            final F0<IterV<E, Integer>> eof = () -> done(acc, Input.<E>eof());
+
             return s -> s.apply(empty, el, eof);
           }
         };
@@ -160,27 +146,11 @@ public final class Iteratee {
         new F<Input<E>, IterV<E, Unit>>() {
           final F<Input<E>, IterV<E, Unit>> step = this;
 
-          final P1<IterV<E, Unit>> empty =
-            new P1<IterV<E, Unit>>() {
-              @Override
-              public IterV<E, Unit> _1() {
-                return cont(step);
-              }
-            };
-          final P1<F<E, IterV<E, Unit>>> el =
-            new P1<F<E, IterV<E, Unit>>>() {
-              @Override
-              public F<E, IterV<E, Unit>> _1() {
-                return P.p(IterV.<E>drop(n - 1)).constant();
-              }
-            };
-          final P1<IterV<E, Unit>> eof =
-            new P1<IterV<E, Unit>>() {
-              @Override
-              public IterV<E, Unit> _1() {
-                return done(Unit.unit(), Input.<E>eof());
-              }
-            };
+          final F0<IterV<E, Unit>> empty = () -> cont(step);
+
+          final F0<F<E, IterV<E, Unit>>> el = () -> P.p(IterV.<E>drop(n - 1)).constant();
+          
+          final F0<IterV<E, Unit>> eof = () -> done(Unit.unit(), Input.<E>eof());
 
           @Override
           public IterV<E, Unit> f(final Input<E> s) {
@@ -198,27 +168,11 @@ public final class Iteratee {
         new F<Input<E>, IterV<E, Option<E>>>() {
           final F<Input<E>, IterV<E, Option<E>>> step = this;
 
-          final P1<IterV<E, Option<E>>> empty =
-            new P1<IterV<E, Option<E>>>() {
-              @Override
-              public IterV<E, Option<E>> _1() {
-                return cont(step);
-              }
-            };
-          final P1<F<E, IterV<E, Option<E>>>> el =
-            new P1<F<E, IterV<E, Option<E>>>>() {
-              @Override
-              public F<E, IterV<E, Option<E>>> _1() {
-                return e -> done(Option.<E>some(e), Input.<E>empty());
-              }
-            };
-          final P1<IterV<E, Option<E>>> eof =
-            new P1<IterV<E, Option<E>>>() {
-              @Override
-              public IterV<E, Option<E>> _1() {
-                return done(Option.<E>none(), Input.<E>eof());
-              }
-            };
+          final F0<IterV<E, Option<E>>> empty = () -> cont(step);
+
+          final F0<F<E, IterV<E, Option<E>>>> el = () -> e -> done(Option.<E>some(e), Input.<E>empty());
+
+          final F0<IterV<E, Option<E>>> eof = () -> done(Option.<E>none(), Input.<E>eof());
 
           @Override
           public IterV<E, Option<E>> f(final Input<E> s) {
@@ -234,27 +188,11 @@ public final class Iteratee {
         new F<Input<E>, IterV<E, Option<E>>>() {
           final F<Input<E>, IterV<E, Option<E>>> step = this;
 
-          final P1<IterV<E, Option<E>>> empty =
-            new P1<IterV<E, Option<E>>>() {
-              @Override
-              public IterV<E, Option<E>> _1() {
-                return cont(step);
-              }
-            };
-          final P1<F<E, IterV<E, Option<E>>>> el =
-            new P1<F<E, IterV<E, Option<E>>>>() {
-              @Override
-              public F<E, IterV<E, Option<E>>> _1() {
-                return e -> done(Option.<E>some(e), Input.<E>el(e));
-              }
-            };
-          final P1<IterV<E, Option<E>>> eof =
-            new P1<IterV<E, Option<E>>>() {
-              @Override
-              public IterV<E, Option<E>> _1() {
-                return done(Option.<E>none(), Input.<E>eof());
-              }
-            };
+          final F0<IterV<E, Option<E>>> empty = () -> cont(step);
+
+          final F0<F<E, IterV<E, Option<E>>>> el = () -> e -> done(Option.<E>some(e), Input.<E>el(e));
+
+          final F0<IterV<E, Option<E>>> eof = () -> done(Option.<E>none(), Input.<E>eof());
 
           @Override
           public IterV<E, Option<E>> f(final Input<E> s) {
@@ -273,27 +211,12 @@ public final class Iteratee {
 
             @Override
             public F<Input<E>, IterV<E, List<E>>> f(final List<E> acc) {
-              final P1<IterV<E, List<E>>> empty =
-                new P1<IterV<E, List<E>>>() {
-                  @Override
-                  public IterV<E, List<E>> _1() {
-                    return cont(step.f(acc));
-                  }
-                };
-              final P1<F<E, IterV<E, List<E>>>> el =
-                new P1<F<E, IterV<E, List<E>>>>() {
-                  @Override
-                  public F<E, IterV<E, List<E>>> _1() {
-                    return e -> cont(step.f(acc.cons(e)));
-                  }
-                };
-              final P1<IterV<E, List<E>>> eof =
-                new P1<IterV<E, List<E>>>() {
-                  @Override
-                  public IterV<E, List<E>> _1() {
-                    return done(acc, Input.<E>eof());
-                  }
-                };
+              final F0<IterV<E, List<E>>> empty = () -> cont(step.f(acc));
+
+              final F0<F<E, IterV<E, List<E>>>> el = () -> e -> cont(step.f(acc.cons(e)));
+
+              final F0<IterV<E, List<E>>> eof = () -> done(acc, Input.<E>eof());
+
               return s -> s.apply(empty, el, eof);
             }
           };

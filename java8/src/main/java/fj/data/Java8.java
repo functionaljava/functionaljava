@@ -1,19 +1,22 @@
 package fj.data;
 
-import fj.*;
-import fj.function.Try0;
-import fj.function.Try1;
-import fj.function.Try2;
-
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
+
+import fj.F;
+import fj.F2;
+import fj.P;
+import fj.P1;
+import fj.Try;
+import fj.Unit;
+import fj.function.Try0;
+import fj.function.Try1;
+import fj.function.Try2;
 
 /**
  * Created by mperry on 3/06/2014.
@@ -29,7 +32,7 @@ public final class Java8 {
     }
 
     public static <A> F<Supplier<A>, P1<A>> Supplier_P1() {
-        return s -> P.lazy(u -> s.get());
+        return s -> P.lazy(() -> s.get());
     }
 
     public static <A> Supplier<A> P1_Supplier(final P1<A> p) {
@@ -96,7 +99,7 @@ public final class Java8 {
         return t -> (a, b) -> Try.f(t).f(a, b);
     }
 
-    public static <A> java.util.stream.Stream<A> List_JavaStream(List<A> list) {
+    public static <A> java.util.stream.Stream<A> List_JavaStream(final List<A> list) {
         return Iterable_JavaStream(list);
     }
 
@@ -120,22 +123,22 @@ public final class Java8 {
         return c -> Consumer_F(c);
     }
 
-    public static <A> F<A, Unit> Consumer_F(Consumer<A> c) {
+    public static <A> F<A, Unit> Consumer_F(final Consumer<A> c) {
         return a -> {
             c.accept(a);
             return Unit.unit();
         };
     }
 
-    static public <A> java.util.stream.Stream<A> Stream_JavaStream(fj.data.Stream<A> s) {
+    static public <A> java.util.stream.Stream<A> Stream_JavaStream(final fj.data.Stream<A> s) {
         return Iterable_JavaStream(s);
     }
 
-    static public <A> java.util.stream.Stream<A> Iterable_JavaStream(Iterable<A> it) {
+    static public <A> java.util.stream.Stream<A> Iterable_JavaStream(final Iterable<A> it) {
         return StreamSupport.stream(it.spliterator(), false);
     }
 
-    static public <A> java.util.stream.Stream<A> Iterator_JavaStream(Iterator<A> it) {
+    static public <A> java.util.stream.Stream<A> Iterator_JavaStream(final Iterator<A> it) {
         return Iterable_JavaStream(() -> it);
     }
 
@@ -143,15 +146,15 @@ public final class Java8 {
         return s -> Stream_JavaStream(s);
     }
 
-    static public <A> Stream<A> JavaStream_Stream(java.util.stream.Stream<A> s) {
+    static public <A> Stream<A> JavaStream_Stream(final java.util.stream.Stream<A> s) {
         return s.collect(Collectors.toStream());
     }
 
-    static public <A> List<A> JavaStream_List(java.util.stream.Stream<A> s) {
+    static public <A> List<A> JavaStream_List(final java.util.stream.Stream<A> s) {
         return s.collect(Collectors.toList());
     }
 
-    static public <A> Array<A> JavaStream_Array(java.util.stream.Stream<A> s) {
+    static public <A> Array<A> JavaStream_Array(final java.util.stream.Stream<A> s) {
         return s.collect(Collectors.toArray());
     }
 
