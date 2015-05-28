@@ -218,6 +218,7 @@ public abstract class P1<A> implements F0<A> {
           private final Object latch = new Object();
           private volatile SoftReference<Option<A>> v = null;
 
+          @Override
           public A _1() {
             Option<A> o = v != null ? v.get() : null;
             if (o == null) {
@@ -230,6 +231,11 @@ public abstract class P1<A> implements F0<A> {
               }
             }
             return o.some();
+          }
+
+          @Override
+          public P1<A> memo() {
+              return this;
           }
 
         };
