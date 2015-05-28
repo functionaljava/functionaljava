@@ -207,32 +207,59 @@ public abstract class P1<A> implements F0<A> {
         return P.lazy(u -> f.f(self._1()));
       }
 
+      private static final class MemoizingP1<A> extends P1<A> {
+
+        private final F0<A> delegate;
+
+        // 0: uninitialized, -1: initialized but value is null, 1: initialized and value is non-null
+        private volatile byte state = 0;
+
+        // "value" does not need to be volatile; visibility piggy-backs
+        // on volatile read of "state". Contains a non-null value from delegate.
+        private SoftReference<A> value;
+
+        MemoizingP1(final F0<A> delegate) {
+          this.delegate = delegate;
+        }
+
+        @Override
+        public A _1() {
+          final byte s = state;
+          if (s == -1) {
+            return null;
+          }
+          A a;
+          // A 2-field variant of Double Checked Locking.
+          if ((s == 0) || ((a = value.get()) == null)) {
+            synchronized (this) {
+              if ((state == 0) || ((a = value.get()) == null)) {
+                a = delegate.f();
+                if (a == null) {
+                  state = -1;
+                } else {
+                  final SoftReference<A> tmp = new SoftReference<A>(a);
+                  value = tmp;
+                  state = 1;
+                }
+              }
+            }
+          }
+          return a;
+        }
+
+        @Override
+        public P1<A> memo() {
+          return this;
+        }
+      }
+
     /**
        * Provides a memoising P1 that remembers its value.
        *
        * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
        */
       public P1<A> memo() {
-        final P1<A> self = this;
-        return new P1<A>() {
-          private final Object latch = new Object();
-          @SuppressWarnings({"InstanceVariableMayNotBeInitialized"})
-          private volatile SoftReference<A> v;
-
-          public A _1() {
-            A a = v != null ? v.get() : null;
-            if (a == null)
-              synchronized (latch) {
-                if (v == null || v.get() == null) {
-                  a = self._1();
-                  v = new SoftReference<A>(a);
-                } else {
-                  a = v.get();
-                }
-              }
-            return a;
-          }
-        };
+        return new MemoizingP1<>(this);
       }
 
     static <A> P1<A> memo(F<Unit, A> f) {
