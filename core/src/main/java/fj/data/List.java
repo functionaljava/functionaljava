@@ -159,8 +159,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A stream projection of this list.
    */
   public final Stream<A> toStream() {
-    final Stream<A> nil = Stream.nil();
-    return foldRight(a -> as -> as.cons(a), nil);
+    return isEmpty() ? Stream.nil() : Stream.cons(head(), P.lazy(() -> tail().toStream()));
   }
 
   /**
@@ -1569,7 +1568,11 @@ public abstract class List<A> implements Iterable<A> {
    *         <code>to</code> value (exclusive).
    */
   public static List<Integer> range(final int from, final int to) {
-    return from >= to ? List.<Integer>nil() : cons(from, range(from + 1, to));
+    final Buffer<Integer> buf = Buffer.empty();
+    for (int i = from; i < to; i++) {
+      buf.snoc(i);
+    }
+    return buf.toList();
   }
 
   /**

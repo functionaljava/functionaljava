@@ -1,7 +1,10 @@
 package fj.data.fingertrees;
 
 import fj.F;
+import fj.P;
 import fj.P2;
+import fj.P3;
+
 import static fj.P.p;
 
 /**
@@ -64,13 +67,24 @@ public final class Single<V, A> extends FingerTree<V, A> {
     return mk.deep(mk.one(a), new Empty<V, Node<V, A>>(measured().nodeMeasured()), mk.one(b));
   }
 
+  @Override public A head() { return a; }
+
+  @Override public A last() { return a; }
+
+  @Override public FingerTree<V, A> tail() { return new Empty<>(measured()); }
+
+  @Override public FingerTree<V, A> init() { return new Empty<>(measured()); }
+
   @Override public FingerTree<V, A> append(final FingerTree<V, A> t) {
     return t.cons(a);
   }
 
-  @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) {
-    return p(i, a);
+  @Override P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc) {
+    final Empty<V, A> empty = new Empty<>(measured());
+    return P.p(empty, a, empty);
   }
+
+  @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) { return p(i, a); }
 
   /**
    * Returns the single element of this tree.

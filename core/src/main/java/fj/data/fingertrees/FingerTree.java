@@ -1,6 +1,7 @@
 package fj.data.fingertrees;
 
 import fj.*;
+import fj.data.Option;
 import fj.data.Seq;
 
 /**
@@ -151,12 +152,67 @@ public abstract class FingerTree<V, A> {
   public abstract FingerTree<V, A> snoc(final A a);
 
   /**
+   * The first element of this tree. This is an O(1) operation.
+   *
+   * @return The first element if this tree is nonempty, otherwise throws an error.
+   */
+  public abstract A head();
+
+  /**
+   * The last element of this tree. This is an O(1) operation.
+   *
+   * @return The last element if this tree is nonempty, otherwise throws an error.
+   */
+  public abstract A last();
+
+  /**
+   * The tree without the first element. This is an O(1) operation.
+   *
+   * @return The tree without the first element if this tree is nonempty, otherwise throws an error.
+   */
+  public abstract FingerTree<V, A> tail();
+
+  /**
+   * The tree without the last element. This is an O(1) operation.
+   *
+   * @return The tree without the last element if this tree is nonempty, otherwise throws an error.
+   */
+  public abstract FingerTree<V, A> init();
+
+  /**
    * Appends one finger tree to another.
    *
    * @param t A finger tree to append to this one.
    * @return A new finger tree which is a concatenation of this tree and the given tree.
    */
   public abstract FingerTree<V, A> append(final FingerTree<V, A> t);
+
+  /**
+   * Splits this tree into a pair of subtrees at the point where the given predicate, based on the measure,
+   * changes from <code>false</code> to <code>true</code>. This is a O(log(n)) operation.
+   *
+   * @return Pair: the subtree containing elements before the point where <code>pred</code> first holds and the subtree
+   *   containing element at and after the point where <code>pred</code> first holds. Empty if <code>pred</code> never holds.
+   */
+  public final P2<FingerTree<V, A>, FingerTree<V, A>> split(final F<V, Boolean> predicate) {
+    if (!isEmpty() && predicate.f(measure())) {
+      final P3<FingerTree<V, A>, A, FingerTree<V, A>> lxr = split1(predicate);
+      return P.p(lxr._1(), lxr._3().cons(lxr._2()));
+    } else {
+      return P.p(this, mkTree(m).empty());
+    }
+  }
+
+  /**
+   * Like <code>split</code>, but returns the element where <code>pred</code> first holds separately.
+   *
+   * Throws an error if the tree is empty.
+   */
+  public final P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate) {
+    return split1(predicate, measured().zero());
+  }
+
+  abstract P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc);
 
   public abstract P2<Integer, A> lookup(final F<V, Integer> o, final int i);
 }

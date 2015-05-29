@@ -1,13 +1,10 @@
 package fj.data;
 
-import fj.Equal;
-import fj.F;
-import fj.F2;
+import fj.*;
+
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.P.p;
-import fj.P1;
-import fj.P2;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.data.Stream.join;
@@ -108,7 +105,9 @@ public final class LazyString implements CharSequence {
    * @return The String representation of this lazy string.
    */
   public String toString() {
-    return new StringBuilder(length() + 16).append(this).toString();
+    final StringBuilder builder = new StringBuilder(length() + 16);
+    s.foreachDoEffect(c -> builder.append(c.charValue()));
+    return builder.toString();
   }
 
   /**

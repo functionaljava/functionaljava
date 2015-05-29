@@ -1,11 +1,11 @@
 package fj.data.fingertrees;
 
-import fj.F;
-import fj.F2;
-import fj.Function;
+import fj.*;
+import fj.data.Option;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
+
 import static fj.data.fingertrees.FingerTree.mkTree;
 
 /**
@@ -134,6 +134,8 @@ public abstract class Digit<V, A> {
     this.m = m;
   }
 
+  final Measured<V, A> measured() { return m; }
+
   /**
    * Returns the sum of the measurements of this digit according to the monoid.
    *
@@ -173,4 +175,26 @@ public abstract class Digit<V, A> {
       }
     });
   }
+
+  Option<Digit<V, A>> tail() {
+    return match(
+      one -> Option.<Digit<V, A>> none(),
+      two -> Option.<Digit<V, A>> some(mkTree(m).one(two.values()._2())),
+      three -> Option.<Digit<V, A>> some(mkTree(m).two(three.values()._2(), three.values()._3())),
+      four -> Option.<Digit<V, A>> some(mkTree(m).three(four.values()._2(), four.values()._3(), four.values()._4()))
+    );
+  }
+
+  Option<Digit<V, A>> init() {
+    return match(
+      one -> Option.<Digit<V, A>> none(),
+      two -> Option.<Digit<V, A>> some(mkTree(m).one(two.values()._1())),
+      three -> Option.<Digit<V, A>> some(mkTree(m).two(three.values()._1(), three.values()._2())),
+      four -> Option.<Digit<V, A>> some(mkTree(m).three(four.values()._1(), four.values()._2(), four.values()._3()))
+    );
+  }
+
+  abstract P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc);
+
+  public abstract P2<Integer, A> lookup(final F<V, Integer> o, final int i);
 }
