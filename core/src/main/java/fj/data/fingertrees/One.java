@@ -1,6 +1,12 @@
 package fj.data.fingertrees;
 
 import fj.F;
+import fj.P;
+import fj.P2;
+import fj.P3;
+import fj.data.Option;
+
+import static fj.data.Option.none;
 
 /**
  * A single-element prefix or suffix of a finger tree.
@@ -34,5 +40,13 @@ public final class One<V, A> extends Digit<V, A> {
    */
   public A value() {
     return a;
+  }
+
+  @Override P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc) {
+    return P.p(none(), a, none());
+  }
+
+  @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) {
+    return P.p(i, a);
   }
 }

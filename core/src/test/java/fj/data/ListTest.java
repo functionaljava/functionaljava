@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -39,4 +40,17 @@ public class ListTest {
 
     }
 
+    @Test
+    public void convertToString() {
+        final int n = 10000;
+        final StringBuilder expected = new StringBuilder("List(");
+        for (int i = 0; i < n; i++) {
+            expected.append(i);
+            if (i < n - 1) {
+                expected.append(',');
+            }
+        }
+        expected.append(')');
+        assertEquals(expected.toString(), List.range(0, n).toString());
+    }
 }
