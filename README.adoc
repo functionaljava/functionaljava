@@ -12,7 +12,7 @@ Functional Java provides abstractions for the following types:
 
 * Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation).
 * Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list.
-* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing, actors, concurrency and type conversion.
+* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing, actors, lenses, concurrency and type conversion.
 
 == URLs
 
@@ -20,6 +20,7 @@ Important URLs for the project are:
 
 * Website, http://www.functionaljava.org
 * Website repository, http://github.com/functionaljava/functionaljava.github.io
+* Travis continuous integration build, https://travis-ci.org/functionaljava/functionaljava
 
 == Downloading
 
@@ -30,10 +31,10 @@ The Functional Java artifact is published to Maven Central using the group `org.
 * the core library (`functionaljava`)
 * Java 8 specific support (`functionaljava-java8`)
 
-The latest version is `4.3`.  This can be added to your Gradle project by adding the dependencies:
+The latest version is `4.4-SNAPSHOT`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.3"
-compile "org.functionaljava:functionaljava-java8:4.3"
+compile "org.functionaljava:functionaljava:4.4-SNAPSHOT"
+compile "org.functionaljava:functionaljava-java8:4.4-SNAPSHOT"
 ----
 
 and in Maven:
@@ -41,12 +42,12 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.3</version>
+    <version>4.4-SNAPSHOT</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java8</artifactId>
-    <version>4.3</version>
+    <version>4.4-SNAPSHOT</version>
 </dependency>
 ----
 
@@ -54,7 +55,7 @@ and in Maven:
 
 FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 7 bytecode.  This requires access to both JDK 7 and 8.  The build system requires the environment variables `JAVA7_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
 
-Building is done using Gradle 2.2.1.  In the root directory run:
+Building is done using Gradle 2.4.  In the root directory run:
 ----
 ./gradlew
 ----
@@ -97,6 +98,7 @@ A more complete description of the features mentioned above are:
 ** Zipper implementations for streams and trees.
 ** Automated specification-based testing framework (`fj.test`).
 ** Fully operational Actors for parallel computations (`fj.control.parallel`) and layered abstractions such as parallel-map, map-reduce, parallel-zip.
+** Lenses, for updating immutable data.
 
 == License
 

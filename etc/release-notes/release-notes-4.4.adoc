@@ -1,0 +1,50 @@
+
+= Release 4.4
+
+Proposed Release Date: June 2015
+
+== Enhancements
+
+* Added optics lenses inspired from the Monocle Scala library (#130, 131, 132).
+* Added functionality to FingerTree and Seq: head, last, tail, init, split, split1, update, toJavaList, Iterable (#140).
+* Added OrdComparator and fixed TreeMap.toMutableMap (#110).
+* Added bimap to Either (#121).
+* Added monoid composition.
+
+== Fixes
+
+* Fixed LazyString.toString for Android (#109)
+* Fixed exhausted ScalaCheck tests (#115).
+* Fixed overflow in standard Rand (#112).
+* Fixed equals for anonymous classes (#122).
+* Fixed List.init (#128).
+* Fixed Effect.f ignoring argument (#133).
+* Made Effect.comap static (#135).
+* Fixed Class.inheritance infinite list (#137).
+* Fixed Stream.toString to human readable representation (#138).
+* Fixed P1.memo cache in threaded environment (#141).
+* Fixed Stream join and bind for infinite streams (#140).
+
+== Internal
+
+* Added Travis build (#115).
+* Upgraded to Gradle 2.4 (#143).
+* Added Gradle uptodate plugin (#119).
+* Updated Scala and ScalaCheck to 2.11.6 and 1.12.2 respectively (#120).
+* Replaced P1 by F0 in various APIs (#136).
+
+== Breaking Changes
+
+== Documentation
+
+== Contributors
+
+* Mark Perry
+* daneko
+* Dobes Vandermeer
+* Kenji Yoshida
+* Jean-Baptiste Giraudeau
+* Runar Bjarnason
+* Paul Horn
+* Zheka Kozlov
+
