@@ -762,6 +762,16 @@ public final class Arbitrary<A> {
   }
 
   /**
+   * Returns an arbitrary implementation for sequences.
+   *
+   * @param aa An arbitrary implementation for the type over which the sequence is defined.
+   * @return An arbitrary implementation for sequences.
+   */
+  public static <A> Arbitrary<Seq<A>> arbSeq(final Arbitrary<A> aa) {
+    return arbitrary(arbArray(aa).gen.map(array -> Seq.seq((A[]) array.array())));
+  }
+
+  /**
    * Returns an arbitrary implementation for throwables.
    *
    * @param as An arbitrary used for the throwable message.
