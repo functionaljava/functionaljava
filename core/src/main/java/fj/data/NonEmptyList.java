@@ -1,9 +1,6 @@
 package fj.data;
 
-import fj.Equal;
-import fj.F;
-import fj.F1Functions;
-import fj.Show;
+import fj.*;
 import fj.function.Effect1;
 
 import java.util.Collection;
@@ -224,6 +221,10 @@ public final class NonEmptyList<A> implements Iterable<A> {
    */
   @Override public boolean equals( final Object obj ) {
     return Equal.equals0(NonEmptyList.class, this, obj, () -> Equal.nonEmptyListEqual(Equal.<A>anyEqual()));
+  }
+
+  @Override public int hashCode() {
+    return Hash.nonEmptyListHash(Hash.<A>anyHash()).hash(this);
   }
 
   @Override public String toString() { return Show.nonEmptyListShow(Show.<A>anyShow()).showS(this); }

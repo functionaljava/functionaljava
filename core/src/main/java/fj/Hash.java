@@ -11,6 +11,9 @@ import fj.data.vector.V6;
 import fj.data.vector.V7;
 import fj.data.vector.V8;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  * Produces a hash code for an object which should attempt uniqueness.
  *
@@ -101,6 +104,16 @@ public final class Hash<A> {
    * A hash instance for the <code>short</code> type.
    */
   public static final Hash<Short> shortHash = anyHash();
+
+  /**
+   * A hash instance for the <code>BigInteger</code> type.
+   */
+  public static final Hash<BigInteger> bigintHash = anyHash();
+
+  /**
+   * A hash instance for the <code>BigDecimal</code> type.
+   */
+  public static final Hash<BigDecimal> bigdecimalHash = anyHash();
 
   /**
    * A hash instance for the <code>String</code> type.
