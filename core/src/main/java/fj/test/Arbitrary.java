@@ -733,6 +733,10 @@ public final class Arbitrary<A> {
     return arbitrary(listOf(aa.gen));
   }
 
+  public static <A> Arbitrary<NonEmptyList<A>> arbNonEmptyList(final Arbitrary<A> aa) {
+    return arbitrary(Gen.listOf1(aa.gen).map(list -> NonEmptyList.fromList(list).some()));
+  }
+
   /**
    * Returns an arbitrary implementation for streams.
    *

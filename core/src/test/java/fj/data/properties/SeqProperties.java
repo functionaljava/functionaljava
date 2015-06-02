@@ -1,7 +1,6 @@
 package fj.data.properties;
 
 
-import fj.Function;
 import fj.P;
 import fj.P2;
 import fj.data.Option;
@@ -10,10 +9,7 @@ import fj.runner.PropertyTestRunner;
 import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 
 import static fj.Function.identity;
 import static fj.data.Option.none;
@@ -81,12 +77,12 @@ public class SeqProperties {
 
   public Property tailLength() {
     return property(arbSeq(arbInteger), seq ->
-      Property.implies(!seq.isEmpty(), P.lazy(() -> prop(seq.length() == 1 + seq.tail().length()))));
+      implies(!seq.isEmpty(), () -> prop(seq.length() == 1 + seq.tail().length())));
   }
 
   public Property initLength() {
     return property(arbSeq(arbInteger), seq ->
-      Property.implies(!seq.isEmpty(), P.lazy(() -> prop(seq.length() == seq.init().length() + 1))));
+      implies(!seq.isEmpty(), () -> prop(seq.length() == seq.init().length() + 1)));
   }
 
   public Property mapId() {
@@ -103,11 +99,11 @@ public class SeqProperties {
     });
 
     return property(Arbitrary.arbitrary(gen), arbInteger, (pair, n) ->
-      implies(pair._2().isSome(), P.lazy(() -> {
+      implies(pair._2().isSome(), () -> {
         final Seq<Integer> seq = pair._1();
         final int index = pair._2().some();
         return prop(seq.update(index, n).index(index).equals(n));
-      })));
+      }));
   }
 
   public Property foldLeft() {

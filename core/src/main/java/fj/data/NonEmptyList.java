@@ -1,14 +1,16 @@
 package fj.data;
 
+import fj.Equal;
 import fj.F;
 import fj.F1Functions;
+import fj.Show;
 import fj.function.Effect1;
-
-import static fj.data.Option.some;
-import static fj.data.Option.somes;
 
 import java.util.Collection;
 import java.util.Iterator;
+
+import static fj.data.Option.some;
+import static fj.data.Option.somes;
 
 /**
  * Provides an in-memory, immutable, singly linked list with total <code>head</code> and <code>tail</code>.
@@ -26,17 +28,19 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return toCollection().iterator();
   }
 
+  private final A head;
+
+  private final List<A> tail;
+
   /**
    * The first element of this linked list.
    */
-  @SuppressWarnings({"PublicField", "ClassEscapesDefinedScope"})
-  public final A head;
+  public A head() { return head; }
 
   /**
    * This list without the first element.
    */
-  @SuppressWarnings({"PublicField"})
-  public final List<A> tail;
+  public List<A> tail() { return tail; }
 
   private NonEmptyList(final A head, final List<A> tail) {
     this.head = head;
@@ -52,6 +56,13 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public NonEmptyList<A> cons(final A a) {
     return nel(a, tail.cons(head));
   }
+
+  /**
+   * The length of this list.
+   *
+   * @return The length of this list.
+   */
+  public int length() { return 1 + tail.length(); }
 
   /**
    * Appends the given list to this list.
@@ -203,4 +214,17 @@ public final class NonEmptyList<A> implements Iterable<A> {
            Option.<NonEmptyList<A>>none() :
            some(nel(as.head(), as.tail()));
   }
+
+  /**
+   * Perform an equality test on this list which delegates to the .equals() method of the member instances.
+   * This is implemented with Equal.nonEmptyListEqual using the anyEqual rule.
+   *
+   * @param obj the other object to check for equality against.
+   * @return true if this list is equal to the provided argument
+   */
+  @Override public boolean equals( final Object obj ) {
+    return Equal.equals0(NonEmptyList.class, this, obj, () -> Equal.nonEmptyListEqual(Equal.<A>anyEqual()));
+  }
+
+  @Override public String toString() { return Show.nonEmptyListShow(Show.<A>anyShow()).showS(this); }
 }
