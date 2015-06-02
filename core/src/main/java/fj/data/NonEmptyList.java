@@ -6,6 +6,7 @@ import fj.function.Effect1;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static fj.Function.identity;
 import static fj.data.Option.some;
 import static fj.data.Option.somes;
 
@@ -52,6 +53,10 @@ public final class NonEmptyList<A> implements Iterable<A> {
    */
   public NonEmptyList<A> cons(final A a) {
     return nel(a, tail.cons(head));
+  }
+
+  public NonEmptyList<A> snoc(final A a) {
+    return nel(head, tail.snoc(a));
   }
 
   /**
@@ -143,6 +148,46 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return tails().map(f);
   }
 
+  public NonEmptyList<A> intersperse(final A a) {
+    final List<A> list = toList().intersperse(a);
+    return nel(list.head(), list.tail());
+  }
+
+  public NonEmptyList<A> reverse() {
+    final List<A> list = toList().reverse();
+    return nel(list.head(), list.tail());
+  }
+
+  public NonEmptyList<A> sort(final Ord<A> o) {
+    final List<A> list = toList().sort(o);
+    return nel(list.head(), list.tail());
+  }
+
+  public <B> NonEmptyList<P2<A, B>> zip(final NonEmptyList<B> bs) {
+    final List<P2<A, B>> list = toList().zip(bs.toList());
+    return nel(list.head(), list.tail());
+  }
+
+  public NonEmptyList<P2<A, Integer>> zipIndex() {
+    final List<P2<A, Integer>> list = toList().zipIndex();
+    return nel(list.head(), list.tail());
+  }
+
+  public <B, C> NonEmptyList<C> zipWith(final List<B> bs, final F<A, F<B, C>> f) {
+    final List<C> list = toList().zipWith(bs, f);
+    return nel(list.head(), list.tail());
+  }
+
+  public <B, C> NonEmptyList<C> zipWith(final List<B> bs, final F2<A, B, C> f) {
+    final List<C> list = toList().zipWith(bs, f);
+    return nel(list.head(), list.tail());
+  }
+
+  public static <A, B> P2<NonEmptyList<A>, NonEmptyList<B>> unzip(final NonEmptyList<P2<A, B>> xs) {
+    final P2<List<A>, List<B>> p = List.unzip(xs.toList());
+    return P.p(nel(p._1().head(), p._1().tail()), nel(p._2().head(), p._2().tail()));
+  }
+
   /**
    * Returns a <code>List</code> projection of this list.
    *
@@ -182,13 +227,14 @@ public final class NonEmptyList<A> implements Iterable<A> {
   }
 
   /**
-   * Return a non-empty list with the given value.
+   * Constructs a non empty list from the given elements.
    *
-   * @param head The value in the non-empty list.
-   * @return A non-empty list with the given value.
+   * @param head The first in the non-empty list.
+   * @param tail The elements to construct a list's tail with.
+   * @return A non-empty list with the given elements.
    */
-  public static <A> NonEmptyList<A> nel(final A head) {
-    return nel(head, List.<A>nil());
+  public static <A> NonEmptyList<A> nel(final A head, final A... tail) {
+    return nel(head, List.list(tail));
   }
 
   /**
@@ -211,6 +257,8 @@ public final class NonEmptyList<A> implements Iterable<A> {
            Option.<NonEmptyList<A>>none() :
            some(nel(as.head(), as.tail()));
   }
+
+  public static <A> NonEmptyList<A> join(final NonEmptyList<NonEmptyList<A>> o) { return o.bind(identity()); }
 
   /**
    * Perform an equality test on this list which delegates to the .equals() method of the member instances.
