@@ -15,6 +15,7 @@ import fj.data.List;
 import fj.data.Option;
 import fj.data.Stream;
 import fj.data.Validation;
+import fj.data.vector.V;
 import fj.data.vector.V2;
 
 /** {@link POptional} restricted to monomorphic update */
@@ -190,85 +191,88 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public <C> F<S, F<C, S>> modifyFunctionF(final F<A, F<C, A>> f) {
-        return s -> getOrModify(s).either(
-            Function.constant(),
+        return s -> getOption.f(s).option(
+            (C __) -> s,
             a -> Function.compose(b -> set.f(b).f(s), f.f(a))
             );
       }
 
       @Override
       public <L> F<S, Either<L, S>> modifyEitherF(final F<A, Either<L, A>> f) {
-        return s -> getOrModify(s).either(
-            Either.right_(),
+        return s -> getOption.f(s).option(
+            Either.right(s),
             t -> f.f(t).right().map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, IO<S>> modifyIOF(final F<A, IO<A>> f) {
-        return s -> getOption.f(s).option(IOFunctions.unit(s), a -> IOFunctions.<A, S> map(f.f(a), b -> set.f(b).f(s)));
+        return s -> getOption.f(s).option(
+            IOFunctions.unit(s),
+            a -> IOFunctions.<A, S> map(f.f(a), b -> set.f(b).f(s))
+            );
       }
 
       @Override
       public F<S, Trampoline<S>> modifyTrampolineF(final F<A, Trampoline<A>> f) {
-        return s -> getOrModify(s).either(
-            Trampoline.pure(),
+        return s -> getOption.f(s).option(
+            Trampoline.pure(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Promise<S>> modifyPromiseF(final F<A, Promise<A>> f) {
-        return s -> getOrModify(s).either(
-            t -> Promise.promise(Strategy.idStrategy(), P.p(t)),
+        return s -> getOption.f(s).option(
+            () -> Promise.promise(Strategy.idStrategy(), P.p(s)),
             t -> f.f(t).fmap(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, List<S>> modifyListF(final F<A, List<A>> f) {
-        return s -> getOrModify(s).either(
-            List::single,
+        return s -> getOption.f(s).option(
+            () -> List.single(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Option<S>> modifyOptionF(final F<A, Option<A>> f) {
-        return s -> getOrModify(s).either(
-            Option.some_(),
+        return s -> getOption.f(s).option(
+            Option.some(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, Stream<S>> modifyStreamF(final F<A, Stream<A>> f) {
-        return s -> getOrModify(s).either(
-            Stream.single(),
+        return s -> getOption.f(s).option(
+            () -> Stream.single(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, P1<S>> modifyP1F(final F<A, P1<A>> f) {
-        return s -> getOrModify(s).either(
-            P.p1(),
+        return s -> getOption.f(s).<P1<S>> option(
+            P.p(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public <E> F<S, Validation<E, S>> modifyValidationF(final F<A, Validation<E, A>> f) {
-        return s -> getOrModify(s).either(
-            t -> Validation.<E, S> success(t),
+        return s -> getOption.f(s).option(
+            () -> Validation.<E, S> success(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
 
       @Override
       public F<S, V2<S>> modifyV2F(final F<A, V2<A>> f) {
-        return s -> getOrModify(s).either(
-            t -> V2.p(P.p(t, t)),
+        return s -> getOption.f(s).option(
+            () -> V.v(s, s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }
