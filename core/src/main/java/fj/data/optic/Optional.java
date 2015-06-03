@@ -191,7 +191,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public <C> F<S, F<C, S>> modifyFunctionF(final F<A, F<C, A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<F<C, S>> option(
             (C __) -> s,
             a -> Function.compose(b -> set.f(b).f(s), f.f(a))
             );
@@ -199,7 +199,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public <L> F<S, Either<L, S>> modifyEitherF(final F<A, Either<L, A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<Either<L, S>> option(
             Either.right(s),
             t -> f.f(t).right().map(b -> set.f(b).f(s))
             );
@@ -231,7 +231,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public F<S, List<S>> modifyListF(final F<A, List<A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<List<S>> option(
             () -> List.single(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
@@ -247,7 +247,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public F<S, Stream<S>> modifyStreamF(final F<A, Stream<A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<Stream<S>> option(
             () -> Stream.single(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
@@ -263,7 +263,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public <E> F<S, Validation<E, S>> modifyValidationF(final F<A, Validation<E, A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<Validation<E, S>> option(
             () -> Validation.<E, S> success(s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
@@ -271,7 +271,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public F<S, V2<S>> modifyV2F(final F<A, V2<A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<V2<S>> option(
             () -> V.v(s, s),
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
