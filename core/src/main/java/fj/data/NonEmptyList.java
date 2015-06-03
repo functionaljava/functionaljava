@@ -55,6 +55,12 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return nel(a, tail.cons(head));
   }
 
+  /**
+   * Appends (snoc) the given element to this non empty list to produce a new non empty list. O(n).
+   *
+   * @param a The element to append to this non empty list.
+   * @return A new non empty list with the given element appended.
+   */
   public NonEmptyList<A> snoc(final A a) {
     return nel(head, tail.snoc(a));
   }
@@ -148,41 +154,95 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return tails().map(f);
   }
 
+  /**
+   * Intersperses the given argument between each element of this non empty list.
+   *
+   * @param a The separator to intersperse in this non empty list.
+   * @return A non empty list with the given separator interspersed.
+   */
   public NonEmptyList<A> intersperse(final A a) {
     final List<A> list = toList().intersperse(a);
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Reverse this non empty list in constant stack space.
+   *
+   * @return A new non empty list with the elements in reverse order.
+   */
   public NonEmptyList<A> reverse() {
     final List<A> list = toList().reverse();
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Sorts this non empty list using the given order over elements using a <em>merge sort</em> algorithm.
+   *
+   * @param o The order over the elements of this non empty list.
+   * @return A sorted non empty list according to the given order.
+   */
   public NonEmptyList<A> sort(final Ord<A> o) {
     final List<A> list = toList().sort(o);
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Zips this non empty list with the given non empty list to produce a list of pairs. If this list and the given list
+   * have different lengths, then the longer list is normalised so this function never fails.
+   *
+   * @param bs The non empty list to zip this non empty list with.
+   * @return A new non empty list with a length the same as the shortest of this list and the given list.
+   */
   public <B> NonEmptyList<P2<A, B>> zip(final NonEmptyList<B> bs) {
     final List<P2<A, B>> list = toList().zip(bs.toList());
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Zips this non empty list with the index of its element as a pair.
+   *
+   * @return A new non empty list with the same length as this list.
+   */
   public NonEmptyList<P2<A, Integer>> zipIndex() {
     final List<P2<A, Integer>> list = toList().zipIndex();
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Zips this non empty list with the given non empty list using the given function to produce a new list. If this list
+   * and the given list have different lengths, then the longer list is normalised so this function
+   * never fails.
+   *
+   * @param bs The non empty list to zip this non empty list with.
+   * @param f  The function to zip this non empty list and the given non empty list with.
+   * @return A new non empty list with a length the same as the shortest of this list and the given list.
+   */
   public <B, C> NonEmptyList<C> zipWith(final List<B> bs, final F<A, F<B, C>> f) {
     final List<C> list = toList().zipWith(bs, f);
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Zips this non empty list with the given non empty list using the given function to produce a new list. If this list
+   * and the given list have different lengths, then the longer list is normalised so this function
+   * never fails.
+   *
+   * @param bs The non empty list to zip this non empty list with.
+   * @param f  The function to zip this non empty list and the given non empty list with.
+   * @return A new non empty list with a length the same as the shortest of this list and the given list.
+   */
   public <B, C> NonEmptyList<C> zipWith(final List<B> bs, final F2<A, B, C> f) {
     final List<C> list = toList().zipWith(bs, f);
     return nel(list.head(), list.tail());
   }
 
+  /**
+   * Transforms a non empty list of pairs into a non empty list of first components and
+   * a non empty list of second components.
+   *
+   * @param xs The non empty list of pairs to transform.
+   * @return A non empty list of first components and a non empty list of second components.
+   */
   public static <A, B> P2<NonEmptyList<A>, NonEmptyList<B>> unzip(final NonEmptyList<P2<A, B>> xs) {
     final P2<List<A>, List<B>> p = List.unzip(xs.toList());
     return P.p(nel(p._1().head(), p._1().tail()), nel(p._2().head(), p._2().tail()));
@@ -258,6 +318,12 @@ public final class NonEmptyList<A> implements Iterable<A> {
            some(nel(as.head(), as.tail()));
   }
 
+  /**
+   * Concatenate (join) a non empty list of non empty lists.
+   *
+   * @param o The non empty list of non empty lists to join.
+   * @return A new non empty list that is the concatenation of the given lists.
+   */
   public static <A> NonEmptyList<A> join(final NonEmptyList<NonEmptyList<A>> o) { return o.bind(identity()); }
 
   /**
