@@ -1,6 +1,8 @@
 
 apply plugin: 'me.tatarka.retrolambda'
 
+archivesBaseName = "${project.projectName}-${project.name}"
+
 retrolambda {
     jdk System.getenv("JAVA8_HOME")
     oldJdk System.getenv("JAVA7_HOME")
