@@ -39,6 +39,17 @@ public final class Equal<A> {
   }
 
   /**
+   * Returns <code>true</code> if the two given arguments are not equal, <code>false</code> otherwise.
+   *
+   * @param a1 An object to test for inequality against another.
+   * @param a2 An object to test for inequality against another.
+   * @return <code>true</code> if the two given arguments are not equal, <code>false</code> otherwise.
+   */
+  public boolean notEq(final A a1, final A a2) {
+    return !eq(a1, a2);
+  }
+
+  /**
    * First-class equality check.
    *
    * @return A function that returns <code>true</code> if the two given arguments are equal.

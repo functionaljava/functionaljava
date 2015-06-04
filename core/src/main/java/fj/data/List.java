@@ -1301,6 +1301,32 @@ public abstract class List<A> implements Iterable<A> {
     return isEmpty() || tail().isEmpty() || eq.eq(head(), tail().head()) && tail().allEqual(eq);
   }
 
+  public final boolean isPrefixOf(final Equal<A> eq, final List<A> xs) {
+    final Iterator<A> i = iterator();
+    final Iterator<A> j = xs.iterator();
+
+    while (i.hasNext() && j.hasNext()) {
+      if (!eq.eq(i.next(), j.next())) {
+        return false;
+      }
+    }
+
+    return !i.hasNext();
+  }
+
+  public final boolean isSuffixOf(final Equal<A> eq, final List<A> xs) {
+    final Iterator<A> i = iterator();
+    final Iterator<A> j = xs.drop(xs.length() - length()).iterator();
+
+    while (i.hasNext() && j.hasNext()) {
+      if (!eq.eq(i.next(), j.next())) {
+        return false;
+      }
+    }
+
+    return !i.hasNext();
+  }
+
   /**
    * First-class length.
    *
