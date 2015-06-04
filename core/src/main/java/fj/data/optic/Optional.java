@@ -223,7 +223,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public F<S, Promise<S>> modifyPromiseF(final F<A, Promise<A>> f) {
-        return s -> getOption.f(s).option(
+        return s -> getOption.f(s).<Promise<S>> option(
             () -> Promise.promise(Strategy.idStrategy(), P.p(s)),
             t -> f.f(t).fmap(b -> set.f(b).f(s))
             );
