@@ -1,5 +1,5 @@
 
 rootProject.name = "functionaljava"
 
-include 'core', 'demo', "tests", "consume", "java8"
+include 'core', 'demo', "tests", "consume", "java8", "quickcheck", "tests-quickcheck"
 

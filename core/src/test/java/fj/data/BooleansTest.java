@@ -2,7 +2,6 @@ package fj.data;
 
 import fj.F;
 import fj.function.Booleans;
-import fj.test.Property;
 import org.junit.Assert;
 import org.junit.Test;
 
