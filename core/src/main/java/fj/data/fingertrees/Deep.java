@@ -155,7 +155,7 @@ public final class Deep<V, A> extends FingerTree<V, A> {
   @Override public FingerTree<V, A> append(final FingerTree<V, A> t) {
     final Measured<V, A> m = measured();
     return t.match(
-      constant(t),
+      constant(this),
       single -> snoc(single.value()),
       deep -> new Deep<>(m, m.sum(measure(), deep.measure()), prefix,
         addDigits0(m, middle, suffix, deep.prefix, deep.middle), deep.suffix));

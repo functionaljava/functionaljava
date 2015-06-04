@@ -733,6 +733,10 @@ public final class Arbitrary<A> {
     return arbitrary(listOf(aa.gen));
   }
 
+  public static <A> Arbitrary<NonEmptyList<A>> arbNonEmptyList(final Arbitrary<A> aa) {
+    return arbitrary(Gen.listOf1(aa.gen).map(list -> NonEmptyList.fromList(list).some()));
+  }
+
   /**
    * Returns an arbitrary implementation for streams.
    *
@@ -759,6 +763,16 @@ public final class Arbitrary<A> {
         return as.toArray();
       }
     }));
+  }
+
+  /**
+   * Returns an arbitrary implementation for sequences.
+   *
+   * @param aa An arbitrary implementation for the type over which the sequence is defined.
+   * @return An arbitrary implementation for sequences.
+   */
+  public static <A> Arbitrary<Seq<A>> arbSeq(final Arbitrary<A> aa) {
+    return arbitrary(arbArray(aa).gen.map(array -> Seq.seq((A[]) array.array())));
   }
 
   /**

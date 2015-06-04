@@ -124,38 +124,15 @@ public final class Rand {
   /**
    * A standard random generator that uses {@link Random}.
    */
-  public static final Rand standard = new Rand(new F<Option<Long>, F<Integer, F<Integer, Integer>>>() {
-    public F<Integer, F<Integer, Integer>> f(final Option<Long> seed) {
-      return new F<Integer, F<Integer, Integer>>() {
-        public F<Integer, Integer> f(final Integer from) {
-          return new F<Integer, Integer>() {
-            public Integer f(final Integer to) {
-              if(from == to){
-                return from;
-              }else{
-                final int f = min(from, to);
-                final int t = max(from, to);
-                final int x = Math.abs(t - f);
-                return f + seed.map(fr).orSome(new Random()).nextInt(x == Integer.MIN_VALUE ? Integer.MAX_VALUE : x);
-              }
-            }
-          };
-        }
-      };
-    }
-  }, new F<Option<Long>, F<Double, F<Double, Double>>>() {
-    public F<Double, F<Double, Double>> f(final Option<Long> seed) {
-      return new F<Double, F<Double, Double>>() {
-        public F<Double, Double> f(final Double from) {
-          return new F<Double, Double>() {
-            public Double f(final Double to) {
-              final double f = min(from, to);
-              final double t = max(from, to);
-              return seed.map(fr).orSome(new Random()).nextDouble() * (t - f) + f;
-            }
-          };
-        }
-      };
-    }
+  public static final Rand standard = new Rand(seed -> from -> to -> {
+    final int min = min(from, to);
+    final int max = max(from, to);
+    final Random random = seed.map(fr).orSome(new Random());
+    return (int) ((random.nextLong() & Long.MAX_VALUE) % (1L + max - min)) + min;
+  }, seed -> from -> to -> {
+    final double min = min(from, to);
+    final double max = max(from, to);
+    final Random random = seed.map(fr).orSome(new Random());
+    return random.nextDouble() * (max - min) + min;
   });
 }

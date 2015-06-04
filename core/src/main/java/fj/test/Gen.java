@@ -554,15 +554,7 @@ public final class Gen<A> {
    * @return A generator of lists whose values come from the given generator.
    */
   public static <A> Gen<List<A>> listOf(final Gen<A> g, final int x) {
-    return sized(new F<Integer, Gen<List<A>>>() {
-      public Gen<List<A>> f(final Integer size) {
-        return choose(x, size).bind(new F<Integer, Gen<List<A>>>() {
-          public Gen<List<A>> f(final Integer n) {
-            return sequenceN(n, g);
-          }
-        });
-      }
-    });
+    return sized(size -> choose(x, max(x, size)).bind(n -> sequenceN(n, g)));
   }
 
   /**
@@ -576,7 +568,7 @@ public final class Gen<A> {
   }
 
   /**
-   * Returns a generator of lists whose values come from the given generator.
+   * Returns a generator of non empty lists whose values come from the given generator.
    *
    * @param g The generator to produce values from for the returned generator.
    * @return A generator of lists whose values come from the given generator.
