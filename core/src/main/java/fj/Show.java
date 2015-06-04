@@ -393,7 +393,7 @@ public final class Show<A> {
    */
   public static <A> Show<Array<A>> arrayShow(final Show<A> sa) {
     return show(as -> {
-      Stream<Character> b = nil();
+      Stream<Character> b = fromString("Array(");
 
       for (int i = 0; i < as.length(); i++) {
         b = b.append(sa.f.f(as.get(i)));
@@ -402,9 +402,7 @@ public final class Show<A> {
           b = b.append(fromString(","));
       }
 
-      b = b.append(fromString("Array("));
-
-      return fromString(")").append(p(b));
+      return b.append(fromString(")"));
     });
   }
 
