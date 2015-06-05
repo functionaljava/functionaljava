@@ -11,5 +11,5 @@ retrolambda {
 
 dependencies {
 	compile project(":core")
-    testCompile dependencyJunit
+    compile dependencyJunit
 }
