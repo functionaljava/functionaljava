@@ -1,4 +1,4 @@
-package fj.runner;
+package fj.test.runner;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;

@@ -1,9 +1,5 @@
 
-apply plugin: 'application'
 apply plugin: 'me.tatarka.retrolambda'
-
-mainClassName = "fj.demo.euler.Problem2"
-
 
 retrolambda {
     jdk System.getenv("JAVA8_HOME")
@@ -12,7 +8,6 @@ retrolambda {
 }
 
 dependencies {
-	compile project(":core")
 	compile project(":quickcheck")
     testCompile dependencyJunit
 }

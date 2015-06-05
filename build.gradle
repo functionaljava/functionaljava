@@ -85,7 +85,7 @@ subprojects {
 	}
 }
 
-configure(subprojects) {
+configure(subprojects.findAll { it.name != "props-core" }) {
 
     apply plugin: "maven"
     apply plugin: "signing"
