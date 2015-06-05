@@ -5,7 +5,7 @@ import fj.P;
 import fj.P2;
 import fj.data.Option;
 import fj.data.Seq;
-import fj.runner.PropertyTestRunner;
+import fj.test.runner.PropertyTestRunner;
 import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;

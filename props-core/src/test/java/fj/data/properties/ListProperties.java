@@ -1,10 +1,9 @@
 package fj.data.properties;
 
-import fj.Equal;
 import fj.P;
 import fj.P2;
 import fj.data.List;
-import fj.runner.PropertyTestRunner;
+import fj.test.runner.PropertyTestRunner;
 import fj.test.Gen;
 import fj.test.Property;
 import org.junit.runner.RunWith;

@@ -5,7 +5,7 @@ import fj.Ord;
 import fj.P2;
 import fj.data.List;
 import fj.data.NonEmptyList;
-import fj.runner.PropertyTestRunner;
+import fj.test.runner.PropertyTestRunner;
 import fj.test.Property;
 import org.junit.runner.RunWith;
 
