@@ -33,9 +33,10 @@ public final class P {
    */
   public static <A> P1<A> p(final A a) {
     return new P1<A>() {
-      public A _1() {
+      @Override public A _1() {
         return a;
       }
+      @Override public P1<A> memo() { return this; }
     };
   }
 
