@@ -1,6 +1,6 @@
 package fj;
 
-import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 
 import fj.data.Array;
 import fj.data.List;
@@ -216,7 +216,7 @@ public abstract class P1<A> implements F0<A> {
         final P1<A> self = this;
         return new P1<A>() {
           private final Object latch = new Object();
-          private volatile SoftReference<Option<A>> v = null;
+          private volatile WeakReference<Option<A>> v = null;
 
           @Override
           public A _1() {
@@ -226,7 +226,7 @@ public abstract class P1<A> implements F0<A> {
                 o = v != null ? v.get() : null;
                 if (o == null) {
                   o = Option.some(self._1());
-                  v = new SoftReference<>(o);
+                  v = new WeakReference<>(o);
                 }
               }
             }
