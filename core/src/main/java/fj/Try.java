@@ -160,7 +160,7 @@ public class Try {
     }
 
     public static <A> IO<A> io(Try0<A, ? extends IOException> t) {
-        return IOFunctions.io(t);
+        return IOFunctions.fromTry(t);
     }
 
 }

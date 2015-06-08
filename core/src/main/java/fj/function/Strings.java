@@ -2,6 +2,7 @@ package fj.function;
 
 import fj.F;
 import fj.F2;
+import fj.data.List;
 import fj.data.Stream;
 import static fj.Function.curry;
 import static fj.function.Booleans.not;
@@ -16,6 +17,8 @@ public final class Strings {
   private Strings() {
     throw new UnsupportedOperationException();
   }
+
+  public static final String lineSeparator = System.getProperty("line.separator");
 
   /**
    * This function checks if a given String contains any non-whitespace character
@@ -109,5 +112,23 @@ public final class Strings {
       return s2.matches(s1);
     }
   });
+
+  public static List<String> lines(String s) {
+    return List.list(s.split("\\r?\\n"));
+  }
+
+  public static F<String, List<String>> lines() {
+    return s -> lines(s);
+  }
+
+  public static String unlines(List<String> list) {
+    StringBuilder sb = new StringBuilder();
+    list.intersperse(lineSeparator).forEach(s -> sb.append(s));
+    return sb.toString();
+  }
+
+  public static F<List<String>, String> unlines() {
+    return l -> unlines(l);
+  }
 
 }

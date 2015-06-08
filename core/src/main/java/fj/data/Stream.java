@@ -994,7 +994,9 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A string from the given stream of characters.
    */
   public static String asString(final Stream<Character> cs) {
-    return LazyString.fromStream(cs).toString();
+    StringBuilder sb = new StringBuilder();
+    cs.foreachDoEffect(c -> sb.append(c));
+    return sb.toString();
   }
 
   /**
@@ -1039,7 +1041,7 @@ public abstract class Stream<A> implements Iterable<A> {
            Stream.<A>nil() :
            cons(head(), new P1<Stream<A>>() {
              public Stream<A> _1() {
-               return tail()._1().take(n - 1);
+               return n <= 1 ? Stream.<A>nil() : tail()._1().take(n - 1);
              }
            });
   }
@@ -1248,6 +1250,14 @@ public abstract class Stream<A> implements Iterable<A> {
 
   @Override
   public String toString() {
+    return toStringLazy();
+  }
+
+  public String toStringLazy() {
+    return isEmpty() ? "Nil()" : "Cons(" + Show.<A>anyShow().showS(head()) + ", ?)";
+  }
+
+  public String toStringEager() {
     return Show.streamShow(Show.<A>anyShow()).showS(this);
   }
 
