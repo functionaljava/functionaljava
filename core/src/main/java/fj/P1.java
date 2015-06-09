@@ -1,5 +1,7 @@
 package fj;
 
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 import fj.data.Array;
@@ -208,52 +210,92 @@ public abstract class P1<A> implements F0<A> {
       }
 
     /**
-       * Provides a memoising P1 that remembers its value.
-       *
-       * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
-       */
-      public P1<A> memo() {
-        final P1<A> self = this;
-        return new P1<A>() {
-          private final Object latch = new Object();
-          private volatile WeakReference<Option<A>> v = null;
+     * Returns a P1 that remembers its value.
+     *
+     * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
+     */
+    public P1<A> memo() { return new Memo<>(this); }
 
-          @Override
-          public A _1() {
-            Option<A> o = v != null ? v.get() : null;
-            if (o == null) {
-              synchronized (latch) {
-                o = v != null ? v.get() : null;
-                if (o == null) {
-                  o = Option.some(self._1());
-                  v = new WeakReference<>(o);
-                }
-              }
-            }
-            return o.some();
-          }
+    /**
+     * Like <code>memo</code>, but the memoized value is wrapped into a <code>WeakReference</code>
+     */
+    public P1<A> weakMemo() { return new WeakReferenceMemo<>(this); }
 
-          @Override
-          public P1<A> memo() {
-              return this;
-          }
-
-        };
-      }
+    /**
+     * Like <code>memo</code>, but the memoized value is wrapped into a <code>SoftReference</code>
+     */
+    public P1<A> softMemo() { return new SoftReferenceMemo<>(this); }
 
     static <A> P1<A> memo(F<Unit, A> f) {
         return P.lazy(f).memo();
     }
 
-    /**
-       * Returns a constant function that always uses this value.
-       *
-       * @return A constant function that always uses this value. 
-       */
-      public <B> F<B, A> constant() {
+    static class Memo<A> extends P1<A> {
+      private final P1<A> self;
+      private volatile boolean initialized;
+      private A value;
 
-        return b -> P1.this._1();
+      Memo(P1<A> self) { this.self = self; }
+
+      @Override public A _1() {
+        if (!initialized) {
+          synchronized (this) {
+            if (!initialized) {
+              A a = self._1();
+              value = a;
+              initialized = true;
+              return a;
+            }
+          }
+        }
+        return value;
       }
+
+      @Override public P1<A> memo() { return this; }
+    }
+
+    abstract static class ReferenceMemo<A> extends P1<A> {
+      private final P1<A> self;
+      private final Object latch = new Object();
+      private volatile Reference<Option<A>> v = null;
+
+      ReferenceMemo(final P1<A> self) { this.self = self; }
+
+      @Override public A _1() {
+        Option<A> o = v != null ? v.get() : null;
+        if (o == null) {
+          synchronized (latch) {
+            o = v != null ? v.get() : null;
+            if (o == null) {
+              o = Option.some(self._1());
+              v = newReference(o);
+            }
+          }
+        }
+        return o.some();
+      }
+
+      abstract Reference<Option<A>> newReference(Option<A> o);
+    }
+
+    static class WeakReferenceMemo<A> extends ReferenceMemo<A> {
+      WeakReferenceMemo(P1<A> self) { super(self); }
+      @Override Reference<Option<A>> newReference(final Option<A> o) { return new WeakReference<>(o); }
+      @Override public P1<A> weakMemo() { return this; }
+    }
+
+    static class SoftReferenceMemo<A> extends ReferenceMemo<A> {
+      SoftReferenceMemo(P1<A> self) { super(self); }
+      @Override Reference<Option<A>> newReference(final Option<A> o) { return new SoftReference<>(o); }
+      @Override public P1<A> softMemo() { return this; }
+    }
+
+    /**
+     * Returns a constant function that always uses this value.
+     *
+     * @return A constant function that always uses this value.
+     */
+    public <B> F<B, A> constant() { return Function.constant(_1()); }
 
     @Override
     public String toString() {
