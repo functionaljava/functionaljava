@@ -1,8 +1,10 @@
 package fj.data.properties;
 
+import fj.Ord;
 import fj.P;
 import fj.P2;
 import fj.data.List;
+import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
 import fj.test.Gen;
 import fj.test.Property;
@@ -18,6 +20,7 @@ import static fj.Equal.intEqual;
  * Created by Zheka Kozlov on 02.06.2015.
  */
 @RunWith(PropertyTestRunner.class)
+@CheckParams(maxSize = 10000)
 public class ListProperties {
 
   public Property isPrefixOf() {
@@ -52,5 +55,15 @@ public class ListProperties {
   public Property isSuffixOfDifferentHeads() {
     return property(arbList(arbInteger), arbList(arbInteger), arbInteger, arbInteger, (list1, list2, h1, h2) ->
       implies(intEqual.notEq(h1, h2), () -> prop(!list1.snoc(h1).isSuffixOf(intEqual, list2.snoc(h2)))));
+  }
+
+  public Property listOrdEqual() {
+    return property(arbList(arbInteger), list -> prop(Ord.listOrd(Ord.intOrd).equal().eq(list, list)));
+  }
+
+  public Property listOrdReverse() {
+    final Ord<List<Integer>> ord = Ord.listOrd(Ord.intOrd);
+    return property(arbList(arbInteger), arbList(arbInteger), (list1, list2) ->
+      prop(ord.compare(list1, list2) == ord.reverse().compare(list1, list2).reverse()));
   }
 }

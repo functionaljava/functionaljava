@@ -273,7 +273,7 @@ public final class Check {
           ctor.setAccessible(true);
           return ctor.newInstance();
         } catch(Exception e) {
-          throw error(e.toString());
+          throw new Error(e.getMessage(), e);
         }
       }
     });
@@ -324,7 +324,7 @@ public final class Check {
           final String name = fromNull(m.element().getAnnotation(Name.class)).map(nameS).orSome(m.name());
           return p(m.invoke(t.orSome(P.<T>p(null))), name, params);
         } catch(Exception e) {
-          throw error(e.toString());
+          throw new Error(e.getMessage(), e);
         }
       }
     });

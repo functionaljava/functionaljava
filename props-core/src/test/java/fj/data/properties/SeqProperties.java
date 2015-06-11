@@ -5,6 +5,7 @@ import fj.P;
 import fj.P2;
 import fj.data.Option;
 import fj.data.Seq;
+import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
 import fj.test.Arbitrary;
 import fj.test.Gen;
@@ -24,6 +25,7 @@ import static fj.test.Property.property;
  * Created by Zheka Kozlov on 01.06.2015.
  */
 @RunWith(PropertyTestRunner.class)
+@CheckParams(maxSize = 10000)
 public class SeqProperties {
 
   public Property consHead() {

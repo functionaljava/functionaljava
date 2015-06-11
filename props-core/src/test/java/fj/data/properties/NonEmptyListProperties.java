@@ -5,6 +5,7 @@ import fj.Ord;
 import fj.P2;
 import fj.data.List;
 import fj.data.NonEmptyList;
+import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
 import fj.test.Property;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import static java.lang.Math.min;
  * Created by Zheka Kozlov on 02.06.2015.
  */
 @RunWith(PropertyTestRunner.class)
+@CheckParams(maxSize = 10000)
 public class NonEmptyListProperties {
 
   private static final Equal<NonEmptyList<Integer>> eq = nonEmptyListEqual(intEqual);

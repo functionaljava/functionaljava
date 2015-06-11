@@ -157,6 +157,8 @@ public final class Ord<A> {
    */
   public final F<A, F<A, A>> min = curry((a, a1) -> min(a, a1));
 
+  public final Ord<A> reverse() { return ord(Function.flip(f)); }
+
   /**
    * Returns an order instance that uses the given equality test and ordering function.
    *
@@ -343,14 +345,25 @@ public final class Ord<A> {
    */
   public static <A> Ord<List<A>> listOrd(final Ord<A> oa) {
     return ord(l1 -> l2 -> {
-        if (l1.isEmpty())
-            return l2.isEmpty() ? Ordering.EQ : Ordering.LT;
-        else if (l2.isEmpty())
-            return l1.isEmpty() ? Ordering.EQ : Ordering.GT;
-        else {
-            final Ordering c = oa.compare(l1.head(), l2.head());
-            return c == Ordering.EQ ? listOrd(oa).f.f(l1.tail()).f(l2.tail()) : c;
+      List<A> x1 = l1;
+      List<A> x2 = l2;
+
+      while (x1.isNotEmpty() && x2.isNotEmpty()) {
+        final Ordering o = oa.compare(x1.head(), x2.head());
+        if (o == Ordering.LT || o == Ordering.GT) {
+          return o;
         }
+        x1 = x1.tail();
+        x2 = x2.tail();
+      }
+
+      if (x1.isEmpty() && x2.isEmpty()) {
+        return Ordering.EQ;
+      } else if (x1.isEmpty()) {
+        return Ordering.LT;
+      } else {
+        return Ordering.GT;
+      }
     });
   }
 

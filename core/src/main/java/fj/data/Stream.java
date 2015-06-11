@@ -1233,7 +1233,10 @@ public abstract class Stream<A> implements Iterable<A> {
    *         <code>false</code> otherwise.
    */
   public final boolean forall(final F<A, Boolean> f) {
-    return isEmpty() || f.f(head()) && tail()._1().forall(f);
+    for (final A a : this) {
+      if (!f.f(a)) return false;
+    }
+    return true;
   }
 
   @Override
