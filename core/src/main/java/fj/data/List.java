@@ -624,7 +624,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that has appended the given list.
    */
   public final List<A> append(final List<A> as) {
-    return fromList(this).append(as).toList();
+    return Buffer.fromList(this).prependToList(as);
   }
 
   /**
@@ -1787,7 +1787,7 @@ public abstract class List<A> implements Iterable<A> {
      * Appends (snoc) the given element to this buffer to produce a new buffer.
      *
      * @param a The element to append to this buffer.
-     * @return A new buffer with the given element appended.
+     * @return This buffer.
      */
     public Buffer<A> snoc(final A a) {
       if (exported)
@@ -1806,10 +1806,10 @@ public abstract class List<A> implements Iterable<A> {
     }
 
     /**
-     * Appends the given buffer to this buffer.
+     * Appends the given list to this buffer.
      *
-     * @param as The buffer to append to this one.
-     * @return A new buffer that has appended the given buffer.
+     * @param as The list to append to this buffer.
+     * @return This buffer.
      */
     public Buffer<A> append(final List<A> as) {
       for (List<A> xs = as; xs.isNotEmpty(); xs = xs.tail())
@@ -1817,6 +1817,28 @@ public abstract class List<A> implements Iterable<A> {
 
       return this;
     }
+
+    /**
+     * Prepends the elements of this buffer to the given list.
+     *
+     * @param as the list to which elements are prepended.
+     */
+    public List<A> prependToList(final List<A> as) {
+      if (isEmpty()) {
+        return as;
+      } else {
+        if (exported)
+          copy();
+
+        tail.tail(as);
+        return toList();
+      }
+    }
+
+    /**
+     * Returns <code>true</code> if this buffer is empty, <code>false</code> otherwise.
+     */
+    public boolean isEmpty() { return start.isEmpty(); }
 
     /**
      * Returns an immutable list projection of this buffer. Modifications to the underlying buffer
