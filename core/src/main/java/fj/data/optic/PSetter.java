@@ -1,6 +1,7 @@
 package fj.data.optic;
 
 import fj.F;
+import fj.Function;
 import fj.data.Either;
 
 /**
@@ -96,7 +97,7 @@ public abstract class PSetter<S, T, A, B> {
 
       @Override
       public F<S, T> set(final B b) {
-        return modify(__ -> b);
+        return modify.f(Function.constant(b));
       }
     };
   }

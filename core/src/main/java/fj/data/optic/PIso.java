@@ -126,7 +126,7 @@ public abstract class PIso<S, T, A, B> {
 
   /** set polymorphically the target of a {@link PIso} with a value */
   public final F<S, T> set(final B b) {
-    return __ -> reverseGet(b);
+    return Function.constant(reverseGet(b));
   }
 
   /** pair two disjoint {@link PIso} */

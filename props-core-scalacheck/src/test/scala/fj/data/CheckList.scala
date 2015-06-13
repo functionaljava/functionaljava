@@ -2,16 +2,20 @@ package fj
 package data
 
 import java.lang
-
 import fj.Monoid
 import org.scalacheck.Prop._
-import ArbitraryList.arbitraryList
-import ArbitraryP.arbitraryP1
+import ArbitraryList._
+import ArbitraryP._
+import ArbitraryUnit._
 import Equal.{listEqual, stringEqual, p2Equal}
 import P.p
 import Unit.unit
 import List.{nil, single, join, iterateWhile}
 import org.scalacheck.Properties
+import fj.data.optic.PrismLaws
+import fj.data.optic.OptionalLaws
+import fj.data.optic.TraversalLaws
+import fj.data.optic.Traversal
 
 object CheckList extends Properties("List") {
   property("isEmpty") = forAll((a: List[Int]) =>
@@ -200,8 +204,19 @@ object CheckList extends Properties("List") {
         map((x: Int) => x:lang.Integer).
         foldLeft(Function.uncurryF2[lang.Integer, lang.Integer, lang.Integer](Monoid.intAdditionMonoid.sum), Monoid.intAdditionMonoid.zero()): lang.Boolean)
   })
-
-
+  
+  
+  property("_nil") = PrismLaws[List[String], Unit](List._nil())
+  
+  property("_cons") = PrismLaws[List[String], P2[String, List[String]]](List._cons())
+  
+  property("_head") = OptionalLaws[List[String], String](List._head())
+  
+  property("_tail") = OptionalLaws[List[String], List[String]](List._tail())
+  
+  property("_traversal") = TraversalLaws[List[String], String](List._traversal())
+  
+  
   /*property("iterateWhile") = forAll((n: Int) => n > 0 ==>
     (iterateWhile(((x:Int) => x - 1), ((x:Int) => ((x > 0): java.lang.Boolean)), n).length == n))*/
 }

@@ -1,16 +1,21 @@
 package fj.data.optic;
 
 import fj.F;
+import fj.Function;
+import fj.P;
 import fj.P1;
 import fj.P2;
 import fj.control.Trampoline;
 import fj.control.parallel.Promise;
+import fj.control.parallel.Strategy;
 import fj.data.Either;
 import fj.data.IO;
+import fj.data.IOFunctions;
 import fj.data.List;
 import fj.data.Option;
 import fj.data.Stream;
 import fj.data.Validation;
+import fj.data.vector.V;
 import fj.data.vector.V2;
 
 /** {@link POptional} restricted to monomorphic update */
@@ -166,9 +171,118 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
     return new Optional<>(POptional.pId());
   }
 
-  /** create a {@link Optional} using the canonical functions: getOrModify and set */
-  public static final <S, A> Optional<S, A> optional(final F<S, Either<S, A>> getOrModify, final F<A, F<S, S>> set) {
-    return new Optional<>(POptional.pOptional(getOrModify, set));
+  public static final <S, A> Optional<S, A> optional(final F<S, Option<A>> getOption, final F<A, F<S, S>> set) {
+    return new Optional<>(new POptional<S, S, A, A>() {
+
+      @Override
+      public Either<S, A> getOrModify(final S s) {
+        return getOption.f(s).option(Either.left(s), Either.<S, A> right_());
+      }
+
+      @Override
+      public F<S, S> set(final A a) {
+        return set.f(a);
+      }
+
+      @Override
+      public Option<A> getOption(final S s) {
+        return getOption.f(s);
+      }
+
+      @Override
+      public <C> F<S, F<C, S>> modifyFunctionF(final F<A, F<C, A>> f) {
+        return s -> getOption.f(s).<F<C, S>> option(
+            (C __) -> s,
+            a -> Function.compose(b -> set.f(b).f(s), f.f(a))
+            );
+      }
+
+      @Override
+      public <L> F<S, Either<L, S>> modifyEitherF(final F<A, Either<L, A>> f) {
+        return s -> getOption.f(s).<Either<L, S>> option(
+            Either.right(s),
+            t -> f.f(t).right().map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, IO<S>> modifyIOF(final F<A, IO<A>> f) {
+        return s -> getOption.f(s).option(
+            IOFunctions.unit(s),
+            a -> IOFunctions.<A, S> map(f.f(a), b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, Trampoline<S>> modifyTrampolineF(final F<A, Trampoline<A>> f) {
+        return s -> getOption.f(s).option(
+            Trampoline.pure(s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, Promise<S>> modifyPromiseF(final F<A, Promise<A>> f) {
+        return s -> getOption.f(s).<Promise<S>> option(
+            () -> Promise.promise(Strategy.idStrategy(), P.p(s)),
+            t -> f.f(t).fmap(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, List<S>> modifyListF(final F<A, List<A>> f) {
+        return s -> getOption.f(s).<List<S>> option(
+            () -> List.single(s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, Option<S>> modifyOptionF(final F<A, Option<A>> f) {
+        return s -> getOption.f(s).option(
+            Option.some(s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, Stream<S>> modifyStreamF(final F<A, Stream<A>> f) {
+        return s -> getOption.f(s).<Stream<S>> option(
+            () -> Stream.single(s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, P1<S>> modifyP1F(final F<A, P1<A>> f) {
+        return s -> getOption.f(s).<P1<S>> option(
+            P.p(s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public <E> F<S, Validation<E, S>> modifyValidationF(final F<A, Validation<E, A>> f) {
+        return s -> getOption.f(s).<Validation<E, S>> option(
+            () -> Validation.<E, S> success(s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, V2<S>> modifyV2F(final F<A, V2<A>> f) {
+        return s -> getOption.f(s).<V2<S>> option(
+            () -> V.v(s, s),
+            t -> f.f(t).map(b -> set.f(b).f(s))
+            );
+      }
+
+      @Override
+      public F<S, S> modify(final F<A, A> f) {
+        return s -> getOption.f(s).option(s, a -> set.f(f.f(a)).f(s));
+      }
+
+    });
   }
 
 }

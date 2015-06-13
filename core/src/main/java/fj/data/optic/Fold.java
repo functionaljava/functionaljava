@@ -44,7 +44,7 @@ public abstract class Fold<S, A> {
 
   /** get the first target of a {@link Fold} */
   public final Option<A> headOption(final S s) {
-    return find(__ -> true).f(s);
+    return find(Function.constant(Boolean.TRUE)).f(s);
   }
 
   /** check if at least one target satisfies the predicate */
