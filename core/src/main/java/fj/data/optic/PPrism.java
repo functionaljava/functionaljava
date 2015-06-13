@@ -151,12 +151,12 @@ public abstract class PPrism<S, T, A, B> {
 
   /** set polymorphically the target of a {@link PPrism} with a value */
   public final F<S, T> set(final B b) {
-    return modify(__ -> b);
+    return modify(Function.constant(b));
   }
 
   /** set polymorphically the target of a {@link PPrism} with a value. return empty if the {@link PPrism} is not matching */
   public final F<S, Option<T>> setOption(final B b) {
-    return modifyOption(__ -> b);
+    return modifyOption(Function.constant(b));
   }
 
   /** check if a {@link PPrism} has a target */

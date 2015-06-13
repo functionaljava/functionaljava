@@ -440,7 +440,7 @@ public abstract class PLens<S, T, A, B> {
 
       @Override
       public <C> F<S, F<C, T>> modifyFunctionF(final F<A, F<C, B>> f) {
-        return s -> Function.compose(b -> set.f(b).f(s), f.f(get(s)));
+        return s -> Function.compose(b -> set.f(b).f(s), f.f(get.f(s)));
       }
 
       @Override
@@ -495,7 +495,7 @@ public abstract class PLens<S, T, A, B> {
 
       @Override
       public F<S, T> modify(final F<A, B> f) {
-        return s -> set(f.f(get.f(s))).f(s);
+        return s -> set.f(f.f(get.f(s))).f(s);
       }
     };
   }

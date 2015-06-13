@@ -90,9 +90,24 @@ public final class Prism<S, A> extends PPrism<S, S, A, A> {
     return new Prism<>(PPrism.pId());
   }
 
-  /** create a {@link Prism} using the canonical functions: getOrModify and reverseGet */
-  public static <S, A> Prism<S, A> prism(final F<S, Either<S, A>> getOrModify, final F<A, S> reverseGet) {
-    return new Prism<>(PPrism.pPrism(getOrModify, reverseGet));
+  public static <S, A> Prism<S, A> prism(final F<S, Option<A>> getOption, final F<A, S> reverseGet) {
+    return new Prism<>(new PPrism<S, S, A, A>() {
+
+      @Override
+      public Either<S, A> getOrModify(final S s) {
+        return getOption.f(s).option(Either.left(s), Either.<S, A> right_());
+      }
+
+      @Override
+      public S reverseGet(final A a) {
+        return reverseGet.f(a);
+      }
+
+      @Override
+      public Option<A> getOption(final S s) {
+        return getOption.f(s);
+      }
+    });
   }
 
 }
