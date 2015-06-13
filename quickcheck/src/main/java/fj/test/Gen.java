@@ -337,15 +337,7 @@ public final class Gen<A> {
    * @return A generator of lists after sequencing the given generators.
    */
   public static <A> Gen<List<A>> sequence(final List<Gen<A>> gs) {
-    return gs.foldRight(new F<Gen<A>, F<Gen<List<A>>, Gen<List<A>>>>() {
-      public F<Gen<List<A>>, Gen<List<A>>> f(final Gen<A> ga) {
-        return new F<Gen<List<A>>, Gen<List<A>>>() {
-          public Gen<List<A>> f(final Gen<List<A>> gas) {
-            return ga.bind(gas, List.<A>cons());
-          }
-        };
-      }
-    }, value(List.<A>nil()));
+    return gen(i -> r -> gs.map(g -> g.gen(i, r)));
   }
 
   /**

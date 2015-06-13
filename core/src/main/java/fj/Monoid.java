@@ -90,6 +90,18 @@ public final class Monoid<A> {
   }
 
   /**
+   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
+   * @param n multiplier
+   * @param a the value to multiply
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   */
+  public A multiply(final int n, final A a) {
+    A m = zero();
+    for (int i = 0; i < n; i++) { m = sum(m, a); }
+    return m;
+  }
+
+  /**
    * Sums the given values with right-fold.
    *
    * @param as The values to sum.

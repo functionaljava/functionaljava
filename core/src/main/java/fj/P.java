@@ -37,6 +37,8 @@ public final class P {
         return a;
       }
       @Override public P1<A> memo() { return this; }
+      @Override public P1<A> weakMemo() { return this; }
+      @Override public P1<A> softMemo() { return this; }
     };
   }
 

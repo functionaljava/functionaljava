@@ -15,10 +15,8 @@ import fj.P1;
 import fj.P2;
 import fj.Show;
 import fj.Unit;
-import static fj.Function.curry;
-import static fj.Function.constant;
-import static fj.Function.identity;
-import static fj.Function.compose;
+
+import static fj.Function.*;
 import static fj.P.p;
 import static fj.P.p2;
 import static fj.Unit.unit;
@@ -169,9 +167,10 @@ public abstract class List<A> implements Iterable<A> {
    */
   @SuppressWarnings({"unchecked"})
   public final Array<A> toArray() {
-    final Object[] a = new Object[length()];
+    final int length = length();
+    final Object[] a = new Object[length];
     List<A> x = this;
-    for (int i = 0; i < length(); i++) {
+    for (int i = 0; i < length; i++) {
       a[i] = x.head();
       x = x.tail();
     }
@@ -625,18 +624,18 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that has appended the given list.
    */
   public final List<A> append(final List<A> as) {
-    return fromList(this).append(as).toList();
+    return Buffer.fromList(this).prependToList(as);
   }
 
   /**
-   * Performs a right-fold reduction across this list. This function uses O(length) stack space.
+   * Performs a right-fold reduction across this list.
    *
    * @param f The function to apply on each element of the list.
    * @param b The beginning value to start the application from.
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F<A, F<B, B>> f, final B b) {
-    return isEmpty() ? b : f.f(head()).f(tail().foldRight(f, b));
+    return reverse().foldLeft(flip(f), b);
   }
 
   /**
@@ -1581,7 +1580,9 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of the given value replicated the given number of times.
    */
   public static <A> List<A> replicate(final int n, final A a) {
-    return n <= 0 ? List.<A>nil() : replicate(n - 1, a).cons(a);
+    List<A> list = List.nil();
+    for (int i = 0; i < n; i++) { list = list.cons(a); }
+    return list;
   }
 
   /**
@@ -1786,7 +1787,7 @@ public abstract class List<A> implements Iterable<A> {
      * Appends (snoc) the given element to this buffer to produce a new buffer.
      *
      * @param a The element to append to this buffer.
-     * @return A new buffer with the given element appended.
+     * @return This buffer.
      */
     public Buffer<A> snoc(final A a) {
       if (exported)
@@ -1805,10 +1806,10 @@ public abstract class List<A> implements Iterable<A> {
     }
 
     /**
-     * Appends the given buffer to this buffer.
+     * Appends the given list to this buffer.
      *
-     * @param as The buffer to append to this one.
-     * @return A new buffer that has appended the given buffer.
+     * @param as The list to append to this buffer.
+     * @return This buffer.
      */
     public Buffer<A> append(final List<A> as) {
       for (List<A> xs = as; xs.isNotEmpty(); xs = xs.tail())
@@ -1816,6 +1817,28 @@ public abstract class List<A> implements Iterable<A> {
 
       return this;
     }
+
+    /**
+     * Prepends the elements of this buffer to the given list.
+     *
+     * @param as the list to which elements are prepended.
+     */
+    public List<A> prependToList(final List<A> as) {
+      if (isEmpty()) {
+        return as;
+      } else {
+        if (exported)
+          copy();
+
+        tail.tail(as);
+        return toList();
+      }
+    }
+
+    /**
+     * Returns <code>true</code> if this buffer is empty, <code>false</code> otherwise.
+     */
+    public boolean isEmpty() { return start.isEmpty(); }
 
     /**
      * Returns an immutable list projection of this buffer. Modifications to the underlying buffer
