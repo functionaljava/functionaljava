@@ -172,6 +172,8 @@ public class IOFunctions {
         };
     }
 
+    public static final IO<Unit> ioUnit = unit(Unit.unit());
+
     public static final <A> IO<A> lazy(final F0<A> p) {
         return fromF(p);
     }
@@ -402,6 +404,18 @@ public class IOFunctions {
 
     public static <A, B> IO<B> flatMap(final IO<A> io, final F<A, IO<B>> f) {
         return bind(io, f);
+    }
+
+    /**
+     * Read lines from stdin until condition is not met, transforming each line and printing
+     * the result to stdout.
+     * @param condition Read lines until a line does not satisfy condition
+     * @param transform Function to change line value
+     */
+    public static IO<Unit> interactWhile(F<String, Boolean> condition, F<String, String> transform) {
+        Stream<IO<String>> s1 = Stream.repeat(IOFunctions.stdinReadLine());
+        IO<Stream<String>> io = sequenceWhile(s1, condition);
+        return () -> runSafe(io).foreach(s -> runSafe(stdoutPrintln(transform.f(s))));
     }
 
     public static <A> IO<Stream<A>> sequenceWhileEager(final Stream<IO<A>> stream, final F<A, Boolean> f) {

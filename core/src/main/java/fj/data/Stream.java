@@ -365,7 +365,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static <A, B> F<B, Stream<A>> sequence_(final Stream<F<B, A>> fs) {
     return fs.foldRight((baf, p1) -> Function.bind(baf, p1._1(), Function.curry((a, stream) -> cons(a, p(stream)))), Function
-        .<B, Stream<A>>constant(Stream.<A>nil()));
+            .<B, Stream<A>>constant(Stream.<A>nil()));
   }
 
   /**
@@ -525,6 +525,36 @@ public abstract class Stream<A> implements Iterable<A> {
   public final <B> Stream<B> sequence(final Stream<B> bs) {
     final F<A, Stream<B>> c = constant(bs);
     return bind(c);
+  }
+
+  /**
+   * Sequence through the Stream monad.
+   *
+   * @param io The IO stream to sequence.
+   * @return The stream of IOs after sequencing.
+   */
+  public static <A> Stream<IO<A>> sequence(final IO<Stream<A>> io) {
+    return IOFunctions.runSafe(io).map(a -> IOFunctions.unit(a));
+  }
+
+  /**
+   * Sequence through the Stream monad.
+   *
+   * @param p The lazy stream to sequence.
+   * @return The stream of (pre-calculated) lazy values after sequencing.
+   */
+  public static <A> Stream<P1<A>> sequence(final P1<Stream<A>> p) {
+    return p._1().map(a -> P.p(a));
+  }
+
+  /**
+   * Sequence through the Stream monad.
+   *
+   * @param o The optional stream to sequence.
+   * @return The stream of options after sequencing.
+   */
+  public static <A> Stream<Option<A>> sequence(final Option<Stream<A>> o) {
+    return o.isNone() ? Stream.nil() : o.some().map(a -> Option.some(a));
   }
 
   /**
@@ -1080,6 +1110,28 @@ public abstract class Stream<A> implements Iterable<A> {
              }
            }) :
            Stream.<A>nil();
+  }
+
+  /**
+   * Traversable instance of Stream for IO.
+   *
+   * @return traversed value
+   */
+  public final <B> IO<Stream<B>> traverseIO(F<A, IO<B>> f) {
+    return this.foldRight1((a, acc) ->
+            IOFunctions.bind(acc, (Stream<B> bs) ->
+                    IOFunctions.map(f.f(a), b ->
+                            bs.cons(b))), IOFunctions.unit(Stream.<B>nil()));
+
+  }
+
+  /**
+   * Traversable instance of Stream for Option.
+   *
+   * @return traversed value
+   */
+  public final <B> Option<Stream<B>> traverseOption(F<A, Option<B>> f) {
+    return this.foldRight1((a, acc) -> acc.bind(bs -> f.f(a).map(b -> bs.cons(b))), some(Stream.<B>nil()));
   }
 
   /**
