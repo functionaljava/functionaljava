@@ -422,6 +422,14 @@ public final class Show<A> {
    * @return A show instance for the {@link P1 tuple-1} type.
    */
   public static <A> Show<P1<A>> p1Show(final Show<A> sa) {
+    return p1ShowLazy(sa);
+  }
+
+  public static <A> Show<P1<A>> p1ShowLazy(final Show<A> sa) {
+    return show(p -> Stream.fromString("(?)"));
+  }
+
+  public static <A> Show<P1<A>> p1ShowEager(final Show<A> sa) {
     return show(p -> cons('(', p(sa.show(p._1()))).snoc(')'));
   }
 

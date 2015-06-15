@@ -104,10 +104,23 @@ public final class LazyString implements CharSequence {
    *
    * @return The String representation of this lazy string.
    */
-  public String toString() {
+  public String toStringEager() {
     final StringBuilder builder = new StringBuilder(length() + 16);
     s.foreachDoEffect(c -> builder.append(c.charValue()));
     return builder.toString();
+  }
+
+  public String toStringLazy() {
+    return s.isEmpty() ? "" : "LazyString(" + Show.charShow.showS(s.head()) + ", ?)";
+  }
+
+  @Override
+  public String toString() {
+    return toStringLazy();
+  }
+
+  public String eval() {
+    return toStringEager();
   }
 
   /**
@@ -253,6 +266,14 @@ public final class LazyString implements CharSequence {
                             });
   }
 
+  public LazyString map(F<Character, Character> f) {
+    return fromStream(s.map(f));
+  }
+
+  public LazyString bind(F<Character, LazyString> f) {
+    return fromStream(s.bind(c -> f.f(c).toStream()));
+  }
+
   /**
    * Splits this lazy string by the given delimiter character.
    *
@@ -281,6 +302,10 @@ public final class LazyString implements CharSequence {
     return split('\n');
   }
 
+  public static F<LazyString, Stream<LazyString>> lines_() {
+    return LazyString::lines;
+  }
+
   /**
    * Joins the given stream of lazy strings into one, separated by newlines.
    *
@@ -289,6 +314,10 @@ public final class LazyString implements CharSequence {
    */
   public static LazyString unlines(final Stream<LazyString> str) {
     return fromStream(join(str.intersperse(str("\n")).map(toStream)));
+  }
+
+  public static F<Stream<LazyString>, LazyString> unlines_() {
+    return LazyString::unlines;
   }
 
   /**
@@ -305,19 +334,19 @@ public final class LazyString implements CharSequence {
    * First-class conversion from lazy strings to streams.
    */
   public static final F<LazyString, Stream<Character>> toStream =
-          string -> string.toStream();
+          LazyString::toStream;
 
   /**
    * First-class conversion from lazy strings to String.
    */
   public static final F<LazyString, String> toString =
-          string -> string.toString();
+          LazyString::toString;
 
   /**
    * First-class conversion from character streams to lazy strings.
    */
   public static final F<Stream<Character>, LazyString> fromStream =
-          s -> fromStream(s);
+          LazyString::fromStream;
 
   private static final Equal<Stream<Character>> eqS = streamEqual(charEqual);
 
