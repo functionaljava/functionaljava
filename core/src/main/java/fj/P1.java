@@ -209,12 +209,16 @@ public abstract class P1<A> implements F0<A> {
         return P.lazy(() -> f.f(self._1()));
       }
 
+    public P1<A> memo() {
+        return softMemo();
+    }
+
     /**
      * Returns a P1 that remembers its value.
      *
      * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
      */
-    public P1<A> memo() { return new Memo<>(this); }
+    public P1<A> hardMemo() { return new Memo<>(this); }
 
     /**
      * Like <code>memo</code>, but the memoized value is wrapped into a <code>WeakReference</code>

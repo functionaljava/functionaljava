@@ -1495,7 +1495,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
     Cons(final A head, final P1<Stream<A>> tail) {
       this.head = head;
-      this.tail = tail.weakMemo();
+      this.tail = tail.memo();
     }
 
     public A head() {
