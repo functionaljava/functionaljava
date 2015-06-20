@@ -43,6 +43,7 @@ allprojects {
         fjConsumeVersion = "4.3"
 
         signModule = false
+        useRetroLambda = true
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
@@ -61,6 +62,7 @@ allprojects {
         primaryEmail = "functionaljava@googlegroups.com"
 
         dependencyJunit = "junit:junit:4.11"
+
     }
 
 	version = fjVersion

@@ -1,5 +1,8 @@
 
-apply plugin: 'me.tatarka.retrolambda'
+if (useRetroLambda) {
+    apply plugin: 'me.tatarka.retrolambda'
+}
+
 
 ext {
     signModule = true
@@ -16,8 +19,10 @@ configureUpload(signingEnabled, signModule)
 
 uploadArchives.enabled = true
 
-retrolambda {
-    jdk System.getenv("JAVA8_HOME")
-    oldJdk System.getenv("JAVA7_HOME")
-    javaVersion JavaVersion.VERSION_1_7
+if (useRetroLambda) {
+    retrolambda {
+        jdk System.getenv("JAVA8_HOME")
+        oldJdk System.getenv("JAVA7_HOME")
+        javaVersion JavaVersion.VERSION_1_7
+    }
 }

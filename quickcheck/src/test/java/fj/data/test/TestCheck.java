@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 public class TestCheck {
 
-	@Test(timeout=1000 /*ms*/)
+	@Test(timeout=5000 /*ms*/)
 	public void testExceptionsThrownFromGeneratorsArePropagated() {
 		Gen<Integer> failingGen = Gen.<Integer>value(0).map((i) -> {
 			throw new RuntimeException("test failure");

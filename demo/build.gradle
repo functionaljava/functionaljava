@@ -1,14 +1,18 @@
 
 apply plugin: 'application'
-apply plugin: 'me.tatarka.retrolambda'
+
+if (useRetroLambda) {
+    apply plugin: 'me.tatarka.retrolambda'
+}
 
 mainClassName = "fj.demo.euler.Problem2"
 
-
-retrolambda {
-    jdk System.getenv("JAVA8_HOME")
-    oldJdk System.getenv("JAVA7_HOME")
-    javaVersion JavaVersion.VERSION_1_7
+if (useRetroLambda) {
+    retrolambda {
+        jdk System.getenv("JAVA8_HOME")
+        oldJdk System.getenv("JAVA7_HOME")
+        javaVersion JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
