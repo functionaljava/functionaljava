@@ -210,7 +210,7 @@ public abstract class P1<A> implements F0<A> {
       }
 
     public P1<A> memo() {
-        return softMemo();
+        return weakMemo();
     }
 
     /**
