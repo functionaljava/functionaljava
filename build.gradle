@@ -43,7 +43,7 @@ allprojects {
         fjConsumeVersion = "4.3"
 
         signModule = false
-        useRetroLambda = false
+        useRetroLambda = true
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
