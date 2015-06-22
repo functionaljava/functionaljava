@@ -190,6 +190,15 @@ public final class Seq<A> implements Iterable<A> {
   }
 
   /**
+   * Checks if this sequence is not empty.
+   *
+   * @return True if this sequence is not empty, otherwise false.
+   */
+  public boolean isNotEmpty() {
+    return !ftree.isEmpty();
+  }
+
+  /**
    * Returns the number of elements in this sequence.
    *
    * @return the number of elements in this sequence.

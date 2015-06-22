@@ -3,6 +3,7 @@ package fj.data.properties;
 
 import fj.P;
 import fj.P2;
+import fj.data.Array;
 import fj.data.Option;
 import fj.data.Seq;
 import fj.test.reflect.CheckParams;
@@ -17,16 +18,18 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.test.Arbitrary.arbInteger;
 import static fj.test.Arbitrary.arbSeq;
+import static fj.test.Arbitrary.arbitrary;
 import static fj.test.Property.implies;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
-/**
- * Created by Zheka Kozlov on 01.06.2015.
- */
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 10000)
 public class SeqProperties {
+
+  private static final Arbitrary<P2<Seq<Integer>, Integer>> arbSeqWithIndex = arbitrary(arbSeq(arbInteger).gen
+    .filter(Seq::isNotEmpty)
+    .bind(seq -> Gen.choose(0, seq.length() - 1).map(i -> P.p(seq, i))));
 
   public Property consHead() {
     return property(arbSeq(arbInteger), arbInteger, (seq, n) -> prop(seq.cons(n).head().equals(n)));
@@ -91,30 +94,22 @@ public class SeqProperties {
     return property(arbSeq(arbInteger), seq -> prop(seq.map(identity()).equals(seq)));
   }
 
+  @CheckParams(minSize = 1)
   public Property updateAndIndex() {
-    final Gen<P2<Seq<Integer>, Option<Integer>>> gen = arbSeq(arbInteger).gen.bind(seq -> {
-      if (seq.isEmpty()) {
-        return Gen.value(P.p(seq, none()));
-      } else {
-        return Gen.choose(0, seq.length() - 1).map(i -> P.p(seq, some(i)));
-      }
+    return property(arbSeqWithIndex, arbInteger, (pair, n) -> {
+      final Seq<Integer> seq = pair._1();
+      final int index = pair._2();
+      return prop(seq.update(index, n).index(index).equals(n));
     });
-
-    return property(Arbitrary.arbitrary(gen), arbInteger, (pair, n) ->
-      implies(pair._2().isSome(), () -> {
-        final Seq<Integer> seq = pair._1();
-        final int index = pair._2().some();
-        return prop(seq.update(index, n).index(index).equals(n));
-      }));
   }
 
   public Property foldLeft() {
-    return property(arbSeq(Arbitrary.arbitrary(Gen.value(1))), seq ->
+    return property(arbSeq(arbitrary(Gen.value(1))), seq ->
       prop(seq.foldLeft((acc, i) -> acc + i, 0) == seq.length()));
   }
 
   public Property foldRight() {
-    return property(arbSeq(Arbitrary.arbitrary(Gen.value(1))), seq ->
+    return property(arbSeq(arbitrary(Gen.value(1))), seq ->
       prop(seq.foldRight((i, acc) -> acc + i, 0) == seq.length()));
   }
 }
