@@ -206,15 +206,15 @@ object CheckList extends Properties("List") {
   })
   
   
-  property("_nil") = PrismLaws[List[String], Unit](List._nil())
+  property("Optic.nil") = PrismLaws[List[String], Unit](List.Optic.nil())
   
-  property("_cons") = PrismLaws[List[String], P2[String, List[String]]](List._cons())
+  property("Optic.cons") = PrismLaws[List[String], P2[String, List[String]]](List.Optic.cons())
   
-  property("_head") = OptionalLaws[List[String], String](List._head())
+  property("Optic.head") = OptionalLaws[List[String], String](List.Optic.head())
   
-  property("_tail") = OptionalLaws[List[String], List[String]](List._tail())
+  property("Optic.tail") = OptionalLaws[List[String], List[String]](List.Optic.tail())
   
-  property("_traversal") = TraversalLaws[List[String], String](List._traversal())
+  property("Optic.traversal") = TraversalLaws[List[String], String](List.Optic.traversal())
   
   
   /*property("iterateWhile") = forAll((n: Int) => n > 0 ==>

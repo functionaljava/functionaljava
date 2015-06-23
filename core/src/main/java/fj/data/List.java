@@ -655,81 +655,6 @@ public abstract class List<A> implements Iterable<A> {
         v(List.<B> nil(), List.<B> nil()));
   }
 
-  /**
-   * polymorphic traversal
-   */
-  public static <A, B> PTraversal<List<A>, List<B>, A, B> _pTraversal() {
-    return new PTraversal<List<A>, List<B>, A, B>() {
-
-      @Override
-      public <C> F<List<A>, F<C, List<B>>> modifyFunctionF(F<A, F<C, B>> f) {
-        return l -> l.traverseF(f);
-      }
-
-      @Override
-      public <L> F<List<A>, Either<L, List<B>>> modifyEitherF(F<A, Either<L, B>> f) {
-        return l -> l.traverseEither(f);
-      }
-
-      @Override
-      public F<List<A>, IO<List<B>>> modifyIOF(F<A, IO<B>> f) {
-        return l -> l.traverseIO(f);
-      }
-
-      @Override
-      public F<List<A>, Trampoline<List<B>>> modifyTrampolineF(F<A, Trampoline<B>> f) {
-        return l -> l.traverseTrampoline(f);
-      }
-
-      @Override
-      public F<List<A>, Promise<List<B>>> modifyPromiseF(F<A, Promise<B>> f) {
-        return l -> l.traversePromise(f);
-      }
-
-      @Override
-      public F<List<A>, List<List<B>>> modifyListF(F<A, List<B>> f) {
-        return l -> l.traverseList(f);
-      }
-
-      @Override
-      public F<List<A>, Option<List<B>>> modifyOptionF(F<A, Option<B>> f) {
-        return l -> l.traverseOption(f);
-      }
-
-      @Override
-      public F<List<A>, Stream<List<B>>> modifyStreamF(F<A, Stream<B>> f) {
-        return l -> l.traverseStream(f);
-      }
-
-      @Override
-      public F<List<A>, P1<List<B>>> modifyP1F(F<A, P1<B>> f) {
-        return l -> l.traverseP1(f);
-      }
-
-      @Override
-      public <E> F<List<A>, Validation<E, List<B>>> modifyValidationF(F<A, Validation<E, B>> f) {
-        return l -> l.traverseValidation(f);
-      }
-
-      @Override
-      public F<List<A>, V2<List<B>>> modifyV2F(F<A, V2<B>> f) {
-        return l -> l.traverseV2(f);
-      }
-
-      @Override
-      public <M> F<List<A>, M> foldMap(Monoid<M> monoid, F<A, M> f) {
-        return l -> monoid.sumLeft(l.map(f));
-      }
-    };
-  }
-
-  /**
-   * monomorphic traversal
-   */
-  public static <A> Traversal<List<A>, A> _traversal() {
-    return new Traversal<>(_pTraversal());
-  }
-
     /**
    * Performs function application within a list (applicative functor pattern).
    *
@@ -1176,12 +1101,6 @@ public abstract class List<A> implements Iterable<A> {
     return sort(o).group(o.equal()).map(List.<A>head_());
   }
 
-  /**
-   * Optional targeted on Cons head.
-   */
-  public static <A> Optional<List<A>, A> _head() {
-    return optional(l -> l.toOption(), a -> l -> l.<List<A>> list(l, constant(cons_(a))));
-  }
 
   /**
    * First-class head function.
@@ -1190,14 +1109,6 @@ public abstract class List<A> implements Iterable<A> {
    */
   public static <A> F<List<A>, A> head_() {
     return list -> list.head();
-  }
-
-  /**
-   * Optional targeted on Cons tail.
-   */
-  public static <A> Optional<List<A>, List<A>> _tail() {
-    return optional(l -> l.<Option<List<A>>> list(none(), h -> tail -> some(tail)),
-        tail -> l -> l.list(l, h -> constant(cons(h, tail))));
   }
 
   /**
@@ -1598,26 +1509,12 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
-   * Nil prism
-   */
-  public static <A> Prism<List<A>, Unit> _nil() {
-    return prism(l -> l.isEmpty() ? some(unit()) : none(), constant(nil()));
-  }
-
-  /**
    * Returns a function that prepends (cons) an element to a list to produce a new list.
    *
    * @return A function that prepends (cons) an element to a list to produce a new list.
    */
   public static <A> F<A, F<List<A>, List<A>>> cons() {
     return a -> tail -> cons(a, tail);
-  }
-
-  /**
-   * Cons prism
-   */
-  public static <A> Prism<List<A>, P2<A, List<A>>> _cons() {
-    return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(P.p(h, tail))), c -> cons(c._1(), c._2()));
   }
 
   public static <A> F2<A, List<A>, List<A>> cons_() {
@@ -2105,4 +2002,120 @@ public abstract class List<A> implements Iterable<A> {
     public boolean isSingle() {
         return isNotEmpty() && tail().isEmpty();
     }
+
+  /**
+   * Optic factory methods for a List
+   */
+  public static final class Optic {
+
+    private Optic() {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Polymorphic traversal
+     */
+    public static <A, B> PTraversal<List<A>, List<B>, A, B> pTraversal() {
+      return new PTraversal<List<A>, List<B>, A, B>() {
+
+        @Override
+        public <C> F<List<A>, F<C, List<B>>> modifyFunctionF(F<A, F<C, B>> f) {
+          return l -> l.traverseF(f);
+        }
+
+        @Override
+        public <L> F<List<A>, Either<L, List<B>>> modifyEitherF(F<A, Either<L, B>> f) {
+          return l -> l.traverseEither(f);
+        }
+
+        @Override
+        public F<List<A>, IO<List<B>>> modifyIOF(F<A, IO<B>> f) {
+          return l -> l.traverseIO(f);
+        }
+
+        @Override
+        public F<List<A>, Trampoline<List<B>>> modifyTrampolineF(F<A, Trampoline<B>> f) {
+          return l -> l.traverseTrampoline(f);
+        }
+
+        @Override
+        public F<List<A>, Promise<List<B>>> modifyPromiseF(F<A, Promise<B>> f) {
+          return l -> l.traversePromise(f);
+        }
+
+        @Override
+        public F<List<A>, List<List<B>>> modifyListF(F<A, List<B>> f) {
+          return l -> l.traverseList(f);
+        }
+
+        @Override
+        public F<List<A>, Option<List<B>>> modifyOptionF(F<A, Option<B>> f) {
+          return l -> l.traverseOption(f);
+        }
+
+        @Override
+        public F<List<A>, Stream<List<B>>> modifyStreamF(F<A, Stream<B>> f) {
+          return l -> l.traverseStream(f);
+        }
+
+        @Override
+        public F<List<A>, P1<List<B>>> modifyP1F(F<A, P1<B>> f) {
+          return l -> l.traverseP1(f);
+        }
+
+        @Override
+        public <E> F<List<A>, Validation<E, List<B>>> modifyValidationF(F<A, Validation<E, B>> f) {
+          return l -> l.traverseValidation(f);
+        }
+
+        @Override
+        public F<List<A>, V2<List<B>>> modifyV2F(F<A, V2<B>> f) {
+          return l -> l.traverseV2(f);
+        }
+
+        @Override
+        public <M> F<List<A>, M> foldMap(Monoid<M> monoid, F<A, M> f) {
+          return l -> monoid.sumLeft(l.map(f));
+        }
+      };
+    }
+
+    /**
+     * Monomorphic traversal
+     */
+    public static <A> Traversal<List<A>, A> traversal() {
+      return new Traversal<>(pTraversal());
+    }
+
+    /**
+     * Optional targeted on Cons head.
+     */
+    public static <A> Optional<List<A>, A> head() {
+      return optional(l -> l.toOption(), a -> l -> l.<List<A>>list(l, constant(cons_(a))));
+    }
+
+    /**
+     * Optional targeted on Cons tail.
+     */
+    public static <A> Optional<List<A>, List<A>> tail() {
+      return optional(l -> l.<Option<List<A>>> list(none(), h -> tail -> some(tail)),
+              tail -> l -> l.list(l, h -> constant(List.cons(h, tail))));
+    }
+
+    /**
+     * Nil prism
+     */
+    public static <A> Prism<List<A>, Unit> nil() {
+      return prism((List<A> l) -> l.isEmpty() ? some(unit()) : none(), constant(List.nil()));
+    }
+
+    /**
+     * Cons prism
+     */
+    public static <A> Prism<List<A>, P2<A, List<A>>> cons() {
+      return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(P.p(h, tail))), c -> List.cons(c._1(), c._2()));
+    }
+
+  }
+
 }

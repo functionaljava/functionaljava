@@ -33,11 +33,11 @@ import fj.data.vector.V2;
  *
  * <pre>
  *     S           T                                   S           T
- *     |           ↑                                   ↑           |
+ *     |           |                                   |           |
  *     |           |                                   |           |
  * get |           | reverseGet     reverse.reverseGet |           | reverse.get
  *     |           |                                   |           |
- *     ↓     f     |                                   |     g     ↓
+ *     |     f     |                                   |     g     |
  *     A --------> B                                   A <-------- B
  * </pre>
  *
