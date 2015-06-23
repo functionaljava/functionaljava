@@ -344,37 +344,50 @@ public abstract class P2<A, B> {
     return (a, b) -> f.f(P.p(a, b));
   }
 
-  /**
-   * Polyomorphic lens targeted on _1.
-   */
-  public static <A, B, C> PLens<P2<A, B>, P2<C, B>, A, C> _1pLens() {
-    return pLens(__1(), a -> p2 -> P.p(a, p2._2()));
-  }
-
-  /**
-   * Monomorphic lens targeted on _1.
-   */
-  public static <A, B, C> Lens<P2<A, B>, A> _1Lens() {
-    return new Lens<>(_1pLens());
-  }
-
-  /**
-   * Polyomorphic lens targeted on _2.
-   */
-  public static <A, B, C> PLens<P2<A, B>, P2<A, C>, B, C> _2pLens() {
-    return pLens(__2(), b -> p2 -> P.p(p2._1(), b));
-  }
-
-  /**
-   * Monomorphic lens targeted on _1.
-   */
-  public static <A, B, C> Lens<P2<A, B>, B> _2Lens() {
-    return new Lens<>(_2pLens());
-  }
 
     @Override
 	public String toString() {
 		return Show.p2Show(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
 	}
+
+  /**
+   * Optic factory methods for a P2
+
+   */
+  public static final class Optic {
+
+    private Optic() {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Polyomorphic lens targeted on _1.
+     */
+    public static <A, B, C> PLens<P2<A, B>, P2<C, B>, A, C> _1p() {
+      return pLens(__1(), a -> p2 -> P.p(a, p2._2()));
+    }
+
+    /**
+     * Monomorphic lens targeted on _1.
+     */
+    public static <A, B, C> Lens<P2<A, B>, A> _1() {
+      return new Lens<>(_1p());
+    }
+
+    /**
+     * Polyomorphic lens targeted on _2.
+     */
+    public static <A, B, C> PLens<P2<A, B>, P2<A, C>, B, C> _2p() {
+      return pLens(__2(), b -> p2 -> P.p(p2._1(), b));
+    }
+
+    /**
+     * Monomorphic lens targeted on _1.
+     */
+    public static <A, B, C> Lens<P2<A, B>, B> _2() {
+      return new Lens<>(_2p());
+    }
+
+  }
 
 }

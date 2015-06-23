@@ -14,8 +14,8 @@ import fj.data.optic.LensLaws
 
 object CheckP2 extends Properties("P2") {
   
-  property("_1Lens") = LensLaws[P2[String, Int], String](P2._1Lens())
+  property("Optic._1") = LensLaws[P2[String, Int], String](P2.Optic._1())
   
-  property("_2Lens") = LensLaws[P2[String, Int], Int](P2._2Lens())
+  property("Optic._2") = LensLaws[P2[String, Int], Int](P2.Optic._2())
   
 }
