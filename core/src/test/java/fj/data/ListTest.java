@@ -1,5 +1,7 @@
 package fj.data;
 
+import fj.Equal;
+import fj.P2;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -53,4 +55,13 @@ public class ListTest {
         expected.append(')');
         assertEquals(expected.toString(), List.range(0, n).toString());
     }
+
+    @Test
+    public void partition() {
+        P2<List<Integer>, List<Integer>> p = List.range(1, 5).partition(i -> i % 2 == 0);
+        Equal<List<Integer>> e = Equal.listEqual(Equal.intEqual);
+        assertTrue(e.eq(p._1(), List.list(2, 4)));
+        assertTrue(e.eq(p._2(), List.list(1, 3)));
+    }
+
 }
