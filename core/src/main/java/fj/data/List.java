@@ -855,6 +855,22 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Partitions the list into a tuple where the first element contains the
+   * items that satisfy the the predicate f and the second element contains the
+   * items that does not.  The relative order of the elements in the returned tuple
+   * is the same as the original list.
+   *
+   * @param f Predicate function.
+   */
+  public P2<List<A>, List<A>> partition(F<A, Boolean> f) {
+    P2<List<A>, List<A>> p2 = foldLeft(acc -> a ->
+      f.f(a) ? P.p(acc._1().cons(a), acc._2()) : P.p(acc._1(), acc._2().cons(a)),
+      P.p(nil(), nil())
+    );
+    return P.p(p2._1().reverse(), p2._2().reverse());
+  }
+
+  /**
    * Returns the list of initial segments of this list, shortest first.
    *
    * @return The list of initial segments of this list, shortest first.
