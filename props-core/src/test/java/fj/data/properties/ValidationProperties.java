@@ -29,10 +29,10 @@ public class ValidationProperties {
         });
     }
 
-    public Property sequence() {
+    public Property sequenceReduce() {
         Arbitrary<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
         return Property.property(al, list -> {
-            Validation<List<String>, List<Integer>> v = Validation.sequence(list);
+            Validation<List<String>, List<Integer>> v = Validation.sequenceReduce(list);
             Property p1 = implies(
                     list.exists(v1 -> v1.isFail()),
                     () -> prop(v.fail().equals(list.filter(v2 -> v2.isFail()).map(v2 -> v2.fail())))

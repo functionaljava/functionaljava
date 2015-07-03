@@ -806,7 +806,7 @@ public class Validation<E, T> implements Iterable<T> {
    * list, otherwise returns a successful Validation with the list of
    * successful values.
    */
-    public static <A, E> Validation<List<E>, List<A>> sequence(List<Validation<E, A>> list) {
+    public static <A, E> Validation<List<E>, List<A>> sequenceReduce(List<Validation<E, A>> list) {
       if (list.exists(v -> v.isFail())) {
         F2<List<E>, Validation<E, A>, List<E>> f = (acc, v) -> acc.cons(v.fail());
         return Validation.fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
