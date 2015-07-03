@@ -737,6 +737,13 @@ public final class Arbitrary<A> {
     return arbitrary(Gen.listOf1(aa.gen).map(list -> NonEmptyList.fromList(list).some()));
   }
 
+    /**
+     * Returns an arbitrary Validation for the given arbitrary parameters.
+     */
+    public static <A, B> Arbitrary<Validation<A, B>> arbValidation(final Arbitrary<A> aa, final Arbitrary<B> ab) {
+        return arbitrary(arbBoolean.gen.bind(bool -> bool ? ab.gen.map(b -> Validation.<A, B>success(b)) : aa.gen.map(a -> Validation.<A, B>fail(a))));
+    }
+
   /**
    * Returns an arbitrary implementation for streams.
    *
