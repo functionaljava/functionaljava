@@ -1287,6 +1287,16 @@ public class Validation<E, T> implements Iterable<T> {
     }
   };
 
+  /**
+   * Partitions the list into the list of fails and the list of successes
+   */
+  public static <A, B> P2<List<A>, List<B>> partition(List<Validation<A, B>> list) {
+    return P.p(
+            list.filter(v -> v.isFail()).map(v -> v.fail()),
+            list.filter(v -> v.isSuccess()).map(v -> v.success())
+    );
+  }
+
     @Override
     public String toString() {
         return Show.validationShow(Show.<E>anyShow(), Show.<T>anyShow()).showS(this);
