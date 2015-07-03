@@ -1,6 +1,7 @@
 package fj.data.properties;
 
 import fj.P2;
+import fj.Semigroup;
 import fj.data.List;
 import fj.data.Validation;
 import fj.test.Arbitrary;
@@ -41,6 +42,20 @@ public class ValidationProperties {
                     list.forall(v1 -> v1.isSuccess()),
                     () -> prop(v.success().equals(list.filter(v2 -> v2.isSuccess()).map(v2 -> v2.success())))
             );
+            return p1.and(p2);
+        });
+    }
+
+    public Property sequence() {
+        return Property.property(arbList(arbValidation(arbString, arbInteger)), list -> {
+            Validation<String, List<Integer>> v = Validation.sequence(Semigroup.stringSemigroup, list);
+            Property p1 = implies(list.exists((Validation<String, Integer> v2) -> v2.isFail()), () -> prop(v.isFail()));
+            boolean b = list.forall((Validation<String, Integer> v2) -> v2.isSuccess());
+            Property p2 = implies(b, () -> {
+                List<Integer> l2 = list.map((Validation<String, Integer> v2) -> v2.success());
+                boolean b2 = v.success().equals(l2);
+                return prop(b2);
+            });
             return p1.and(p2);
         });
     }

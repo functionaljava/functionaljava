@@ -201,6 +201,18 @@ public class Validation<E, T> implements Iterable<T> {
   }
 
   /**
+   * If list contains a failure, returns a failure of the reduction of
+   * all the failures using the semigroup, otherwise returns the successful list.
+   */
+  public static <E, A> Validation<E, List<A>> sequence(final Semigroup<E> s, final List<Validation<E, A>> list) {
+    if (list.exists(v -> v.isFail())) {
+      return Validation.<E, List<A>>fail(list.filter(v -> v.isFail()).map(v -> v.fail()).foldLeft1((e1, e2) -> s.sum(e1, e2)));
+    } else {
+      return Validation.success(list.foldLeft((List<A> acc, Validation<E, A> v) -> acc.cons(v.success()), List.nil()).reverse());
+    }
+  }
+
+  /**
    * Returns <code>None</code> if this is a failure or if the given predicate <code>p</code> does not hold for the
    * success value, otherwise, returns a success in <code>Some</code>.
    *
