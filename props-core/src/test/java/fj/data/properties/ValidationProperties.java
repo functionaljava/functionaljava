@@ -5,13 +5,12 @@ import fj.data.List;
 import fj.data.Validation;
 import fj.test.Arbitrary;
 import fj.test.Property;
-import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static fj.test.Arbitrary.*;
+import static fj.test.Property.implies;
+import static fj.test.Property.prop;
 
 /**
  * Created by MarkPerry on 3/07/2015.
@@ -26,7 +25,23 @@ public class ValidationProperties {
             boolean b1 = p._1().length() + p._2().length() == list.length();
             boolean b2 = p._1().map(s -> Validation.<String, Integer>fail(s)).equals(list.filter(v -> v.isFail()));
             boolean b3 = p._2().map(s -> Validation.<String, Integer>success(s)).equals(list.filter(v -> v.isSuccess()));
-            return Property.prop(b1 && b2 && b3);
+            return prop(b1 && b2 && b3);
+        });
+    }
+
+    public Property sequence() {
+        Arbitrary<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
+        return Property.property(al, list -> {
+            Validation<List<String>, List<Integer>> v = Validation.sequence(list);
+            Property p1 = implies(
+                    list.exists(v1 -> v1.isFail()),
+                    () -> prop(v.fail().equals(list.filter(v2 -> v2.isFail()).map(v2 -> v2.fail())))
+            );
+            Property p2 = implies(
+                    list.forall(v1 -> v1.isSuccess()),
+                    () -> prop(v.success().equals(list.filter(v2 -> v2.isSuccess()).map(v2 -> v2.success())))
+            );
+            return p1.and(p2);
         });
     }
 
