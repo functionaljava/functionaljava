@@ -801,19 +801,19 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-
-
-    public static <A, E> Validation<List<E>, List<A>> sequence(List<Validation<E, A>> list) {
-        F2<Validation<E, A>, Validation<List<E>, List<A>>, Validation<List<E>, List<A>>> f2 = (v, acc) -> {
-            if (acc.isFail() && v.isFail()) {
-                return Validation.validation(acc.toEither().left().map(l -> l.cons(v.fail())));
-            } else if (acc.isSuccess() && v.isSuccess()) {
-                return acc.map(l -> l.cons(v.success()));
-            } else {
-                return acc;
-            }
-        };
-        return list.foldRight(f2, Validation.success(List.nil()));
+  /**
+   * If the list contains a failure, returns a Validation of the fails in the
+   * list, otherwise returns a successful Validation with the list of
+   * successful values.
+   */
+    public static <A, E> Validation<List<E>, List<A>> sequenceReduce(List<Validation<E, A>> list) {
+      if (list.exists(v -> v.isFail())) {
+        F2<List<E>, Validation<E, A>, List<E>> f = (acc, v) -> acc.cons(v.fail());
+        return Validation.fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
+      } else {
+        F2<List<A>, Validation<E, A>, List<A>> f = (acc, v) -> acc.cons(v.success());
+        return Validation.success(list.filter(v -> v.isSuccess()).foldLeft(f, List.nil()).reverse());
+      }
     }
 
     public <C> List<Validation<E, C>> traverseList(F<T, List<C>> f){
