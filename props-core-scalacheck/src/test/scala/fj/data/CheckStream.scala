@@ -51,13 +51,15 @@ object CheckStream extends Properties("Stream") {
   val length = Gen.choose(0, 5000)
 
   property("bindStackOverflow") = forAll(length)(size => {
-    val stream = iterableStream(JavaConversions.asJavaIterable((1 to size)))
-    val bound: Stream[Int] = stream.bind(new F[Int, Stream[Int]] {
-      def f(a: Int) = single(a)
+    val stream = Stream.range(1, size + 1)
+    val bound: Stream[Integer] = stream.bind(new F[Integer, Stream[Integer]] {
+      def f(a: Integer) = single(a)
     })
-    stream.zip(bound).forall(new F[P2[Int, Int], java.lang.Boolean] {
-      def f(a: P2[Int, Int]) = a._1() == a._2()
+    val zipped = stream.zip(bound)
+    val allmatch = zipped.forall(new F[P2[Integer, Integer], java.lang.Boolean] {
+      def f(a: P2[Integer, Integer]) = a._1() == a._2()
     })
+    allmatch && zipped.length() == size
   })
 
   property("foreach") = forAll((a: Stream[Int]) => {
