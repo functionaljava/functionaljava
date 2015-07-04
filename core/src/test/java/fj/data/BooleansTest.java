@@ -41,7 +41,7 @@ public class BooleansTest {
     }
 
     @Test
-    public void testComap(){
+    public void testContramap(){
         F<String, Boolean> f1 = a -> a.length() > 3;
         F<Integer, String> f2 = a -> a.toString();
 

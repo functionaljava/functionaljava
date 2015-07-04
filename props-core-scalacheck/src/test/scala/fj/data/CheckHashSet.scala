@@ -8,8 +8,8 @@ import Hash.intHash
 import org.scalacheck.Properties
 
 object CheckHashSet extends Properties("List") {
-  implicit val equalInt: Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
-  implicit val hashInt: Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
+  implicit val equalInt: Equal[Int] = intEqual contramap ((x: Int) => (x: java.lang.Integer))
+  implicit val hashInt: Hash[Int] = intHash contramap ((x: Int) => (x: java.lang.Integer))
 
   property("eq") = forAll((s: HashSet[Int], x: Int, y: Int) => s.eq(x, y) == equalInt.eq(x, y))
 

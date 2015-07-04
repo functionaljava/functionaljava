@@ -1,6 +1,5 @@
 package fj.control.parallel;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.Function;
@@ -429,7 +428,7 @@ public final class Strategy<A> {
    * @param f A transformation from the resulting strategy's domain to this strategy's domain.
    * @return A new strategy that applies the given transformation before each application of this strategy.
    */
-  public Strategy<A> comap(final F<P1<A>, P1<A>> f) {
+  public Strategy<A> contramap(final F<P1<A>, P1<A>> f) {
     return xmap(Function.<P1<A>>identity(), f);
   }
 
@@ -453,15 +452,15 @@ public final class Strategy<A> {
    * @return A strategy that captures any runtime errors with a side-effect.
    */
   public static <A> Strategy<A> errorStrategy(final Strategy<A> s, final Effect1<Error> e) {
-    return s.comap(a -> P.lazy(() -> {
-        try {
-          return a._1();
-        } catch (Throwable t) {
-          final Error error = new Error(t);
-          e.f(error);
-          throw error;
-        }
-      })
+    return s.contramap(a -> P.lazy(() -> {
+              try {
+                return a._1();
+              } catch (Throwable t) {
+                final Error error = new Error(t);
+                e.f(error);
+                throw error;
+              }
+            })
     );
   }
 
@@ -472,7 +471,7 @@ public final class Strategy<A> {
    * @return A new strategy that fully evaluates Callables, using the given strategy.
    */
   public static <A> Strategy<Callable<A>> callableStrategy(final Strategy<Callable<A>> s) {
-    return s.comap(a -> P1.curry(Callables.<A>normalise()).f(a._1()));
+    return s.contramap(a -> P1.curry(Callables.<A>normalise()).f(a._1()));
   }
 
 }

@@ -74,7 +74,7 @@ public final class Equal<A> {
    * @param f The function to map.
    * @return A new equal.
    */
-  public <B> Equal<B> comap(final F<B, A> f) {
+  public <B> Equal<B> contramap(final F<B, A> f) {
     return equal(F1Functions.o(F1Functions.o(F1Functions.<B, A, Boolean>andThen(f), this.f), f));
   }
 
@@ -202,7 +202,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Validation} type.
    */
   public static <A, B> Equal<Validation<A, B>> validationEqual(final Equal<A> ea, final Equal<B> eb) {
-    return eitherEqual(ea, eb).comap(Validation.<A, B>either());
+    return eitherEqual(ea, eb).contramap(Validation.<A, B>either());
   }
 
   /**
@@ -235,7 +235,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link NonEmptyList} type.
    */
   public static <A> Equal<NonEmptyList<A>> nonEmptyListEqual(final Equal<A> ea) {
-    return listEqual(ea).comap(NonEmptyList.<A>toList_());
+    return listEqual(ea).contramap(NonEmptyList.<A>toList_());
   }
 
   /**
@@ -443,7 +443,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-2.
    */
   public static <A> Equal<V2<A>> v2Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V2.<A>toStream_());
+    return streamEqual(ea).contramap(V2.<A>toStream_());
   }
 
   /**
@@ -453,7 +453,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-3.
    */
   public static <A> Equal<V3<A>> v3Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V3.<A>toStream_());
+    return streamEqual(ea).contramap(V3.<A>toStream_());
   }
 
   /**
@@ -463,7 +463,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-4.
    */
   public static <A> Equal<V4<A>> v4Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V4.<A>toStream_());
+    return streamEqual(ea).contramap(V4.<A>toStream_());
   }
 
   /**
@@ -473,7 +473,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-5.
    */
   public static <A> Equal<V5<A>> v5Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V5.<A>toStream_());
+    return streamEqual(ea).contramap(V5.<A>toStream_());
   }
 
   /**
@@ -483,7 +483,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-6.
    */
   public static <A> Equal<V6<A>> v6Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V6.<A>toStream_());
+    return streamEqual(ea).contramap(V6.<A>toStream_());
   }
 
   /**
@@ -493,7 +493,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-7.
    */
   public static <A> Equal<V7<A>> v7Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V7.<A>toStream_());
+    return streamEqual(ea).contramap(V7.<A>toStream_());
   }
 
   /**
@@ -503,13 +503,13 @@ public final class Equal<A> {
    * @return An equal instance for a vector-8.
    */
   public static <A> Equal<V8<A>> v8Equal(final Equal<A> ea) {
-    return streamEqual(ea).comap(V8.<A>toStream_());
+    return streamEqual(ea).contramap(V8.<A>toStream_());
   }
 
   /**
    * An equal instance for lazy strings.
    */
-  public static final Equal<LazyString> eq = streamEqual(charEqual).comap(LazyString.toStream);
+  public static final Equal<LazyString> eq = streamEqual(charEqual).contramap(LazyString.toStream);
 
   /**
    * An equal instance for the empty heterogeneous list.

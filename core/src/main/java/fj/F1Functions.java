@@ -4,7 +4,6 @@ import fj.control.parallel.Actor;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.data.*;
-import fj.function.Try1;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -224,12 +223,12 @@ public class F1Functions {
     }
 
     /**
-     * Returns a function that comaps over a given actor.
+     * Returns a function that contramaps over a given actor.
      *
-     * @return A function that comaps over a given actor.
+     * @return A function that contramaps over a given actor.
      */
-    static public <A, B> F<Actor<B>, Actor<A>> comapActor(final F<A, B> f) {
-        return a -> a.comap(f);
+    static public <A, B> F<Actor<B>, Actor<A>> contramapActor(final F<A, B> f) {
+        return a -> a.contramap(f);
     }
 
     /**
@@ -502,8 +501,8 @@ public class F1Functions {
      *
      * @return This function promoted to map over an Equal as a contravariant functor.
      */
-    static public <A, B> F<Equal<B>, Equal<A>> comapEqual(final F<A, B> f) {
-        return e -> e.comap(f);
+    static public <A, B> F<Equal<B>, Equal<A>> contramapEqual(final F<A, B> f) {
+        return e -> e.contramap(f);
     }
 
     /**
@@ -511,8 +510,8 @@ public class F1Functions {
      *
      * @return This function promoted to map over a Hash as a contravariant functor.
      */
-    static public <A, B> F<Hash<B>, Hash<A>> comapHash(final F<A, B> f) {
-        return h -> h.comap(f);
+    static public <A, B> F<Hash<B>, Hash<A>> contramapHash(final F<A, B> f) {
+        return h -> h.contramap(f);
     }
 
     /**
@@ -520,8 +519,8 @@ public class F1Functions {
      *
      * @return This function promoted to map over a Show as a contravariant functor.
      */
-    static public <A, B> F<Show<B>, Show<A>> comapShow(final F<A, B> f) {
-        return s -> s.comap(f);
+    static public <A, B> F<Show<B>, Show<A>> contramapShow(final F<A, B> f) {
+        return s -> s.contramap(f);
     }
 
     /**

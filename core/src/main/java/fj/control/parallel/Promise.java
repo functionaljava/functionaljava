@@ -195,7 +195,7 @@ public final class Promise<A> {
         r.actor.act(P.p(Either.<P1<B>, Actor<B>>left(P.p(b)), r));
       }
     });
-    to(ab.promise().comap(f));
+    to(ab.promise().contramap(f));
     return r;
   }
 

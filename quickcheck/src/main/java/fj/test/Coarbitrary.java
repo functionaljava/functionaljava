@@ -98,12 +98,12 @@ public abstract class Coarbitrary<A> {
   }
 
   /**
-   * Co-maps this coarbitrary using the given function.
+   * Contra-maps this coarbitrary using the given function.
    *
    * @param f The function to co-map with.
-   * @return A co-mapped coarbitrary.
+   * @return A contra-mapped coarbitrary.
    */
-  public final <B> Coarbitrary<B> comap(final F<B, A> f) {
+  public final <B> Coarbitrary<B> contramap(final F<B, A> f) {
     return new Coarbitrary<B>() {
       public <X> Gen<X> coarbitrary(final B b, final Gen<X> g) {
         return Coarbitrary.this.coarbitrary(f.f(b), g);
@@ -507,7 +507,7 @@ public abstract class Coarbitrary<A> {
    * @return A coarbitrary for throwables.
    */
   public static Coarbitrary<Throwable> coarbThrowable(final Coarbitrary<String> cs) {
-    return cs.comap(new F<Throwable, String>() {
+    return cs.contramap(new F<Throwable, String>() {
       public String f(final Throwable t) {
         return t.getMessage();
       }

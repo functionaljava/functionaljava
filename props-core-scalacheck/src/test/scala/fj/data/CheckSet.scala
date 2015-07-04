@@ -16,7 +16,7 @@ import org.scalacheck.Properties
 object CheckSet extends Properties("Set") {
 
   def idInt(n: Int) = n:java.lang.Integer
-  implicit def oi : Ord[Int] = intOrd.comap(idInt _)
+  implicit def oi : Ord[Int] = intOrd.contramap(idInt _)
   implicit def os : Ord[String] = stringOrd
 
   property("isEmpty") = forAll((a: Set[Int]) =>

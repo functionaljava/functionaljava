@@ -74,7 +74,7 @@ public final class Ord<A> {
    * @param f The function to map.
    * @return A new ord.
    */
-  public <B> Ord<B> comap(final F<B, A> f) {
+  public <B> Ord<B> contramap(final F<B, A> f) {
     return ord(F1Functions.o(F1Functions.o(F1Functions.<B, A, Ordering>andThen(f), this.f), f));
   }
 
@@ -334,7 +334,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Validation} type.
    */
   public static <A, B> Ord<Validation<A, B>> validationOrd(final Ord<A> oa, final Ord<B> ob) {
-    return eitherOrd(oa, ob).comap(Validation.<A, B>either());
+    return eitherOrd(oa, ob).contramap(Validation.<A, B>either());
   }
 
   /**
@@ -374,7 +374,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link NonEmptyList} type.
    */
   public static <A> Ord<NonEmptyList<A>> nonEmptyListOrd(final Ord<A> oa) {
-    return listOrd(oa).comap(NonEmptyList.<A>toList_());
+    return listOrd(oa).contramap(NonEmptyList.<A>toList_());
   }
 
   /**
@@ -428,7 +428,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Set} type.
    */
   public static <A> Ord<Set<A>> setOrd(final Ord<A> oa) {
-    return streamOrd(oa).comap(as -> as.toStream());
+    return streamOrd(oa).contramap(as -> as.toStream());
   }
 
   /**
@@ -443,7 +443,7 @@ public final class Ord<A> {
    * @return An order instance for a product-1.
    */
   public static <A> Ord<P1<A>> p1Ord(final Ord<A> oa) {
-    return oa.comap(P1.<A>__1());
+    return oa.contramap(P1.<A>__1());
   }
 
 
@@ -475,7 +475,7 @@ public final class Ord<A> {
   /**
    * An order instance for the <code>Natural</code> type.
    */
-  public static final Ord<Natural> naturalOrd = bigintOrd.comap(Natural.bigIntegerValue);
+  public static final Ord<Natural> naturalOrd = bigintOrd.contramap(Natural.bigIntegerValue);
 
 
   /**

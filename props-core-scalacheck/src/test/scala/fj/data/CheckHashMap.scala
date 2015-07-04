@@ -15,8 +15,8 @@ import org.scalacheck.Arbitrary._
 import java.util.Map
 
 object CheckHashMap extends Properties("HashMap") {
-  implicit val equalInt: Equal[Int] = intEqual comap ((x: Int) => (x: java.lang.Integer))
-  implicit val hashInt: Hash[Int] = intHash comap ((x: Int) => (x: java.lang.Integer))
+  implicit val equalInt: Equal[Int] = intEqual contramap ((x: Int) => (x: java.lang.Integer))
+  implicit val hashInt: Hash[Int] = intHash contramap ((x: Int) => (x: java.lang.Integer))
 
   implicit def arbitraryListOfIterableP2: Arbitrary[java.lang.Iterable[P2[Int, String]]] =
     Arbitrary(listOf(arbitrary[(Int, String)])

@@ -174,7 +174,7 @@ public final class Enumerator<A> {
                       compose(compose(of, predecessor), g),
                       max.map(f),
                       min.map(f),
-                      order.comap(g),
+                      order.contramap(g),
                       compose(compose(Function.<Long, Option<A>, Option<B>>compose().f(of), plus), g));
   }
 

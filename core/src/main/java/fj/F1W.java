@@ -11,10 +11,6 @@ import java.util.PriorityQueue;
 import java.util.TreeSet;
 import java.util.concurrent.*;
 
-import static fj.data.Option.some;
-import static fj.data.Stream.iterableStream;
-import static fj.data.Zipper.fromStream;
-
 /**
  * Created by MarkPerry on 22/01/2015.
  */
@@ -225,12 +221,12 @@ public abstract class F1W<A, B> implements F<A, B> {
     }
 
     /**
-     * Returns a function that comaps over a given actor.
+     * Returns a function that contramaps over a given actor.
      *
-     * @return A function that comaps over a given actor.
+     * @return A function that contramaps over a given actor.
      */
-    public F1W<Actor<B>, Actor<A>> comapActor() {
-        return lift(F1Functions.comapActor(this));
+    public F1W<Actor<B>, Actor<A>> contramapActor() {
+        return lift(F1Functions.contramapActor(this));
     }
 
     /**
@@ -501,8 +497,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over an Equal as a contravariant functor.
      */
-    public F1W<Equal<B>, Equal<A>> comapEqual() {
-        return lift(F1Functions.comapEqual(this));
+    public F1W<Equal<B>, Equal<A>> contramapEqual() {
+        return lift(F1Functions.contramapEqual(this));
     }
 
     /**
@@ -510,8 +506,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Hash as a contravariant functor.
      */
-    public F1W<Hash<B>, Hash<A>> comapHash() {
-        return lift(F1Functions.comapHash(this));
+    public F1W<Hash<B>, Hash<A>> contramapHash() {
+        return lift(F1Functions.contramapHash(this));
     }
 
     /**
@@ -519,8 +515,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Show as a contravariant functor.
      */
-    public F1W<Show<B>, Show<A>> comapShow() {
-        return lift(F1Functions.comapShow(this));
+    public F1W<Show<B>, Show<A>> contramapShow() {
+        return lift(F1Functions.contramapShow(this));
     }
 
     /**
