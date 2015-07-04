@@ -95,7 +95,7 @@ public class Effect {
    * @param f The function to map over the effect.
    * @return An effect after a contra-variant map.
    */
-  public static final <A, B> Effect1<B> comap(Effect1<A> e1, final F<B, A> f) {
+  public static final <A, B> Effect1<B> contramap(Effect1<A> e1, final F<B, A> f) {
     return b -> e1.f(f.f(b));
   }
   

@@ -23,7 +23,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   }
 
   private static <K, V> Ord<P2<K, V>> ord(final Ord<K> keyOrd) {
-    return keyOrd.comap(P2.<K, V>__1());
+    return keyOrd.contramap(P2.<K, V>__1());
   }
 
   /**
@@ -174,7 +174,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   public Map<K, V> toMutableMap() {
     final F<K, P2<K, Option<V>>> fakePair = k -> P.p(k, Option.none());
-	final Comparator<K> comparator = tree.ord().comap(fakePair).toComparator();
+	final Comparator<K> comparator = tree.ord().contramap(fakePair).toComparator();
 	final Map<K, V> m = new java.util.TreeMap<K, V>(comparator);
     for (final P2<K, V> e : this) {
       m.put(e._1(), e._2());
@@ -290,7 +290,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   public P3<TreeMap<K, V>, Option<V>, TreeMap<K, V>> splitLookup(final K k) {
     P3<Set<P2<K, Option<V>>>, Option<P2<K, Option<V>>>, Set<P2<K, Option<V>>>> p3 = tree.split(P.p(k, get(k)));
-    Ord<K> o = tree.ord().<K>comap(k2 -> P.p(k2, Option.<V>none()));
+    Ord<K> o = tree.ord().<K>contramap(k2 -> P.p(k2, Option.<V>none()));
     return P.p(treeMap(o, p3._1()), get(k), treeMap(o, p3._3()));
   }
 
@@ -304,7 +304,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   public <W> TreeMap<K, W> map(final F<V, W> f) {
     final F<P2<K, Option<V>>, P2<K, Option<W>>> g = P2.map2_(F1Functions.mapOption(f));
     final F<K, P2<K, Option<V>>> coord = flip(P.<K, Option<V>>p2()).f(Option.<V>none());
-    final Ord<K> o = tree.ord().comap(coord);
+    final Ord<K> o = tree.ord().contramap(coord);
     return new TreeMap<K, W>(tree.map(TreeMap.<K, Option<W>>ord(o), g));
   }
 

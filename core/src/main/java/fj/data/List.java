@@ -1247,7 +1247,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The most common element in this list.
    */
   public final A mode(final Ord<A> o) {
-    return sort(o).group(o.equal()).maximum(intOrd.comap(List.<A>length_())).head();
+    return sort(o).group(o.equal()).maximum(intOrd.contramap(List.<A>length_())).head();
   }
 
   /**
