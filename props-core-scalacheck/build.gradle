@@ -4,9 +4,9 @@ archivesBaseName = "${project.projectName}-${project.name}"
 apply plugin: 'scala'
 
 ext {
-    scalaVersion = "2.11.6"
+    scalaVersion = "2.11.7"
     scalacheckScalaVersion = "2.11"
-    scalacheckVersion = "1.12.2"
+    scalacheckVersion = "1.12.4"
     signModule = true
 }
 
