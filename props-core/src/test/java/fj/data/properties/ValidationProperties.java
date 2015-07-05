@@ -30,10 +30,10 @@ public class ValidationProperties {
         });
     }
 
-    public Property sequenceReduce() {
+    public Property sequenceNonCumulative() {
         Arbitrary<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
         return Property.property(al, list -> {
-            Validation<List<String>, List<Integer>> v = Validation.sequenceReduce(list);
+            Validation<List<String>, List<Integer>> v = Validation.sequenceNonCumulative(list);
             Property p1 = implies(
                     list.exists(v1 -> v1.isFail()),
                     () -> prop(v.fail().equals(list.filter(v2 -> v2.isFail()).map(v2 -> v2.fail())))

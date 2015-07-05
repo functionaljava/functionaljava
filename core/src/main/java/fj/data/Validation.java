@@ -814,11 +814,12 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
   /**
-   * If the list contains a failure, returns a Validation of the fails in the
-   * list, otherwise returns a successful Validation with the list of
-   * successful values.
+   * If the list contains a failure, returns a Validation of the list of
+   * fails in the list, otherwise returns a successful Validation with
+   * the list of successful values.  Does not accumulate the failures into a
+   * single failure using a semigroup.
    */
-    public static <A, E> Validation<List<E>, List<A>> sequenceReduce(List<Validation<E, A>> list) {
+    public static <A, E> Validation<List<E>, List<A>> sequenceNonCumulative(List<Validation<E, A>> list) {
       if (list.exists(v -> v.isFail())) {
         F2<List<E>, Validation<E, A>, List<E>> f = (acc, v) -> acc.cons(v.fail());
         return Validation.fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
