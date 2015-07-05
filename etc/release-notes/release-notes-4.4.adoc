@@ -47,7 +47,7 @@ Proposed Release Date: July 2015
 * Fixed Stream.toString to human readable representation (#138).
 * Fixed P1.memo cache in threaded environment (#141, #108).
 * Fixed Stream join and bind for infinite streams (#140).
-* Fixed Validation.sequence and renamed to sequenceReduce (#162).
+* Fixed Validation.sequence and renamed to sequenceNonCumulative (#162).
 * Scalacheck property Stream.bindStackOverflow sometimes fails (#168, #169).
 * Fixed bug in FingerTree.append (#144).
 * Fixed arrayShow (#145).
@@ -69,7 +69,7 @@ Proposed Release Date: July 2015
 
 * Comap methods renamed to contramap.
 * Split quickcheck into separate module.
-* Validation.sequence renamed to sequenceReduce.
+* Validation.sequence renamed to sequenceNonCumulative.
 * Changed IOFunctions io to be fromF and fromTry.
 
 == Documentation
