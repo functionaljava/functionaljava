@@ -17,17 +17,16 @@ Proposed Release Date: July 2015
 * Add PropertyTestRunner (#144).
 * Added Equal.notEq, List.isPrefixOf, List.isSuffixOf (#146).
 * Made enhancements to support Real World Haskell example (#155)
-    * made P1.toString lazy
-    * added IOFunctions.interact
-    * added IOFunctions.getContents
-    * added map, bind and eval to LazyString
-    * added IO wrapper with static methods from IOFunctions as instance methods
-    * Stream.take evaluates one those items necessary (one less than currently)
-    * Made Stream.toString lazy
-    * Added Strings methods lines and unlines
-    * Refactor 'from'
-    * Made IOFunctions.sequenceWhile lazy
-    * Changed IOFunctions io to be fromF and fromTry.
+    ** made P1.toString lazy
+    ** added IOFunctions.interact
+    ** added IOFunctions.getContents
+    ** added map, bind and eval to LazyString
+    ** added IO wrapper with static methods from IOFunctions as instance methods
+    ** Stream.take evaluates one those items necessary (one less than currently)
+    ** Made Stream.toString lazy
+    ** Added Strings methods lines and unlines
+    ** Made IOFunctions.sequenceWhile lazy
+    ** Changed IOFunctions io to be fromF and fromTry.
 * Enhanced Property to run individual tests (#156).
 * Added Seq.isNotEmpty (#158).
 * Added List.partition (#161).
