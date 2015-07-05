@@ -12,7 +12,7 @@ Proposed Release Date: July 2015
 * Added monoid composition.
 * Changed comap methods to contramap (#142, #170)
 * Provide hard, soft and weak memoisation implementations, default to weak (#153, #151).
-* Added optics (See the Scala Monocle library https://github.com/julien-truffaut/Monocle and the Haskell lens lbrary https://github.com/ekmett/lens for an overview) (#154).
+* Added optics (see the Scala Monocle library https://github.com/julien-truffaut/Monocle and the Haskell lens lbrary https://github.com/ekmett/lens for an overview) (#154).
 * Added Validation.sequence (#163, #167).
 * Add PropertyTestRunner (#144).
 * Added Equal.notEq, List.isPrefixOf, List.isSuffixOf (#146).
@@ -73,6 +73,8 @@ Proposed Release Date: July 2015
 * Changed IOFunctions io to be fromF and fromTry.
 
 == Documentation
+
+None.
 
 == Contributors
 
