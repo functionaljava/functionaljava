@@ -24,7 +24,7 @@ Increase the version:
 * Edit build.gradle: update isSnapshot to true, increase fjBaseVersion, update fjConsumeVersion
 * Edit gradle.properties: set signingEnabled to false
 
-Commit changes and push.
+Commit changes and push.  Notes that CI builds using Travis and Jenkins will fail with the release due to lack of configured signing.
 
 Create tag:
 * Create tag using gitk with the format v<x>.<y>
@@ -34,7 +34,7 @@ Create the next version of the release notes with empty fields using the templat
 
 Upload the javadoc, TODO.
 
-Update the website, TODO.
+Update the website and Github README.adoc, TODO.
 
 Send a message to the group and social media about the release, TODO.
 

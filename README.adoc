@@ -6,13 +6,13 @@ image::http://www.functionaljava.org/img/logo-600x144.png[]
 
 Functional Java is an open source library facilitating functional programming in Java. The library implements numerous basic and advanced programming abstractions that assist composition oriented development. Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language.
 
-The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 5 to 8.
+The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck and Functional Java's quickcheck module. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 5 to 8.
 
 Functional Java provides abstractions for the following types:
 
 * Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation).
 * Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list.
-* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing, actors, lenses, concurrency and type conversion.
+* Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing (quickcheck), actors, optics (lens, prism, fold, traversal and others), concurrency and type conversion.
 
 == URLs
 
@@ -21,20 +21,23 @@ Important URLs for the project are:
 * Website, http://www.functionaljava.org
 * Website repository, http://github.com/functionaljava/functionaljava.github.io
 * Travis continuous integration build, https://travis-ci.org/functionaljava/functionaljava
+* Jenkins Cloudbees CI build, https://functionaljava.ci.cloudbees.com
 
 == Downloading
 
 The recommended way to download and use the project is through your build tool.
 
-The Functional Java artifact is published to Maven Central using the group `org.functionaljava` with two published artifacts:
+The Functional Java artifact is published to Maven Central using the group `org.functionaljava` with three published artifacts:
 
 * the core library (`functionaljava`)
 * Java 8 specific support (`functionaljava-java8`)
+* property based testing (`functionaljava-quickcheck`)
 
-The latest version is `4.4-SNAPSHOT`.  This can be added to your Gradle project by adding the dependencies:
+The latest stable version is `4.4`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.4-SNAPSHOT"
-compile "org.functionaljava:functionaljava-java8:4.4-SNAPSHOT"
+compile "org.functionaljava:functionaljava:4.4"
+compile "org.functionaljava:functionaljava-java8:4.4"
+compile "org.functionaljava:functionaljava-quickcheck:4.4"
 ----
 
 and in Maven:
@@ -42,12 +45,17 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.4-SNAPSHOT</version>
+    <version>4.4</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java8</artifactId>
-    <version>4.4-SNAPSHOT</version>
+    <version>4.4</version>
+</dependency>
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava-quickcheck</artifactId>
+    <version>4.4</version>
 </dependency>
 ----
 
@@ -59,7 +67,7 @@ Building is done using Gradle 2.4.  In the root directory run:
 ----
 ./gradlew
 ----
-This will download the Gradle build tool and necessary dependencies and build FunctionalJava.
+This requires access to Java and will download the Gradle build tool and necessary dependencies and build FunctionalJava.
 
 == Features
 
@@ -98,7 +106,7 @@ A more complete description of the features mentioned above are:
 ** Zipper implementations for streams and trees.
 ** Automated specification-based testing framework (`fj.test`).
 ** Fully operational Actors for parallel computations (`fj.control.parallel`) and layered abstractions such as parallel-map, map-reduce, parallel-zip.
-** Lenses, for updating immutable data.
+** Optics for updating immutable data including lens, prism, iso, optional, traversal, getter, fold and setter.  Inspired by the Scala Monocle library (https://github.com/julien-truffaut/Monocle) and the Haskell lens library (https://github.com/ekmett/lens).
 
 == License
 
