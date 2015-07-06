@@ -1,0 +1,28 @@
+
+= Release <version>
+
+Proposed release: <quarter> <year>
+
+== Enhancements
+
+* TODO.
+
+== Fixes
+
+* TODO.
+
+== Internal
+
+* TODO.
+
+== Breaking Changes
+
+* TODO.
+
+== Documentation
+
+* TODO.
+
+== Contributors
+
+* TODO.

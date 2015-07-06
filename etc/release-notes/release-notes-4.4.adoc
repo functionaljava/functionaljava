@@ -1,7 +1,7 @@
 
 = Release 4.4
 
-Proposed Release Date: July 2015
+Released: 6 July 2015
 
 == Enhancements
 

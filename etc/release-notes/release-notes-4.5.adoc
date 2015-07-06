@@ -1,0 +1,28 @@
+
+= Release 4.5
+
+Proposed release: last quarter 2015
+
+== Enhancements
+
+* TODO.
+
+== Fixes
+
+* TODO.
+
+== Internal
+
+* TODO.
+
+== Breaking Changes
+
+* TODO.
+
+== Documentation
+
+* TODO.
+
+== Contributors
+
+* TODO.
