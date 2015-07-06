@@ -27,6 +27,4 @@ sourceCompatibility = "1.7"
 performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)
 
-uploadArchives.enabled = true
-
 

@@ -1,4 +1,8 @@
 
+ext {
+    signModule = true
+}
+
 if (useRetroLambda) {
     apply plugin: 'me.tatarka.retrolambda'
 
@@ -15,3 +19,8 @@ dependencies {
 	compile project(":core")
     compile dependencyJunit
 }
+
+performSigning(signingEnabled, signModule)
+configureUpload(signingEnabled, signModule)
+
+uploadArchives.enabled = true
