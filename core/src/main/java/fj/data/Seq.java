@@ -6,6 +6,7 @@ import static fj.Bottom.error;
 import static fj.Monoid.intAdditionMonoid;
 import static fj.data.fingertrees.FingerTree.measured;
 
+import fj.data.List.Buffer;
 import fj.data.fingertrees.FingerTree;
 import fj.data.fingertrees.MakeTree;
 import fj.data.fingertrees.Measured;
@@ -64,7 +65,7 @@ public final class Seq<A> implements Iterable<A> {
     return new Seq<A>(Seq.<A>mkTree().single(a));
   }
 
-  public static <A>Seq<A> seq(final A... as) {
+  @SafeVarargs public static <A> Seq<A> seq(final A... as) {
     return seq(List.list(as));
   }
 
@@ -124,8 +125,20 @@ public final class Seq<A> implements Iterable<A> {
     return (length() == 1) ? empty() : new Seq<>(ftree.init());
   }
 
+  /**
+   * Converts this sequence to a Stream
+   */
   public Stream<A> toStream() {
     return ftree.foldLeft((b, a) -> b.cons(a), Stream.<A>nil()).reverse();
+  }
+
+  /**
+   * Converts this sequence to a List
+   */
+  public List<A> toList() {
+    final Buffer<A> buf = Buffer.empty();
+    for (final A a : this) { buf.snoc(a); }
+    return buf.toList();
   }
 
   public final java.util.List<A> toJavaList() {
@@ -207,6 +220,12 @@ public final class Seq<A> implements Iterable<A> {
     return ftree.measure();
   }
 
+  /**
+   * Splits this sequence into a pair of sequences at the given position. This is a O(log(n)) operation.
+   *
+   * @return Pair: the subsequence containing elements with indices less than <code>i</code>
+   *   and the subsequence containing elements with indices greater than or equal to <code>i</code>.
+   */
   public P2<Seq<A>, Seq<A>> split(final int i) {
     final P2<FingerTree<Integer, A>, FingerTree<Integer, A>> lr = ftree.split(index -> index > i);
     return P.p(new Seq<>(lr._1()), new Seq<>(lr._2()));
@@ -235,6 +254,19 @@ public final class Seq<A> implements Iterable<A> {
     checkBounds(i);
     final P3<FingerTree<Integer, A>, A, FingerTree<Integer, A>> lxr = ftree.split1(index -> index > i);
     return new Seq<>(lxr._1().append(lxr._3().cons(a)));
+  }
+
+  /**
+   * Delete the element at the given index. This is an O(log(n)) operation.
+   *
+   * @param i The index of the element to update.
+   *
+   * @return The updated sequence, or throws an error if the index is out of bounds.
+   */
+  public Seq<A> delete(final int i) {
+    checkBounds(i);
+    final P3<FingerTree<Integer, A>, A, FingerTree<Integer, A>> lxr = ftree.split1(index -> index > i);
+    return new Seq<>(lxr._1().append(lxr._3()));
   }
 
   /**

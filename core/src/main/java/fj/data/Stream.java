@@ -733,7 +733,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param as The elements which which to construct a stream.
    * @return a new stream with the given elements.
    */
-  public static <A> Stream<A> stream(final A... as) {
+  @SafeVarargs public static <A> Stream<A> stream(final A... as) {
     return as.length == 0 ? Stream.<A>nil()
                           : unfold(P2.tuple((as1, i) -> i >= as.length ? Option.<P2<A, P2<A[], Integer>>>none()
                                                 : some(P.p(as[i], P.p(as, i + 1)))), P.p(as, 0));
