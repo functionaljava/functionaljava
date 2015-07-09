@@ -103,6 +103,15 @@ public class SeqProperties {
     });
   }
 
+  @CheckParams(minSize = 1)
+  public Property delete() {
+    return property(arbSeqWithIndex, arbInteger, (pair, n) -> {
+      final Seq<Integer> seq = pair._1();
+      final int index = pair._2();
+      return prop(seq.delete(index).length() == seq.length() - 1);
+    });
+  }
+
   public Property foldLeft() {
     return property(arbSeq(arbitrary(Gen.value(1))), seq ->
       prop(seq.foldLeft((acc, i) -> acc + i, 0) == seq.length()));

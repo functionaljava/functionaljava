@@ -58,7 +58,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @param p2s The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
-  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
+  @SafeVarargs public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
     return treeMap(keyOrd, List.list(p2s));
   }
 

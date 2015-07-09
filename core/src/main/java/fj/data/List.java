@@ -1501,7 +1501,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param as The elements to construct a list with.
    * @return A list with the given elements.
    */
-  public static <A> List<A> list(final A... as) {
+  @SafeVarargs public static <A> List<A> list(final A... as) {
     return Array.array(as).toList();
   }
 

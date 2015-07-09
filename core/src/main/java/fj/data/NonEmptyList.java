@@ -293,7 +293,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @param tail The elements to construct a list's tail with.
    * @return A non-empty list with the given elements.
    */
-  public static <A> NonEmptyList<A> nel(final A head, final A... tail) {
+  @SafeVarargs public static <A> NonEmptyList<A> nel(final A head, final A... tail) {
     return nel(head, List.list(tail));
   }
 
