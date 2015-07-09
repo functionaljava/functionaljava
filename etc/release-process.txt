@@ -32,9 +32,9 @@ Create tag:
 
 Create the next version of the release notes with empty fields using the template.
 
-Upload the javadoc, TODO.
+Update the website and Github README.adoc.  This includes adding any features to the home page and features page.  Updating the doc page with javadoc links.  Update the download page with a link to the latest release notes.
 
-Update the website and Github README.adoc, TODO.
+Copy the generated javadoc for each component to the website repositories' master branch under /javadoc/<version>.  Commit the javadoc and push.
 
 Send a message to the group and social media about the release, TODO.
 
