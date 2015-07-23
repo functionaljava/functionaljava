@@ -564,7 +564,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after applying the given stream of functions through this stream.
    */
   public final <B> Stream<B> apply(final Stream<F<A, B>> sf) {
-    return sf.bind(f -> map(a -> f.f(a)));
+    return sf.bind(f -> map(f));
   }
 
   /**
