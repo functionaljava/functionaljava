@@ -734,7 +734,7 @@ public final class Function {
    * @return A new function after applying the given higher-order function to the given function.
    */
   public static <A, B, C> F<C, B> apply(final F<C, F<A, B>> cab, final F<C, A> ca) {
-    return bind(cab, f -> compose(a -> f.f(a), ca));
+    return bind(cab, f -> compose(f, ca));
   }
 
   /**

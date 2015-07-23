@@ -85,7 +85,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return a failing projection of this validation.
    */
   public FailProjection<E, T> f() {
-    return new FailProjection<E, T>(this);
+    return new FailProjection<>(this);
   }
 
   /**
@@ -231,11 +231,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return The result of function application in validation.
    */
   public <A> Validation<E, A> apply(final Validation<E, F<T, A>> v) {
-    return v.bind(new F<F<T, A>, Validation<E, A>>() {
-      public Validation<E, A> f(final F<T, A> f) {
-        return map(f);
-      }
-    });
+    return v.bind(this::map);
   }
 
   /**
@@ -871,7 +867,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A failing projection of a validation.
    */
-  public final class FailProjection<E, T> implements Iterable<E> {
+  public static final class FailProjection<E, T> implements Iterable<E> {
     private final Validation<E, T> v;
 
     private FailProjection(final Validation<E, T> v) {
@@ -1098,7 +1094,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A validation using the given either value.
    */
   public static <E, T> Validation<E, T> validation(final Either<E, T> e) {
-    return new Validation<E, T>(e);
+    return new Validation<>(e);
   }
 
   /**
