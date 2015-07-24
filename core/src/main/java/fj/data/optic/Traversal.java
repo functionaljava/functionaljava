@@ -1,11 +1,11 @@
 package fj.data.optic;
 
 import fj.F;
-import fj.F2;
 import fj.F3;
 import fj.F4;
 import fj.F5;
 import fj.F6;
+import fj.F7;
 import fj.Monoid;
 import fj.P1;
 import fj.control.Trampoline;
@@ -123,33 +123,29 @@ public final class Traversal<S, A> extends PTraversal<S, S, A, A> {
     return new Traversal<>(PTraversal.pCodiagonal());
   }
 
-  public static <S, A> Traversal<S, A> traversal(final F<S, A> get1, final F<S, A> get2, final F2<A, A, S> set) {
-    return new Traversal<>(PTraversal.pTraversal(get1, get2, (a1, a2, s) -> set.f(a1, a2)));
+  public static <S, A> Traversal<S, A> traversal(final F<S, A> get1, final F<S, A> get2, final F3<A, A, S, S> set) {
+    return new Traversal<>(PTraversal.pTraversal(get1, get2, set));
   }
 
   public static <S, A> Traversal<S, A> traversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
-      final F3<A, A, A, S> set) {
-    return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, (a1, a2, a3, s) -> set.f(a1, a2, a3)));
+      final F4<A, A, A, S, S> set) {
+    return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, set));
   }
 
   public static <S, A> Traversal<S, A> traversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
-      final F<S, A> get4,
-      final F4<A, A, A, A, S> set) {
-    return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, get4, (a1, a2, a3, a4, s) -> set.f(a1, a2, a3, a4)));
+      final F<S, A> get4, final F5<A, A, A, A, S, S> set) {
+    return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, get4, set));
   }
 
   public static <S, A> Traversal<S, A> traversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
-      final F<S, A> get4, final F<S, A> get5,
-      final F5<A, A, A, A, A, S> set) {
-    return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, get4, get5,
-        (a1, a2, a3, a4, a5, s) -> set.f(a1, a2, a3, a4, a5)));
+      final F<S, A> get4, final F<S, A> get5, final F6<A, A, A, A, A, S, S> set) {
+    return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, get4, get5, set));
   }
 
   public static <S, A> Traversal<S, A> traversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
-      final F<S, A> get4, final F<S, A> get5, final F<S, A> get6,
-      final F6<A, A, A, A, A, A, S> set) {
+      final F<S, A> get4, final F<S, A> get5, final F<S, A> get6, final F7<A, A, A, A, A, A, S, S> set) {
     return new Traversal<>(PTraversal.pTraversal(get1, get2, get3, get4, get5, get6,
-        (a1, a2, a3, a4, a5, a6, s) -> set.f(a1, a2, a3, a4, a5, a6)));
+        set));
   }
 
 }
