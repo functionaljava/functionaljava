@@ -846,6 +846,16 @@ public abstract class Option<A> implements Iterable<A> {
     return curry((a, b) -> a.bind(b, f));
   }
 
+	/**
+	 * Lift the function of arity-2 through options.
+	 *
+	 * @param f A function to lift.
+	 * @return An optional result.
+	 */
+	public <B, C> Option<C> liftM2(final Option<B> ob, final F2<A, B, C> f) {
+		return bind(a -> ob.map(b -> f.f(a, b)));
+	}
+
   /**
    * First-class bind function.
    *
