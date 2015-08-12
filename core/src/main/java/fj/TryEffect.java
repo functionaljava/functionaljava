@@ -14,6 +14,7 @@ public class TryEffect {
 
     private TryEffect(){}
 
+    @SuppressWarnings("unchecked")
     public static <A, Z extends Exception> P1<Validation<Z, Unit>> f(TryEffect0<Z> t) {
         return P.lazy(() -> {
             try {
@@ -25,6 +26,7 @@ public class TryEffect {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, Z extends Exception> F<A, Validation<Z, Unit>> f(TryEffect1<A, Z> t) {
         return a -> {
             try {
@@ -37,6 +39,7 @@ public class TryEffect {
 
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, Z extends Exception> F2<A, B, Validation<Z, Unit>> f(TryEffect2<A, B, Z> t) {
         return (a, b) -> {
             try {
@@ -49,6 +52,7 @@ public class TryEffect {
 
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, C, Z extends Exception> F3<A, B, C, Validation<Z, Unit>> f(TryEffect3<A, B, C, Z> t) {
         return (a, b, c) -> {
             try {
@@ -60,6 +64,7 @@ public class TryEffect {
         };
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, C, D, Z extends Exception> F4<A, B, C, D, Validation<Z, Unit>> f(TryEffect4<A, B, C, D, Z> t) {
         return (a, b, c, d) -> {
             try {
@@ -71,6 +76,7 @@ public class TryEffect {
         };
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, C, D, E, Z extends Exception> F5<A, B, C, D, E, Validation<Z, Unit>> f(TryEffect5<A, B, C, D, E, Z> t) {
         return (a, b, c, d, e) -> {
             try {
@@ -82,6 +88,7 @@ public class TryEffect {
         };
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, C, D, E, $F, Z extends Exception> F6<A, B, C, D, E, $F, Validation<Z, Unit>> f(TryEffect6<A, B, C, D, E, $F, Z> t) {
         return (a, b, c, d, e, f) -> {
             try {
@@ -93,6 +100,7 @@ public class TryEffect {
         };
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, C, D, E, $F, G, Z extends Exception> F7<A, B, C, D, E, $F, G, Validation<Z, Unit>> f(TryEffect7<A, B, C, D, E, $F, G, Z> t) {
         return (a, b, c, d, e, f, g) -> {
             try {
@@ -104,6 +112,7 @@ public class TryEffect {
         };
     }
 
+    @SuppressWarnings("unchecked")
     public static <A, B, C, D, E, $F, G, H, Z extends Exception> F8<A, B, C, D, E, $F, G, H, Validation<Z, Unit>> f(TryEffect8<A, B, C, D, E, $F, G, H, Z> t) {
         return (a, b, c, d, e, f, g, h) -> {
             try {

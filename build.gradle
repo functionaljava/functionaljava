@@ -63,6 +63,7 @@ allprojects {
 
         dependencyJunit = "junit:junit:4.12"
 
+        displayCompilerWarnings = true
     }
 
 	version = fjVersion
@@ -86,7 +87,7 @@ subprojects {
 		}
 	}
 
-	if (false) {
+	if (displayCompilerWarnings) {
 		tasks.withType(JavaCompile) {
 			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 		}
