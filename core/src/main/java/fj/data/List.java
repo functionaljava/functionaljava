@@ -142,7 +142,7 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Returns an option projection of this list; <code>None</code> if empty, or the first element in
-   * <code>Some</code>.
+   * <code>Some</code>.  Equivalent to {@link #headOption()}.
    *
    * @return An option projection of this list.
    */
@@ -1126,6 +1126,23 @@ public abstract class List<A> implements Iterable<A> {
   public static <A> F<List<A>, A> head_() {
     return list -> list.head();
   }
+
+	/**
+	 * Returns the head of the list, if any.  Equivalent to {@link #toOption()} .
+	 *
+	 * @return The optional head of the list.
+	 */
+	public Option<A> headOption() {
+		return toOption();
+	}
+
+	/**
+	 * Reutrns the tail of the list, if any.
+	 * @return The optional tail of the list.
+	 */
+	public Option<List<A>> tailOption() {
+		return isEmpty() ? none() : some(tail());
+	}
 
   /**
    * First-class tail function.
