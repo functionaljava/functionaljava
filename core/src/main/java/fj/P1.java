@@ -39,14 +39,25 @@ public abstract class P1<A> implements F0<A> {
     /**
      * Promote any function to a transformation between P1s.
      *
+	 * @deprecated As of release 4.5, use {@link #map_}
      * @param f A function to promote to a transformation between P1s.
      * @return A function promoted to operate on P1s.
      */
     public static <A, B> F<P1<A>, P1<B>> fmap(final F<A, B> f) {
-        return a -> a.map(f);
+        return map_(f);
     }
 
-    /**
+	/**
+	 * Promote any function to a transformation between P1s.
+	 *
+	 * @param f A function to promote to a transformation between P1s.
+	 * @return A function promoted to operate on P1s.
+	 */
+	public static <A, B> F<P1<A>, P1<B>> map_(final F<A, B> f) {
+		return a -> a.map(f);
+	}
+
+	/**
      * Binds the given function to the value in a product-1 with a final join.
      *
      * @param f A function to apply to the value in a product-1.
@@ -89,6 +100,13 @@ public abstract class P1<A> implements F0<A> {
         return cb.apply(fmap(f).f(this));
     }
 
+	/**
+	 * Binds the given function to the values in the given P1s with a final join.
+	 */
+	public <B, C> P1<C> bind(final P1<B> cb, final F2<A, B, C> f) {
+		return bind(cb, F2W.lift(f).curry());
+	}
+
     /**
      * Joins a P1 of a P1 with a bind operation.
      *
@@ -108,6 +126,10 @@ public abstract class P1<A> implements F0<A> {
     public static <A, B, C> F<P1<A>, F<P1<B>, P1<C>>> liftM2(final F<A, F<B, C>> f) {
         return Function.curry((pa, pb) -> pa.bind(pb, f));
     }
+
+	public <B, C> P1<C> liftM2(P1<B> pb, F2<A, B, C> f) {
+		return P.lazy(() -> f.f(_1(), pb._1()));
+	}
 
     /**
      * Turns a List of P1s into a single P1 of a List.
@@ -137,6 +159,13 @@ public abstract class P1<A> implements F0<A> {
     public static <A> P1<Stream<A>> sequence(final Stream<P1<A>> as) {
         return as.foldRight(liftM2(Stream.<A>cons()), P.p(Stream.<A>nil()));
     }
+
+	/**
+	 * Turns an optional P1 into a lazy option.
+	 */
+	public static <A> P1<Option<A>> sequence(final Option<P1<A>> o) {
+		return P.lazy(() -> o.map(p -> p._1()));
+	}
 
     /**
      * Turns an array of P1s into a single P1 of an array.
@@ -204,7 +233,7 @@ public abstract class P1<A> implements F0<A> {
        * @param f The function to map with.
        * @return A product with the given function applied.
        */
-      public <X> P1<X> map(final F<A, X> f) {
+      public <B> P1<B> map(final F<A, B> f) {
           final P1<A> self = this;
         return P.lazy(() -> f.f(self._1()));
       }
@@ -233,6 +262,10 @@ public abstract class P1<A> implements F0<A> {
     static <A> P1<A> memo(F<Unit, A> f) {
         return P.lazy(f).memo();
     }
+
+	static <A> P1<A> memo(F0<A> f) {
+		return P.lazy(f).memo();
+	}
 
     static class Memo<A> extends P1<A> {
       private final P1<A> self;
