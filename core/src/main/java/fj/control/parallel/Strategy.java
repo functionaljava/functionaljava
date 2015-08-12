@@ -219,7 +219,7 @@ public final class Strategy<A> {
   public static <A, B> P1<List<B>> parFlatMap(final Strategy<List<B>> s,
                                               final F<A, List<B>> f,
                                               final List<A> as) {
-    return P1.fmap(List.<B>join()).f(s.parMap(f, as));
+    return P1.map_(List.<B>join()).f(s.parMap(f, as));
   }
 
   /**
@@ -233,7 +233,7 @@ public final class Strategy<A> {
   public static <A, B> P1<Array<B>> parFlatMap(final Strategy<Array<B>> s,
                                                final F<A, Array<B>> f,
                                                final Array<A> as) {
-    return P1.fmap(Array.<B>join()).f(s.parMap(f, as));
+    return P1.map_(Array.<B>join()).f(s.parMap(f, as));
   }
 
   /**
@@ -248,7 +248,7 @@ public final class Strategy<A> {
   public static <A> P1<List<A>> parListChunk(final Strategy<List<A>> s,
                                              final int chunkLength,
                                              final List<P1<A>> as) {
-    return P1.fmap(List.<A>join()).f(s.parList(as.partition(chunkLength).map(P1.<A>sequenceList())));
+    return P1.map_(List.<A>join()).f(s.parList(as.partition(chunkLength).map(P1.<A>sequenceList())));
   }
 
   /**
