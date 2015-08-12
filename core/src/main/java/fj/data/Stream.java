@@ -218,8 +218,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param as The argument to return if this stream is empty.
    * @return The tail of this stream if there is one or the given argument if this stream is empty.
    */
-  public final P1<Stream<A>> orTail(final P1<Stream<A>> as) {
-    return isEmpty() ? as : tail();
+  public final P1<Stream<A>> orTail(final F0<Stream<A>> as) {
+    return isEmpty() ? P.lazy(as) : tail();
   }
 
   /**
@@ -543,8 +543,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param p The lazy stream to sequence.
    * @return The stream of (pre-calculated) lazy values after sequencing.
    */
-  public static <A> Stream<P1<A>> sequence(final P1<Stream<A>> p) {
-    return p._1().map(a -> P.p(a));
+  public static <A> Stream<P1<A>> sequence(final F0<Stream<A>> p) {
+    return p.f().map(a -> P.p(a));
   }
 
   /**
@@ -1596,8 +1596,8 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param tail The stream to prepend to.
    * @return The stream with the given element prepended.
    */
-  public static <A> Stream<A> cons(final A head, final P1<Stream<A>> tail) {
-    return new Cons<A>(head, tail);
+  public static <A> Stream<A> cons(final A head, final F0<Stream<A>> tail) {
+    return new Cons<A>(head, P.lazy(tail));
   }
 
   /**
