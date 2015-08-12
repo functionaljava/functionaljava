@@ -49,6 +49,7 @@ public final class Variant {
    * @param g The generator to produce the new generator from.
    * @return A generator that is independent of the given generator using the given value.
    */
+  @SuppressWarnings("unchecked")
   public static <A> Gen<A> variant(final long n, final Gen<A> g) {
     final LongGen p = new LongGen(n, g);
     final Gen<?> gx = variantMemo.get(p);

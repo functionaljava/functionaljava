@@ -514,6 +514,7 @@ public final class Gen<A> {
    * @param as The values that the returned generator may produce.
    * @return A generator that produces values from the given arguments.
    */
+  @SafeVarargs
   public static <A> Gen<A> elements(final A... as) {
     return array(as).isEmpty() ? Gen.<A>fail() : choose(0, as.length - 1).map(new F<Integer, A>() {
       public A f(final Integer i) {

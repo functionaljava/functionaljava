@@ -571,6 +571,7 @@ public final class Array<A> implements Iterable<A> {
    * @param a The elements to construct the array with.
    * @return A new array of the given elements.
    */
+  @SafeVarargs
   public static <A> Array<A> array(final A... a) {
     return new Array<A>(a);
   }
