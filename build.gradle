@@ -85,6 +85,12 @@ subprojects {
 			url sonatypeRepositoryUrl
 		}
 	}
+
+	if (false) {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		}
+	}
 }
 
 configure(subprojects.findAll { it.name != "props-core" }) {
