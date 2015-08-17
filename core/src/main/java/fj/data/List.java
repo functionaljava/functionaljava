@@ -1986,6 +1986,7 @@ public abstract class List<A> implements Iterable<A> {
       List<A> s = start;
       final Cons<A> t = tail;
       start = nil();
+      tail = null;
       exported = false;
       while (s != t) {
         snoc(s.head());
