@@ -265,7 +265,7 @@ public abstract class Set<A> implements Iterable<A> {
   public final <B> B foldMap(final F<A, B> f, final Monoid<B> m) {
     return isEmpty() ?
            m.zero() :
-           m.sum(m.sum(r().foldMap(f, m), f.f(head())), l().foldMap(f, m));
+           m.sum(m.sum(l().foldMap(f, m), f.f(head())), r().foldMap(f, m));
   }
 
   /**
