@@ -734,7 +734,35 @@ public final class Arbitrary<A> {
     return arbitrary(listOf(aa.gen));
   }
 
-  public static <A> Arbitrary<NonEmptyList<A>> arbNonEmptyList(final Arbitrary<A> aa) {
+	/**
+	 * Returns an arbitrary list of integers.
+	 */
+	public static <A> Arbitrary<List<Integer>> arbListInteger() {
+		return arbitrary(listOf(arbInteger.gen));
+	}
+
+	/**
+	 * Returns an arbitrary list of strings.
+	 */
+	public static <A> Arbitrary<List<String>> arbListString() {
+		return arbitrary(listOf(arbString.gen));
+	}
+
+	/**
+	 * Returns an arbitrary list of booleans.
+	 */
+	public static <A> Arbitrary<List<Boolean>> arbListBoolean() {
+		return arbitrary(listOf(arbBoolean.gen));
+	}
+
+	/**
+	 * Returns an arbitrary list of doubles.
+	 */
+	public static <A> Arbitrary<List<Double>> arbListDouble() {
+		return arbitrary(listOf(arbDouble.gen));
+	}
+
+	public static <A> Arbitrary<NonEmptyList<A>> arbNonEmptyList(final Arbitrary<A> aa) {
     return arbitrary(Gen.listOf1(aa.gen).map(list -> NonEmptyList.fromList(list).some()));
   }
 
