@@ -21,6 +21,7 @@ import fj.P7;
 import fj.P8;
 import fj.data.*;
 import fj.LcgRng;
+import fj.Ord;
 
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -782,6 +783,10 @@ public final class Arbitrary<A> {
   public static <A> Arbitrary<Seq<A>> arbSeq(final Arbitrary<A> aa) {
     return arbitrary(arbArray(aa).gen.map(array -> Seq.seq((A[]) array.array())));
   }
+
+	public static <A> Arbitrary<Set<A>> arbSet(Ord<A> ord, final Arbitrary<A> aa) {
+		return arbitrary(arbList(aa).gen.map(list -> Set.set(ord, list)));
+	}
 
   /**
    * Returns an arbitrary implementation for throwables.
