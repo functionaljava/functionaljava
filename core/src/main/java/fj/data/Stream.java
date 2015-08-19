@@ -944,15 +944,11 @@ public abstract class Stream<A> implements Iterable<A> {
    *
    * @return A list projection of this stream.
    */
-  public final List<A> toList() {
-    List<A> as = List.nil();
-
-    for (Stream<A> x = this; !x.isEmpty(); x = x.tail()._1()) {
-      as = as.snoc(x.head());
+    public final List<A> toList() {
+        List.Buffer<A> buf = List.Buffer.empty();
+        foreachDoEffect(a -> buf.snoc(a));
+        return buf.toList();
     }
-
-    return as;
-  }
 
 
   /**
