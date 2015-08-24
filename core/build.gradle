@@ -1,15 +1,15 @@
 
 apply plugin: 'java'
 apply plugin: 'maven'
-//apply plugin: 'signing'
 
 defaultTasks 'build'
 
 sourceCompatibility = "1.6"
 targetCompatibility = "1.6"
 
+archivesBaseName = project.projectName
+
 jar {
-	baseName project.projectName
 	version project.fjVersion
 	manifest {
 		attributes 'Signature-Version': project.fjVersion
