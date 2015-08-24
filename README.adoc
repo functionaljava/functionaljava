@@ -21,6 +21,7 @@ Important URLs for the project are:
 * Website, http://www.functionaljava.org
 * Website repository, http://github.com/functionaljava/functionaljava.github.io
 * Travis continuous integration build, https://travis-ci.org/functionaljava/functionaljava
+* Sonatype Repository, https://oss.sonatype.org/content/groups/public/org/functionaljava/
 * Jenkins Cloudbees CI build, https://functionaljava.ci.cloudbees.com
 
 == Downloading
