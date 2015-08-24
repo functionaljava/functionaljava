@@ -4,3 +4,6 @@ sudo: false
 
 jdk:
   - oraclejdk7
+
+script:
+  - ./gradlew build -s -i
