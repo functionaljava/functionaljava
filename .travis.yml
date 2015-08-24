@@ -6,4 +6,4 @@ jdk:
   - oraclejdk7
 
 script:
-  - ./gradlew build -s -i
+  - ./gradlew build -s -d
