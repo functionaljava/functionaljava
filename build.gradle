@@ -37,5 +37,11 @@ allprojects {
 
 subprojects {
 
-}
+    repositories {
+        mavenCentral()
+        maven {
+            url sonatypeRepositoryUrl
+        }
+    }
 
+}

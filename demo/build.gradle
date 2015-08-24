@@ -6,10 +6,6 @@ mainClassName = "fj.demo.euler.Problem2"
 
 archivesBaseName = "${project.projectName}-${project.name}"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
 	compile 'org.slf4j:slf4j-api:1.7.5'
 	compile project(":core")
