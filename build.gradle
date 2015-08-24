@@ -1,10 +1,12 @@
 
-defaultTasks 'build'
-
 ext {
+
 }
 
 allprojects {
+
+    defaultTasks 'build'
+
 	ext {
         isSnapshot = true
         fjBaseVersion = "3.2.1"

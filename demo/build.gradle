@@ -2,8 +2,6 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-defaultTasks 'build'
-
 mainClassName = "fj.demo.euler.Problem2"
 
 archivesBaseName = "${project.projectName}-${project.name}"

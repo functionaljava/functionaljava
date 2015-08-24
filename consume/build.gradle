@@ -1,8 +1,6 @@
 
 apply plugin: 'java'
 
-defaultTasks 'build'
-
 archivesBaseName = "${project.projectName}-${project.name}"
 
 repositories {
