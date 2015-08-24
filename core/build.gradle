@@ -50,8 +50,6 @@ if (doSigning()) {
 uploadArchives {
     repositories {
         mavenDeployer {
-            // used for signing the artifacts, no need to sign snapshot, so leave out for now
-//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
             if (doSigning()) {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
             }
@@ -72,8 +70,6 @@ uploadArchives {
                     }
                     scm {
                         url scmUrl
-//                        connection scmGitFile
-//                        developerConnection scmGitFile
                     }
                     licenses {
                         license {
