@@ -6,6 +6,8 @@ defaultTasks 'build'
 
 mainClassName = "fj.demo.euler.Problem2"
 
+archivesBaseName = "${project.projectName}-${project.name}"
+
 repositories {
     mavenCentral()
 }

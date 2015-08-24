@@ -10,6 +10,7 @@
 // Apply the scala plugin to add support for Scala
 apply plugin: 'scala'
 
+archivesBaseName = "${project.projectName}-${project.name}"
 
 ext {
 	scalaVersion = "2.10.3"
