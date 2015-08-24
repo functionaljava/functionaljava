@@ -5,6 +5,9 @@ apply plugin: 'maven'
 
 defaultTasks 'build'
 
+sourceCompatibility = "1.6"
+targetCompatibility = "1.6"
+
 jar {
 	baseName project.projectName
 	version project.fjVersion
