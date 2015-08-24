@@ -9,5 +9,5 @@ archivesBaseName = "${project.projectName}-${project.name}"
 dependencies {
 	compile 'org.slf4j:slf4j-api:1.7.5'
 	compile project(":core")
-	testCompile "junit:junit:4.11"
+	testCompile dependencyJunit
 }

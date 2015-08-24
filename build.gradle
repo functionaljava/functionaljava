@@ -30,6 +30,8 @@ allprojects {
         sonatypeReleaseUrl = "$sonatypeBaseUrl/service/local/staging/deploy/maven2/"
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
         primaryEmail = "functionaljava@googlegroups.com"
+
+        dependencyJunit = "junit:junit:4.11"
     }
 	version = fjVersion
 	group = "org.functionaljava"
