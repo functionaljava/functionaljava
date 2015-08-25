@@ -278,11 +278,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C, D, E> F<P5<A, B, C, D, E>, A> __1() {
-    return new F<P5<A, B, C, D, E>, A>() {
-      public A f(final P5<A, B, C, D, E> p) {
-        return p._1();
-      }
-    };
+    return p -> p._1();
   }
 
   /**
@@ -291,11 +287,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C, D, E> F<P5<A, B, C, D, E>, B> __2() {
-    return new F<P5<A, B, C, D, E>, B>() {
-      public B f(final P5<A, B, C, D, E> p) {
-        return p._2();
-      }
-    };
+    return p -> p._2();
   }
 
   /**
@@ -304,11 +296,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C, D, E> F<P5<A, B, C, D, E>, C> __3() {
-    return new F<P5<A, B, C, D, E>, C>() {
-      public C f(final P5<A, B, C, D, E> p) {
-        return p._3();
-      }
-    };
+    return p -> p._3();
   }
 
   /**
@@ -317,11 +305,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return A function that returns the fourth element of a product.
    */
   public static <A, B, C, D, E> F<P5<A, B, C, D, E>, D> __4() {
-    return new F<P5<A, B, C, D, E>, D>() {
-      public D f(final P5<A, B, C, D, E> p) {
-        return p._4();
-      }
-    };
+    return p -> p._4();
   }
 
   /**
@@ -330,11 +314,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return A function that returns the fifth element of a product.
    */
   public static <A, B, C, D, E> F<P5<A, B, C, D, E>, E> __5() {
-    return new F<P5<A, B, C, D, E>, E>() {
-      public E f(final P5<A, B, C, D, E> p) {
-        return p._5();
-      }
-    };
+    return p -> p._5();
   }
 
   @Override
