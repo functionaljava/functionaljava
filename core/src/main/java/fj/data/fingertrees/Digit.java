@@ -36,28 +36,23 @@ public abstract class Digit<V, A> {
    * @param f A function with which to fold this digit.
    * @return The right reduction of this digit with the given function.
    */
-  public final A reduceRight(final F<A, F<A, A>> f) {
-    return match(new F<One<V, A>, A>() {
-      public A f(final One<V, A> one) {
-        return one.value();
-      }
-    }, new F<Two<V, A>, A>() {
-      public A f(final Two<V, A> two) {
-        final V2<A> v = two.values();
-        return f.f(v._1()).f(v._2());
-      }
-    }, new F<Three<V, A>, A>() {
-      public A f(final Three<V, A> three) {
-        final V3<A> v = three.values();
-        return f.f(v._1()).f(f.f(v._2()).f(v._3()));
-      }
-    }, new F<Four<V, A>, A>() {
-      public A f(final Four<V, A> four) {
-        final V4<A> v = four.values();
-        return f.f(v._1()).f(f.f(v._2()).f(f.f(v._3()).f(v._4())));
-      }
-    });
-  }
+    public final A reduceRight(final F<A, F<A, A>> f) {
+        return match(
+            one -> one.value(),
+            two -> {
+                final V2<A> v = two.values();
+                return f.f(v._1()).f(v._2());
+            },
+            three -> {
+                final V3<A> v = three.values();
+                return f.f(v._1()).f(f.f(v._2()).f(v._3()));
+            },
+            four -> {
+                final V4<A> v = four.values();
+                return f.f(v._1()).f(f.f(v._2()).f(f.f(v._3()).f(v._4())));
+            }
+        );
+    }
 
   /**
    * Folds this digit to the right using the given function.
@@ -66,26 +61,21 @@ public abstract class Digit<V, A> {
    * @return The right reduction of this digit with the given function.
    */
   public final A reduceLeft(final F<A, F<A, A>> f) {
-    return match(new F<One<V, A>, A>() {
-      public A f(final One<V, A> one) {
-        return one.value();
-      }
-    }, new F<Two<V, A>, A>() {
-      public A f(final Two<V, A> two) {
-        final V2<A> v = two.values();
-        return f.f(v._1()).f(v._2());
-      }
-    }, new F<Three<V, A>, A>() {
-      public A f(final Three<V, A> three) {
-        final V3<A> v = three.values();
-        return f.f(f.f(v._1()).f(v._2())).f(v._3());
-      }
-    }, new F<Four<V, A>, A>() {
-      public A f(final Four<V, A> four) {
-        final V4<A> v = four.values();
-        return f.f(f.f(f.f(v._1()).f(v._2())).f(v._3())).f(v._4());
-      }
-    });
+    return match(
+        one -> one.value(),
+        two -> {
+            final V2<A> v = two.values();
+            return f.f(v._1()).f(v._2());
+        },
+        three -> {
+            final V3<A> v = three.values();
+            return f.f(f.f(v._1()).f(v._2())).f(v._3());
+        },
+        four -> {
+            final V4<A> v = four.values();
+            return f.f(f.f(f.f(v._1()).f(v._2())).f(v._3())).f(v._4());
+        }
+    );
   }
 
   /**
@@ -97,23 +87,12 @@ public abstract class Digit<V, A> {
    *         with the given function and measured with the given measuring.
    */
   public final <B> Digit<V, B> map(final F<A, B> f, final Measured<V, B> m) {
-    return match(new F<One<V, A>, Digit<V, B>>() {
-      public Digit<V, B> f(final One<V, A> one) {
-        return new One<V, B>(m, f.f(one.value()));
-      }
-    }, new F<Two<V, A>, Digit<V, B>>() {
-      public Digit<V, B> f(final Two<V, A> two) {
-        return new Two<V, B>(m, two.values().map(f));
-      }
-    }, new F<Three<V, A>, Digit<V, B>>() {
-      public Digit<V, B> f(final Three<V, A> three) {
-        return new Three<V, B>(m, three.values().map(f));
-      }
-    }, new F<Four<V, A>, Digit<V, B>>() {
-      public Digit<V, B> f(final Four<V, A> four) {
-        return new Four<V, B>(m, four.values().map(f));
-      }
-    });
+    return match(
+        one -> new One<V, B>(m, f.f(one.value())),
+        two -> new Two<V, B>(m, two.values().map(f)),
+        three -> new Three<V, B>(m, three.values().map(f)),
+        four -> new Four<V, B>(m, four.values().map(f))
+    );
   }
 
   /**
@@ -153,28 +132,15 @@ public abstract class Digit<V, A> {
    * Returns the tree representation of this digit.
    * @return the tree representation of this digit. 
    */
-  public final FingerTree<V, A> toTree() {
-    final MakeTree<V, A> mk = mkTree(m);
-    return match(new F<One<V, A>, FingerTree<V, A>>() {
-      public FingerTree<V, A> f(final One<V, A> one) {
-        return mk.single(one.value());
-      }
-    }, new F<Two<V, A>, FingerTree<V, A>>() {
-      public FingerTree<V, A> f(final Two<V, A> two) {
-        return mk.deep(mk.one(two.values()._1()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.one(two.values()._2()));
-      }
-    }, new F<Three<V, A>, FingerTree<V, A>>() {
-      public FingerTree<V, A> f(final Three<V, A> three) {
-        return mk.deep(mk.two(three.values()._1(), three.values()._2()), new Empty<V, Node<V, A>>(m.nodeMeasured()),
-                       mk.one(three.values()._3()));
-      }
-    }, new F<Four<V, A>, FingerTree<V, A>>() {
-      public FingerTree<V, A> f(final Four<V, A> four) {
-        return mk.deep(mk.two(four.values()._1(), four.values()._2()), new Empty<V, Node<V, A>>(m.nodeMeasured()),
-                       mk.two(four.values()._3(), four.values()._4()));
-      }
-    });
-  }
+    public final FingerTree<V, A> toTree() {
+        final MakeTree<V, A> mk = mkTree(m);
+        return match(
+            one -> mk.single(one.value()),
+            two -> mk.deep(mk.one(two.values()._1()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.one(two.values()._2())),
+            three -> mk.deep(mk.two(three.values()._1(), three.values()._2()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.one(three.values()._3())),
+            four -> mk.deep(mk.two(four.values()._1(), four.values()._2()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.two(four.values()._3(), four.values()._4()))
+        );
+    }
 
   Option<Digit<V, A>> tail() {
     return match(

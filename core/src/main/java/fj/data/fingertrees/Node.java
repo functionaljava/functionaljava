@@ -32,23 +32,14 @@ public abstract class Node<V, A> {
   }
 
   public final <B> Node<V, B> map(final F<A, B> f, final Measured<V, B> m) {
-    return match(new F<Node2<V, A>, Node<V, B>>() {
-      public Node<V, B> f(final Node2<V, A> node2) {
-        return new Node2<V, B>(m, node2.toVector().map(f));
-      }
-    }, new F<Node3<V, A>, Node<V, B>>() {
-      public Node<V, B> f(final Node3<V, A> node3) {
-        return new Node3<V, B>(m, node3.toVector().map(f));
-      }
-    });
+    return match(
+        node2 -> new Node2<V, B>(m, node2.toVector().map(f)),
+        node3 -> new Node3<V, B>(m, node3.toVector().map(f))
+    );
   }
 
   public static <V, A, B> F<Node<V, A>, Node<V, B>> liftM(final F<A, B> f, final Measured<V, B> m) {
-    return new F<Node<V, A>, Node<V, B>>() {
-      public Node<V, B> f(final Node<V, A> node) {
-        return node.map(f, m);
-      }
-    };
+    return node -> node.map(f, m);
   }
 
   public abstract Digit<V, A> toDigit();
