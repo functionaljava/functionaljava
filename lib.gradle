@@ -77,9 +77,21 @@ void configureUpload(String signingEnabled, Boolean signModule) {
     }
 }
 
+void configureRetroLambda(boolean useRetroLambda, String newJdkEnvVar, String oldJdkEnvVar, JavaVersion retroLambdaTarget) {
+
+    if (useRetroLambda) {
+        retrolambda {
+            jdk System.getenv(newJdkEnvVar)
+            oldJdk System.getenv(oldJdkEnvVar)
+            javaVersion retroLambdaTarget
+        }
+    }
+}
+
 ext {
     findJavaCommand = this.&findJavaCommand
     doSigning = this.&doSigning
     performSigning = this.&performSigning
     configureUpload = this.&configureUpload
+    configureRetroLambda = this.&configureRetroLambda
 }

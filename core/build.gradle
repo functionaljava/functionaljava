@@ -19,10 +19,5 @@ configureUpload(signingEnabled, signModule)
 
 uploadArchives.enabled = true
 
-if (useRetroLambda) {
-    retrolambda {
-        jdk System.getenv(newJdkEnvVar)
-        oldJdk System.getenv(oldJdkEnvVar)
-        javaVersion retroLambdaTarget
-    }
-}
+configureRetroLambda(useRetroLambda, newJdkEnvVar, oldJdkEnvVar, retroLambdaTarget)
+
