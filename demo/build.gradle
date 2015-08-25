@@ -7,13 +7,7 @@ if (useRetroLambda) {
 
 mainClassName = "fj.demo.euler.Problem2"
 
-if (useRetroLambda) {
-    retrolambda {
-        jdk System.getenv(newJdkEnvVar)
-        oldJdk System.getenv(oldJdkEnvVar)
-        javaVersion retroLambdaTarget
-    }
-}
+configureAllRetroLambda()
 
 dependencies {
 	compile project(":core")

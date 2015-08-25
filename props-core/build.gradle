@@ -1,13 +1,9 @@
 
 if (useRetroLambda) {
     apply plugin: 'me.tatarka.retrolambda'
-
-    retrolambda {
-        jdk System.getenv(newJdkEnvVar)
-        oldJdk System.getenv(oldJdkEnvVar)
-        javaVersion retroLambdaTarget
-    }
 }
+
+configureAllRetroLambda()
 
 dependencies {
 	compile project(":quickcheck")
