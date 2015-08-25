@@ -18,9 +18,7 @@ public class Problem1 {
 	}
 
 	public static void java7() {
-		out.println(sum(range(0, 1000).filter(new F<Integer, Boolean>() {
-			public Boolean f(final Integer a) { return a % 3 == 0 || a % 5 == 0;}
-		})));
+		out.println(sum(range(0, 1000).filter(a -> a % 3 == 0 || a % 5 == 0)));
 	}
 
 	public static void java8() {

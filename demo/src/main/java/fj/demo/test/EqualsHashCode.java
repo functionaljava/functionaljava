@@ -58,11 +58,7 @@ public final class EqualsHashCode {
 
   public static void main(final String[] args) {
     // Restrictive arbitrary for Byte, produces from three possible values.
-    final Arbitrary<Byte> arbByteR = arbitrary(arbByte.gen.map(new F<Byte, Byte>() {
-      public Byte f(final Byte b) {
-        return (byte)(b % 3);
-      }
-    }));
+    final Arbitrary<Byte> arbByteR = arbitrary(arbByte.gen.map(b -> (byte)(b % 3)));
 
     // Restrictive arbitrary for String, produces from twelve (2 * 3 * 2) possible values.
     final Arbitrary<String> arbStringR = arbitrary(arbCharacter.gen.bind(arbCharacter.gen, arbCharacter.gen, curry(new F3<Character, Character, Character, String>() {

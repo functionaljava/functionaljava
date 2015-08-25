@@ -52,53 +52,30 @@ public final class Reflect {
   @Name("Integer Addition Commutes")
   @Category("Passes for demo")
   @CheckParams(minSuccessful = 20)  
-  final Property p1 = property(arbInteger, arbInteger, new F2<Integer, Integer, Property>() {
-    public Property f(final Integer a, final Integer b) {
-      return prop(a + b == b + a);
-    }
-  });
+  final Property p1 = property(arbInteger, arbInteger, (a, b) -> prop(a + b == b + a));
 
   @Name("Natural Integer Addition yields Natural Integer")
   @Category("Fails for demo")
-  final Property p2 = property(arbIntegerBoundaries, arbIntegerBoundaries, shrinkInteger, shrinkInteger,
-      new F2<Integer, Integer, Property>() {
-    public Property f(final Integer a, final Integer b) {
-      return bool(a > 0 && b > 0).implies(a + b > 0);
-    }
-  });
+  final Property p2 = property(arbIntegerBoundaries, arbIntegerBoundaries, shrinkInteger, shrinkInteger, (a, b) -> bool(a > 0 && b > 0).implies(a + b > 0));
 
   @Category("Passes for demo")
-  final Property p3 = property(arbStringBuilder, new F<StringBuilder, Property>() {
-    public Property f(final StringBuilder sb) {
-      return prop(stringBuilderEqual.eq(sb, sb.reverse().reverse()));
-    }
-  });
+  final Property p3 = property(arbStringBuilder, sb -> prop(stringBuilderEqual.eq(sb, sb.reverse().reverse())));
 
   @Category("Passes for demo")
-  final Property p4 = property(arbCharacter, new F<Character, Property>() {
-    public Property f(final Character c) {
-      return prop(stringBuilderEqual.eq(new StringBuilder().append(c), new StringBuilder().append(c).reverse()));
-    }
-  });
+  final Property p4 = property(arbCharacter, c -> prop(stringBuilderEqual.eq(new StringBuilder().append(c), new StringBuilder().append(c).reverse())));
 
   @Category("Passes for demo")
   @CheckParams(minSuccessful = 750, maxSize = 40)
-  final Property p5 = property(arbStringBuilder, arbStringBuilder, new F2<StringBuilder, StringBuilder, Property>() {
-    public Property f(final StringBuilder x, final StringBuilder y) {
+  final Property p5 = property(arbStringBuilder, arbStringBuilder, (x, y) -> {
       // copy the string builders before performing updates on x and y.
       final StringBuilder xx = new StringBuilder(x);
       final StringBuilder yy = new StringBuilder(y);
       return prop(stringBuilderEqual.eq(x.append(y).reverse(), yy.reverse().append(xx.reverse())));
-    }
   });
 
   @Name("Triangulation")
   @Category("Fails for demo")
-  final Property p6 = property(arbInteger, new F<Integer, Property>() {
-    public Property f(final Integer a) {
-      return prop(Triangulation.isPositive(a) == (a != 0 && !Triangulation.isNegative(a)));
-    }
-  });
+  final Property p6 = property(arbInteger, a -> prop(Triangulation.isPositive(a) == (a != 0 && !Triangulation.isNegative(a))));
 
   @NoCheck
   Property leave() {

@@ -28,24 +28,20 @@ public class MapReduce {
   // Count words of documents in parallel
   public static Promise<Long> countWords(final List<Stream<Character>> documents,
                                          final ParModule m) {
-    return m.parFoldMap(documents, new F<Stream<Character>, Long>() {
-      public Long f(final Stream<Character> document) {
-        return (long) fromStream(document).words().length();
-      }
-    }, longAdditionMonoid);
+    return m.parFoldMap(documents,
+        document -> (long) fromStream(document).words().length(), longAdditionMonoid
+    );
   }
 
   // Main program does the requisite IO gymnastics
   public static void main(final String[] args) {
     final List<Stream<Character>> documents = list(args).map(
-        F1Functions.andThen(new F<String, BufferedReader>() {
-            public BufferedReader f(final String fileName) {
+        F1Functions.andThen(fileName -> {
                 try {
                     return new BufferedReader(new FileReader(new File(fileName)));
                 } catch (FileNotFoundException e) {
                     throw new Error(e);
                 }
-            }
         }, new F<BufferedReader, Stream<Character>>() {
             public Stream<Character> f(final BufferedReader reader) {
                 final Option<String> s;
