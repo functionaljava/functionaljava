@@ -31,36 +31,21 @@ public final class Longs {
   /**
    * Curried Long subtraction.
    */
-  public static final F<Long, F<Long, Long>> subtract = curry(new F2<Long, Long, Long>() {
-    public Long f(final Long x, final Long y) {
-      return x - y;
-    }
-  });
+  public static final F<Long, F<Long, Long>> subtract = curry((x, y) -> x - y);
 
   /**
    * Negation.
    */
-  public static final F<Long, Long> negate = new F<Long, Long>() {
-    public Long f(final Long x) {
-      return x * -1L;
-    }
-  };
+  public static final F<Long, Long> negate = x -> x * -1L;
 
   /**
    * Absolute value.
    */
-  public static final F<Long, Long> abs = new F<Long, Long>() {
-    public Long f(final Long x) {
-      return abs(x);
-    }
-  };
+  public static final F<Long, Long> abs = x -> abs(x);
 
   /**
    * Remainder.
    */
-  public static final F<Long, F<Long, Long>> remainder = curry(new F2<Long, Long, Long>() {
-    public Long f(final Long a, final Long b) {
-      return a % b;
-    }
-  });
+  public static final F<Long, F<Long, Long>> remainder = curry((a, b) -> a % b);
+
 }

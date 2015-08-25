@@ -71,11 +71,7 @@ public final class Visitor {
    * given default.
    */
   public static <A, B> B nullableVisitor(final List<F<A, B>> visitors, final F0<B> def, final A value) {
-    return visitor(visitors.map(new F<F<A, B>, F<A, Option<B>>>() {
-      public F<A, Option<B>> f(final F<A, B> k) {
-        return compose(Option.<B>fromNull(), k);
-      }
-    }), def, value);
+    return visitor(visitors.map(k -> compose(Option.<B>fromNull(), k)), def, value);
   }
 
   /**

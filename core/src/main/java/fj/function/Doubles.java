@@ -36,56 +36,32 @@ public final class Doubles {
   /**
    * Curried Double subtraction.
    */
-  public static final F<Double, F<Double, Double>> subtract = curry(new F2<Double, Double, Double>() {
-    public Double f(final Double x, final Double y) {
-      return x - y;
-    }
-  });
+  public static final F<Double, F<Double, Double>> subtract = curry((x, y) -> x - y);
 
   /**
    * Negation.
    */
-  public static final F<Double, Double> negate = new F<Double, Double>() {
-    public Double f(final Double x) {
-      return x * -1;
-    }
-  };
+  public static final F<Double, Double> negate = x -> x * -1;
 
   /**
    * Absolute value.
    */
-  public static final F<Double, Double> abs = new F<Double, Double>() {
-    public Double f(final Double x) {
-      return abs(x);
-    }
-  };
+  public static final F<Double, Double> abs = x -> abs(x);
 
   /**
    * Remainder.
    */
-  public static final F<Double, F<Double, Double>> remainder = curry(new F2<Double, Double, Double>() {
-    public Double f(final Double a, final Double b) {
-      return a % b;
-    }
-  });
+  public static final F<Double, F<Double, Double>> remainder = curry((a, b) -> a % b);
 
   /**
    * Power.
    */
-  public static final F<Double, F<Double, Double>> power = curry(new F2<Double, Double, Double>() {
-    public Double f(final Double a, final Double b) {
-      return StrictMath.pow(a, b);
-    }
-  });
+  public static final F<Double, F<Double, Double>> power = curry((a, b) -> StrictMath.pow(a, b));
 
   /**
    * Evenness.
    */
-  public static final F<Double, Boolean> even = new F<Double, Boolean>() {
-    public Boolean f(final Double i) {
-      return i % 2 == 0;
-    }
-  };
+  public static final F<Double, Boolean> even = i -> i % 2 == 0;
 
   /**
    * Sums a list of doubles.
@@ -113,49 +89,32 @@ public final class Doubles {
    * @return A function that converts strings to doubles.
    */
   public static F<String, Option<Double>> fromString() {
-    return new F<String, Option<Double>>() {
-      public Option<Double> f(final String s) {
+    return s -> {
         try { return some(Double.valueOf(s)); }
         catch (final NumberFormatException ignored) {
           return none();
         }
-      }
     };
   }
 
   /**
    * A function that returns true if the given double is greater than zero.
    */
-  public static final F<Double, Boolean> gtZero = new F<Double, Boolean>() {
-    public Boolean f(final Double i) {
-      return Double.compare(i, 0) > 0;
-    }
-  };
+  public static final F<Double, Boolean> gtZero = i -> Double.compare(i, 0) > 0;
 
   /**
    * A function that returns true if the given double is greater than or equal to zero.
    */
-  public static final F<Double, Boolean> gteZero = new F<Double, Boolean>() {
-    public Boolean f(final Double i) {
-      return Double.compare(i, 0) >= 0;
-    }
-  };
+  public static final F<Double, Boolean> gteZero = i -> Double.compare(i, 0) >= 0;
 
   /**
    * A function that returns true if the given double is less than zero.
    */
-  public static final F<Double, Boolean> ltZero = new F<Double, Boolean>() {
-    public Boolean f(final Double i) {
-      return Double.compare(i, 0) < 0;
-    }
-  };
+  public static final F<Double, Boolean> ltZero = i -> Double.compare(i, 0) < 0;
 
   /**
    * A function that returns true if the given double is less than or equal to zero.
    */
-  public static final F<Double, Boolean> lteZero = new F<Double, Boolean>() {
-    public Boolean f(final Double i) {
-      return Double.compare(i, 0) <= 0;
-    }
-  };
+  public static final F<Double, Boolean> lteZero = i -> Double.compare(i, 0) <= 0;
+
 }
