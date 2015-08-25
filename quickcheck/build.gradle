@@ -3,10 +3,6 @@ ext {
     signModule = true
 }
 
-if (useRetroLambda) {
-    apply plugin: 'me.tatarka.retrolambda'
-}
-
 configureAllRetroLambda()
 
 archivesBaseName = "${project.projectName}-${project.name}"

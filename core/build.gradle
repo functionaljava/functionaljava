@@ -1,9 +1,4 @@
 
-if (useRetroLambda) {
-    apply plugin: 'me.tatarka.retrolambda'
-}
-
-
 ext {
     signModule = true
 }

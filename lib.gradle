@@ -84,6 +84,7 @@ void configureAllRetroLambda() {
 void configureRetroLambda(boolean useRetroLambda, String newJdkEnvVar, String oldJdkEnvVar, JavaVersion retroLambdaTarget) {
 
     if (useRetroLambda) {
+        apply plugin: 'me.tatarka.retrolambda'
         retrolambda {
             jdk System.getenv(newJdkEnvVar)
             oldJdk System.getenv(oldJdkEnvVar)

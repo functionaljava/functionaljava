@@ -1,10 +1,6 @@
 
 apply plugin: 'application'
 
-if (useRetroLambda) {
-    apply plugin: 'me.tatarka.retrolambda'
-}
-
 mainClassName = "fj.demo.euler.Problem2"
 
 configureAllRetroLambda()
