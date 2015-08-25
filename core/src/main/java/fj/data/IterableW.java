@@ -129,20 +129,13 @@ public final class IterableW<A> implements Iterable<A> {
    */
   public static <A, T extends Iterable<A>> IterableW<IterableW<A>> sequence(final Iterable<T> as) {
     final Stream<T> ts = iterableStream(as);
-    return ts.isEmpty() ? iterable(wrap(Option.<A>none())) : wrap(ts.head()).bind(new F<A, Iterable<IterableW<A>>>() {
-      public Iterable<IterableW<A>> f(final A a) {
-        return sequence(ts.tail().map(IterableW.<T, Stream<T>>wrap())._1())
-            .bind(new F<IterableW<A>, Iterable<IterableW<A>>>() {
-              public Iterable<IterableW<A>> f(final IterableW<A> as) {
-                return iterable(wrap(Stream.cons(a, new P1<Stream<A>>() {
-                  public Stream<A> _1() {
-                    return iterableStream(as);
-                  }
-                })));
-              }
-            });
-      }
-    });
+    return ts.isEmpty() ?
+        iterable(wrap(Option.<A>none())) :
+        wrap(ts.head()).bind(a ->
+            sequence(ts.tail().map(IterableW.<T, Stream<T>>wrap())._1()).bind(as2 ->
+                iterable(wrap(Stream.cons(a, () -> iterableStream(as2))))
+            )
+        );
   }
 
   /**

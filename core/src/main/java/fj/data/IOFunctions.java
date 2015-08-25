@@ -46,13 +46,7 @@ public class IOFunctions {
         return () -> t.f();
     }
 
-    public static final F<Reader, IO<Unit>> closeReader =
-            new F<Reader, IO<Unit>>() {
-                @Override
-                public IO<Unit> f(final Reader r) {
-                    return closeReader(r);
-                }
-            };
+    public static final F<Reader, IO<Unit>> closeReader = r -> closeReader(r);
 
     /**
      * Convert io to a SafeIO, throwing any IOException wrapped inside a RuntimeException
@@ -129,21 +123,13 @@ public class IOFunctions {
     }
 
     public static IO<BufferedReader> bufferedReader(final File f, final Option<Charset> encoding) {
-        return IOFunctions.map(fileReader(f, encoding), new F<Reader, BufferedReader>() {
-            @Override
-            public BufferedReader f(final Reader a) {
-                return new BufferedReader(a);
-            }
-        });
+        return IOFunctions.map(fileReader(f, encoding), a -> new BufferedReader(a));
     }
 
     public static IO<Reader> fileReader(final File f, final Option<Charset> encoding) {
-        return new IO<Reader>() {
-            @Override
-            public Reader run() throws IOException {
-                final FileInputStream fis = new FileInputStream(f);
-                return encoding.isNone() ? new InputStreamReader(fis) : new InputStreamReader(fis, encoding.some());
-            }
+        return () -> {
+            final FileInputStream fis = new FileInputStream(f);
+            return encoding.isNone() ? new InputStreamReader(fis) : new InputStreamReader(fis, encoding.some());
         };
     }
 

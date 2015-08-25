@@ -326,12 +326,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return The folded tree
    */
   public static <A, B> Tree<B> bottomUp(Tree<A> t, final F<P2<A, Stream<B>>, B> f) {
-    final F<Tree<A>, Tree<B>> recursiveCall = new F<Tree<A>, Tree<B>>() {
-      @Override public Tree<B> f(Tree<A> a) {
-        return bottomUp(a, f);
-      }
-    };
- 
+    final F<Tree<A>, Tree<B>> recursiveCall = a -> bottomUp(a, f);
     final Stream<Tree<B>> tbs = t.subForest()._1().map(recursiveCall);
     return Tree.node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
    }

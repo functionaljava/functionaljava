@@ -171,12 +171,9 @@ public final class Array<A> implements Iterable<A> {
    */
   @SuppressWarnings("unchecked")
   public Stream<A> toStream() {
-    return Stream.unfold(new F<Integer, Option<P2<A, Integer>>>() {
-      public Option<P2<A, Integer>> f(final Integer o) {
-        return a.length > o ? some(p((A) a[o], o + 1))
-            : Option.<P2<A, Integer>>none();
-      }
-    }, 0);
+    return Stream.unfold(o ->
+        a.length > o ? some(p((A) a[o], o + 1)) : Option.<P2<A, Integer>>none(), 0
+    );
   }
 
   @Override
@@ -515,15 +512,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A new array after applying the given array of functions through this array.
    */
   public <B> Array<B> apply(final Array<F<A, B>> lf) {
-    return lf.bind(new F<F<A, B>, Array<B>>() {
-      public Array<B> f(final F<A, B> f) {
-        return map(new F<A, B>() {
-          public B f(final A a) {
-            return f.f(a);
-          }
-        });
-      }
-    });
+    return lf.bind(f -> map(a -> f.f(a)));
   }
 
   /**
@@ -602,11 +591,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that wraps a given array.
    */
   public static <A> F<A[], Array<A>> wrap() {
-    return new F<A[], Array<A>>() {
-      public Array<A> f(final A[] as) {
-        return array(as);
-      }
-    };
+    return as -> array(as);
   }
 
   /**
@@ -639,11 +624,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that joins a array of arrays using a bind operation.
    */
   public static <A> F<Array<Array<A>>, Array<A>> join() {
-    return new F<Array<Array<A>>, Array<A>>() {
-      public Array<A> f(final Array<Array<A>> as) {
-        return join(as);
-      }
-    };
+    return as -> join(as);
   }
 
   /**
@@ -775,15 +756,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A new array with the same length as this array.
    */
   public Array<P2<A, Integer>> zipIndex() {
-    return zipWith(range(0, length()), new F<A, F<Integer, P2<A, Integer>>>() {
-      public F<Integer, P2<A, Integer>> f(final A a) {
-        return new F<Integer, P2<A, Integer>>() {
-          public P2<A, Integer> f(final Integer i) {
-            return p(a, i);
-          }
-        };
-      }
-    });
+    return zipWith(range(0, length()), a -> i -> p(a, i));
   }
 
   /**

@@ -1175,11 +1175,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a byte.
    */
-  public static final F<String, Validation<NumberFormatException, Byte>> parseByte = new F<String, Validation<NumberFormatException, Byte>>() {
-    public Validation<NumberFormatException, Byte> f(final String s) {
-      return parseByte(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Byte>> parseByte = s -> parseByte(s);
 
   /**
    * Parses the given string into a double.
@@ -1198,11 +1194,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a double.
    */
-  public static final F<String, Validation<NumberFormatException, Double>> parseDouble = new F<String, Validation<NumberFormatException, Double>>() {
-    public Validation<NumberFormatException, Double> f(final String s) {
-      return parseDouble(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Double>> parseDouble = s -> parseDouble(s);
 
   /**
    * Parses the given string into a float.
@@ -1221,11 +1213,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a float.
    */
-  public static final F<String, Validation<NumberFormatException, Float>> parseFloat = new F<String, Validation<NumberFormatException, Float>>() {
-    public Validation<NumberFormatException, Float> f(final String s) {
-      return parseFloat(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Float>> parseFloat = s -> parseFloat(s);
 
   /**
    * Parses the given string into a integer.
@@ -1244,11 +1232,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into an integer.
    */
-  public static final F<String, Validation<NumberFormatException, Integer>> parseInt = new F<String, Validation<NumberFormatException, Integer>>() {
-    public Validation<NumberFormatException, Integer> f(final String s) {
-      return parseInt(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Integer>> parseInt = s -> parseInt(s);
 
   /**
    * Parses the given string into a long.
@@ -1267,11 +1251,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a long.
    */
-  public static final F<String, Validation<NumberFormatException, Long>> parseLong = new F<String, Validation<NumberFormatException, Long>>() {
-    public Validation<NumberFormatException, Long> f(final String s) {
-      return parseLong(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Long>> parseLong = s -> parseLong(s);
 
   /**
    * Parses the given string into a short.
@@ -1290,11 +1270,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a short. 
    */
-  public static final F<String, Validation<NumberFormatException, Short>> parseShort = new F<String, Validation<NumberFormatException, Short>>() {
-    public Validation<NumberFormatException, Short> f(final String s) {
-      return parseShort(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Short>> parseShort = s -> parseShort(s);
 
   /**
    * Partitions the list into the list of fails and the list of successes

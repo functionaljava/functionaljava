@@ -91,11 +91,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that returns true if a given optional value has a value, otherwise false.
    */
   public static <A> F<Option<A>, Boolean> isSome_() {
-    return new F<Option<A>, Boolean>() {
-      public Boolean f(final Option<A> a) {
-        return a.isSome();
-      }
-    };
+    return a -> a.isSome();
   }
 
   /**
@@ -104,11 +100,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that returns false if a given optional value has a value, otherwise true.
    */
   public static <A> F<Option<A>, Boolean> isNone_() {
-    return new F<Option<A>, Boolean>() {
-      public Boolean f(final Option<A> a) {
-        return a.isNone();
-      }
-    };
+    return a -> a.isNone();
   }
 
   /**
@@ -464,15 +456,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         optional value.
    */
   public final <B> Option<B> apply(final Option<F<A, B>> of) {
-    return of.bind(new F<F<A, B>, Option<B>>() {
-      public Option<B> f(final F<A, B> f) {
-        return map(new F<A, B>() {
-          public B f(final A a) {
-            return f.f(a);
-          }
-        });
-      }
-    });
+    return of.bind(f -> map(a -> f.f(a)));
   }
 
   /**

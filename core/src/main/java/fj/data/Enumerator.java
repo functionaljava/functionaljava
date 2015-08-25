@@ -165,11 +165,7 @@ public final class Enumerator<A> {
    * @return An enumerator after the given functions are applied.
    */
   public <B> Enumerator<B> xmap(final F<A, B> f, final F<B, A> g) {
-    final F<Option<A>, Option<B>> of = new F<Option<A>, Option<B>>() {
-      public Option<B> f(final Option<A> o) {
-        return o.map(f);
-      }
-    };
+    final F<Option<A>, Option<B>> of = o -> o.map(f);
     return enumerator(compose(compose(of, successor), g),
                       compose(compose(of, predecessor), g),
                       max.map(f),
@@ -272,175 +268,116 @@ public final class Enumerator<A> {
   /**
    * An enumerator for <code>boolean</code>.
    */
-  public static final Enumerator<Boolean> booleanEnumerator = enumerator(new F<Boolean, Option<Boolean>>() {
-    public Option<Boolean> f(final Boolean b) {
-      return b ? Option.<Boolean>none() : some(true);
-    }
-  }, new F<Boolean, Option<Boolean>>() {
-    public Option<Boolean> f(final Boolean b) {
-      return b ? some(false) : Option.<Boolean>none();
-    }
-  }, some(true), some(false), booleanOrd);
+  public static final Enumerator<Boolean> booleanEnumerator = enumerator(
+      b -> b ? Option.<Boolean>none() : some(true),
+      b -> b ? some(false) : Option.<Boolean>none(),
+      some(true), some(false), booleanOrd
+  );
 
   /**
    * An enumerator for <code>byte</code>.
    */
-  public static final Enumerator<Byte> byteEnumerator = enumerator(new F<Byte, Option<Byte>>() {
-    public Option<Byte> f(final Byte b) {
-      return b == Byte.MAX_VALUE ? Option.<Byte>none() : some((byte) (b + 1));
-    }
-  }, new F<Byte, Option<Byte>>() {
-    public Option<Byte> f(final Byte b) {
-      return b == Byte.MIN_VALUE ? Option.<Byte>none() : some((byte) (b - 1));
-    }
-  }, some(Byte.MAX_VALUE), some(Byte.MIN_VALUE), byteOrd);
+  public static final Enumerator<Byte> byteEnumerator = enumerator(
+      b -> b == Byte.MAX_VALUE ? Option.<Byte>none() : some((byte) (b + 1)),
+      b -> b == Byte.MIN_VALUE ? Option.<Byte>none() : some((byte) (b - 1)),
+      some(Byte.MAX_VALUE), some(Byte.MIN_VALUE), byteOrd
+  );
 
   /**
    * An enumerator for <code>char</code>.
    */
-  public static final Enumerator<Character> charEnumerator = enumerator(new F<Character, Option<Character>>() {
-    public Option<Character> f(final Character c) {
-      return c == Character.MAX_VALUE ? Option.<Character>none() : some((char) (c + 1));
-    }
-  }, new F<Character, Option<Character>>() {
-    public Option<Character> f(final Character c) {
-      return c == Character.MIN_VALUE ? Option.<Character>none() : some((char) (c - 1));
-    }
-  }, some(Character.MAX_VALUE), some(Character.MIN_VALUE), charOrd);
+  public static final Enumerator<Character> charEnumerator = enumerator(
+      c -> c == Character.MAX_VALUE ? Option.<Character>none() : some((char) (c + 1)),
+      c -> c == Character.MIN_VALUE ? Option.<Character>none() : some((char) (c - 1)),
+      some(Character.MAX_VALUE), some(Character.MIN_VALUE), charOrd
+  );
 
   /**
    * An enumerator for <code>double</code>.
    */
-  public static final Enumerator<Double> doubleEnumerator = enumerator(new F<Double, Option<Double>>() {
-    public Option<Double> f(final Double d) {
-      return d == Double.MAX_VALUE ? Option.<Double>none() : some(d + 1D);
-    }
-  }, new F<Double, Option<Double>>() {
-    public Option<Double> f(final Double d) {
-      return d == Double.MIN_VALUE ? Option.<Double>none() : some(d - 1D);
-    }
-  }, some(Double.MAX_VALUE), some(Double.MIN_VALUE), doubleOrd);
+  public static final Enumerator<Double> doubleEnumerator = enumerator(
+      d -> d == Double.MAX_VALUE ? Option.<Double>none() : some(d + 1D),
+      d -> d == Double.MIN_VALUE ? Option.<Double>none() : some(d - 1D),
+      some(Double.MAX_VALUE), some(Double.MIN_VALUE), doubleOrd
+  );
 
   /**
    * An enumerator for <code>float</code>.
    */
-  public static final Enumerator<Float> floatEnumerator = enumerator(new F<Float, Option<Float>>() {
-    public Option<Float> f(final Float f) {
-      return f == Float.MAX_VALUE ? Option.<Float>none() : some(f + 1F);
-    }
-  }, new F<Float, Option<Float>>() {
-    public Option<Float> f(final Float f) {
-      return f == Float.MIN_VALUE ? Option.<Float>none() : some(f - 1F);
-    }
-  }, some(Float.MAX_VALUE), some(Float.MIN_VALUE), floatOrd);
+  public static final Enumerator<Float> floatEnumerator = enumerator(
+      f -> f == Float.MAX_VALUE ? Option.<Float>none() : some(f + 1F),
+      f -> f == Float.MIN_VALUE ? Option.<Float>none() : some(f - 1F),
+      some(Float.MAX_VALUE), some(Float.MIN_VALUE), floatOrd
+  );
 
   /**
    * An enumerator for <code>int</code>.
    */
-  public static final Enumerator<Integer> intEnumerator = enumerator(new F<Integer, Option<Integer>>() {
-    public Option<Integer> f(final Integer i) {
-      return i == Integer.MAX_VALUE ? Option.<Integer>none() : some(i + 1);
-    }
-  }, new F<Integer, Option<Integer>>() {
-    public Option<Integer> f(final Integer i) {
-      return i == Integer.MIN_VALUE ? Option.<Integer>none() : some(i - 1);
-    }
-  }, some(Integer.MAX_VALUE), some(Integer.MIN_VALUE), intOrd);
+  public static final Enumerator<Integer> intEnumerator = enumerator(
+      i -> i == Integer.MAX_VALUE ? Option.<Integer>none() : some(i + 1),
+      i -> i == Integer.MIN_VALUE ? Option.<Integer>none() : some(i - 1),
+      some(Integer.MAX_VALUE), some(Integer.MIN_VALUE), intOrd
+  );
 
   /**
    * An enumerator for <code>BigInteger</code>.
    */
-  public static final Enumerator<BigInteger> bigintEnumerator = enumerator(new F<BigInteger, Option<BigInteger>>() {
-    public Option<BigInteger> f(final BigInteger i) {
-      return some(i.add(BigInteger.ONE));
-    }
-  }, new F<BigInteger, Option<BigInteger>>() {
-    public Option<BigInteger> f(final BigInteger i) {
-      return some(i.subtract(BigInteger.ONE));
-    }
-  }, Option.<BigInteger>none(), Option.<BigInteger>none(), bigintOrd, curry(
-      new F2<BigInteger, Long, Option<BigInteger>>() {
-        public Option<BigInteger> f(final BigInteger i, final Long l) {
-          return some(i.add(BigInteger.valueOf(l)));
-        }
-      }));
+  public static final Enumerator<BigInteger> bigintEnumerator = enumerator(
+      i -> some(i.add(BigInteger.ONE)),
+      i -> some(i.subtract(BigInteger.ONE)),
+      Option.<BigInteger>none(), Option.<BigInteger>none(), bigintOrd,
+      curry((i, l) -> some(i.add(BigInteger.valueOf(l))))
+  );
 
   /**
    * An enumerator for <code>BigDecimal</code>.
    */
-  public static final Enumerator<BigDecimal> bigdecimalEnumerator = enumerator(new F<BigDecimal, Option<BigDecimal>>() {
-    public Option<BigDecimal> f(final BigDecimal i) {
-      return some(i.add(BigDecimal.ONE));
-    }
-  }, new F<BigDecimal, Option<BigDecimal>>() {
-    public Option<BigDecimal> f(final BigDecimal i) {
-      return some(i.subtract(BigDecimal.ONE));
-    }
-  }, Option.<BigDecimal>none(), Option.<BigDecimal>none(), bigdecimalOrd, curry(
-      new F2<BigDecimal, Long, Option<BigDecimal>>() {
-        public Option<BigDecimal> f(final BigDecimal d, final Long l) {
-          return some(d.add(BigDecimal.valueOf(l)));
-        }
-      }));
+  public static final Enumerator<BigDecimal> bigdecimalEnumerator = enumerator(
+      i -> some(i.add(BigDecimal.ONE)),
+      i -> some(i.subtract(BigDecimal.ONE)),
+      Option.<BigDecimal>none(), Option.<BigDecimal>none(), bigdecimalOrd,
+      curry((d, l) -> some(d.add(BigDecimal.valueOf(l))))
+  );
 
   /**
    * An enumerator for <code>long</code>.
    */
-  public static final Enumerator<Long> longEnumerator = enumerator(new F<Long, Option<Long>>() {
-    public Option<Long> f(final Long i) {
-      return i == Long.MAX_VALUE ? Option.<Long>none() : some(i + 1L);
-    }
-  }, new F<Long, Option<Long>>() {
-    public Option<Long> f(final Long i) {
-      return i == Long.MIN_VALUE ? Option.<Long>none() : some(i - 1L);
-    }
-  }, some(Long.MAX_VALUE), some(Long.MIN_VALUE), longOrd);
+  public static final Enumerator<Long> longEnumerator = enumerator(
+      i -> i == Long.MAX_VALUE ? Option.<Long>none() : some(i + 1L),
+      i -> i == Long.MIN_VALUE ? Option.<Long>none() : some(i - 1L),
+      some(Long.MAX_VALUE), some(Long.MIN_VALUE), longOrd
+  );
 
   /**
    * An enumerator for <code>short</code>.
    */
-  public static final Enumerator<Short> shortEnumerator = enumerator(new F<Short, Option<Short>>() {
-    public Option<Short> f(final Short i) {
-      return i == Short.MAX_VALUE ? Option.<Short>none() : some((short) (i + 1));
-    }
-  }, new F<Short, Option<Short>>() {
-    public Option<Short> f(final Short i) {
-      return i == Short.MIN_VALUE ? Option.<Short>none() : some((short) (i - 1));
-    }
-  }, some(Short.MAX_VALUE), some(Short.MIN_VALUE), shortOrd);
+  public static final Enumerator<Short> shortEnumerator = enumerator(
+      i -> i == Short.MAX_VALUE ? Option.<Short>none() : some((short) (i + 1)),
+      i -> i == Short.MIN_VALUE ? Option.<Short>none() : some((short) (i - 1)),
+      some(Short.MAX_VALUE), some(Short.MIN_VALUE), shortOrd
+  );
 
   /**
    * An enumerator for <code>Ordering</code>.
    */
-  public static final Enumerator<Ordering> orderingEnumerator = enumerator(new F<Ordering, Option<Ordering>>() {
-    public Option<Ordering> f(final Ordering o) {
-      return o == LT ? some(EQ) : o == EQ ? some(GT) : Option.<Ordering>none();
-    }
-  }, new F<Ordering, Option<Ordering>>() {
-    public Option<Ordering> f(final Ordering o) {
-      return o == GT ? some(EQ) : o == EQ ? some(LT) : Option.<Ordering>none();
-    }
-  }, some(GT), some(LT), orderingOrd);
+  public static final Enumerator<Ordering> orderingEnumerator = enumerator(
+      o -> o == LT ? some(EQ) : o == EQ ? some(GT) : Option.<Ordering>none(),
+      o -> o == GT ? some(EQ) : o == EQ ? some(LT) : Option.<Ordering>none(),
+      some(GT), some(LT), orderingOrd
+  );
 
   /**
    * An enumerator for <code>Natural</code>
    */
-  public static final Enumerator<Natural> naturalEnumerator = enumerator(new F<Natural, Option<Natural>>() {
-    public Option<Natural> f(final Natural n) {
-      return Option.some(n.succ());
-    }
-  }, new F<Natural, Option<Natural>>() {
-    public Option<Natural> f(final Natural n) {
-      return n.pred();
-    }
-  }, Option.<Natural>none(), some(Natural.ZERO), naturalOrd, curry(new F2<Natural, Long, Option<Natural>>() {
-    public Option<Natural> f(final Natural n, final Long l) {
-      return some(n).apply(Natural.natural(l).map(Function.curry(new F2<Natural, Natural, Natural>() {
-        public Natural f(final Natural n1, final Natural n2) {
-          return n1.add(n2);
-        }
-      })));
-    }
-  }));
+  public static final Enumerator<Natural> naturalEnumerator = enumerator(
+      n -> Option.some(n.succ()),
+      n -> n.pred(),
+      Option.<Natural>none(), some(Natural.ZERO), naturalOrd,
+      curry((n, l) ->
+        some(n).apply(
+          Natural.natural(l).map(Function.curry((n1, n2) -> n1.add(n2)))
+        )
+      )
+  );
 
 }

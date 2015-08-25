@@ -137,11 +137,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A NonEmptyList of the tails of this list.
    */
   public NonEmptyList<NonEmptyList<A>> tails() {
-    return fromList(somes(toList().tails().map(new F<List<A>, Option<NonEmptyList<A>>>() {
-      public Option<NonEmptyList<A>> f(final List<A> list) {
-        return fromList(list);
-      }
-    }))).some();
+    return fromList(somes(toList().tails().map(list -> fromList(list)))).some();
   }
 
   /**
