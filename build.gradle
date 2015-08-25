@@ -152,11 +152,6 @@ configure(subprojects.findAll { it.name != "props-core" }) {
     eclipseProject.dependsOn eclipsePluginManifest
 }
 
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
-}
-
 task env << {
 	println System.getenv()
 }
