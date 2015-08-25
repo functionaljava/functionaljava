@@ -184,11 +184,7 @@ public final class HPre {
     }
 
     public Show<HZero> show() {
-      return Show.showS(new F<HZero, String>() {
-        public String f(final HZero hZero) {
-          return "HZero";
-        }
-      });
+      return Show.showS(hZero -> "HZero");
     }
 
     public Integer toInteger() {
@@ -209,11 +205,7 @@ public final class HPre {
     private final N pred;
 
     public Show<HSucc<N>> show() {
-      return Show.showS(new F<HSucc<N>, String>() {
-        public String f(final HSucc<N> s) {
-          return "HSucc (" + s.show().showS(s) + ')';
-        }
-      });
+      return Show.showS(s -> "HSucc (" + s.show().showS(s) + ')');
     }
 
     public Integer toInteger() {
