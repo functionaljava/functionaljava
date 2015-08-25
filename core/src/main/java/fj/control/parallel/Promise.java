@@ -86,11 +86,7 @@ public final class Promise<A> {
    * @return A function that, given a 1-product, yields a promise of that product's value.
    */
   public static <A> F<P1<A>, Promise<A>> promise(final Strategy<Unit> s) {
-    return new F<P1<A>, Promise<A>>() {
-      public Promise<A> f(final P1<A> a) {
-        return promise(s, a);
-      }
-    };
+    return a -> promise(s, a);
   }
 
   /**
@@ -117,11 +113,7 @@ public final class Promise<A> {
    * @return The given function transformed into a function that returns a promise.
    */
   public static <A, B> F<A, Promise<B>> promise(final Strategy<Unit> s, final F<A, B> f) {
-    return new F<A, Promise<B>>() {
-      public Promise<B> f(final A a) {
-        return promise(s, P1.curry(f).f(a));
-      }
-    };
+    return a -> promise(s, P1.curry(f).f(a));
   }
 
   /**
@@ -150,11 +142,7 @@ public final class Promise<A> {
    * @return That function lifted to a function on Promises.
    */
   public static <A, B> F<Promise<A>, Promise<B>> fmap_(final F<A, B> f) {
-    return new F<Promise<A>, Promise<B>>() {
-      public Promise<B> f(final Promise<A> a) {
-        return a.fmap(f);
-      }
-    };
+    return a -> a.fmap(f);
   }
 
   /**
@@ -206,11 +194,7 @@ public final class Promise<A> {
    * @return A new promise after applying the given promised function to this promise.
    */
   public <B> Promise<B> apply(final Promise<F<A, B>> pf) {
-    return pf.bind(new F<F<A, B>, Promise<B>>() {
-      public Promise<B> f(final F<A, B> f) {
-        return fmap(f);
-      }
-    });
+    return pf.bind(f -> fmap(f));
   }
 
   /**
@@ -267,11 +251,7 @@ public final class Promise<A> {
    * @return A function that turns a list of promises into a single promise of a list.
    */
   public static <A> F<List<Promise<A>>, Promise<List<A>>> sequence(final Strategy<Unit> s) {
-    return new F<List<Promise<A>>, Promise<List<A>>>() {
-      public Promise<List<A>> f(final List<Promise<A>> as) {
-        return sequence(s, as);
-      }
-    };
+    return as -> sequence(s, as);
   }
 
   /**
@@ -282,15 +262,7 @@ public final class Promise<A> {
    * @return A single promise for the given Stream.
    */
   public static <A> Promise<Stream<A>> sequence(final Strategy<Unit> s, final Stream<Promise<A>> as) {
-    return join(foldRightS(s, curry(new F2<Promise<A>, P1<Promise<Stream<A>>>, Promise<Stream<A>>>() {
-      public Promise<Stream<A>> f(final Promise<A> o, final P1<Promise<Stream<A>>> p) {
-        return o.bind(new F<A, Promise<Stream<A>>>() {
-          public Promise<Stream<A>> f(final A a) {
-            return p._1().fmap(Stream.<A>cons_().f(a));
-          }
-        });
-      }
-    }), promise(s, P.p(Stream.<A>nil()))).f(as));
+    return join(foldRightS(s, curry((Promise<A> o, P1<Promise<Stream<A>>> p) -> o.bind(a -> p._1().fmap(Stream.<A>cons_().f(a)))), promise(s, P.p(Stream.<A>nil()))).f(as));
   }
 
   /**
@@ -300,11 +272,7 @@ public final class Promise<A> {
    * @return A function that turns a list of promises into a single promise of a Stream..
    */
   public static <A> F<List<Promise<A>>, Promise<List<A>>> sequenceS(final Strategy<Unit> s) {
-    return new F<List<Promise<A>>, Promise<List<A>>>() {
-      public Promise<List<A>> f(final List<Promise<A>> as) {
-        return sequence(s, as);
-      }
-    };
+    return as -> sequence(s, as);
   }
 
   /**
