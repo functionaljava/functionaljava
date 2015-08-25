@@ -64,6 +64,10 @@ allprojects {
         dependencyJunit = "junit:junit:4.12"
 
         displayCompilerWarnings = true
+
+        newJdkEnvVar = "JAVA8_HOME"
+        oldJdkEnvVar = "JAVA7_HOME"
+        retroLambdaTarget = JavaVersion.VERSION_1_7
     }
 
 	version = fjVersion
