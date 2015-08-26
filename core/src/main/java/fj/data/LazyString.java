@@ -257,11 +257,7 @@ public final class LazyString implements CharSequence {
     final Stream<Character> findIt = s.dropWhile(p);
     final P2<Stream<Character>, Stream<Character>> ws = findIt.split(p);
     return findIt.isEmpty() ? Stream.<LazyString>nil()
-                            : Stream.cons(fromStream(ws._1()), new P1<Stream<LazyString>>() {
-                              public Stream<LazyString> _1() {
-                                return fromStream(ws._2()).split(p);
-                              }
-                            });
+                            : Stream.cons(fromStream(ws._1()), P.lazy(() -> fromStream(ws._2()).split(p)));
   }
 
   public LazyString map(F<Character, Character> f) {

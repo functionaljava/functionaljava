@@ -1,11 +1,10 @@
 package fj.data.vector;
 
-import fj.F;
-import fj.F2;
+import fj.*;
+
 import static fj.Function.curry;
 import static fj.P.p2;
-import fj.P1;
-import fj.P2;
+
 import fj.data.Array;
 import fj.data.List;
 import fj.data.NonEmptyList;
@@ -103,11 +102,7 @@ public final class V2<A> implements Iterable<A> {
    * @return a stream of the elements of this vector.
    */
   public Stream<A> toStream() {
-    return Stream.cons(_1(), new P1<Stream<A>>() {
-      public Stream<A> _1() {
-        return Stream.single(_2());
-      }
-    });
+    return Stream.cons(_1(), () -> Stream.single(_2()));
   }
 
   /**
@@ -198,11 +193,7 @@ public final class V2<A> implements Iterable<A> {
    * @return the first element of this vector as a product-1.
    */
   public P1<A> head() {
-    return new P1<A>() {
-      public A _1() {
-        return V2.this._1();
-      }
-    };
+    return P.lazy(() -> V2.this._1());
   }
 
 }

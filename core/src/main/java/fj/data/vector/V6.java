@@ -1,11 +1,7 @@
 package fj.data.vector;
 
-import fj.F;
-import fj.F2;
-import fj.P1;
-import fj.P2;
-import fj.P5;
-import fj.P6;
+import fj.*;
+
 import static fj.Function.curry;
 import static fj.P.p2;
 import fj.data.Array;
@@ -34,11 +30,8 @@ public final class V6<A> implements Iterable<A> {
    * @return A new vector-6.
    */
   public static <A> V6<A> p(final P6<A, A, A, A, A, A> p) {
-    return new V6<A>(new P1<A>() {
-      public A _1() {
-        return p._1();
-      }
-    }, V5.p(new P5<A, A, A, A, A>() {
+    return new V6<A>(P.lazy(() -> p._1()),
+    V5.p(new P5<A, A, A, A, A>() {
       public A _1() {
         return p._2();
       }
