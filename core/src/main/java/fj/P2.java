@@ -187,11 +187,7 @@ public abstract class P2<A, B> {
   public final <C> Stream<C> sequenceW(final Stream<F<P2<A, B>, C>> fs) {
     return fs.isEmpty()
            ? Stream.<C>nil()
-           : Stream.cons(fs.head().f(this), new P1<Stream<C>>() {
-             public Stream<C> _1() {
-               return sequenceW(fs.tail()._1());
-             }
-           });
+           : Stream.cons(fs.head().f(this), P.lazy(() -> sequenceW(fs.tail()._1())));
   }
 
   /**

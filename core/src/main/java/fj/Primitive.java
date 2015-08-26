@@ -113,11 +113,7 @@ public final class Primitive {
   /**
    * A function that converts characters to integers.
    */
-  public static final F<Character, Integer> Character_Integer = new F<Character, Integer>() {
-    public Integer f(final Character c) {
-      return (int) (char) c;
-    }
-  };
+  public static final F<Character, Integer> Character_Integer = c -> (int) (char) c;
 
   /**
    * A function that converts characters to longs.
@@ -141,11 +137,7 @@ public final class Primitive {
   /**
    * A function that converts doubles to bytes.
    */
-  public static final F<Double, Byte> Double_Byte = new F<Double, Byte>() {
-    public Byte f(final Double d) {
-      return (byte) (double) d;
-    }
-  };
+  public static final F<Double, Byte> Double_Byte = d -> (byte) (double) d;
 
   /**
    * A function that converts doubles to characters.

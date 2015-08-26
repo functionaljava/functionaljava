@@ -305,11 +305,7 @@ public final class Semigroup<A> {
    * @return A semigroup for unary products.
    */
   public static <A> Semigroup<P1<A>> p1Semigroup(final Semigroup<A> sa) {
-    return semigroup((a1, a2) -> new P1<A>() {
-      public A _1() {
-        return sa.sum(a1._1(), a2._1());
-      }
-    });
+    return semigroup((a1, a2) -> P.lazy(() -> sa.sum(a1._1(), a2._1())));
   }
 
   /**

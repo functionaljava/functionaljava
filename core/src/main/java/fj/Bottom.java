@@ -38,11 +38,9 @@ public final class Bottom {
    * @return A thunk that throws an error using the given message when evaluated.
    */
   public static <A> P1<A> error_(final String s) {
-    return new P1<A>() {
-      @Override public A _1() {
+    return P.lazy(() -> {
         throw new Error(s);
-      }
-    };
+    });
   }
 
   /**

@@ -97,11 +97,7 @@ public final class Promise<A> {
    * @return A promise of a new Callable that will return the result of calling the given Callable.
    */
   public static <A> Promise<Callable<A>> promise(final Strategy<Unit> s, final Callable<A> a) {
-    return promise(s, new P1<Callable<A>>() {
-      public Callable<A> _1() {
-        return normalise(a);
-      }
-    });
+    return promise(s, P.lazy(() -> normalise(a)));
   }
 
   /**
@@ -368,11 +364,7 @@ public final class Promise<A> {
    * @return A new promise of the result of applying the given function to this promise.
    */
   public <B> Promise<B> cobind(final F<Promise<A>, B> f) {
-    return promise(s, new P1<B>() {
-      public B _1() {
-        return f.f(Promise.this);
-      }
-    });
+    return promise(s, P.lazy(() -> f.f(Promise.this)));
   }
 
   /**
@@ -394,11 +386,7 @@ public final class Promise<A> {
   public <B> Stream<B> sequenceW(final Stream<F<Promise<A>, B>> fs) {
     return fs.isEmpty()
            ? Stream.<B>nil()
-           : Stream.cons(fs.head().f(this), new P1<Stream<B>>() {
-             public Stream<B> _1() {
-               return sequenceW(fs.tail()._1());
-             }
-           });
+           : Stream.cons(fs.head().f(this), P.lazy(() -> sequenceW(fs.tail()._1())));
   }
 
 }

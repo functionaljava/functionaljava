@@ -1,11 +1,9 @@
 package fj.control.parallel;
 
-import fj.F;
-import fj.F0;
-import fj.F2;
-import fj.Function;
+import fj.*;
+
 import static fj.Function.curry;
-import fj.P1;
+
 import fj.data.Either;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -196,15 +194,13 @@ public final class Callables {
    * @return Either the value in the given Callable, or the Exception with which the Callable fails.
    */
   public static <A> P1<Either<Exception, A>> either(final Callable<A> a) {
-    return new P1<Either<Exception, A>>() {
-      public Either<Exception, A> _1() {
+    return P.lazy(() -> {
         try {
-          return right(a.call());
+            return right(a.call());
         } catch (Exception e) {
-          return left(e);
+            return left(e);
         }
-      }
-    };
+    });
   }
 
   /**

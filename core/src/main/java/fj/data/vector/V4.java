@@ -289,10 +289,6 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the fourth element of a given vector.
    */
   public static <A> F<V4<A>, A> __4() {
-    return new F<V4<A>, A>() {
-      public A f(final V4<A> v) {
-        return v._4();
-      }
-    };
+    return v -> v._4();
   }
 }
