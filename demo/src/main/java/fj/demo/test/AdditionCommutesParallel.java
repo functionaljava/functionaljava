@@ -1,6 +1,7 @@
 package fj.demo.test;
 
 import fj.F2;
+import fj.P;
 import fj.P1;
 import fj.control.parallel.Strategy;
 import static fj.test.Arbitrary.arbInteger;
@@ -21,11 +22,7 @@ public final class AdditionCommutesParallel {
     final Strategy<Property> s = Strategy.executorStrategy(pool);
     final Property p = propertyP(arbInteger, arbInteger, new F2<Integer, Integer, P1<Property>>() {
       public P1<Property> f(final Integer a, final Integer b) {
-        return s.par(new P1<Property>() {
-          public Property _1() {
-            return prop(a + b == b + a);
-          }
-        });
+        return s.par(P.lazy(() -> prop(a + b == b + a)));
       }
     });
     summary.println(p.check(1000000, 5000000, 0, 100)); // OK, passed 1000000 tests.

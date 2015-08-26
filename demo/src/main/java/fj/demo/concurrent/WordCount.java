@@ -88,12 +88,7 @@ public class WordCount {
         @Override
         public F<Input<char[]>, IterV<char[], Map<String, Integer>>> f(final P2<StringBuilder,Map<String, Integer>> acc) {
           final P1<IterV<char[], Map<String, Integer>>> empty =
-            new P1<IterV<char[], Map<String, Integer>>>() {
-              @Override
-              public IterV<char[], Map<String, Integer>> _1() {
-                return IterV.cont(step.f(acc));
-              }
-            };
+            P.lazy(() -> IterV.cont(step.f(acc)));
           final P1<F<char[], IterV<char[], Map<String, Integer>>>> el =
             new P1<F<char[], IterV<char[], Map<String, Integer>>>>() {
               @Override
@@ -120,17 +115,15 @@ public class WordCount {
               }
             };
           final P1<IterV<char[], Map<String, Integer>>> eof =
-            new P1<IterV<char[], Map<String, Integer>>>() {
-              @Override
-              public IterV<char[], Map<String, Integer>> _1() {
+            P.lazy(() -> {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
                   return IterV.done(map, Input.<char[]>eof());
                 }
                 return IterV.done(acc._2(), Input.<char[]>eof());
-              }
-            };
+              });
+
           return s -> s.apply(empty, el, eof);
         }
       };

@@ -32,9 +32,7 @@ public class Problem3 {
       else {
         final V2<Natural> dm = n.divmod(h);
         if (naturalOrd.eq(dm._2(), ZERO))
-          ret = cons(h, new P1<Stream<Natural>>() {
-            public Stream<Natural> _1() {return factor(dm._1(), h, t);}
-          });
+          ret = cons(h, () -> factor(dm._1(), h, t));
         else ns = ns.tail()._1();
       }
     }

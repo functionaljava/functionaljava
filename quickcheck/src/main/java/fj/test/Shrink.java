@@ -190,11 +190,7 @@ public final class Shrink<A> {
   public static <A> Shrink<Option<A>> shrinkOption(final Shrink<A> sa) {
     return shrink(o -> o.isNone() ?
            Stream.<Option<A>>nil() :
-           cons(Option.<A>none(), new P1<Stream<Option<A>>>() {
-             public Stream<Option<A>> _1() {
-               return sa.shrink(o.some()).map(Option.<A>some_());
-             }
-           }));
+           cons(Option.<A>none(), () -> sa.shrink(o.some()).map(Option.<A>some_())));
   }
 
   /**
