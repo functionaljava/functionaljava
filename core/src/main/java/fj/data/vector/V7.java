@@ -211,11 +211,7 @@ public final class V7<A> implements Iterable<A> {
    * @return a stream of the elements of this vector.
    */
   public Stream<A> toStream() {
-    return Stream.cons(head._1(), new P1<Stream<A>>() {
-      public Stream<A> _1() {
-        return tail.toStream();
-      }
-    });
+    return Stream.cons(head._1(), () -> tail.toStream());
   }
 
   /**

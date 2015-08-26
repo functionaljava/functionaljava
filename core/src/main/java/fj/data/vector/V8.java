@@ -229,6 +229,7 @@ public final class V8<A> implements Iterable<A> {
    */
   public Stream<A> toStream() {
     return Stream.cons(head._1(), new P1<Stream<A>>() {
+        F0<Stream<A>> f = 100;
       public Stream<A> _1() {
         return tail.toStream();
       }
