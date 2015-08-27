@@ -138,9 +138,9 @@ public final class Shrink<A> {
     if (i == 0L)
       return nil();
     else {
-      final Stream<Long> is = cons(0L, P.lazy(() -> iterate(x -> x / 2L, i).takeWhile(x2 -> x2 != 0L).map(x1 -> i - x1)));
+      final Stream<Long> is = cons(0L, () -> iterate(x -> x / 2L, i).takeWhile(x2 -> x2 != 0L).map(x1 -> i - x1));
 
-      return i < 0L ? cons(-i, P.lazy(() -> is)) : is;
+      return i < 0L ? cons(-i, () -> is) : is;
     }
   });
 
