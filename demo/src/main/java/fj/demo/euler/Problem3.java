@@ -18,7 +18,7 @@ import static fj.Show.naturalShow;
  */
 public class Problem3 {
   // An infinite stream of all the primes.
-  public static final Stream<Natural> primes = cons(natural(2).some(), P.lazy(() -> forever(naturalEnumerator, natural(3).some(), 2).filter(n -> primeFactors(n).length() == 1)));
+  public static final Stream<Natural> primes = cons(natural(2).some(), () -> forever(naturalEnumerator, natural(3).some(), 2).filter(n -> primeFactors(n).length() == 1));
 
   //Finds factors of a given number.
   public static Stream<Natural> factor(final Natural n, final Natural p, final P1<Stream<Natural>> ps) {

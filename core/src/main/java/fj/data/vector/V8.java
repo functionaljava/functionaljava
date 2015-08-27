@@ -228,7 +228,7 @@ public final class V8<A> implements Iterable<A> {
    * @return a stream of the elements of this vector.
    */
   public Stream<A> toStream() {
-    return Stream.cons(head._1(), P.lazy(() -> tail.toStream()));
+    return Stream.cons(head._1(), () -> tail.toStream());
   }
 
   /**

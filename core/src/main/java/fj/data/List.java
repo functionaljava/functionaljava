@@ -167,7 +167,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A stream projection of this list.
    */
   public final Stream<A> toStream() {
-    return isEmpty() ? Stream.nil() : Stream.cons(head(), P.lazy(() -> tail().toStream()));
+    return isEmpty() ? Stream.nil() : Stream.cons(head(), () -> tail().toStream());
   }
 
   /**

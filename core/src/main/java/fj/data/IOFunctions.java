@@ -360,7 +360,7 @@ public class IOFunctions {
 
     public static <A> IO<Stream<A>> sequence(Stream<IO<A>> stream) {
         F2<IO<Stream<A>>, IO<A>, IO<Stream<A>>> f2 = (ioList, io) ->
-                IOFunctions.bind(ioList, (xs) -> map(io, x -> Stream.cons(x, P.lazy(() -> xs))));
+                IOFunctions.bind(ioList, (xs) -> map(io, x -> Stream.cons(x, () -> xs)));
         return stream.foldLeft(f2, IOFunctions.unit(Stream.<A>nil()));
     }
 
@@ -443,7 +443,7 @@ public class IOFunctions {
                     } else {
                         IO<Stream<A>> io2 = sequenceWhile(stream.tail()._1(), f);
                         SafeIO<Stream<A>> s3 = toSafe(() -> io2.run());
-                        return Stream.cons(a, P.lazy(() -> s3.run()));
+                        return Stream.cons(a, () -> s3.run());
                     }
                 }
             }

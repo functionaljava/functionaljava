@@ -386,7 +386,7 @@ public final class Promise<A> {
   public <B> Stream<B> sequenceW(final Stream<F<Promise<A>, B>> fs) {
     return fs.isEmpty()
            ? Stream.<B>nil()
-           : Stream.cons(fs.head().f(this), P.lazy(() -> sequenceW(fs.tail()._1())));
+           : Stream.cons(fs.head().f(this), () -> sequenceW(fs.tail()._1()));
   }
 
 }

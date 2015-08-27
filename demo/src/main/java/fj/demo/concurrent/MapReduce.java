@@ -51,7 +51,7 @@ public class MapReduce {
                     throw new Error(e);
                 }
                 if (s.isSome())
-                    return fromString(s.some()).append(P.lazy(sc -> f(reader)));
+                    return fromString(s.some()).append(() -> f(reader));
                 else {
                     try {
                         reader.close();
