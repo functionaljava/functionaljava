@@ -212,11 +212,7 @@ public abstract class HList<A extends HList<A>> {
      * @return a fold instance for the empty list.
      */
     public static <G, V> HFoldr<G, V, HNil, V> hFoldr() {
-      return new HFoldr<G, V, HNil, V>(new F3<G, V, HNil, V>() {
-        public V f(final G f, final V v, final HNil hNil) {
-          return v;
-        }
-      });
+      return new HFoldr<G, V, HNil, V>((f, v, hNil) -> v);
     }
 
     /**
@@ -238,11 +234,7 @@ public abstract class HList<A extends HList<A>> {
         H extends HFoldr<G, V, L, R>,
         PP extends Apply<G, P2<E, R>, RR>>
     HFoldr<G, V, HCons<E, L>, RR> hFoldr(final PP p, final H h) {
-      return new HFoldr<G, V, HCons<E, L>, RR>(new F3<G, V, HCons<E, L>, RR>() {
-        public RR f(final G f, final V v, final HCons<E, L> c) {
-          return p.apply(f, P.p(c.head(), h.foldRight(f, v, c.tail())));
-        }
-      });
+      return new HFoldr<G, V, HCons<E, L>, RR>((f, v, c) -> p.apply(f, P.p(c.head(), h.foldRight(f, v, c.tail()))));
     }
 
     /**

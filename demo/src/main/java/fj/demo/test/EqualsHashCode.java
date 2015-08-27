@@ -61,11 +61,7 @@ public final class EqualsHashCode {
     final Arbitrary<Byte> arbByteR = arbitrary(arbByte.gen.map(b -> (byte)(b % 3)));
 
     // Restrictive arbitrary for String, produces from twelve (2 * 3 * 2) possible values.
-    final Arbitrary<String> arbStringR = arbitrary(arbCharacter.gen.bind(arbCharacter.gen, arbCharacter.gen, curry(new F3<Character, Character, Character, String>() {
-      public String f(final Character c1, final Character c2, final Character c3) {
-        return new String(new char[]{(char)(c1 % 2 + 'a'), (char)(c2 % 3 + 'a'), (char)(c3 % 2 + 'a')});
-      }
-    })));
+    final Arbitrary<String> arbStringR = arbitrary(arbCharacter.gen.bind(arbCharacter.gen, arbCharacter.gen, curry((c1, c2, c3) -> new String(new char[]{(char)(c1 % 2 + 'a'), (char)(c2 % 3 + 'a'), (char)(c3 % 2 + 'a')}))));
 
     // Arbitrary for MyClass that uses the restrictive arbitraries above.
     // We are using the monad pattern (bind) to make this a trivial exercise. 
