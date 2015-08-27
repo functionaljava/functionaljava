@@ -1,4 +1,6 @@
 
+archivesBaseName = "${project.projectName}-${project.name}"
+
 configureAllRetroLambda()
 
 dependencies {

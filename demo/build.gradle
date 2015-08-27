@@ -3,6 +3,8 @@ apply plugin: 'application'
 
 mainClassName = "fj.demo.euler.Problem2"
 
+archivesBaseName = "${project.projectName}-${project.name}"
+
 configureAllRetroLambda()
 
 dependencies {
