@@ -37,11 +37,7 @@ public final class Integers {
   /**
    * Curried Integer subtraction.
    */
-  public static final F<Integer, F<Integer, Integer>> subtract = curry(new F2<Integer, Integer, Integer>() {
-    public Integer f(final Integer x, final Integer y) {
-      return x - y;
-    }
-  });
+  public static final F<Integer, F<Integer, Integer>> subtract = curry((x, y) -> x - y);
 
   /**
    * Negation.

@@ -222,11 +222,7 @@ public final class Promise<A> {
    * @return A function of arity-2 promoted to map over promises.
    */
   public static <A, B, C> F<Promise<A>, F<Promise<B>, Promise<C>>> liftM2(final F<A, F<B, C>> f) {
-    return curry(new F2<Promise<A>, Promise<B>, Promise<C>>() {
-      public Promise<C> f(final Promise<A> ca, final Promise<B> cb) {
-        return ca.bind(cb, f);
-      }
-    });
+    return curry((ca, cb) -> ca.bind(cb, f));
   }
 
   /**

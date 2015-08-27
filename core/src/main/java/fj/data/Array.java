@@ -600,11 +600,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that maps a given function across a given array.
    */
   public static <A, B> F<F<A, B>, F<Array<A>, Array<B>>> map() {
-    return curry(new F2<F<A, B>, Array<A>, Array<B>>() {
-      public Array<B> f(final F<A, B> abf, final Array<A> array) {
-        return array.map(abf);
-      }
-    });
+    return curry((abf, array) -> array.map(abf));
   }
 
   /**

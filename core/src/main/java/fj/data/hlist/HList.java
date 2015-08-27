@@ -91,11 +91,7 @@ public abstract class HList<A extends HList<A>> {
      * @return a method for concatenating lists to the empty list.
      */
     public static <L extends HList<L>> HAppend<HNil, L, L> append() {
-      return new HAppend<HNil, L, L>(new F2<HNil, L, L>() {
-        public L f(final HNil hNil, final L l) {
-          return l;
-        }
-      });
+      return new HAppend<HNil, L, L>((hNil, l) -> l);
     }
 
     /**
@@ -106,11 +102,7 @@ public abstract class HList<A extends HList<A>> {
      */
     public static <X, A extends HList<A>, B, C extends HList<C>, H extends HAppend<A, B, C>>
     HAppend<HCons<X, A>, B, HCons<X, C>> append(final H h) {
-      return new HAppend<HCons<X, A>, B, HCons<X, C>>(new F2<HCons<X, A>, B, HCons<X, C>>() {
-        public HCons<X, C> f(final HCons<X, A> c, final B l) {
-          return cons(c.head(), h.append(c.tail(), l));
-        }
-      });
+      return new HAppend<HCons<X, A>, B, HCons<X, C>>((c, l) -> cons(c.head(), h.append(c.tail(), l)));
     }
   }
 

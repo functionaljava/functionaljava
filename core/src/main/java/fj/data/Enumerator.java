@@ -236,8 +236,7 @@ public final class Enumerator<A> {
    */
   public static <A> Enumerator<A> enumerator(final F<A, Option<A>> successor, final F<A, Option<A>> predecessor,
                                              final Option<A> max, final Option<A> min, final Ord<A> order) {
-    return new Enumerator<A>(successor, predecessor, max, min, order, curry(new F2<A, Long, Option<A>>() {
-      public Option<A> f(final A a, final Long l) {
+    return new Enumerator<A>(successor, predecessor, max, min, order, curry((a, l) -> {
         if (l == 0L)
           return some(a);
         else if (l < 0L) {
@@ -261,7 +260,6 @@ public final class Enumerator<A> {
           }
           return some(aa);
         }
-      }
     }));
   }
 

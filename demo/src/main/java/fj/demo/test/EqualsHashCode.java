@@ -69,19 +69,11 @@ public final class EqualsHashCode {
 
     // Arbitrary for MyClass that uses the restrictive arbitraries above.
     // We are using the monad pattern (bind) to make this a trivial exercise. 
-    final Arbitrary<MyClass> arbMyClass = arbitrary(arbByteR.gen.bind(arbStringR.gen, curry(new F2<Byte, String, MyClass>() {
-      public MyClass f(final Byte b, final String s) {
-        return new MyClass(b, s);
-      }
-    })));
+    final Arbitrary<MyClass> arbMyClass = arbitrary(arbByteR.gen.bind(arbStringR.gen, curry((b, s) -> new MyClass(b, s))));
 
     // Finally the property.
     // if m1 equals m2, then this implies that m1's hashCode is equal to m2's hashCode.
-    final Property p = property(arbMyClass, arbMyClass, new F2<MyClass, MyClass, Property>() {
-      public Property f(final MyClass m1, final MyClass m2) {
-        return bool(m1.equals(m2)).implies(m1.hashCode() == m2.hashCode());
-      }
-    });
+    final Property p = property(arbMyClass, arbMyClass, (m1, m2) -> bool(m1.equals(m2)).implies(m1.hashCode() == m2.hashCode()));
     // at least 100 from 10,000 should satisfy the premise (m1.equals(m2))  
     summary.println(p.check(100, 10000, 0, 100)); // OK, passed 100 tests (4776 discarded).
   }

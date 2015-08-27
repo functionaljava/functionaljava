@@ -83,11 +83,7 @@ public final class Visitor {
    * @return A function that can be applied to a default value (there is no association) and an associated key.
    */
   public static <A, B> F<B, F<A, B>> association(final List<P2<A, B>> x, final Equal<A> eq) {
-    return curry(new F2<B, A, B>() {
-      public B f(final B def, final A a) {
-        return lookup(eq, x, a).orSome(def);
-      }
-    });
+    return curry((def, a) -> lookup(eq, x, a).orSome(def));
   }
 
   /**
@@ -99,10 +95,6 @@ public final class Visitor {
    * @return A function that can be applied to a default value (there is no association) and an associated key.
    */
   public static <A, B> F<P1<B>, F<A, B>> associationLazy(final List<P2<A, B>> x, final Equal<A> eq) {
-    return curry(new F2<P1<B>, A, B>() {
-      public B f(final P1<B> def, final A a) {
-        return lookup(eq, x, a).orSome(def);
-      }
-    });
+    return curry((def, a) -> lookup(eq, x, a).orSome(def));
   }
 }

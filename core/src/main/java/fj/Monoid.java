@@ -118,11 +118,7 @@ public final class Monoid<A> {
    * @return The sum of the given values.
    */
   public A sumRight(final Stream<A> as) {
-    return as.foldRight(new F2<A, P1<A>, A>() {
-      public A f(final A a, final P1<A> ap1) {
-        return sum(a, ap1._1());
-      }
-    }, zero);
+    return as.foldRight((a, ap1) -> sum(a, ap1._1()), zero);
   }
 
   /**

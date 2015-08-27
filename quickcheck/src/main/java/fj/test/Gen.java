@@ -125,8 +125,7 @@ public final class Gen<A> {
    * @return A generator that produces values that meet the given predicate.
    */
   public Gen<A> filter(final F<A, Boolean> f) {
-    return gen(curry(new F2<Integer, Rand, A>() {
-      public A f(final Integer i, final Rand r) {
+    return gen(curry((i, r) -> {
         A a;
 
         do {
@@ -134,7 +133,6 @@ public final class Gen<A> {
         } while(!f.f(a));
 
         return a;
-      }
     }));
   }
 
@@ -359,11 +357,7 @@ public final class Gen<A> {
    * @return A new generator.
    */
   public static <A> Gen<A> parameterised(final F<Integer, F<Rand, Gen<A>>> f) {
-    return new Gen<A>(curry(new F2<Integer, Rand, A>() {
-      public A f(final Integer i, final Rand r) {
-        return f.f(i).f(r).gen(i, r);
-      }
-    }));
+    return new Gen<A>(curry((i, r) -> f.f(i).f(r).gen(i, r)));
   }
 
   /**
@@ -404,11 +398,7 @@ public final class Gen<A> {
   public static Gen<Integer> choose(final int from, final int to) {
     final int f = min(from, to);
     final int t = max(from, to);
-    return parameterised(curry(new F2<Integer, Rand, Gen<Integer>>() {
-      public Gen<Integer> f(final Integer i, final Rand r) {
-        return value(r.choose(f, t));
-      }
-    }));
+    return parameterised(curry((i, r) -> value(r.choose(f, t))));
   }
 
   /**

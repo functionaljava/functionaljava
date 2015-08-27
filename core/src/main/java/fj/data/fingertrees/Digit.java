@@ -121,11 +121,7 @@ public abstract class Digit<V, A> {
    * @return the sum of the measurements of this digit according to the monoid.
    */
   public final V measure() {
-    return foldLeft(Function.curry(new F2<V, A, V>() {
-      public V f(final V v, final A a) {
-        return m.sum(v, m.measure(a));
-      }
-    }), m.zero());
+    return foldLeft(Function.curry((v, a) -> m.sum(v, m.measure(a))), m.zero());
   }
 
   /**

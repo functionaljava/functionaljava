@@ -512,11 +512,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         return in left.
    */
   public static <A, X> F<Option<A>, F<X, Either<X, A>>> toEither() {
-    return curry(new F2<Option<A>, X, Either<X, A>>() {
-      public Either<X, A> f(final Option<A> a, final X x) {
-        return a.toEither(x);
-      }
-    });
+    return curry((a, x) -> a.toEither(x));
   }
 
   /**

@@ -20,11 +20,7 @@ public final class AdditionCommutesParallel {
   public static void main(final String[] args) {
     final ExecutorService pool = Executors.newFixedThreadPool(8);
     final Strategy<Property> s = Strategy.executorStrategy(pool);
-    final Property p = propertyP(arbInteger, arbInteger, new F2<Integer, Integer, P1<Property>>() {
-      public P1<Property> f(final Integer a, final Integer b) {
-        return s.par(P.lazy(() -> prop(a + b == b + a)));
-      }
-    });
+    final Property p = propertyP(arbInteger, arbInteger, (a, b) -> s.par(P.lazy(() -> prop(a + b == b + a))));
     summary.println(p.check(1000000, 5000000, 0, 100)); // OK, passed 1000000 tests.
     pool.shutdown();
   }

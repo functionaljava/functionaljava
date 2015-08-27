@@ -20,15 +20,11 @@ public abstract class Node<V, A> {
   public abstract <B> B foldLeft(final F<B, F<A, B>> f, final B z);
 
   public static <V, A, B> F<B, F<Node<V, A>, B>> foldLeft_(final F<B, F<A, B>> bff) {
-    return curry(new F2<B, Node<V, A>, B>() {
-      public B f(final B b, final Node<V, A> node) { return node.foldLeft(bff, b); }
-    });
+    return curry((b, node) -> node.foldLeft(bff, b));
   }
 
   public static <V, A, B> F<B, F<Node<V, A>, B>> foldRight_(final F<A, F<B, B>> aff) {
-    return curry(new F2<B, Node<V, A>, B>() {
-      public B f(final B b, final Node<V, A> node) { return node.foldRight(aff, b); }
-    });
+    return curry((b, node) -> node.foldRight(aff, b));
   }
 
   public final <B> Node<V, B> map(final F<A, B> f, final Measured<V, B> m) {
