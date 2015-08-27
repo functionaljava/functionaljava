@@ -166,16 +166,13 @@ public final class Callables {
    * @return An optional value that yields the value in the Callable, or None if the Callable fails.
    */
   public static <A> P1<Option<A>> option(final Callable<A> a) {
-    return new P1<Option<A>>() {
-      @SuppressWarnings({"UnusedCatchParameter"})
-      public Option<A> _1() {
+    return P.lazy(() -> {
         try {
           return some(a.call());
         } catch (Exception e) {
           return none();
         }
-      }
-    };
+    });
   }
 
   /**
