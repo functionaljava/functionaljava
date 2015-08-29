@@ -182,9 +182,14 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
     return m;
   }
 
-  public Stream<P2<K, V>> toStream() {
-    return Stream.iteratorStream(iterator());
-  }
+    public Stream<P2<K, V>> toStream() {
+        return tree.toStream().map(p -> p.map2(o -> o.some()));
+    }
+
+    public List<P2<K, V>> toList() {
+        return tree.toList().map(p -> p.map2(o -> o.some()));
+    }
+
   /**
    * An immutable projection of the given mutable map.
    *

@@ -283,11 +283,17 @@ public abstract class Set<A> implements Iterable<A> {
    *
    * @return a stream representation of this set.
    */
-  public final Stream<A> toStream() {
-    return foldMap(Stream.<A>single(), Monoid.<A>streamMonoid());
-  }
+    public final Stream<A> toStream() {
+        if (isEmpty()) {
+            return Stream.nil();
+        } else if (l().isEmpty()) {
+            return Stream.cons(head(), () -> r().toStream());
+        } else {
+            return l().toStream().append(Stream.cons(head(), () -> r().toStream()));
+        }
+    }
 
-  /**
+    /**
    * Binds the given function across this set.
    *
    * @param o An order for the elements of the target set.

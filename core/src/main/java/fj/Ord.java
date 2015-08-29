@@ -458,6 +458,14 @@ public final class Ord<A> {
     return ord(curry((P2<A, B> a, P2<A, B> b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa.compare(a._1(), b._1())));
   }
 
+    public static <A, B> Ord<P2<A, B>> p2Ord1(Ord<A> oa) {
+        return ord(p1 -> p2 -> oa.compare(p1._1(), p2._1()));
+    }
+
+    public static <A, B> Ord<P2<A, B>> p2Ord2(Ord<B> ob) {
+        return ord(p1 -> p2 -> ob.compare(p1._2(), p2._2()));
+    }
+
   /**
    * An order instance for a product-3, with the first factor considered most significant.
    *
