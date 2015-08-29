@@ -4,6 +4,7 @@ import fj.*;
 
 import static fj.Function.*;
 import static fj.data.Either.right;
+import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.function.Booleans.not;
 
@@ -386,6 +387,14 @@ public abstract class Set<A> implements Iterable<A> {
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> minus() {
     return curry((s1, s2) -> s1.minus(s2));
   }
+
+    public Option<A> min() {
+        return isEmpty() ? none() : l().min().orElse(some(head()));
+    }
+
+    public Option<A> max() {
+        return isEmpty() ? none() : r().max().orElse(some(head()));
+    }
 
   /**
    * Returns the size of this set.
