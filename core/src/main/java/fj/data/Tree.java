@@ -338,4 +338,12 @@ public final class Tree<A> implements Iterable<A> {
      return a -> a.root();
    }
 
+    public boolean isLeaf() {
+        return subForest._1().isEmpty();
+    }
+
+    public int length() {
+        return 1 + subForest._1().map(t -> t.length()).foldLeft((acc, i) -> acc + i, 0);
+    }
+
 }
