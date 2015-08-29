@@ -9,6 +9,8 @@ import fj.F6;
 import fj.F7;
 import fj.F8;
 import fj.Function;
+import fj.Bottom;
+
 import static fj.Function.compose;
 import static fj.P.p;
 import fj.P1;
@@ -1115,21 +1117,58 @@ public final class Arbitrary<A> {
   }
 
   /**
-   * Returns an arbitrary implementation for tree maps.
+   * Returns an arbitrary implementation for java.util tree maps.
    *
    * @param ak An arbitrary implementation for the type over which the tree map's keys are defined.
    * @param av An arbitrary implementation for the type over which the tree map's values are
    *           defined.
    * @return An arbitrary implementation for tree maps.
    */
-  public static <K, V> Arbitrary<TreeMap<K, V>> arbTreeMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, TreeMap<K, V>>() {
+  public static <K, V> Arbitrary<java.util.TreeMap<K, V>> arbJavaTreeMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
+    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, java.util.TreeMap<K, V>>() {
       @SuppressWarnings({"UseOfObsoleteCollectionType"})
-      public TreeMap<K, V> f(final Hashtable<K, V> ht) {
-        return new TreeMap<K, V>(ht);
+      public java.util.TreeMap<K, V> f(final Hashtable<K, V> ht) {
+        return new java.util.TreeMap<K, V>(ht);
       }
     }));
   }
+
+    /**
+     * Returns an arbitrary implementation for tree maps.
+     */
+    public static <K, V> Arbitrary<fj.data.TreeMap<K, V>> arbTreeMap(Ord<K> ord, Arbitrary<List<P2<K, V>>> al) {
+        return arbitrary(al.gen.map(list -> fj.data.TreeMap.treeMap(ord, list)));
+    }
+
+    /**
+     * Returns an arbitrary implementation for tree maps.
+     */
+    public static <K, V> Arbitrary<fj.data.TreeMap<K, V>> arbTreeMap(Ord<K> ord, Arbitrary<K> ak, Arbitrary<V> av) {
+        return arbTreeMap(ord, arbList(arbP2(ak, av)));
+    }
+
+    /**
+     * Returns an arbitrary implementation for tree maps where the map size is the given arbitrary integer.
+     */
+    public static <K, V> Arbitrary<fj.data.TreeMap<K, V>> arbTreeMap(Ord<K> ord, Arbitrary<K> ak, Arbitrary<V> av, Arbitrary<Integer> ai) {
+        Gen<List<P2<K, V>>> gl2 = ai.gen.bind(i -> {
+            if (i < 0) {
+                Bottom.error("Undefined: arbitrary natural is negative (" + i + ")");
+            }
+            return Gen.sequenceN(Math.max(i, 0), Arbitrary.arbP2(ak, av).gen);
+        });
+        return arbTreeMap(ord, arbitrary(gl2));
+    }
+
+    /**
+     * Returns an arbitrary implementation for tree maps where the size is less than or equal to the max size.
+     */
+    public static <K, V> Arbitrary<fj.data.TreeMap<K, V>> arbTreeMap(Ord<K> ord, Arbitrary<K> ak, Arbitrary<V> av, int maxSize) {
+        if (maxSize < 0) {
+            Bottom.error("Undefined: arbitrary natural is negative (" + maxSize + ")");
+        }
+        return arbTreeMap(ord, ak, av, arbitrary(Gen.choose(0, maxSize)));
+    }
 
   /**
    * Returns an arbitrary implementation for tree sets.

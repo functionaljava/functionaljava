@@ -13,7 +13,6 @@ object Tests {
     fj.data.CheckHashMap.properties,
     fj.data.CheckHashSet.properties,
     fj.data.CheckSet.properties,
-    fj.data.CheckTreeMap.properties,
     fj.control.parallel.CheckStrategy.properties,
     fj.control.parallel.CheckParModule.properties
   ).flatten

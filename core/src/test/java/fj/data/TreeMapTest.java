@@ -11,6 +11,7 @@ import fj.P2;
 import org.junit.Test;
 
 import static fj.P.p;
+import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -111,5 +112,14 @@ public class TreeMapTest {
 		assertThat(t.toStream(), equalTo(s));
 		assertThat(t2.toStream(), equalTo(s));
 	}
+
+    @Test
+    public void minKey() {
+        TreeMap<Integer, Integer> t1 = TreeMap.<Integer, Integer>empty(Ord.intOrd);
+        assertThat(t1.minKey(), equalTo(none()));
+        TreeMap<Integer, Integer> t2 = t1.set(1, 2).set(2, 4).set(10, 20).set(5, 10).set(0, 100);
+        assertThat(t2.minKey(), equalTo(some(0)));
+        assertThat(t2.delete(0).minKey(), equalTo(some(1)));
+    }
 
 }

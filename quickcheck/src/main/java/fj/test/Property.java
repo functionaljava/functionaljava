@@ -362,6 +362,22 @@ public final class Property {
     });
   }
 
+    /**
+     * Returns a property that produces a result only if the given condition satisfies. The result
+     * will be taken from the given boolean b.
+     */
+    public static Property impliesBoolean(final boolean a, final boolean b) {
+        return implies(a, () -> Property.prop(b));
+    }
+
+    /**
+     * Returns a property that produces a result only if the given condition satisfies. The result
+     * will be taken from the given lazy boolean b.
+     */
+    public static Property impliesBoolean(final boolean a, final F0<Boolean> b) {
+        return implies(a, () -> Property.prop(b.f()));
+    }
+
   /**
    * Returns a property from the given function.
    *

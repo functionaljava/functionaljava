@@ -308,6 +308,34 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
     return new TreeMap<K, W>(tree.map(TreeMap.<K, Option<W>>ord(o), g));
   }
 
+    /**
+     * Returns the minimum (key, value) pair in the tree if the tree is not empty.
+     */
+    public Option<P2<K, V>> min() {
+        return tree.min().map(p -> p(p._1(), p._2().some()));
+    }
+
+    /**
+     * Returns the minimum key in the tree if the tree is not empty.
+     */
+    public Option<K> minKey() {
+        return tree.min().map(p -> p._1());
+    }
+
+    /**
+     * Returns the maximum (key, value) pair in the tree if the tree is not empty.
+     */
+    public Option<P2<K, V>> max() {
+        return tree.max().map(p -> p(p._1(), p._2().some()));
+    }
+
+    /**
+     * Returns the maximum key in the tree if the tree is not empty.
+     */
+    public Option<K> maxKey() {
+        return tree.max().map(p -> p._1());
+    }
+
   	/**
 	 * The expression <code>t1.union(t2)</code> takes the left-biased union of <code>t1</code>
 	 * and <code>t2</code>. It prefers <code>t1</code> when duplicate keys are encountered.

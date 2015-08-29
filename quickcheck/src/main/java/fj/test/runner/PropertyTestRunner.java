@@ -43,7 +43,8 @@ public class PropertyTestRunner extends Runner implements Filterable {
       CheckResult result = checkProperty(p._1(), p._2());
 
       try {
-        CheckResult.summaryEx.showS(result);
+          String s = CheckResult.summaryEx.showS(result);
+          System.out.println(getLabel(desc) + ": " + s);
       } catch (Throwable t) {
         notifier.fireTestFailure(new Failure(desc, t));
       }
@@ -51,6 +52,10 @@ public class PropertyTestRunner extends Runner implements Filterable {
       notifier.fireTestFinished(desc);
     });
   }
+
+    private static String getLabel(Description d) {
+        return d.getDisplayName();
+    }
 
   private static CheckResult checkProperty(Property prop, Option<CheckParams> params) {
     for (CheckParams ps : params) {
