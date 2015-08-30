@@ -15,7 +15,3 @@ configureUpload(signingEnabled, signModule)
 uploadArchives.enabled = true
 
 configureAllRetroLambda()
-
-task coverage(dependsOn: ["test", "jacocoTestReport"]) << {
-
-}

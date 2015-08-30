@@ -19,8 +19,14 @@ buildscript {
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
         classpath "me.tatarka:gradle-retrolambda:$retrolambdaVersion"
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
     }
 }
+
+
+apply plugin: "jacoco"
+apply plugin: 'com.github.kt3k.coveralls'
+
 
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
@@ -32,7 +38,7 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 
-    apply plugin: "jacoco"
+
 
     jacoco {
         toolVersion = "0.7.1.201405082137"
@@ -78,6 +84,8 @@ allprojects {
 
     repositories {
         jcenter()
+        mavenCentral()
+        mavenLocal()
     }
 
 	version = fjVersion
@@ -87,7 +95,21 @@ allprojects {
 
 subprojects {
 
-	apply from: "$rootDir/lib.gradle"
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+
+        dependencies {
+            classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
+        }
+    }
+
+    apply plugin: "jacoco"
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    apply from: "$rootDir/lib.gradle"
 	apply plugin: "java"
 	apply plugin: "eclipse"
     apply plugin: "com.ofg.uptodate"
@@ -116,9 +138,14 @@ subprojects {
         }
     }
 
+
+    task coverage(dependsOn: ["test", "jacocoTestReport"]) << {
+
+    }
+
 }
 
-task coverageRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+task coverageRoot(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     dependsOn = subprojects.test
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories =  files(subprojects.sourceSets.main.output)
