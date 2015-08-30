@@ -186,8 +186,16 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
         return tree.toStream().map(p -> p.map2(o -> o.some()));
     }
 
+    public Stream<P2<K, V>> toStreamReverse() {
+        return tree.toStreamReverse().map(p -> p.map2(o -> o.some()));
+    }
+
     public List<P2<K, V>> toList() {
         return tree.toList().map(p -> p.map2(o -> o.some()));
+    }
+
+    public List<P2<K, V>> toListReverse() {
+        return tree.toListReverse().map(p -> p.map2(o -> o.some()));
     }
 
   /**

@@ -269,6 +269,19 @@ public abstract class Set<A> implements Iterable<A> {
            m.sum(m.sum(l().foldMap(f, m), f.f(head())), r().foldMap(f, m));
   }
 
+    /**
+     * Folds this Set from the right using the given monoid.
+     *
+     * @param f A transformation from this Set's elements, to the monoid.
+     * @param m The monoid to fold this Set with.
+     * @return The result of folding the Set from the right with the given monoid.
+     */
+    public final <B> B foldMapRight(final F<A, B> f, final Monoid<B> m) {
+        return isEmpty() ?
+                m.zero() :
+                m.sum(m.sum(r().foldMapRight(f, m), f.f(head())), l().foldMapRight(f, m));
+    }
+
   /**
    * Returns a list representation of this set.
    *
@@ -277,6 +290,15 @@ public abstract class Set<A> implements Iterable<A> {
   public final List<A> toList() {
     return foldMap(List.cons(List.<A>nil()), Monoid.<A>listMonoid());
   }
+
+    /**
+     * Returns a list representation of this set in reverse order.
+     *
+     * @return a list representation of this set in reverse order.
+     */
+    public final List<A> toListReverse() {
+        return foldMapRight(List.cons(List.<A>nil()), Monoid.<A>listMonoid());
+    }
 
   /**
    * Returns a stream representation of this set.
@@ -290,6 +312,21 @@ public abstract class Set<A> implements Iterable<A> {
             return Stream.cons(head(), () -> r().toStream());
         } else {
             return l().toStream().append(Stream.cons(head(), () -> r().toStream()));
+        }
+    }
+
+    /**
+     * Returns a stream representation of this set in reverse order.
+     *
+     * @return a stream representation of this set in reverse order.
+     */
+    public final Stream<A> toStreamReverse() {
+        if (isEmpty()) {
+            return Stream.nil();
+        } else if (r().isEmpty()) {
+            return Stream.cons(head(), () -> l().toStreamReverse());
+        } else {
+            return r().toStreamReverse().append(Stream.cons(head(), () -> l().toStreamReverse()));
         }
     }
 

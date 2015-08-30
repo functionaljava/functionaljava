@@ -21,7 +21,9 @@ import static fj.test.Property.property;
 @CheckParams(maxSize = 10000)
 public class SetProperties {
 
-    public final static Arbitrary<Set<Integer>> as = Arbitrary.arbSet(Ord.intOrd, Arbitrary.arbInteger, 5);
+    public final static int maxSize = 20;
+    public final static Arbitrary<Set<Integer>> as = Arbitrary.arbSet(Ord.intOrd, Arbitrary.arbInteger, maxSize);
+    public final static Equal<List<Integer>> eq = Equal.listEqual(Equal.intEqual);
 
 	Property setToListIsSorted() {
 		return property(as, s -> prop(s.toList().equals(s.toList().sort(Ord.intOrd))));
@@ -29,11 +31,20 @@ public class SetProperties {
 
     Property stream() {
         return property(as, s -> {
-            Equal<List<Integer>> eq = Equal.listEqual(Equal.intEqual);
             List<Integer> l1 = s.toList();
             List<Integer> l2 = s.toStream().toList();
             return prop(eq.eq(l1, l2));
         });
+    }
+
+    Property listReverse() {
+        return property(as, s -> {
+            return prop(eq.eq(s.toList().reverse(), s.toListReverse()));
+        });
+    }
+
+    Property streamReverse() {
+        return property(as, s -> prop(eq.eq(s.toStream().toList().reverse(), s.toStreamReverse().toList())));
     }
 
 }
