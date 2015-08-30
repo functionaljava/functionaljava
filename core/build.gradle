@@ -1,6 +1,4 @@
 
-apply plugin: "jacoco"
-
 ext {
     signModule = true
 }
@@ -17,18 +15,6 @@ configureUpload(signingEnabled, signModule)
 uploadArchives.enabled = true
 
 configureAllRetroLambda()
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
-    }
-}
 
 task coverage(dependsOn: ["test", "jacocoTestReport"]) << {
 

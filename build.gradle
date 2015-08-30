@@ -32,6 +32,12 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 
+    apply plugin: "jacoco"
+
+    jacoco {
+        toolVersion = "0.7.1.201405082137"
+    }
+
 	defaultTasks "build"
 
 	ext {
@@ -43,7 +49,7 @@ allprojects {
         fjConsumeVersion = "4.4"
 
         signModule = false
-        useRetroLambda = true
+        useRetroLambda = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
@@ -68,6 +74,10 @@ allprojects {
         newJdkEnvVar = "JAVA8_HOME"
         oldJdkEnvVar = "JAVA7_HOME"
         retroLambdaTarget = JavaVersion.VERSION_1_7
+    }
+
+    repositories {
+        jcenter()
     }
 
 	version = fjVersion
@@ -96,6 +106,28 @@ subprojects {
 			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 		}
 	}
+
+    jacocoTestReport {
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+//        html.destination "${buildDir}/jacocoHtml"
+        }
+    }
+
+}
+
+task coverageRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    dependsOn = subprojects.test
+    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories =  files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.jacocoTestReport.executionData)
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
+    }
 }
 
 configure(subprojects.findAll { it.name != "props-core" }) {
