@@ -16,4 +16,4 @@ script:
   - ./gradlew build coverage -s -i
 
 after_success:
-  - ./gradlew coverageRoot coveralls -s -i
+  - ./gradlew coverage coveralls -s -i

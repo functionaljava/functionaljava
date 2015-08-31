@@ -19,7 +19,7 @@ buildscript {
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
         classpath "me.tatarka:gradle-retrolambda:$retrolambdaVersion"
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
     }
 }
 
@@ -145,7 +145,7 @@ subprojects {
 
 }
 
-task coverageRoot(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     dependsOn = subprojects.test
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories =  files(subprojects.sourceSets.main.output)
