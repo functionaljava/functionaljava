@@ -122,6 +122,7 @@ public class TreeMapTest {
         assertThat(t2.delete(0).minKey(), equalTo(some(1)));
     }
 
+    @Test
     public void emptyHashCode() {
         // Hash code of tree map should not throw NullPointerException
         // see https://github.com/functionaljava/functionaljava/issues/187
