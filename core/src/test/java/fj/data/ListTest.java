@@ -64,4 +64,12 @@ public class ListTest {
         assertTrue(e.eq(p._2(), List.list(1, 3)));
     }
 
+    @Test
+    public void intersperseOverflow() {
+        // should not overflow
+        int n = 100000;
+        List<Integer> list = List.replicate(n, 1).intersperse(2);
+        String s = list.toString();
+    }
+
 }
