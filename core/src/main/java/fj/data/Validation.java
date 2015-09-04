@@ -763,7 +763,7 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B, C, D, $E> Validation<List<E>, E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, E> f) {
+    public <B, C, D, $E> Validation<List<E>, $E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, $E> f) {
         List<E> list = fails(list(this, v2, v3, v4));
         if (!list.isEmpty()) {
             return Validation.fail(list);
