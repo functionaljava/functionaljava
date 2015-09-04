@@ -1085,15 +1085,10 @@ public abstract class Stream<A> implements Iterable<A> {
       return p(this, this);
     else if (p.f(head())) {
       final P1<P2<Stream<A>, Stream<A>>> yszs = P.lazy(() -> tail()._1().span(p));
-      return new P2<Stream<A>, Stream<A>>() {
-        @Override public Stream<A> _1() {
-          return cons(head(), yszs.map(P2.<Stream<A>, Stream<A>>__1()));
-        }
-
-        @Override public Stream<A> _2() {
-          return yszs._1()._2();
-        }
-      };
+      return P.lazy(
+            () -> cons(head(), yszs.map(P2.<Stream<A>, Stream<A>>__1())),
+            () -> yszs._1()._2()
+        );
     } else
       return p(Stream.<A>nil(), this);
   }

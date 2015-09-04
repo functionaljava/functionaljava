@@ -316,15 +316,7 @@ public final class Semigroup<A> {
    * @return A semigroup for binary products.
    */
   public static <A, B> Semigroup<P2<A, B>> p2Semigroup(final Semigroup<A> sa, final Semigroup<B> sb) {
-    return semigroup((a1, a2) -> new P2<A, B>() {
-      public A _1() {
-        return sa.sum(a1._1(), a2._1());
-      }
-
-      public B _2() {
-        return sb.sum(a1._2(), a2._2());
-      }
-    });
+      return semigroup((a1, a2) -> P.lazy(() -> sa.sum(a1._1(), a2._1()), () -> sb.sum(a1._2(), a2._2())));
   }
 
   /**
