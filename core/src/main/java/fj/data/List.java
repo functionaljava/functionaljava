@@ -1069,7 +1069,7 @@ public abstract class List<A> implements Iterable<A> {
   public final List<A> intersperse(final A a) {
     return isEmpty() || tail().isEmpty() ?
            this :
-           cons(head(), cons(a, tail().intersperse(a)));
+            cons(head(), tail().bind(a2 -> List.list(a, a2)));
   }
 
   /**

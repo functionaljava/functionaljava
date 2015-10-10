@@ -32,16 +32,7 @@ public final class V3<A> implements Iterable<A> {
   public static <A> V3<A> p(final P3<A, A, A> p) {
     return new V3<A>(
         P.lazy(() -> p._1()),
-        V2.p(new P2<A, A>() {
-              public A _1() {
-                return p._2();
-              }
-
-              public A _2() {
-                return p._3();
-              }
-        }
-        )
+        V2.p(P.lazy(() -> p._2(), () -> p._3()))
     );
   }
 

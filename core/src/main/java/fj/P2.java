@@ -42,15 +42,7 @@ public abstract class P2<A, B> {
    * @return A new product-2 with the elements swapped.
    */
   public final P2<B, A> swap() {
-    return new P2<B, A>() {
-      public B _1() {
-        return P2.this._2();
-      }
-
-      public A _2() {
-        return P2.this._1();
-      }
-    };
+      return P.lazy(() -> P2.this._2(), () -> P2.this._1());
   }
 
   /**
@@ -60,15 +52,8 @@ public abstract class P2<A, B> {
    * @return A product with the given function applied.
    */
   public final <X> P2<X, B> map1(final F<A, X> f) {
-    return new P2<X, B>() {
-      public X _1() {
-        return f.f(P2.this._1());
-      }
-
-      public B _2() {
-        return P2.this._2();
-      }
-    };
+      P2<A, B> self = this;
+      return P.lazy(() -> f.f(self._1()), () -> self._2());
   }
 
   /**
@@ -78,15 +63,7 @@ public abstract class P2<A, B> {
    * @return A product with the given function applied.
    */
   public final <X> P2<A, X> map2(final F<B, X> f) {
-    return new P2<A, X>() {
-      public A _1() {
-        return P2.this._1();
-      }
-
-      public X _2() {
-        return f.f(P2.this._2());
-      }
-    };
+      return P.lazy(() -> P2.this._1(), () -> f.f(P2.this._2()));
   }
 
 
@@ -112,16 +89,8 @@ public abstract class P2<A, B> {
    *         and with the second element intact.
    */
   public final <C> P2<C, B> cobind(final F<P2<A, B>, C> k) {
-    return new P2<C, B>() {
-
-      public C _1() {
-        return k.f(P2.this);
-      }
-
-      public B _2() {
-        return P2.this._2();
-      }
-    };
+      P2<A, B> self = this;
+      return P.lazy(() -> k.f(self), () -> self._2());
   }
 
   /**

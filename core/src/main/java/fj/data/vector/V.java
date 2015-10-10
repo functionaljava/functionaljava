@@ -36,15 +36,7 @@ public final class V {
    * @return The vector-2.
    */
   public static <A> V2<A> v(final F0<A> a1, final F0<A> a2) {
-    return V2.p(new P2<A, A>() {
-      public A _1() {
-        return a1.f();
-      }
-
-      public A _2() {
-        return a2.f();
-      }
-    });
+      return V2.p(P.lazy(() -> a1.f(), () -> a2.f()));
   }
 
   /**

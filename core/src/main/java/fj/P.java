@@ -233,6 +233,10 @@ public final class P {
         };
     }
 
+    public static <A, B> P2<A, B> lazyProduct(F0<P2<A, B>> f) {
+        return P.lazy(() -> f.f()._1(), () -> f.f()._2());
+    }
+
     /**
    * A function that puts an element in a product-2.
    *
@@ -548,16 +552,7 @@ public final class P {
     }
 
     public static <A, B> P2<A, B> lazy(F<Unit, A> fa, F<Unit, B> fb) {
-        return new P2<A, B>() {
-            @Override
-            public A _1() {
-                return fa.f(unit());
-            }
-            @Override
-            public B _2() {
-                return fb.f(unit());
-            }
-        };
+        return P.lazy(() -> fa.f(unit()), () -> fb.f(unit()));
     }
 
     public static <A, B, C> P3<A, B, C> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc) {
