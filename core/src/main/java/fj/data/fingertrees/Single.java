@@ -86,7 +86,12 @@ public final class Single<V, A> extends FingerTree<V, A> {
 
   @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) { return p(i, a); }
 
-  /**
+    @Override
+    public int length() {
+        return 1;
+    }
+
+    /**
    * Returns the single element of this tree.
    *
    * @return the single element of this tree.

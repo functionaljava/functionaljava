@@ -195,6 +195,12 @@ public final class Deep<V, A> extends FingerTree<V, A> {
     }
   }
 
+    @Override
+    public int length() {
+        int midSize = middle.foldLeft((acc, n) -> acc + n.length(), 0);
+        return prefix.length() + midSize + suffix.length();
+    }
+
     private static <V, A> FingerTree<V, Node<V, A>> addDigits0(
             final Measured<V, A> m, final FingerTree<V, Node<V, A>> m1,
             final Digit<V, A> s1, final Digit<V, A> p2,

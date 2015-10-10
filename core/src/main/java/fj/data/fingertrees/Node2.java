@@ -58,7 +58,12 @@ public final class Node2<V, A> extends Node<V, A> {
     return n2.f(this);
   }
 
-  public V2<A> toVector() {
+    @Override
+    public int length() {
+        return 2;
+    }
+
+    public V2<A> toVector() {
     return as;
   }
 }

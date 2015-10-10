@@ -83,4 +83,9 @@ public final class Four<V, A> extends Digit<V, A> {
       }
     }
   }
+
+    @Override
+    public int length() {
+        return 4;
+    }
 }

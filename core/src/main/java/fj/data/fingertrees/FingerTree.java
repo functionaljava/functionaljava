@@ -4,6 +4,8 @@ import fj.*;
 import fj.data.Option;
 import fj.data.Seq;
 
+import static fj.Monoid.intAdditionMonoid;
+
 /**
  * Provides 2-3 finger trees, a functional representation of persistent sequences supporting access to the ends in
  * amortized O(1) time. Concatenation and splitting time is O(log n) in the size of the smaller piece.
@@ -158,6 +160,10 @@ public abstract class FingerTree<V, A> {
    */
   public abstract A head();
 
+  public Option<A> headOption() {
+      return isEmpty() ? Option.<A>none() : Option.some(head());
+  }
+
   /**
    * The last element of this tree. This is an O(1) operation.
    *
@@ -215,4 +221,11 @@ public abstract class FingerTree<V, A> {
   abstract P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc);
 
   public abstract P2<Integer, A> lookup(final F<V, Integer> o, final int i);
+
+    public abstract int length();
+
+    public static <A> FingerTree<Integer, A> emptyIntAddition() {
+        return FingerTree.mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
+    }
+
 }

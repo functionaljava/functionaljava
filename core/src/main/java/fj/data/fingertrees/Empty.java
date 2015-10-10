@@ -37,7 +37,12 @@ public final class Empty<V, A> extends FingerTree<V, A> {
 
   @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) { throw error("Lookup of empty tree."); }
 
-  @Override public <B> B foldRight(final F<A, F<B, B>> aff, final B z) {
+    @Override
+    public int length() {
+        return 0;
+    }
+
+    @Override public <B> B foldRight(final F<A, F<B, B>> aff, final B z) {
     return z;
   }
 

@@ -16,9 +16,7 @@ import org.junit.runner.RunWith;
 import static fj.Function.identity;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-import static fj.test.Arbitrary.arbInteger;
-import static fj.test.Arbitrary.arbSeq;
-import static fj.test.Arbitrary.arbitrary;
+import static fj.test.Arbitrary.*;
 import static fj.test.Property.implies;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -121,4 +119,11 @@ public class SeqProperties {
     return property(arbSeq(arbitrary(Gen.value(1))), seq ->
       prop(seq.foldRight((i, acc) -> acc + i, 0) == seq.length()));
   }
+
+    public Property length() {
+        return property(arbList(arbInteger), list ->
+            prop(Seq.seq(list).length() == list.length())
+        );
+    }
+
 }

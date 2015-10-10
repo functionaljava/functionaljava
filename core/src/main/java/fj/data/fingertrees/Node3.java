@@ -34,7 +34,12 @@ public final class Node3<V, A> extends Node<V, A> {
     return n3.f(this);
   }
 
-  public Digit<V, A> toDigit() {
+    @Override
+    public int length() {
+        return 3;
+    }
+
+    public Digit<V, A> toDigit() {
     return new Three<V, A>(measured(), as);
   }
 

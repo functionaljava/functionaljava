@@ -159,4 +159,7 @@ public abstract class Digit<V, A> {
   abstract P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc);
 
   public abstract P2<Integer, A> lookup(final F<V, Integer> o, final int i);
+
+    public abstract int length();
+
 }

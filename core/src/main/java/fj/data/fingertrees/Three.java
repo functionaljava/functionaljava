@@ -73,4 +73,9 @@ public final class Three<V, A> extends Digit<V, A> {
       }
     }
   }
+
+    @Override
+    public int length() {
+        return 3;
+    }
 }

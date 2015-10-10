@@ -100,6 +100,10 @@ public final class Seq<A> implements Iterable<A> {
    */
   public A head() { return ftree.head(); }
 
+  public Option<A> headOption() {
+      return ftree.headOption();
+  }
+
   /**
    * The last element of this sequence. This is an O(1) operation.
    *

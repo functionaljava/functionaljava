@@ -64,4 +64,10 @@ public final class Two<V, A> extends Digit<V, A> {
       return P.p(i - s1, as._2());
     }
   }
+
+    @Override
+    public int length() {
+        return 2;
+    }
+
 }

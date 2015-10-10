@@ -49,4 +49,9 @@ public final class One<V, A> extends Digit<V, A> {
   @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) {
     return P.p(i, a);
   }
+
+    @Override
+    public int length() {
+        return 1;
+    }
 }
