@@ -1,0 +1,8 @@
+
+= Release 4.0
+
+Released: 30 May, 2014
+
+* Merged changes from 3.2
+* Minimal changes to support Java 8.
+* Changed abstract classes to interfaces with default methods (P1, F1 to F8).

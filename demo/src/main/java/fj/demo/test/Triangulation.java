@@ -23,11 +23,7 @@ public final class Triangulation {
   }
 
   public static void main(final String[] args) {
-    final Property p = property(arbInteger, new F<Integer, Property>() {
-      public Property f(final Integer a) {
-        return prop(isPositive(a) == (a != 0 && !isNegative(a)));
-      }
-    });
+    final Property p = property(arbInteger, a -> prop(isPositive(a) == (a != 0 && !isNegative(a))));
     summary.println(p.check()); // Falsified after 0 passed tests with argument: 0
   }
 }

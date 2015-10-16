@@ -1,0 +1,30 @@
+
+archivesBaseName = "${project.projectName}-${project.name}"
+
+apply plugin: 'scala'
+
+ext {
+    scalaVersion = "2.11.7"
+    scalacheckScalaVersion = "2.11"
+    scalacheckVersion = "1.12.4"
+    signModule = true
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.useAnt = false
+}
+
+dependencies {
+    compile project(":core")
+    compile "org.scala-lang:scala-library:$scalaVersion"
+    compile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
+
+    testCompile dependencyJunit
+}
+
+sourceCompatibility = "1.7"
+
+performSigning(signingEnabled, signModule)
+configureUpload(signingEnabled, signModule)
+
+

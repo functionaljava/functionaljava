@@ -22,25 +22,15 @@ Tests three properties about the StringBuilder.reverse method:
 */
 public final class StringBuilderReverse {
   public static void main(final String[] args) {
-    final Property p1 = property(arbStringBuilder, new F<StringBuilder, Property>() {
-      public Property f(final StringBuilder sb) {
-        return prop(stringBuilderEqual.eq(new StringBuilder(sb), sb.reverse().reverse()));
-      }
-    });
+    final Property p1 = property(arbStringBuilder, sb -> prop(stringBuilderEqual.eq(new StringBuilder(sb), sb.reverse().reverse())));
 
-    final Property p2 = property(arbCharacter, new F<Character, Property>() {
-      public Property f(final Character c) {
-        return prop(stringBuilderEqual.eq(new StringBuilder().append(c), new StringBuilder().append(c).reverse()));
-      }
-    });
+    final Property p2 = property(arbCharacter, c -> prop(stringBuilderEqual.eq(new StringBuilder().append(c), new StringBuilder().append(c).reverse())));
     
-    final Property p3 = property(arbStringBuilder, arbStringBuilder, new F2<StringBuilder, StringBuilder, Property>() {
-      public Property f(final StringBuilder x, final StringBuilder y) {
+    final Property p3 = property(arbStringBuilder, arbStringBuilder, (x, y) -> {
         // copy the string builders before performing updates on x and y.
         final StringBuilder xx = new StringBuilder(x);
         final StringBuilder yy = new StringBuilder(y);
         return prop(stringBuilderEqual.eq(x.append(y).reverse(), yy.reverse().append(xx.reverse())));
-      }
     });
 
     //OK, passed 100 tests.

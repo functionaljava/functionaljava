@@ -1,7 +1,6 @@
 package fj;
 
 import static fj.Function.curry;
-import static fj.Function.compose;
 import static fj.Function.flip;
 import fj.data.Array;
 import fj.data.List;
@@ -20,7 +19,7 @@ import java.math.BigDecimal;
  * <ul>
  * <li><em>Left Identity</em>; forall x. sum(zero(), x) == x</li>
  * <li><em>Right Identity</em>; forall x. sum(x, zero()) == x</li>
- * <li><em>Associativity</em>; forall x. forall y. forall z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
+ * <li><em>Associativity</em>; forall x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
  *
  * @version %build.number%
@@ -32,6 +31,14 @@ public final class Monoid<A> {
   private Monoid(final F<A, F<A, A>> sum, final A zero) {
     this.sum = sum;
     this.zero = zero;
+  }
+
+  /**
+   * Composes this monoid with another.
+   */
+  public <B> Monoid<P2<A,B>>compose(Monoid<B> m) {
+    return monoid((P2<A,B> x) -> (P2<A,B> y) ->
+      P.p(sum(x._1(), y._1()), m.sum(x._2(), y._2())), P.p(zero, m.zero));
   }
 
   /**
@@ -83,6 +90,18 @@ public final class Monoid<A> {
   }
 
   /**
+   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
+   * @param n multiplier
+   * @param a the value to multiply
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   */
+  public A multiply(final int n, final A a) {
+    A m = zero();
+    for (int i = 0; i < n; i++) { m = sum(m, a); }
+    return m;
+  }
+
+  /**
    * Sums the given values with right-fold.
    *
    * @param as The values to sum.
@@ -99,11 +118,7 @@ public final class Monoid<A> {
    * @return The sum of the given values.
    */
   public A sumRight(final Stream<A> as) {
-    return as.foldRight(new F2<A, P1<A>, A>() {
-      public A f(final A a, final P1<A> ap1) {
-        return sum(a, ap1._1());
-      }
-    }, zero);
+    return as.foldRight((a, ap1) -> sum(a, ap1._1()), zero);
   }
 
   /**
@@ -132,11 +147,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<List<A>, A> sumLeft() {
-    return new F<List<A>, A>() {
-      public A f(final List<A> as) {
-        return sumLeft(as);
-      }
-    };
+    return as -> sumLeft(as);
   }
 
   /**
@@ -145,11 +156,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with right-fold.
    */
   public F<List<A>, A> sumRight() {
-    return new F<List<A>, A>() {
-      public A f(final List<A> as) {
-        return sumRight(as);
-      }
-    };
+    return as -> sumRight(as);
   }
 
   /**
@@ -158,11 +165,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<Stream<A>, A> sumLeftS() {
-    return new F<Stream<A>, A>() {
-      public A f(final Stream<A> as) {
-        return sumLeft(as);
-      }
-    };
+    return as -> sumLeft(as);
   }
 
   /**
@@ -176,7 +179,7 @@ public final class Monoid<A> {
     final Stream<A> s = iterableStream(as);
     return s.isEmpty() ?
            zero :
-           s.foldLeft1(compose(sum, flip(sum).f(a)));
+           s.foldLeft1(Function.compose(sum, flip(sum).f(a)));
   }
 
   /**

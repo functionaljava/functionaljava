@@ -19,11 +19,7 @@ public final class Function {
    * @return A function that is partially-applied to the given value.
    */
   public static <A, B> F<F<A, B>, B> apply(final A a) {
-    return new F<F<A, B>, B>() {
-      public B f(final F<A, B> k) {
-        return k.f(a);
-      }
-    };
+    return f -> f.f(a);
   }
 
   /**
@@ -32,15 +28,7 @@ public final class Function {
    * @return A function that composes two functions to produce a new function.
    */
   public static <A, B, C> F<F<B, C>, F<F<A, B>, F<A, C>>> compose() {
-    return new F<F<B, C>, F<F<A, B>, F<A, C>>>() {
-      public F<F<A, B>, F<A, C>> f(final F<B, C> f) {
-        return new F<F<A, B>, F<A, C>>() {
-          public F<A, C> f(final F<A, B> g) {
-            return compose(f, g);
-          }
-        };
-      }
-    };
+    return f -> g -> compose(f, g);
   }
 
   /**
@@ -555,11 +543,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D, E, F$, G, H> F<F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>>, F7<A, B, C, D, E, F$, G, H>> uncurryF7() {
-    return new F<F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>>, F7<A, B, C, D, E, F$, G, H>>() {
-      public F7<A, B, C, D, E, F$, G, H> f(final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>> f) {
-        return uncurryF7(f);
-      }
-    };
+    return f -> uncurryF7(f);
   }
 
   /**
@@ -734,7 +718,7 @@ public final class Function {
    * @return A new function after applying the given higher-order function to the given function.
    */
   public static <A, B, C> F<C, B> apply(final F<C, F<A, B>> cab, final F<C, A> ca) {
-    return bind(cab, f -> compose(a -> f.f(a), ca));
+    return bind(cab, f -> compose(f, ca));
   }
 
   /**

@@ -1,15 +1,9 @@
 package fj.data;
 
-import fj.F;
-import fj.F2;
-import fj.F2Functions;
-import fj.P;
-import fj.P1;
-import fj.P2;
+import fj.*;
+
 import static fj.Function.*;
 import static fj.data.Stream.*;
-import fj.Monoid;
-import fj.Show;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -265,6 +259,21 @@ public final class Tree<A> implements Iterable<A> {
     return drawSubTrees(s, subForest._1()).cons(s.showS(root));
   }
 
+  @Override
+  public boolean equals(Object other) {
+    return Equal.equals0(Tree.class, this, other, () -> Equal.treeEqual(Equal.<A>anyEqual()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.treeHash(Hash.<A>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.treeShow(Show.<A>anyShow()).showS(this);
+  }
+
   /**
    * Draws a 2-dimensional representation of a tree.
    *
@@ -317,12 +326,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return The folded tree
    */
   public static <A, B> Tree<B> bottomUp(Tree<A> t, final F<P2<A, Stream<B>>, B> f) {
-    final F<Tree<A>, Tree<B>> recursiveCall = new F<Tree<A>, Tree<B>>() {
-      @Override public Tree<B> f(Tree<A> a) {
-        return bottomUp(a, f);
-      }
-    };
- 
+    final F<Tree<A>, Tree<B>> recursiveCall = a -> bottomUp(a, f);
     final Stream<Tree<B>> tbs = t.subForest()._1().map(recursiveCall);
     return Tree.node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
    }
@@ -333,5 +337,13 @@ public final class Tree<A> implements Iterable<A> {
    private static <A> F<Tree<A>, A> getRoot() {
      return a -> a.root();
    }
+
+    public boolean isLeaf() {
+        return subForest._1().isEmpty();
+    }
+
+    public int length() {
+        return 1 + subForest._1().map(t -> t.length()).foldLeft((acc, i) -> acc + i, 0);
+    }
 
 }

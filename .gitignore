@@ -11,4 +11,6 @@ build
 .classpath
 .project
 .DS_Store
-
+MANIFEST.MF
+*/bin/**
+*~

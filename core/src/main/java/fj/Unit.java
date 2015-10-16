@@ -20,4 +20,10 @@ public final class Unit {
   public static Unit unit() {
     return u;
   }
+
+  @Override
+  public String toString() {
+    return "unit";
+  }
+
 }

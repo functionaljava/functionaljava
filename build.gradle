@@ -4,6 +4,30 @@ defaultTasks 'build'
 ext {
 }
 
+buildscript {
+    ext {
+		uptodateVersion = "1.6.0"
+        retrolambdaVersion = "3.2.0"
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
+        classpath "me.tatarka:gradle-retrolambda:$retrolambdaVersion"
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+    }
+}
+
+
+apply plugin: "jacoco"
+apply plugin: 'com.github.kt3k.coveralls'
+
+
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
@@ -14,15 +38,24 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 
+
+
+    jacoco {
+        toolVersion = "0.7.1.201405082137"
+    }
+
+	defaultTasks "build"
+
 	ext {
         isSnapshot = true
-        fjBaseVersion = "4.3"
+        fjBaseVersion = "4.5"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "4.2"
+        fjConsumeVersion = "4.4"
 
         signModule = false
+        useRetroLambda = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
@@ -40,16 +73,28 @@ allprojects {
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
         primaryEmail = "functionaljava@googlegroups.com"
 
-        dependencyJunit = "junit:junit:4.11"
+        dependencyJunit = "junit:junit:4.12"
+
+        displayCompilerWarnings = true
+
+        newJdkEnvVar = "JAVA8_HOME"
+        oldJdkEnvVar = "JAVA7_HOME"
+        retroLambdaTarget = JavaVersion.VERSION_1_7
+    }
+
+    repositories {
+        jcenter()
+        mavenCentral()
+        mavenLocal()
     }
 
 	version = fjVersion
 	group = "org.functionaljava"
+
 }
 
 subprojects {
 
-    defaultTasks "build"
 
     buildscript {
         repositories {
@@ -57,22 +102,66 @@ subprojects {
         }
 
         dependencies {
-            classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+            classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
         }
     }
 
-    repositories {
-        mavenCentral()
+    apply plugin: "jacoco"
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    apply from: "$rootDir/lib.gradle"
+	apply plugin: "java"
+	apply plugin: "eclipse"
+    apply plugin: "com.ofg.uptodate"
+
+	repositories {
+        mavenLocal()
+        jcenter()
+		mavenCentral()
 		maven {
 			url sonatypeRepositoryUrl
 		}
-
 	}
 
-    apply from: "$rootDir/lib.gradle"
+	if (displayCompilerWarnings) {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		}
+	}
+
+    jacocoTestReport {
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+//        html.destination "${buildDir}/jacocoHtml"
+        }
+    }
+
+
+    task coverage(dependsOn: ["test", "jacocoTestReport"]) << {
+
+    }
+
+}
+
+task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    dependsOn = subprojects.test
+    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories =  files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.jacocoTestReport.executionData)
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
+    }
+}
+
+configure(subprojects.findAll { it.name != "props-core" }) {
+
     apply plugin: "maven"
-    apply plugin: "java"
     apply plugin: "signing"
+    apply plugin: "osgi"
 
     sourceCompatibility = "1.8"
 
@@ -95,14 +184,31 @@ subprojects {
     jar {
         version project.fjVersion
         manifest {
-            attributes 'Signature-Version': project.fjVersion
+            name = 'Functional Java'
+            instruction 'Signature-Version', project.fjVersion
+            instruction 'Bundle-ActivationPolicy', 'lazy'
+            instruction 'Bundle-Vendor', 'functionaljava.org'
+			if(project.name != "core") {
+				instruction 'Require-Bundle', 'org.functionaljava;bundle-version="'+project.fjBaseVersion+'"'
+			}
         }
     }
 
-}
+    eclipse {
+      project {
+        natures 'org.eclipse.pde.PluginNature'
+        buildCommand 'org.eclipse.pde.ManifestBuilder'
+        buildCommand 'org.eclipse.pde.SchemaBuilder'
+      }
+    }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
+    // Output MANIFEST.MF statically so eclipse can see it for plugin development
+    task eclipsePluginManifest(dependsOn: jar) << {
+      file("META-INF").mkdirs()
+      jar.manifest.writeTo(file("META-INF/MANIFEST.MF"))
+    }
+
+    eclipseProject.dependsOn eclipsePluginManifest
 }
 
 task env << {

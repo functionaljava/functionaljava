@@ -1,6 +1,5 @@
 package fj.control.parallel;
 
-import fj.Effect;
 import fj.F;
 import fj.F2;
 import fj.Function;
@@ -220,7 +219,7 @@ public final class Strategy<A> {
   public static <A, B> P1<List<B>> parFlatMap(final Strategy<List<B>> s,
                                               final F<A, List<B>> f,
                                               final List<A> as) {
-    return P1.fmap(List.<B>join()).f(s.parMap(f, as));
+    return P1.map_(List.<B>join()).f(s.parMap(f, as));
   }
 
   /**
@@ -234,7 +233,7 @@ public final class Strategy<A> {
   public static <A, B> P1<Array<B>> parFlatMap(final Strategy<Array<B>> s,
                                                final F<A, Array<B>> f,
                                                final Array<A> as) {
-    return P1.fmap(Array.<B>join()).f(s.parMap(f, as));
+    return P1.map_(Array.<B>join()).f(s.parMap(f, as));
   }
 
   /**
@@ -249,7 +248,7 @@ public final class Strategy<A> {
   public static <A> P1<List<A>> parListChunk(final Strategy<List<A>> s,
                                              final int chunkLength,
                                              final List<P1<A>> as) {
-    return P1.fmap(List.<A>join()).f(s.parList(as.partition(chunkLength).map(P1.<A>sequenceList())));
+    return P1.map_(List.<A>join()).f(s.parList(as.partition(chunkLength).map(P1.<A>sequenceList())));
   }
 
   /**
@@ -322,7 +321,7 @@ public final class Strategy<A> {
    * @return A product-1 that waits for the given future to obtain a value.
    */
   public static <A> P1<A> obtain(final Future<A> t) {
-    return P.lazy(u -> {
+    return P.lazy(() -> {
         try {
           return t.get();
         } catch (InterruptedException e) {
@@ -429,7 +428,7 @@ public final class Strategy<A> {
    * @param f A transformation from the resulting strategy's domain to this strategy's domain.
    * @return A new strategy that applies the given transformation before each application of this strategy.
    */
-  public Strategy<A> comap(final F<P1<A>, P1<A>> f) {
+  public Strategy<A> contramap(final F<P1<A>, P1<A>> f) {
     return xmap(Function.<P1<A>>identity(), f);
   }
 
@@ -453,15 +452,15 @@ public final class Strategy<A> {
    * @return A strategy that captures any runtime errors with a side-effect.
    */
   public static <A> Strategy<A> errorStrategy(final Strategy<A> s, final Effect1<Error> e) {
-    return s.comap(a -> P.lazy(u -> {
-        try {
-          return a._1();
-        } catch (Throwable t) {
-          final Error error = new Error(t);
-          e.f(error);
-          throw error;
-        }
-      })
+    return s.contramap(a -> P.lazy(() -> {
+              try {
+                return a._1();
+              } catch (Throwable t) {
+                final Error error = new Error(t);
+                e.f(error);
+                throw error;
+              }
+            })
     );
   }
 
@@ -472,7 +471,7 @@ public final class Strategy<A> {
    * @return A new strategy that fully evaluates Callables, using the given strategy.
    */
   public static <A> Strategy<Callable<A>> callableStrategy(final Strategy<Callable<A>> s) {
-    return s.comap(a -> P1.curry(Callables.<A>normalise()).f(a._1()));
+    return s.contramap(a -> P1.curry(Callables.<A>normalise()).f(a._1()));
   }
 
 }

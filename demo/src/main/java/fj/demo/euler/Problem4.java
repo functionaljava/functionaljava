@@ -17,11 +17,9 @@ import static fj.Show.intShow;
 public class Problem4 {
   public static void main(final String[] a) {
     final Stream<Integer> tdl = iterate(flip(subtract).f(1), 999).takeWhile(intOrd.isGreaterThan(99));
-    intShow.println(tdl.tails().bind(tdl.zipWith(multiply)).filter(new F<Integer, Boolean>() {
-      public Boolean f(final Integer i) {
+    intShow.println(tdl.tails().bind(tdl.zipWith(multiply)).filter(i -> {
         final Stream<Character> s = intShow.show(i);
         return streamEqual(charEqual).eq(s.reverse().take(3), s.take(3));
-      }
     }).foldLeft1(intOrd.max));
   }
 }

@@ -122,7 +122,7 @@ public final class Actor<A> {
    * @param f The function to use for the transformation
    * @return A new actor which passes its messages through the given function, to this actor.
    */
-  public <B> Actor<B> comap(final F<B, A> f) {
+  public <B> Actor<B> contramap(final F<B, A> f) {
     return actor(s, (B b) -> act(f.f(b)));
   }
 

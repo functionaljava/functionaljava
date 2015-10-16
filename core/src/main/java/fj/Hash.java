@@ -2,14 +2,7 @@ package fj;
 
 import static fj.Function.compose;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.List;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Stream;
-import fj.data.Tree;
-import fj.data.Validation;
+import fj.data.*;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -17,6 +10,9 @@ import fj.data.vector.V5;
 import fj.data.vector.V6;
 import fj.data.vector.V7;
 import fj.data.vector.V8;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Produces a hash code for an object which should attempt uniqueness.
@@ -46,7 +42,7 @@ public final class Hash<A> {
    * @param g The function to map.
    * @return A new hash.
    */
-  public <B> Hash<B> comap(final F<B, A> g) {
+  public <B> Hash<B> contramap(final F<B, A> g) {
     return hash(compose(f, g));
   }
 
@@ -110,6 +106,16 @@ public final class Hash<A> {
   public static final Hash<Short> shortHash = anyHash();
 
   /**
+   * A hash instance for the <code>BigInteger</code> type.
+   */
+  public static final Hash<BigInteger> bigintHash = anyHash();
+
+  /**
+   * A hash instance for the <code>BigDecimal</code> type.
+   */
+  public static final Hash<BigDecimal> bigdecimalHash = anyHash();
+
+  /**
    * A hash instance for the <code>String</code> type.
    */
   public static final Hash<String> stringHash = anyHash();
@@ -159,7 +165,7 @@ public final class Hash<A> {
    * @return A hash instance for the {@link Validation} type.
    */
   public static <A, B> Hash<Validation<A, B>> validationHash(final Hash<A> ha, final Hash<B> hb) {
-    return eitherHash(ha, hb).comap(Validation.<A, B>either());
+    return eitherHash(ha, hb).contramap(Validation.<A, B>either());
   }
 
   /**
@@ -190,7 +196,7 @@ public final class Hash<A> {
    * @return A hash instance for the {@link NonEmptyList} type.
    */
   public static <A> Hash<NonEmptyList<A>> nonEmptyListHash(final Hash<A> ha) {
-    return listHash(ha).comap(NonEmptyList.<A>toList_());
+    return listHash(ha).contramap(NonEmptyList.<A>toList_());
   }
 
   /**
@@ -202,6 +208,14 @@ public final class Hash<A> {
   public static <A> Hash<Option<A>> optionHash(final Hash<A> ha) {
     return hash(o -> o.isNone() ? 0 : ha.hash(o.some()));
   }
+
+    public static <A> Hash<Seq<A>> seqHash(final Hash<A> h) {
+        return hash(s -> streamHash(h).hash(s.toStream()));
+    }
+
+    public static <A> Hash<Set<A>> setHash(final Hash<A> h) {
+        return hash(s -> streamHash(h).hash(s.toStream()));
+    }
 
   /**
    * A hash instance for the {@link Stream} type.
@@ -250,8 +264,12 @@ public final class Hash<A> {
    * @return A hash instance for the {@link Tree} type.
    */
   public static <A> Hash<Tree<A>> treeHash(final Hash<A> ha) {
-    return streamHash(ha).comap(Tree.<A>flatten_());
+    return streamHash(ha).contramap(Tree.<A>flatten_());
   }
+
+    public static <K, V> Hash<TreeMap<K, V>> treeMapHash(final Hash<K> h, final Hash<V> v) {
+        return hash(t -> streamHash(Hash.p2Hash(h, v)).hash(t.toStream()));
+    }
 
   /**
    * A hash instance for a product-1.
@@ -260,7 +278,7 @@ public final class Hash<A> {
    * @return A hash instance for a product-1.
    */
   public static <A> Hash<P1<A>> p1Hash(final Hash<A> ha) {
-    return ha.comap(P1.<A>__1());
+    return ha.contramap(P1.<A>__1());
   }
 
   /**
@@ -455,7 +473,7 @@ public final class Hash<A> {
    * @return A hash instance for a vector-2.
    */
   public static <A> Hash<V2<A>> v2Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V2.<A>toStream_());
+    return streamHash(ea).contramap(V2.<A>toStream_());
   }
 
   /**
@@ -465,7 +483,7 @@ public final class Hash<A> {
    * @return A hash instance for a vector-3.
    */
   public static <A> Hash<V3<A>> v3Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V3.<A>toStream_());
+    return streamHash(ea).contramap(V3.<A>toStream_());
   }
 
   /**
@@ -475,7 +493,7 @@ public final class Hash<A> {
    * @return A hash instance for a vector-4.
    */
   public static <A> Hash<V4<A>> v4Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V4.<A>toStream_());
+    return streamHash(ea).contramap(V4.<A>toStream_());
   }
 
   /**
@@ -485,7 +503,7 @@ public final class Hash<A> {
    * @return A hash instance for a vector-5.
    */
   public static <A> Hash<V5<A>> v5Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V5.<A>toStream_());
+    return streamHash(ea).contramap(V5.<A>toStream_());
   }
 
   /**
@@ -495,7 +513,7 @@ public final class Hash<A> {
    * @return A hash instance for a vector-6.
    */
   public static <A> Hash<V6<A>> v6Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V6.<A>toStream_());
+    return streamHash(ea).contramap(V6.<A>toStream_());
   }
 
   /**
@@ -505,7 +523,7 @@ public final class Hash<A> {
    * @return A hash instance for a vector-7.
    */
   public static <A> Hash<V7<A>> v7Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V7.<A>toStream_());
+    return streamHash(ea).contramap(V7.<A>toStream_());
   }
 
   /**
@@ -515,6 +533,6 @@ public final class Hash<A> {
    * @return A hash instance for a vector-8.
    */
   public static <A> Hash<V8<A>> v8Hash(final Hash<A> ea) {
-    return streamHash(ea).comap(V8.<A>toStream_());
+    return streamHash(ea).contramap(V8.<A>toStream_());
   }
 }

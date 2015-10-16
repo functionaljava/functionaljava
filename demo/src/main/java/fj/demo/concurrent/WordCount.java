@@ -43,12 +43,7 @@ import fj.function.Effect1;
 public class WordCount {
   
   // Integers.add.f(1) caused an SOE...
-  private static final F<Integer,Integer> addOne = new F<Integer,Integer>() {
-    @Override
-    public Integer f(Integer a) {
-      return a.intValue() + 1;
-    }
-  };
+  private static final F<Integer,Integer> addOne = a -> a.intValue() + 1;
 
   private static <K, V> Map<K, V> update(Map<K, V> map, K key, F<V, V> valueFunction,
       V initialValue) {
@@ -60,37 +55,28 @@ public class WordCount {
     return map;
   }
   
-  private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunkIteratee = new F<String, Map<String, Integer>>() {
-    @Override
-    public Map<String, Integer> f(final String fileName) {
+  private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunkIteratee = fileName -> {
       try {
         return IOFunctions.enumFileCharChunks(new File(fileName), Option.<Charset>none(), wordCountsFromCharChunks()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
-    }
   };
   
-  private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunk2Iteratee = new F<String, Map<String, Integer>>() {
-    @Override
-    public Map<String, Integer> f(final String fileName) {
+  private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunk2Iteratee = fileName -> {
       try {
         return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
-    }
   };
   
-  private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharIteratee = new F<String, Map<String, Integer>>() {
-    @Override
-    public Map<String, Integer> f(final String fileName) {
+  private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharIteratee = fileName -> {
       try {
         return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
-    }
   };
 
   /** An iteratee that consumes char chunks and calculates word counts */
@@ -102,12 +88,7 @@ public class WordCount {
         @Override
         public F<Input<char[]>, IterV<char[], Map<String, Integer>>> f(final P2<StringBuilder,Map<String, Integer>> acc) {
           final P1<IterV<char[], Map<String, Integer>>> empty =
-            new P1<IterV<char[], Map<String, Integer>>>() {
-              @Override
-              public IterV<char[], Map<String, Integer>> _1() {
-                return IterV.cont(step.f(acc));
-              }
-            };
+            P.lazy(() -> IterV.cont(step.f(acc)));
           final P1<F<char[], IterV<char[], Map<String, Integer>>>> el =
             new P1<F<char[], IterV<char[], Map<String, Integer>>>>() {
               @Override
@@ -134,23 +115,16 @@ public class WordCount {
               }
             };
           final P1<IterV<char[], Map<String, Integer>>> eof =
-            new P1<IterV<char[], Map<String, Integer>>>() {
-              @Override
-              public IterV<char[], Map<String, Integer>> _1() {
+            P.lazy(() -> {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
                   return IterV.done(map, Input.<char[]>eof());
                 }
                 return IterV.done(acc._2(), Input.<char[]>eof());
-              }
-            };
-          return new F<Input<char[]>, IterV<char[], Map<String, Integer>>>() {
-            @Override
-            public IterV<char[], Map<String, Integer>> f(final Input<char[]> s) {
-              return s.apply(empty, el, eof);
-            }
-          };
+              });
+
+          return s -> s.apply(empty, el, eof);
         }
       };
     return IterV.cont(step.f(P.p(new StringBuilder(), (Map<String, Integer>)new HashMap<String, Integer>())));
@@ -164,20 +138,10 @@ public class WordCount {
 
         @Override
         public F<Input<Character>, IterV<Character, Map<String, Integer>>> f(final P2<StringBuilder,Map<String, Integer>> acc) {
-          final P1<IterV<Character, Map<String, Integer>>> empty =
-            new P1<IterV<Character, Map<String, Integer>>>() {
-              @Override
-              public IterV<Character, Map<String, Integer>> _1() {
-                return IterV.cont(step.f(acc));
-              }
-            };
+          final P1<IterV<Character, Map<String, Integer>>> empty = P.lazy(() -> IterV.cont(step.f(acc)));
           final P1<F<Character, IterV<Character, Map<String, Integer>>>> el =
-            new P1<F<Character, IterV<Character, Map<String, Integer>>>>() {
-              @Override
-              public F<Character, IterV<Character, Map<String, Integer>>> _1() {
-                return new F<Character, Iteratee.IterV<Character, Map<String, Integer>>>() {
-                  @Override
-                  public IterV<Character, Map<String, Integer>> f(final Character e) {
+            P.lazy(() -> {
+                return e -> {
                     if(Character.isWhitespace(e.charValue())) {
                       final StringBuilder sb = acc._1();
                       if(sb.length() > 0) {
@@ -193,14 +157,9 @@ public class WordCount {
                       acc._1().append(e);
                       return IterV.cont(step.f(acc));
                     }
-                  }
                 };
-              }
-            };
-          final P1<IterV<Character, Map<String, Integer>>> eof =
-            new P1<IterV<Character, Map<String, Integer>>>() {
-              @Override
-              public IterV<Character, Map<String, Integer>> _1() {
+              });
+          final P1<IterV<Character, Map<String, Integer>>> eof = P.lazy(() -> {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
@@ -208,13 +167,8 @@ public class WordCount {
                 }
                 return IterV.done(acc._2(), Input.<Character>eof());
               }
-            };
-          return new F<Input<Character>, IterV<Character, Map<String, Integer>>>() {
-            @Override
-            public IterV<Character, Map<String, Integer>> f(final Input<Character> s) {
-              return s.apply(empty, el, eof);
-            }
-          };
+            );
+          return s -> s.apply(empty, el, eof);
         }
       };
     return IterV.cont(step.f(P.p(new StringBuilder(), (Map<String, Integer>)new HashMap<String, Integer>())));
@@ -229,11 +183,7 @@ public class WordCount {
     final P2<List<String>, Map<String, Integer>> result = writeSampleFiles(numFiles, numSharedWords);
     final List<String> fileNames = result._1();
     final Map<String, Integer> expectedWordsAndCounts = result._2();
-    long avgSize = fileNames.foldLeft(new F2<Long, String, Long>() {
-      @Override
-      public Long f(Long a, String file) {
-        return a.longValue() + new File(file).length();
-      }}, 0l) / fileNames.length();
+    long avgSize = fileNames.foldLeft((a, file) -> a.longValue() + new File(file).length(), 0l) / fileNames.length();
     System.out.println("Processing " + numFiles + " files with ~"+numSharedWords+" words and an avg size of " + avgSize + " bytes.");
     
     // warmup
@@ -349,12 +299,7 @@ public class WordCount {
   public static Map<String, Integer> getWordsAndCountsFromFilesWithIteratee(final List<String> fileNames,
       final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithIteratee) {
     final List<Map<String, Integer>> maps = fileNames.map(fileNameToWordsAndCountsWithIteratee);
-    return maps.foldLeft(new F2<Map<String, Integer>, Map<String, Integer>, Map<String, Integer>>() {
-      @Override
-      public Map<String, Integer> f(Map<String, Integer> a, Map<String, Integer> b) {
-        return plus(a, b);
-      }
-    }, new HashMap<String, Integer>());
+    return maps.foldLeft((Map<String, Integer> a, Map<String, Integer> b) -> plus(a, b), new HashMap<String, Integer>());
   }
   
   public static Map<String, Integer> getWordsAndCountsFromFilesInParallel(
@@ -374,21 +319,7 @@ public class WordCount {
   public static Promise<Map<String, Integer>> getWordsAndCountsFromFiles(
       final List<String> fileNames, final F<String, Map<String, Integer>> fileNameToWordsAndCounts, final ParModule m) {
     final F<Map<String, Integer>, F<Map<String, Integer>, Map<String, Integer>>> MapSum =
-        new F<Map<String, Integer>, F<Map<String, Integer>, Map<String, Integer>>>() {
-      @Override
-      public F<Map<String, Integer>, Map<String, Integer>> f(
-          final Map<String, Integer> a) {
-        return new F<Map<String, Integer>, Map<String, Integer>>() {
-
-          @Override
-          public Map<String, Integer> f(final Map<String, Integer> b) {
-            return plus(a, b);
-          }
-          
-        };
-      }
-      
-    };
+        a -> b -> plus(a, b);
     final Monoid<Map<String, Integer>> monoid = monoid(MapSum,
         new HashMap<String, Integer>());
     return m.parFoldMap(fileNames, fileNameToWordsAndCounts, monoid);

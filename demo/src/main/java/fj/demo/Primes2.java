@@ -21,11 +21,7 @@ import java.math.BigInteger;
 public class Primes2 {
   // Finds primes in a given stream.
   public static Stream<Natural> sieve(final Stream<Natural> xs) {
-    return cons(xs.head(), new P1<Stream<Natural>>() {
-      public Stream<Natural> _1() {
-        return sieve(xs.tail()._1().removeAll(F1Functions.o(naturalOrd.equal().eq(ZERO), mod.f(xs.head()))));
-      }
-    });
+    return cons(xs.head(), () -> sieve(xs.tail()._1().removeAll(F1Functions.o(naturalOrd.equal().eq(ZERO), mod.f(xs.head())))));
   }
 
   // A stream of all primes less than n.

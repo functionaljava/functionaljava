@@ -1,0 +1,9 @@
+
+archivesBaseName = "${project.projectName}-${project.name}"
+
+configureAllRetroLambda()
+
+dependencies {
+	compile project(":quickcheck")
+    testCompile dependencyJunit
+}

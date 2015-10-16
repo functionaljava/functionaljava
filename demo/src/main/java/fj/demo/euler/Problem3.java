@@ -1,6 +1,7 @@
 package fj.demo.euler;
 
 import fj.F;
+import fj.P;
 import fj.P1;
 import static fj.data.Enumerator.naturalEnumerator;
 import fj.data.Natural;
@@ -17,13 +18,7 @@ import static fj.Show.naturalShow;
  */
 public class Problem3 {
   // An infinite stream of all the primes.
-  public static final Stream<Natural> primes = cons(natural(2).some(), new P1<Stream<Natural>>() {
-    public Stream<Natural> _1() {
-      return forever(naturalEnumerator, natural(3).some(), 2).filter(new F<Natural, Boolean>() {
-        public Boolean f(final Natural n) {return primeFactors(n).length() == 1;}
-      });
-    }
-  });
+  public static final Stream<Natural> primes = cons(natural(2).some(), () -> forever(naturalEnumerator, natural(3).some(), 2).filter(n -> primeFactors(n).length() == 1));
 
   //Finds factors of a given number.
   public static Stream<Natural> factor(final Natural n, final Natural p, final P1<Stream<Natural>> ps) {
@@ -37,9 +32,7 @@ public class Problem3 {
       else {
         final V2<Natural> dm = n.divmod(h);
         if (naturalOrd.eq(dm._2(), ZERO))
-          ret = cons(h, new P1<Stream<Natural>>() {
-            public Stream<Natural> _1() {return factor(dm._1(), h, t);}
-          });
+          ret = cons(h, () -> factor(dm._1(), h, t));
         else ns = ns.tail()._1();
       }
     }

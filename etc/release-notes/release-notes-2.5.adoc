@@ -1,0 +1,7 @@
+= Release 2.5
+
+Released: 1 May 2008
+
+Changes
+
+* Unknown

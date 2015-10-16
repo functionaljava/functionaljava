@@ -522,9 +522,20 @@ public abstract class P7<A, B, C, D, E, F, G> {
     };
   }
 
+  @Override
 	public String toString() {
 		return Show.p7Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow(), Show.<G>anyShow()).showS(this);
 	}
 
+  @Override
+  public boolean equals(Object other) {
+    return Equal.equals0(P7.class, this, other,
+        () -> Equal.p7Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.p7Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash(), Hash.<D>anyHash(), Hash.<E>anyHash(), Hash.<F>anyHash(), Hash.<G>anyHash()).hash(this);
+  }
 
 }

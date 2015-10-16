@@ -1,8 +1,15 @@
 package fj.data.fingertrees;
 
+import fj.P;
+import fj.P3;
+import fj.data.Option;
 import fj.data.vector.V3;
 import fj.F;
 import fj.P2;
+
+import static fj.data.Option.none;
+import static fj.data.Option.some;
+import static fj.data.fingertrees.FingerTree.mkTree;
 
 /**
  * A three-element inner tree node.
@@ -27,13 +34,41 @@ public final class Node3<V, A> extends Node<V, A> {
     return n3.f(this);
   }
 
-  public Digit<V, A> toDigit() {
+    @Override
+    public int length() {
+        return 3;
+    }
+
+    public Digit<V, A> toDigit() {
     return new Three<V, A>(measured(), as);
   }
 
-  @SuppressWarnings({"ReturnOfNull"})
-  public P2<Integer, A> lookup(final F<V, Integer> o, final int i) {
-    return null;  //TODO
+  P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc) {
+    final Measured<V, A> m = measured();
+    final MakeTree<V, A> mk = mkTree(m);
+    final V acc1 = m.sum(acc, m.measure().f(as._1()));
+    if (predicate.f(acc1)) {
+      return P.p(none(), as._1(), some(mk.two(as._2(), as._3())));
+    } else if (predicate.f(m.sum(acc1, m.measure().f(as._2())))) {
+      return P.p(some(mk.one(as._1())), as._2(), some(mk.one(as._3())));
+    } else {
+      return P.p(some(mk.two(as._1(), as._2())), as._3(), none());
+    }
+  }
+
+  @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) {
+    final F<A, V> m = measured().measure();
+    final int s1 = o.f(m.f(as._1()));
+    if (i < s1) {
+      return P.p(i, as._1());
+    } else {
+      final int s2 = s1 + o.f(m.f(as._2()));
+      if (i < s2) {
+        return P.p(i - s1, as._2());
+      } else {
+        return P.p(i - s2, as._3());
+      }
+    }
   }
 
   public V3<A> toVector() {

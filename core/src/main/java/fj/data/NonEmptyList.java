@@ -1,14 +1,14 @@
 package fj.data;
 
-import fj.F;
-import fj.F1Functions;
+import fj.*;
 import fj.function.Effect1;
-
-import static fj.data.Option.some;
-import static fj.data.Option.somes;
 
 import java.util.Collection;
 import java.util.Iterator;
+
+import static fj.Function.identity;
+import static fj.data.Option.some;
+import static fj.data.Option.somes;
 
 /**
  * Provides an in-memory, immutable, singly linked list with total <code>head</code> and <code>tail</code>.
@@ -26,17 +26,19 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return toCollection().iterator();
   }
 
+  private final A head;
+
+  private final List<A> tail;
+
   /**
    * The first element of this linked list.
    */
-  @SuppressWarnings({"PublicField", "ClassEscapesDefinedScope"})
-  public final A head;
+  public A head() { return head; }
 
   /**
    * This list without the first element.
    */
-  @SuppressWarnings({"PublicField"})
-  public final List<A> tail;
+  public List<A> tail() { return tail; }
 
   private NonEmptyList(final A head, final List<A> tail) {
     this.head = head;
@@ -52,6 +54,23 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public NonEmptyList<A> cons(final A a) {
     return nel(a, tail.cons(head));
   }
+
+  /**
+   * Appends (snoc) the given element to this non empty list to produce a new non empty list. O(n).
+   *
+   * @param a The element to append to this non empty list.
+   * @return A new non empty list with the given element appended.
+   */
+  public NonEmptyList<A> snoc(final A a) {
+    return nel(head, tail.snoc(a));
+  }
+
+  /**
+   * The length of this list.
+   *
+   * @return The length of this list.
+   */
+  public int length() { return 1 + tail.length(); }
 
   /**
    * Appends the given list to this list.
@@ -118,11 +137,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A NonEmptyList of the tails of this list.
    */
   public NonEmptyList<NonEmptyList<A>> tails() {
-    return fromList(somes(toList().tails().map(new F<List<A>, Option<NonEmptyList<A>>>() {
-      public Option<NonEmptyList<A>> f(final List<A> list) {
-        return fromList(list);
-      }
-    }))).some();
+    return fromList(somes(toList().tails().map(list -> fromList(list)))).some();
   }
 
   /**
@@ -133,6 +148,100 @@ public final class NonEmptyList<A> implements Iterable<A> {
    */
   public <B> NonEmptyList<B> mapTails(final F<NonEmptyList<A>, B> f) {
     return tails().map(f);
+  }
+
+  /**
+   * Intersperses the given argument between each element of this non empty list.
+   *
+   * @param a The separator to intersperse in this non empty list.
+   * @return A non empty list with the given separator interspersed.
+   */
+  public NonEmptyList<A> intersperse(final A a) {
+    final List<A> list = toList().intersperse(a);
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Reverse this non empty list in constant stack space.
+   *
+   * @return A new non empty list with the elements in reverse order.
+   */
+  public NonEmptyList<A> reverse() {
+    final List<A> list = toList().reverse();
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Sorts this non empty list using the given order over elements using a <em>merge sort</em> algorithm.
+   *
+   * @param o The order over the elements of this non empty list.
+   * @return A sorted non empty list according to the given order.
+   */
+  public NonEmptyList<A> sort(final Ord<A> o) {
+    final List<A> list = toList().sort(o);
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Zips this non empty list with the given non empty list to produce a list of pairs. If this list and the given list
+   * have different lengths, then the longer list is normalised so this function never fails.
+   *
+   * @param bs The non empty list to zip this non empty list with.
+   * @return A new non empty list with a length the same as the shortest of this list and the given list.
+   */
+  public <B> NonEmptyList<P2<A, B>> zip(final NonEmptyList<B> bs) {
+    final List<P2<A, B>> list = toList().zip(bs.toList());
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Zips this non empty list with the index of its element as a pair.
+   *
+   * @return A new non empty list with the same length as this list.
+   */
+  public NonEmptyList<P2<A, Integer>> zipIndex() {
+    final List<P2<A, Integer>> list = toList().zipIndex();
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Zips this non empty list with the given non empty list using the given function to produce a new list. If this list
+   * and the given list have different lengths, then the longer list is normalised so this function
+   * never fails.
+   *
+   * @param bs The non empty list to zip this non empty list with.
+   * @param f  The function to zip this non empty list and the given non empty list with.
+   * @return A new non empty list with a length the same as the shortest of this list and the given list.
+   */
+  public <B, C> NonEmptyList<C> zipWith(final List<B> bs, final F<A, F<B, C>> f) {
+    final List<C> list = toList().zipWith(bs, f);
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Zips this non empty list with the given non empty list using the given function to produce a new list. If this list
+   * and the given list have different lengths, then the longer list is normalised so this function
+   * never fails.
+   *
+   * @param bs The non empty list to zip this non empty list with.
+   * @param f  The function to zip this non empty list and the given non empty list with.
+   * @return A new non empty list with a length the same as the shortest of this list and the given list.
+   */
+  public <B, C> NonEmptyList<C> zipWith(final List<B> bs, final F2<A, B, C> f) {
+    final List<C> list = toList().zipWith(bs, f);
+    return nel(list.head(), list.tail());
+  }
+
+  /**
+   * Transforms a non empty list of pairs into a non empty list of first components and
+   * a non empty list of second components.
+   *
+   * @param xs The non empty list of pairs to transform.
+   * @return A non empty list of first components and a non empty list of second components.
+   */
+  public static <A, B> P2<NonEmptyList<A>, NonEmptyList<B>> unzip(final NonEmptyList<P2<A, B>> xs) {
+    final P2<List<A>, List<B>> p = List.unzip(xs.toList());
+    return P.p(nel(p._1().head(), p._1().tail()), nel(p._2().head(), p._2().tail()));
   }
 
   /**
@@ -174,13 +283,14 @@ public final class NonEmptyList<A> implements Iterable<A> {
   }
 
   /**
-   * Return a non-empty list with the given value.
+   * Constructs a non empty list from the given elements.
    *
-   * @param head The value in the non-empty list.
-   * @return A non-empty list with the given value.
+   * @param head The first in the non-empty list.
+   * @param tail The elements to construct a list's tail with.
+   * @return A non-empty list with the given elements.
    */
-  public static <A> NonEmptyList<A> nel(final A head) {
-    return nel(head, List.<A>nil());
+  @SafeVarargs public static <A> NonEmptyList<A> nel(final A head, final A... tail) {
+    return nel(head, List.list(tail));
   }
 
   /**
@@ -203,4 +313,29 @@ public final class NonEmptyList<A> implements Iterable<A> {
            Option.<NonEmptyList<A>>none() :
            some(nel(as.head(), as.tail()));
   }
+
+  /**
+   * Concatenate (join) a non empty list of non empty lists.
+   *
+   * @param o The non empty list of non empty lists to join.
+   * @return A new non empty list that is the concatenation of the given lists.
+   */
+  public static <A> NonEmptyList<A> join(final NonEmptyList<NonEmptyList<A>> o) { return o.bind(identity()); }
+
+  /**
+   * Perform an equality test on this list which delegates to the .equals() method of the member instances.
+   * This is implemented with Equal.nonEmptyListEqual using the anyEqual rule.
+   *
+   * @param obj the other object to check for equality against.
+   * @return true if this list is equal to the provided argument
+   */
+  @Override public boolean equals( final Object obj ) {
+    return Equal.equals0(NonEmptyList.class, this, obj, () -> Equal.nonEmptyListEqual(Equal.<A>anyEqual()));
+  }
+
+  @Override public int hashCode() {
+    return Hash.nonEmptyListHash(Hash.<A>anyHash()).hash(this);
+  }
+
+  @Override public String toString() { return Show.nonEmptyListShow(Show.<A>anyShow()).showS(this); }
 }

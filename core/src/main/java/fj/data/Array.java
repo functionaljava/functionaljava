@@ -1,14 +1,16 @@
 package fj.data;
 
-import fj.Effect;
 import fj.F;
+import fj.F0;
 import fj.F2;
 import fj.P;
 import fj.P1;
 import fj.P2;
+import fj.Equal;
+import fj.Show;
+import fj.Hash;
 import fj.Unit;
 import fj.function.Effect1;
-
 import static fj.Function.*;
 import static fj.P.p;
 import static fj.P.p2;
@@ -16,7 +18,6 @@ import static fj.Unit.unit;
 import static fj.data.List.iterableList;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-
 import static java.lang.Math.min;
 import static java.lang.System.arraycopy;
 
@@ -55,6 +56,11 @@ public final class Array<A> implements Iterable<A> {
   @SuppressWarnings("unchecked")
   public A get(final int index) {
     return (A) a[index];
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.arrayHash(Hash.<A>anyHash()).hash(this);
   }
 
   /**
@@ -138,8 +144,8 @@ public final class Array<A> implements Iterable<A> {
    * @return An either projection of this array.
    */
   @SuppressWarnings("unchecked")
-  public <X> Either<X, A> toEither(final P1<X> x) {
-    return a.length == 0 ? Either.<X, A>left(x._1()) : Either.<X, A>right((A) a[0]);
+  public <X> Either<X, A> toEither(final F0<X> x) {
+    return a.length == 0 ? Either.<X, A> left(x.f()) : Either.<X, A> right((A) a[0]);
   }
 
   /**
@@ -165,12 +171,14 @@ public final class Array<A> implements Iterable<A> {
    */
   @SuppressWarnings("unchecked")
   public Stream<A> toStream() {
-    return Stream.unfold(new F<Integer, Option<P2<A, Integer>>>() {
-      public Option<P2<A, Integer>> f(final Integer o) {
-        return a.length > o ? some(p((A) a[o], o + 1))
-            : Option.<P2<A, Integer>>none();
-      }
-    }, 0);
+    return Stream.unfold(o ->
+        a.length > o ? some(p((A) a[o], o + 1)) : Option.<P2<A, Integer>>none(), 0
+    );
+  }
+
+  @Override
+  public String toString() {
+    return Show.arrayShow(Show.<A>anyShow()).showS(this);
   }
 
   /**
@@ -504,15 +512,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A new array after applying the given array of functions through this array.
    */
   public <B> Array<B> apply(final Array<F<A, B>> lf) {
-    return lf.bind(new F<F<A, B>, Array<B>>() {
-      public Array<B> f(final F<A, B> f) {
-        return map(new F<A, B>() {
-          public B f(final A a) {
-            return f.f(a);
-          }
-        });
-      }
-    });
+    return lf.bind(f -> map(a -> f.f(a)));
   }
 
   /**
@@ -560,6 +560,7 @@ public final class Array<A> implements Iterable<A> {
    * @param a The elements to construct the array with.
    * @return A new array of the given elements.
    */
+  @SafeVarargs
   public static <A> Array<A> array(final A... a) {
     return new Array<A>(a);
   }
@@ -590,11 +591,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that wraps a given array.
    */
   public static <A> F<A[], Array<A>> wrap() {
-    return new F<A[], Array<A>>() {
-      public Array<A> f(final A[] as) {
-        return array(as);
-      }
-    };
+    return as -> array(as);
   }
 
   /**
@@ -603,11 +600,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that maps a given function across a given array.
    */
   public static <A, B> F<F<A, B>, F<Array<A>, Array<B>>> map() {
-    return curry(new F2<F<A, B>, Array<A>, Array<B>>() {
-      public Array<B> f(final F<A, B> abf, final Array<A> array) {
-        return array.map(abf);
-      }
-    });
+    return curry((abf, array) -> array.map(abf));
   }
 
   /**
@@ -627,11 +620,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that joins a array of arrays using a bind operation.
    */
   public static <A> F<Array<Array<A>>, Array<A>> join() {
-    return new F<Array<Array<A>>, Array<A>>() {
-      public Array<A> f(final Array<Array<A>> as) {
-        return join(as);
-      }
-    };
+    return as -> join(as);
   }
 
   /**
@@ -666,6 +655,11 @@ public final class Array<A> implements Iterable<A> {
         return true;
 
     return false;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return Equal.equals0(Array.class, this, o, () -> Equal.arrayEqual(Equal.<A>anyEqual()));
   }
 
   /**
@@ -758,15 +752,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A new array with the same length as this array.
    */
   public Array<P2<A, Integer>> zipIndex() {
-    return zipWith(range(0, length()), new F<A, F<Integer, P2<A, Integer>>>() {
-      public F<Integer, P2<A, Integer>> f(final A a) {
-        return new F<Integer, P2<A, Integer>>() {
-          public P2<A, Integer> f(final Integer i) {
-            return p(a, i);
-          }
-        };
-      }
-    });
+    return zipWith(range(0, length()), a -> i -> p(a, i));
   }
 
   /**
@@ -909,7 +895,7 @@ public final class Array<A> implements Iterable<A> {
      * @param x The value to return in left if this array is empty.
      * @return An either projection of this array.
      */
-    public <X> Either<X, A> toEither(final P1<X> x) {
+    public <X> Either<X, A> toEither(final F0<X> x) {
       return a.toEither(x);
     }
 

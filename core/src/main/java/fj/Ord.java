@@ -12,6 +12,7 @@ import fj.data.Validation;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Comparator;
 
 import static fj.Function.curry;
 
@@ -73,7 +74,7 @@ public final class Ord<A> {
    * @param f The function to map.
    * @return A new ord.
    */
-  public <B> Ord<B> comap(final F<B, A> f) {
+  public <B> Ord<B> contramap(final F<B, A> f) {
     return ord(F1Functions.o(F1Functions.o(F1Functions.<B, A, Ordering>andThen(f), this.f), f));
   }
 
@@ -155,6 +156,8 @@ public final class Ord<A> {
    * A function that returns the lesser of its two arguments.
    */
   public final F<A, F<A, A>> min = curry((a, a1) -> min(a, a1));
+
+  public final Ord<A> reverse() { return ord(Function.flip(f)); }
 
   /**
    * Returns an order instance that uses the given equality test and ordering function.
@@ -331,7 +334,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Validation} type.
    */
   public static <A, B> Ord<Validation<A, B>> validationOrd(final Ord<A> oa, final Ord<B> ob) {
-    return eitherOrd(oa, ob).comap(Validation.<A, B>either());
+    return eitherOrd(oa, ob).contramap(Validation.<A, B>either());
   }
 
   /**
@@ -342,14 +345,25 @@ public final class Ord<A> {
    */
   public static <A> Ord<List<A>> listOrd(final Ord<A> oa) {
     return ord(l1 -> l2 -> {
-        if (l1.isEmpty())
-            return l2.isEmpty() ? Ordering.EQ : Ordering.LT;
-        else if (l2.isEmpty())
-            return l1.isEmpty() ? Ordering.EQ : Ordering.GT;
-        else {
-            final Ordering c = oa.compare(l1.head(), l2.head());
-            return c == Ordering.EQ ? listOrd(oa).f.f(l1.tail()).f(l2.tail()) : c;
+      List<A> x1 = l1;
+      List<A> x2 = l2;
+
+      while (x1.isNotEmpty() && x2.isNotEmpty()) {
+        final Ordering o = oa.compare(x1.head(), x2.head());
+        if (o == Ordering.LT || o == Ordering.GT) {
+          return o;
         }
+        x1 = x1.tail();
+        x2 = x2.tail();
+      }
+
+      if (x1.isEmpty() && x2.isEmpty()) {
+        return Ordering.EQ;
+      } else if (x1.isEmpty()) {
+        return Ordering.LT;
+      } else {
+        return Ordering.GT;
+      }
     });
   }
 
@@ -360,7 +374,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link NonEmptyList} type.
    */
   public static <A> Ord<NonEmptyList<A>> nonEmptyListOrd(final Ord<A> oa) {
-    return listOrd(oa).comap(NonEmptyList.<A>toList_());
+    return listOrd(oa).contramap(NonEmptyList.<A>toList_());
   }
 
   /**
@@ -414,7 +428,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Set} type.
    */
   public static <A> Ord<Set<A>> setOrd(final Ord<A> oa) {
-    return streamOrd(oa).comap(as -> as.toStream());
+    return streamOrd(oa).contramap(as -> as.toStream());
   }
 
   /**
@@ -429,7 +443,7 @@ public final class Ord<A> {
    * @return An order instance for a product-1.
    */
   public static <A> Ord<P1<A>> p1Ord(final Ord<A> oa) {
-    return oa.comap(P1.<A>__1());
+    return oa.contramap(P1.<A>__1());
   }
 
 
@@ -443,6 +457,14 @@ public final class Ord<A> {
   public static <A, B> Ord<P2<A, B>> p2Ord(final Ord<A> oa, final Ord<B> ob) {
     return ord(curry((P2<A, B> a, P2<A, B> b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa.compare(a._1(), b._1())));
   }
+
+    public static <A, B> Ord<P2<A, B>> p2Ord1(Ord<A> oa) {
+        return ord(p1 -> p2 -> oa.compare(p1._1(), p2._1()));
+    }
+
+    public static <A, B> Ord<P2<A, B>> p2Ord2(Ord<B> ob) {
+        return ord(p1 -> p2 -> ob.compare(p1._2(), p2._2()));
+    }
 
   /**
    * An order instance for a product-3, with the first factor considered most significant.
@@ -461,7 +483,7 @@ public final class Ord<A> {
   /**
    * An order instance for the <code>Natural</code> type.
    */
-  public static final Ord<Natural> naturalOrd = bigintOrd.comap(Natural.bigIntegerValue);
+  public static final Ord<Natural> naturalOrd = bigintOrd.contramap(Natural.bigIntegerValue);
 
 
   /**
@@ -503,4 +525,14 @@ public final class Ord<A> {
     });
   }
 
+  class OrdComparator implements Comparator<A> {
+	@Override
+    public int compare(A o1, A o2) {
+	    return Ord.this.compare(o1, o2).toInt();
+    }
+  }
+
+  public Comparator<A> toComparator() {
+	  return new OrdComparator();
+  }
 }

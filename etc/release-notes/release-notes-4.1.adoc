@@ -1,0 +1,7 @@
+
+= Release 4.1
+
+Released: 30 May, 2014
+
+* Support Java 7 by removing default methods.  Methods on class C with default methods moved to static methods on new class ${C}Functions.
+

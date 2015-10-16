@@ -1,11 +1,11 @@
 package fj.data;
 
 import static fj.Bottom.error;
+import fj.F0;
 import fj.F2Functions;
 import fj.Equal;
 import fj.F;
 import fj.F2;
-import fj.F3;
 import fj.Function;
 import fj.Hash;
 import fj.Monoid;
@@ -15,10 +15,8 @@ import fj.P1;
 import fj.P2;
 import fj.Show;
 import fj.Unit;
-import static fj.Function.curry;
-import static fj.Function.constant;
-import static fj.Function.identity;
-import static fj.Function.compose;
+
+import static fj.Function.*;
 import static fj.P.p;
 import static fj.P.p2;
 import static fj.Unit.unit;
@@ -26,12 +24,21 @@ import static fj.data.Array.mkArray;
 import static fj.data.List.Buffer.*;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static fj.data.optic.Optional.optional;
+import static fj.data.optic.Prism.prism;
+import static fj.data.vector.V.v;
 import static fj.function.Booleans.not;
 import static fj.Ordering.GT;
 import static fj.Ord.intOrd;
-
 import fj.Ordering;
 import fj.control.Trampoline;
+import fj.control.parallel.Promise;
+import fj.control.parallel.Strategy;
+import fj.data.optic.Optional;
+import fj.data.optic.PTraversal;
+import fj.data.optic.Prism;
+import fj.data.optic.Traversal;
+import fj.data.vector.V2;
 import fj.function.Effect1;
 
 import java.util.AbstractCollection;
@@ -119,8 +126,8 @@ public abstract class List<A> implements Iterable<A> {
    * @param a The argument to return if this list is empty.
    * @return The head of this list if there is one or the given argument if this list is empty.
    */
-  public final A orHead(final P1<A> a) {
-    return isEmpty() ? a._1() : head();
+  public final A orHead(final F0<A> a) {
+    return isEmpty() ? a.f() : head();
   }
 
   /**
@@ -129,13 +136,13 @@ public abstract class List<A> implements Iterable<A> {
    * @param as The argument to return if this list is empty.
    * @return The tail of this list if there is one or the given argument if this list is empty.
    */
-  public final List<A> orTail(final P1<List<A>> as) {
-    return isEmpty() ? as._1() : tail();
+  public final List<A> orTail(final F0<List<A>> as) {
+    return isEmpty() ? as.f() : tail();
   }
 
   /**
    * Returns an option projection of this list; <code>None</code> if empty, or the first element in
-   * <code>Some</code>.
+   * <code>Some</code>.  Equivalent to {@link #headOption()}.
    *
    * @return An option projection of this list.
    */
@@ -150,8 +157,8 @@ public abstract class List<A> implements Iterable<A> {
    * @param x The value to return in left if this list is empty.
    * @return An either projection of this list.
    */
-  public final <X> Either<X, A> toEither(final P1<X> x) {
-    return isEmpty() ? Either.<X, A>left(x._1()) : Either.<X, A>right(head());
+  public final <X> Either<X, A> toEither(final F0<X> x) {
+    return isEmpty() ? Either.<X, A>left(x.f()) : Either.<X, A>right(head());
   }
 
   /**
@@ -160,8 +167,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A stream projection of this list.
    */
   public final Stream<A> toStream() {
-    final Stream<A> nil = Stream.nil();
-    return foldRight(a -> as -> as.cons(a), nil);
+    return isEmpty() ? Stream.nil() : Stream.cons(head(), () -> tail().toStream());
   }
 
   /**
@@ -171,9 +177,10 @@ public abstract class List<A> implements Iterable<A> {
    */
   @SuppressWarnings({"unchecked"})
   public final Array<A> toArray() {
-    final Object[] a = new Object[length()];
+    final int length = length();
+    final Object[] a = new Object[length];
     List<A> x = this;
-    for (int i = 0; i < length(); i++) {
+    for (int i = 0; i < length; i++) {
       a[i] = x.head();
       x = x.tail();
     }
@@ -563,7 +570,92 @@ public abstract class List<A> implements Iterable<A> {
     return bind(c);
   }
 
-  /**
+    /**
+     * Traverses through the List with the given function
+     *
+     * @param f The function that produces Option value
+     * @return  none if applying f returns none to any element of the list or f mapped list in some .
+     */
+    public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
+        return foldRight(
+                (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
+                Option.some(List.<B>nil())
+        );
+    }
+
+    /**
+     * Traverse through the List with given function.
+     *
+     * @param f The function that produces Either value.
+     * @return  error in left or f mapped list in right.
+     */
+    public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
+        return foldRight(
+                (a, acc) -> f.f(a).right().bind(e -> acc.right().map(es -> es.cons(e))),
+                Either.<E, List<B>>right(List.<B>nil())
+        );
+    }
+
+    public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
+        return foldRight(
+                (a, acc) -> f.f(a).bind(s -> acc.map(ss -> ss.cons(s))),
+                Stream.<List<B>>nil()
+        );
+    }
+
+    public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
+        return foldRight(
+                (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+                P.p(List.<B>nil())
+        );
+    }
+
+    public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
+        return this.foldRight(
+                (a, acc) -> IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b))),
+                IOFunctions.unit(List.<B>nil())
+        );
+    }
+
+  public <C, B> F<C, List<B>> traverseF(F<A, F<C, B>> f) {
+    return this.foldRight(
+        (a, acc) -> Function.bind(acc,
+            (bs) -> Function.<C, B, List<B>> compose(b -> bs.cons(b), f.f(a))),
+        Function.constant(List.<B> nil())
+        );
+  }
+
+  public <B> Trampoline<List<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+        Trampoline.pure(List.<B> nil()));
+  }
+
+  public <B> Promise<List<B>> traversePromise(final F<A, Promise<B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.fmap(bs -> bs.cons(b))),
+        Promise.promise(Strategy.idStrategy(), p(List.<B> nil())));
+  }
+
+  public <B> List<List<B>> traverseList(final F<A, List<B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+        List.single(List.<B> nil()));
+  }
+
+  public <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
+    return foldRight(
+        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
+        Validation.success(List.<B> nil()));
+  }
+
+  public <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
+    return foldRight(
+        (a, acc) -> acc.apply(f.f(a).<F<List<B>, List<B>>> map(e -> es -> es.cons(e))),
+        v(List.<B> nil(), List.<B> nil()));
+  }
+
+    /**
    * Performs function application within a list (applicative functor pattern).
    *
    * @param lf The list of functions to apply.
@@ -580,18 +672,18 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that has appended the given list.
    */
   public final List<A> append(final List<A> as) {
-    return fromList(this).append(as).toList();
+    return Buffer.fromList(this).prependToList(as);
   }
 
   /**
-   * Performs a right-fold reduction across this list. This function uses O(length) stack space.
+   * Performs a right-fold reduction across this list.
    *
    * @param f The function to apply on each element of the list.
    * @param b The beginning value to start the application from.
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F<A, F<B, B>> f, final B b) {
-    return isEmpty() ? b : f.f(head()).f(tail().foldRight(f, b));
+    return reverse().foldLeft(flip(f), b);
   }
 
   /**
@@ -612,11 +704,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A Trampoline containing the final result after the right-fold reduction.
    */
   public final <B> Trampoline<B> foldRightC(final F2<A, B, B> f, final B b) {
-    return Trampoline.suspend(new P1<Trampoline<B>>() {
-      public Trampoline<B> _1() {
-        return isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(F2Functions.f(f, head()));
-      }
-    });
+    return Trampoline.suspend(P.lazy(() -> isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(F2Functions.f(f, head()))));
   }
 
   /**
@@ -760,6 +848,22 @@ public abstract class List<A> implements Iterable<A> {
     if (isEmpty())
       throw error("Partition on empty list.");
     return unfold(as -> as.isEmpty() ? Option.<P2<List<A>, List<A>>>none() : some(as.splitAt(n)), this);
+  }
+
+  /**
+   * Partitions the list into a tuple where the first element contains the
+   * items that satisfy the the predicate f and the second element contains the
+   * items that does not.  The relative order of the elements in the returned tuple
+   * is the same as the original list.
+   *
+   * @param f Predicate function.
+   */
+  public P2<List<A>, List<A>> partition(F<A, Boolean> f) {
+    P2<List<A>, List<A>> p2 = foldLeft(acc -> a ->
+      f.f(a) ? P.p(acc._1().cons(a), acc._2()) : P.p(acc._1(), acc._2().cons(a)),
+      P.p(nil(), nil())
+    );
+    return P.p(p2._1().reverse(), p2._2().reverse());
   }
 
   /**
@@ -965,7 +1069,7 @@ public abstract class List<A> implements Iterable<A> {
   public final List<A> intersperse(final A a) {
     return isEmpty() || tail().isEmpty() ?
            this :
-           cons(head(), cons(a, tail().intersperse(a)));
+            cons(head(), tail().bind(a2 -> List.list(a, a2)));
   }
 
   /**
@@ -1009,6 +1113,7 @@ public abstract class List<A> implements Iterable<A> {
     return sort(o).group(o.equal()).map(List.<A>head_());
   }
 
+
   /**
    * First-class head function.
    *
@@ -1017,6 +1122,23 @@ public abstract class List<A> implements Iterable<A> {
   public static <A> F<List<A>, A> head_() {
     return list -> list.head();
   }
+
+	/**
+	 * Returns the head of the list, if any.  Equivalent to {@link #toOption()} .
+	 *
+	 * @return The optional head of the list.
+	 */
+	public Option<A> headOption() {
+		return toOption();
+	}
+
+	/**
+	 * Reutrns the tail of the list, if any.
+	 * @return The optional tail of the list.
+	 */
+	public Option<List<A>> tailOption() {
+		return isEmpty() ? none() : some(tail());
+	}
 
   /**
    * First-class tail function.
@@ -1059,7 +1181,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A possible list of values after binding through the Option monad.
    */
   public final <B> Option<List<B>> mapMOption(final F<A, Option<B>> f) {
-    return foldRight((a, bs) -> f.f(a).bind(b -> bs.map(bbs -> bbs.cons(b))), Option.<List<B>>some(List.<B>nil()));
+    return traverseOption(f);
   }
 
   /**
@@ -1106,7 +1228,7 @@ public abstract class List<A> implements Iterable<A> {
     List<A> ys = this;
     final Buffer<A> a = empty();
     while(ys.isNotEmpty() && ys.tail().isNotEmpty()) {
-      a.snoc(head());
+      a.snoc(ys.head());
       ys = ys.tail();
     }
     return a.toList();
@@ -1138,7 +1260,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The most common element in this list.
    */
   public final A mode(final Ord<A> o) {
-    return sort(o).group(o.equal()).maximum(intOrd.comap(List.<A>length_())).head();
+    return sort(o).group(o.equal()).maximum(intOrd.contramap(List.<A>length_())).head();
   }
 
   /**
@@ -1256,6 +1378,32 @@ public abstract class List<A> implements Iterable<A> {
     return isEmpty() || tail().isEmpty() || eq.eq(head(), tail().head()) && tail().allEqual(eq);
   }
 
+  public final boolean isPrefixOf(final Equal<A> eq, final List<A> xs) {
+    final Iterator<A> i = iterator();
+    final Iterator<A> j = xs.iterator();
+
+    while (i.hasNext() && j.hasNext()) {
+      if (!eq.eq(i.next(), j.next())) {
+        return false;
+      }
+    }
+
+    return !i.hasNext();
+  }
+
+  public final boolean isSuffixOf(final Equal<A> eq, final List<A> xs) {
+    final Iterator<A> i = iterator();
+    final Iterator<A> j = xs.drop(xs.length() - length()).iterator();
+
+    while (i.hasNext() && j.hasNext()) {
+      if (!eq.eq(i.next(), j.next())) {
+        return false;
+      }
+    }
+
+    return !i.hasNext();
+  }
+
   /**
    * First-class length.
    *
@@ -1283,6 +1431,10 @@ public abstract class List<A> implements Iterable<A> {
    */
   public final A minimum(final Ord<A> o) {
     return foldLeft1(o.min);
+  }
+
+  public final java.util.List<A> toJavaList() {
+    return new java.util.LinkedList<A>(toCollection());
   }
 
   /**
@@ -1362,8 +1514,17 @@ public abstract class List<A> implements Iterable<A> {
    * @param as The elements to construct a list with.
    * @return A list with the given elements.
    */
-  public static <A> List<A> list(final A... as) {
+  @SafeVarargs public static <A> List<A> list(final A... as) {
     return Array.array(as).toList();
+  }
+
+
+  public static <A> List<A> list(final Iterable<A> i) {
+    return iterableList(i);
+  }
+
+  public static <A> List<A> list(final Iterator<A> it) {
+    return iterableList(() -> it);
   }
 
   /**
@@ -1497,7 +1658,9 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of the given value replicated the given number of times.
    */
   public static <A> List<A> replicate(final int n, final A a) {
-    return n <= 0 ? List.<A>nil() : replicate(n - 1, a).cons(a);
+    List<A> list = List.nil();
+    for (int i = 0; i < n; i++) { list = list.cons(a); }
+    return list;
   }
 
   /**
@@ -1510,7 +1673,11 @@ public abstract class List<A> implements Iterable<A> {
    *         <code>to</code> value (exclusive).
    */
   public static List<Integer> range(final int from, final int to) {
-    return from >= to ? List.<Integer>nil() : cons(from, range(from + 1, to));
+    final Buffer<Integer> buf = Buffer.empty();
+    for (int i = from; i < to; i++) {
+      buf.snoc(i);
+    }
+    return buf.toList();
   }
 
   /**
@@ -1698,7 +1865,7 @@ public abstract class List<A> implements Iterable<A> {
      * Appends (snoc) the given element to this buffer to produce a new buffer.
      *
      * @param a The element to append to this buffer.
-     * @return A new buffer with the given element appended.
+     * @return This buffer.
      */
     public Buffer<A> snoc(final A a) {
       if (exported)
@@ -1717,10 +1884,10 @@ public abstract class List<A> implements Iterable<A> {
     }
 
     /**
-     * Appends the given buffer to this buffer.
+     * Appends the given list to this buffer.
      *
-     * @param as The buffer to append to this one.
-     * @return A new buffer that has appended the given buffer.
+     * @param as The list to append to this buffer.
+     * @return This buffer.
      */
     public Buffer<A> append(final List<A> as) {
       for (List<A> xs = as; xs.isNotEmpty(); xs = xs.tail())
@@ -1728,6 +1895,28 @@ public abstract class List<A> implements Iterable<A> {
 
       return this;
     }
+
+    /**
+     * Prepends the elements of this buffer to the given list.
+     *
+     * @param as the list to which elements are prepended.
+     */
+    public List<A> prependToList(final List<A> as) {
+      if (isEmpty()) {
+        return as;
+      } else {
+        if (exported)
+          copy();
+
+        tail.tail(as);
+        return toList();
+      }
+    }
+
+    /**
+     * Returns <code>true</code> if this buffer is empty, <code>false</code> otherwise.
+     */
+    public boolean isEmpty() { return start.isEmpty(); }
 
     /**
      * Returns an immutable list projection of this buffer. Modifications to the underlying buffer
@@ -1793,6 +1982,7 @@ public abstract class List<A> implements Iterable<A> {
       List<A> s = start;
       final Cons<A> t = tail;
       start = nil();
+      tail = null;
       exported = false;
       while (s != t) {
         snoc(s.head());
@@ -1811,14 +2001,8 @@ public abstract class List<A> implements Iterable<A> {
      * @param obj the other object to check for equality against.
      * @return true if this list is equal to the provided argument
      */
-    //Suppress the warning for cast to <code>List<A></code> because the type is checked in the previous line.
-    @SuppressWarnings({ "unchecked" })
     @Override public boolean equals( final Object obj ) {
-        if ( obj == null || !( obj instanceof List ) ) { return false; }
-
-        //Casting to List<A> here does not cause a runtime exception even if the type arguments don't match.
-        //The cast is done to avoid the compiler warning "raw use of parameterized class 'List'"
-        return Equal.listEqual( Equal.<A>anyEqual() ).eq( this, (List<A>) obj );
+        return Equal.equals0(List.class, this, obj, () -> Equal.listEqual(Equal.<A>anyEqual()));
     }
 
     /**
@@ -1827,8 +2011,9 @@ public abstract class List<A> implements Iterable<A> {
      *
      * @return the hash code for this list.
      */
-    @Override public int hashCode() {
-        return Hash.listHash( Hash.<A>anyHash() ).hash( this );
+    @Override
+    public int hashCode() {
+        return Hash.listHash(Hash.<A>anyHash()).hash(this);
     }
 
     /**
@@ -1838,6 +2023,129 @@ public abstract class List<A> implements Iterable<A> {
      * @return a String representation of the list
      */
     @Override public String toString() {
-        return Show.listShow( Show.<A>anyShow() ).show( this ).foldLeft((s, c) -> s + c, "" );
+        return Show.listShow(Show.<A>anyShow()).showS(this);
     }
+
+    /**
+     * True if and only if the list has one element. Runs in constant time.
+     */
+    public boolean isSingle() {
+        return isNotEmpty() && tail().isEmpty();
+    }
+
+  /**
+   * Optic factory methods for a List
+   */
+  public static final class Optic {
+
+    private Optic() {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Polymorphic traversal
+     */
+    public static <A, B> PTraversal<List<A>, List<B>, A, B> pTraversal() {
+      return new PTraversal<List<A>, List<B>, A, B>() {
+
+        @Override
+        public <C> F<List<A>, F<C, List<B>>> modifyFunctionF(F<A, F<C, B>> f) {
+          return l -> l.traverseF(f);
+        }
+
+        @Override
+        public <L> F<List<A>, Either<L, List<B>>> modifyEitherF(F<A, Either<L, B>> f) {
+          return l -> l.traverseEither(f);
+        }
+
+        @Override
+        public F<List<A>, IO<List<B>>> modifyIOF(F<A, IO<B>> f) {
+          return l -> l.traverseIO(f);
+        }
+
+        @Override
+        public F<List<A>, Trampoline<List<B>>> modifyTrampolineF(F<A, Trampoline<B>> f) {
+          return l -> l.traverseTrampoline(f);
+        }
+
+        @Override
+        public F<List<A>, Promise<List<B>>> modifyPromiseF(F<A, Promise<B>> f) {
+          return l -> l.traversePromise(f);
+        }
+
+        @Override
+        public F<List<A>, List<List<B>>> modifyListF(F<A, List<B>> f) {
+          return l -> l.traverseList(f);
+        }
+
+        @Override
+        public F<List<A>, Option<List<B>>> modifyOptionF(F<A, Option<B>> f) {
+          return l -> l.traverseOption(f);
+        }
+
+        @Override
+        public F<List<A>, Stream<List<B>>> modifyStreamF(F<A, Stream<B>> f) {
+          return l -> l.traverseStream(f);
+        }
+
+        @Override
+        public F<List<A>, P1<List<B>>> modifyP1F(F<A, P1<B>> f) {
+          return l -> l.traverseP1(f);
+        }
+
+        @Override
+        public <E> F<List<A>, Validation<E, List<B>>> modifyValidationF(F<A, Validation<E, B>> f) {
+          return l -> l.traverseValidation(f);
+        }
+
+        @Override
+        public F<List<A>, V2<List<B>>> modifyV2F(F<A, V2<B>> f) {
+          return l -> l.traverseV2(f);
+        }
+
+        @Override
+        public <M> F<List<A>, M> foldMap(Monoid<M> monoid, F<A, M> f) {
+          return l -> monoid.sumLeft(l.map(f));
+        }
+      };
+    }
+
+    /**
+     * Monomorphic traversal
+     */
+    public static <A> Traversal<List<A>, A> traversal() {
+      return new Traversal<>(pTraversal());
+    }
+
+    /**
+     * Optional targeted on Cons head.
+     */
+    public static <A> Optional<List<A>, A> head() {
+      return optional(l -> l.toOption(), a -> l -> l.<List<A>>list(l, constant(cons_(a))));
+    }
+
+    /**
+     * Optional targeted on Cons tail.
+     */
+    public static <A> Optional<List<A>, List<A>> tail() {
+      return optional(l -> l.<Option<List<A>>> list(none(), h -> tail -> some(tail)),
+              tail -> l -> l.list(l, h -> constant(List.cons(h, tail))));
+    }
+
+    /**
+     * Nil prism
+     */
+    public static <A> Prism<List<A>, Unit> nil() {
+      return prism((List<A> l) -> l.isEmpty() ? some(unit()) : none(), constant(List.nil()));
+    }
+
+    /**
+     * Cons prism
+     */
+    public static <A> Prism<List<A>, P2<A, List<A>>> cons() {
+      return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(P.p(h, tail))), c -> List.cons(c._1(), c._2()));
+    }
+
+  }
+
 }

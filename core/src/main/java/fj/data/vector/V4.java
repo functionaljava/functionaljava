@@ -1,11 +1,7 @@
 package fj.data.vector;
 
-import fj.F;
-import fj.F2;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.P4;
+import fj.*;
+
 import static fj.Function.curry;
 import static fj.P.p2;
 import fj.data.Array;
@@ -34,11 +30,8 @@ public final class V4<A> implements Iterable<A> {
    * @return A new vector-4.
    */
   public static <A> V4<A> p(final P4<A, A, A, A> p) {
-    return new V4<A>(new P1<A>() {
-      public A _1() {
-        return p._1();
-      }
-    }, V3.p(new P3<A, A, A>() {
+    return new V4<A>(P.lazy(() -> p._1()),
+    V3.p(new P3<A, A, A>() {
       public A _1() {
         return p._2();
       }
@@ -167,11 +160,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a stream of the elements of this vector.
    */
   public Stream<A> toStream() {
-    return Stream.cons(head._1(), new P1<Stream<A>>() {
-      public Stream<A> _1() {
-        return tail.toStream();
-      }
-    });
+    return Stream.cons(head._1(), () -> tail.toStream());
   }
 
   /**
@@ -244,11 +233,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that transforms a vector-4 to a stream of its elements.
    */
   public static <A> F<V4<A>, Stream<A>> toStream_() {
-    return new F<V4<A>, Stream<A>>() {
-      public Stream<A> f(final V4<A> v) {
-        return v.toStream();
-      }
-    };
+    return v -> v.toStream();
   }
 
   /**
@@ -257,11 +242,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that transforms a vector-4 to the equivalent product-4.
    */
   public static <A> F<V4<A>, P4<A, A, A, A>> p_() {
-    return new F<V4<A>, P4<A, A, A, A>>() {
-      public P4<A, A, A, A> f(final V4<A> v) {
-        return v.p();
-      }
-    };
+    return v -> v.p();
   }
 
   /**
@@ -270,11 +251,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the first element of a given vector.
    */
   public static <A> F<V4<A>, A> __1() {
-    return new F<V4<A>, A>() {
-      public A f(final V4<A> v) {
-        return v._1();
-      }
-    };
+    return v -> v._1();
   }
 
   /**
@@ -283,11 +260,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the second element of a given vector.
    */
   public static <A> F<V4<A>, A> __2() {
-    return new F<V4<A>, A>() {
-      public A f(final V4<A> v) {
-        return v._2();
-      }
-    };
+    return v -> v._2();
   }
 
   /**
@@ -296,11 +269,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the third element of a given vector.
    */
   public static <A> F<V4<A>, A> __3() {
-    return new F<V4<A>, A>() {
-      public A f(final V4<A> v) {
-        return v._3();
-      }
-    };
+    return v -> v._3();
   }
 
   /**
@@ -309,10 +278,6 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the fourth element of a given vector.
    */
   public static <A> F<V4<A>, A> __4() {
-    return new F<V4<A>, A>() {
-      public A f(final V4<A> v) {
-        return v._4();
-      }
-    };
+    return v -> v._4();
   }
 }

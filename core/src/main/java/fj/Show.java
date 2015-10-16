@@ -1,17 +1,6 @@
 package fj;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.LazyString;
-import fj.data.List;
-import fj.data.Natural;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Stream;
-import fj.data.Set;
-import fj.data.TreeMap;
-import fj.data.Tree;
-import fj.data.Validation;
+import fj.data.*;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -30,7 +19,6 @@ import static fj.Unit.unit;
 import static fj.data.Stream.cons;
 import static fj.data.Stream.fromString;
 import static fj.data.Stream.join;
-import static fj.data.Stream.nil;
 import static fj.data.Stream.single;
 
 /**
@@ -51,7 +39,7 @@ public final class Show<A> {
    * @param f The function to map.
    * @return A new show.
    */
-  public <B> Show<B> comap(final F<B, A> f) {
+  public <B> Show<B> contramap(final F<B, A> f) {
     return show(compose(this.f, f));
   }
 
@@ -294,7 +282,7 @@ public final class Show<A> {
    * @return A show instance for the {@link NonEmptyList} type.
    */
   public static <A> Show<NonEmptyList<A>> nonEmptyListShow(final Show<A> sa) {
-    return listShow(sa).comap(NonEmptyList.<A>toList_());
+    return listShow(sa).contramap(NonEmptyList.<A>toList_());
   }
 
   /**
@@ -311,6 +299,10 @@ public final class Show<A> {
       }
       return fromString("Tree(").append(p(result)).append(fromString(")"));
     });
+  }
+
+  public static <A> Show<Seq<A>> seqShow(final Show<A> sa) {
+    return show(s -> streamShow(sa, "Seq(", ",", ")").show(s.toStream()));
   }
 
   /**
@@ -400,7 +392,7 @@ public final class Show<A> {
    */
   public static <A> Show<Array<A>> arrayShow(final Show<A> sa) {
     return show(as -> {
-      Stream<Character> b = nil();
+      Stream<Character> b = fromString("Array(");
 
       for (int i = 0; i < as.length(); i++) {
         b = b.append(sa.f.f(as.get(i)));
@@ -409,9 +401,7 @@ public final class Show<A> {
           b = b.append(fromString(","));
       }
 
-      b = b.append(fromString("Array("));
-
-      return fromString(")").append(p(b));
+      return b.append(fromString(")"));
     });
   }
 
@@ -431,6 +421,14 @@ public final class Show<A> {
    * @return A show instance for the {@link P1 tuple-1} type.
    */
   public static <A> Show<P1<A>> p1Show(final Show<A> sa) {
+    return p1ShowLazy(sa);
+  }
+
+  public static <A> Show<P1<A>> p1ShowLazy(final Show<A> sa) {
+    return show(p -> Stream.fromString("(?)"));
+  }
+
+  public static <A> Show<P1<A>> p1ShowEager(final Show<A> sa) {
     return show(p -> cons('(', p(sa.show(p._1()))).snoc(')'));
   }
 
@@ -559,7 +557,7 @@ public final class Show<A> {
    * @return A show instance for a vector-2.
    */
   public static <A> Show<V2<A>> v2Show(final Show<A> ea) {
-    return streamShow(ea, "V2(", ",", ")").comap(V2.<A>toStream_());
+    return streamShow(ea, "V2(", ",", ")").contramap(V2.<A>toStream_());
   }
 
   /**
@@ -569,7 +567,7 @@ public final class Show<A> {
    * @return A show instance for a vector-3.
    */
   public static <A> Show<V3<A>> v3Show(final Show<A> ea) {
-    return streamShow(ea, "V3(", ",", ")").comap(V3.<A>toStream_());
+    return streamShow(ea, "V3(", ",", ")").contramap(V3.<A>toStream_());
   }
 
   /**
@@ -579,7 +577,7 @@ public final class Show<A> {
    * @return A show instance for a vector-4.
    */
   public static <A> Show<V4<A>> v4Show(final Show<A> ea) {
-    return streamShow(ea, "V4(", ",", ")").comap(V4.<A>toStream_());
+    return streamShow(ea, "V4(", ",", ")").contramap(V4.<A>toStream_());
   }
 
   /**
@@ -589,7 +587,7 @@ public final class Show<A> {
    * @return A show instance for a vector-5.
    */
   public static <A> Show<V5<A>> v5Show(final Show<A> ea) {
-    return streamShow(ea, "V5(", ",", ")").comap(V5.<A>toStream_());
+    return streamShow(ea, "V5(", ",", ")").contramap(V5.<A>toStream_());
   }
 
   /**
@@ -599,7 +597,7 @@ public final class Show<A> {
    * @return A show instance for a vector-6.
    */
   public static <A> Show<V6<A>> v6Show(final Show<A> ea) {
-    return streamShow(ea, "V6(", ",", ")").comap(V6.<A>toStream_());
+    return streamShow(ea, "V6(", ",", ")").contramap(V6.<A>toStream_());
   }
 
   /**
@@ -609,7 +607,7 @@ public final class Show<A> {
    * @return A show instance for a vector-7.
    */
   public static <A> Show<V7<A>> v7Show(final Show<A> ea) {
-    return streamShow(ea, "V7(", ",", ")").comap(V7.<A>toStream_());
+    return streamShow(ea, "V7(", ",", ")").contramap(V7.<A>toStream_());
   }
 
   /**
@@ -619,13 +617,13 @@ public final class Show<A> {
    * @return A show instance for a vector-8.
    */
   public static <A> Show<V8<A>> v8Show(final Show<A> ea) {
-    return streamShow(ea, "V8(", ",", ")").comap(V8.<A>toStream_());
+    return streamShow(ea, "V8(", ",", ")").contramap(V8.<A>toStream_());
   }
 
   /**
    * A show instance for natural numbers.
    */
-  public static final Show<Natural> naturalShow = bigintShow.comap(Natural::bigIntegerValue);
+  public static final Show<Natural> naturalShow = bigintShow.contramap(Natural::bigIntegerValue);
 
   /**
    * A show instance for streams that splits into lines.

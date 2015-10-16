@@ -17,12 +17,10 @@ adding the size of each.
 public final class JavaLinkedList {
   public static void main(final String[] args) {
     final Property p = property(arbLinkedList(arbInteger), arbLinkedList(arbInteger),
-        new F2<LinkedList<Integer>, LinkedList<Integer>, Property>() {
-      public Property f(final LinkedList<Integer> x, final LinkedList<Integer> y) {
+            (x, y) -> {
         final LinkedList<Integer> xy = new LinkedList<Integer>(x);
         xy.addAll(y);
         return prop(xy.size() == x.size() + y.size());
-      }
     });
     summary.println(p.check()); // OK, passed 100 tests.
   }

@@ -25,11 +25,7 @@ public final class ChequeWrite {
   private ChequeWrite() {}
 
   static List<Integer> toZero(final int from) {
-    return unfold(new F<Integer, Option<P2<Integer, Integer>>>() {
-      public Option<P2<Integer, Integer>> f(final Integer i) {
-        return i < 0 ? Option.<P2<Integer, Integer>>none() : some(p(i, i - 1));
-      }
-    }, from);
+    return unfold(i -> i < 0 ? Option.<P2<Integer, Integer>>none() : some(p(i, i - 1)), from);
   }
 
   static int signum(final int i) {
@@ -80,12 +76,9 @@ public final class ChequeWrite {
   static <A> List<P2<List<A>, Integer>> split(final List<A> as) {
     final int len = as.length();
 
-    final List<List<A>> ds = as.zip(toZero(len - 1)).foldRight(new F2<P2<A, Integer>, List<List<A>>, List<List<A>>>() {
-      public List<List<A>> f(final P2<A, Integer> ki, final List<List<A>> z) {
-        return ki._2() % 3 == 0 ? z.conss(single(ki._1())) : z.tail().conss(z.head().cons(ki._1()));
-      }
-    }, List.<List<A>>nil());
-
+    final List<List<A>> ds = as.zip(toZero(len - 1)).foldRight((ki, z) ->
+        ki._2() % 3 == 0 ? z.conss(single(ki._1())) : z.tail().conss(z.head().cons(ki._1())), List.<List<A>>nil()
+    );
     return ds.zip(toZero(len / 3 + signum(len % 3) - 1));
   }
 
@@ -103,19 +96,14 @@ public final class ChequeWrite {
   }
 
   static boolean existsNotZero(final List<Character> cs) {
-    return cs.exists(new F<Character, Boolean>() {
-      public Boolean f(final Character c) {
-        return c != '0';
-      }
-    });
+    return cs.exists(c -> c != '0');
   }
 
   static boolean eq(final List<Character> a, final List<Character> b) {
     return listEqual(charEqual).eq(a, b);
   }
 
-  static final F<List<Character>, List<Character>> dollars = new F<List<Character>, List<Character>>() {
-    public List<Character> f(final List<Character> cs) {
+  static final F<List<Character>, List<Character>> dollars = cs -> {
       if (cs.isEmpty())
         return fromString("zero dollars");
       else {
@@ -144,25 +132,19 @@ public final class ChequeWrite {
 
         return fromString(" ").intercalate(x.toList());
       }
-    }
+
   };
 
-  static final F<List<Character>, List<Character>> cents = new F<List<Character>, List<Character>>() {
-    public List<Character> f(final List<Character> a) {
+  static final F<List<Character>, List<Character>> cents = a -> {
       final int n = a.length();
       return n == 0
              ? fromString("zero cents")
              : show(list(a.head(), n == 1 ? '0' : a.tail().head()))
                  .append(fromString(eq(a, list('0', '1')) ? " cent" : " cents"));
-    }
   };
 
   public static List<Character> write(final List<Character> cs) {
-    final F<List<Character>, List<Character>> dropNonDigit = new F<List<Character>, List<Character>>() {
-      public List<Character> f(final List<Character> cs) {
-        return cs.filter(Characters.isDigit);
-      }
-    };
+    final F<List<Character>, List<Character>> dropNonDigit = cs2 -> cs2.filter(Characters.isDigit);
     final P2<List<Character>, List<Character>> x =
         cs.dropWhile(charEqual.eq('0')).breakk(charEqual.eq('.')).map1(dropNonDigit).map1(dollars).map2(dropNonDigit)
             .map2(List.<Character>take().f(2)).map2(cents);

@@ -1,0 +1,40 @@
+
+Current Release Process
+=======================
+
+Update build.gradle:
+* set isSnapshot to false
+
+Update gradle.properties:
+* Set signingEnabled to true
+
+Run the build command:
+gradlew clean build upload
+
+Login to Sonatype and verify the release:
+* Login to https://oss.sonatype.org
+* Choose Staging Repositories and find the Functional Java release
+* Tick the release and click Close
+* Wait until closed
+* Tick the release and click Release
+
+Commit changes
+
+Increase the version:
+* Edit build.gradle: update isSnapshot to true, increase fjBaseVersion, update fjConsumeVersion
+* Edit gradle.properties: set signingEnabled to false
+
+Commit changes and push.  Notes that CI builds using Travis and Jenkins will fail with the release due to lack of configured signing.
+
+Create tag:
+* Create tag using gitk with the format v<x>.<y>
+* Push the tag with: git push --tags
+
+Create the next version of the release notes with empty fields using the template.
+
+Update the website and Github README.adoc.  This includes adding any features to the home page and features page.  Updating the doc page with javadoc links.  Update the download page with a link to the latest release notes.
+
+Copy the generated javadoc for each component to the website repositories' master branch under /javadoc/<version>.  Commit the javadoc and push.
+
+Send a message to the group and social media about the release, TODO.
+

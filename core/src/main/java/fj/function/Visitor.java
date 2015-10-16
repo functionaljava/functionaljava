@@ -2,6 +2,7 @@ package fj.function;
 
 import fj.Equal;
 import fj.F;
+import fj.F0;
 import fj.F2;
 import fj.Function;
 import fj.Monoid;
@@ -9,7 +10,6 @@ import fj.P1;
 import fj.P2;
 import fj.data.List;
 import fj.data.Option;
-
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.data.List.lookup;
@@ -31,7 +31,7 @@ public final class Visitor {
    * @param def The default value if no value is found in the list.
    * @return The first value available in the given list of optional values. If none is found return the given default value.
    */
-  public static <X> X findFirst(final List<Option<X>> values, final P1<X> def) {
+  public static <X> X findFirst(final List<Option<X>> values, final F0<X> def) {
     return Monoid.<X>firstOptionMonoid().sumLeft(values).orSome(def);
   }
 
@@ -42,7 +42,7 @@ public final class Visitor {
    * @param def The default value if no value is found in the list.
    * @return The first non-<code>null</code> value in the given list of optional values. If none is found return the given default value.
    */
-  public static <X> X nullablefindFirst(final List<X> values, final P1<X> def) {
+  public static <X> X nullablefindFirst(final List<X> values, final F0<X> def) {
     return findFirst(values.map(Option.<X>fromNull()), def);
   }
 
@@ -56,7 +56,7 @@ public final class Visitor {
    * @return The first value found in the list of visitors after application of the given value, otherwise returns the
    * given default.
    */
-  public static <A, B> B visitor(final List<F<A, Option<B>>> visitors, final P1<B> def, final A value) {
+  public static <A, B> B visitor(final List<F<A, Option<B>>> visitors, final F0<B> def, final A value) {
     return findFirst(visitors.map(Function.<A, Option<B>>apply(value)), def);
   }
 
@@ -70,12 +70,8 @@ public final class Visitor {
    * @return The first value found in the list of visitors after application of the given value, otherwise returns the
    * given default.
    */
-  public static <A, B> B nullableVisitor(final List<F<A, B>> visitors, final P1<B> def, final A value) {
-    return visitor(visitors.map(new F<F<A, B>, F<A, Option<B>>>() {
-      public F<A, Option<B>> f(final F<A, B> k) {
-        return compose(Option.<B>fromNull(), k);
-      }
-    }), def, value);
+  public static <A, B> B nullableVisitor(final List<F<A, B>> visitors, final F0<B> def, final A value) {
+    return visitor(visitors.map(k -> compose(Option.<B>fromNull(), k)), def, value);
   }
 
   /**
@@ -87,11 +83,7 @@ public final class Visitor {
    * @return A function that can be applied to a default value (there is no association) and an associated key.
    */
   public static <A, B> F<B, F<A, B>> association(final List<P2<A, B>> x, final Equal<A> eq) {
-    return curry(new F2<B, A, B>() {
-      public B f(final B def, final A a) {
-        return lookup(eq, x, a).orSome(def);
-      }
-    });
+    return curry((def, a) -> lookup(eq, x, a).orSome(def));
   }
 
   /**
@@ -103,10 +95,6 @@ public final class Visitor {
    * @return A function that can be applied to a default value (there is no association) and an associated key.
    */
   public static <A, B> F<P1<B>, F<A, B>> associationLazy(final List<P2<A, B>> x, final Equal<A> eq) {
-    return curry(new F2<P1<B>, A, B>() {
-      public B f(final P1<B> def, final A a) {
-        return lookup(eq, x, a).orSome(def);
-      }
-    });
+    return curry((def, a) -> lookup(eq, x, a).orSome(def));
   }
 }

@@ -42,18 +42,12 @@ Note that to test this second law requires the generation of arbitrary functions
 @SuppressWarnings({"PackageVisibleField"})
 @CheckParams(minSuccessful = 1000)
 public final class ListFunctorLaws {
-  final Property identity = property(arbList(arbString), new F<List<String>, Property>() {
-    public Property f(final List<String> x) {
-      return prop(listEqual(stringEqual).eq(x, x.map(Function.<String>identity())));
-    }
-  });
+  final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.<String>identity()))));
 
-  final Property composition = property(arbF(coarbInteger, arbString), arbF(coarbLong, arbInteger), arbList(arbLong), new F3<F<Integer, String>, F<Long, Integer>, List<Long>, Property>() {
-    public Property f(final F<Integer, String> f, final F<Long, Integer> g, final List<Long> x) {
+  final Property composition = property(arbF(coarbInteger, arbString), arbF(coarbLong, arbInteger), arbList(arbLong), (f, g, x) -> {
       final List<String> s1 = x.map(compose(f, g));
       final List<String> s2 = x.map(g).map(f);
       return prop(listEqual(stringEqual).eq(s1, s2));
-    }
   });
 
   // identity: OK, passed 1000 tests.

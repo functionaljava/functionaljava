@@ -427,8 +427,21 @@ public abstract class P6<A, B, C, D, E, F> {
     };
   }
 
+    @Override
 	public String toString() {
 		return Show.p6Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow()).showS(this);
 	}
+
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.equals0(P6.class, this, other,
+        () -> Equal.p6Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.p6Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash(), Hash.<D>anyHash(), Hash.<E>anyHash(), Hash.<F>anyHash()).hash(this);
+  }
 
 }

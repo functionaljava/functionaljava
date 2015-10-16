@@ -452,11 +452,7 @@ public final class ParModule {
    * @return A Promise of a new array with the results of applying the given function across the two arrays, stepwise.
    */
   public <A, B, C> Promise<Array<C>> parZipWith(final Array<A> as, final Array<B> bs, final F<A, F<B, C>> f) {
-    return parZipWith(as.toStream(), bs.toStream(), f).fmap(new F<Stream<C>, Array<C>>() {
-      public Array<C> f(final Stream<C> stream) {
-        return stream.toArray();
-      }
-    });
+    return parZipWith(as.toStream(), bs.toStream(), f).fmap(stream -> stream.toArray());
   }
 
   /**
@@ -500,11 +496,7 @@ public final class ParModule {
    */
   public <A, B> Promise<B> parFoldMap(final Stream<A> as, final F<A, B> map, final Monoid<B> reduce,
                                       final F<Stream<A>, P2<Stream<A>, Stream<A>>> chunking) {
-    return parMap(Stream.unfold(stream -> stream.isEmpty() ? Option.<P2<Stream<A>, Stream<A>>>none() : some(chunking.f(stream)), as), Stream.<A, B>map_().f(map)).bind(new F<Stream<Stream<B>>, Promise<B>>() {
-      public Promise<B> f(final Stream<Stream<B>> stream) {
-        return parMap(stream, reduce.sumLeftS()).fmap(reduce.sumLeftS());
-      }
-    });
+    return parMap(Stream.unfold(stream -> stream.isEmpty() ? Option.<P2<Stream<A>, Stream<A>>>none() : some(chunking.f(stream)), as), Stream.<A, B>map_().f(map)).bind(stream -> parMap(stream, reduce.sumLeftS()).fmap(reduce.sumLeftS()));
   }
 
   /**

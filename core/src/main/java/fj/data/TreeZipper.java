@@ -114,7 +114,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
         treeEqual(e),
         streamEqual(treeEqual(e)),
         streamEqual(treeEqual(e)),
-        streamEqual(p3Equal(streamEqual(treeEqual(e)), e, streamEqual(treeEqual(e))))).comap(TreeZipper.<A>p_());
+        streamEqual(p3Equal(streamEqual(treeEqual(e)), e, streamEqual(treeEqual(e))))).contramap(TreeZipper.<A>p_());
   }
 
   /**
@@ -128,7 +128,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
         treeShow(s),
         streamShow(treeShow(s)),
         streamShow(treeShow(s)),
-        streamShow(p3Show(streamShow(treeShow(s)), s, streamShow(treeShow(s))))).comap(TreeZipper.<A>p_());
+        streamShow(p3Show(streamShow(treeShow(s)), s, streamShow(treeShow(s))))).contramap(TreeZipper.<A>p_());
   }
 
   private static <A> Stream<Tree<A>> combChildren(final Stream<Tree<A>> ls,

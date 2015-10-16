@@ -1,0 +1,19 @@
+language: java
+
+sudo: false
+
+jdk:
+  - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+script:
+  - jdk_switcher use oraclejdk7 && export JAVA7_HOME=$JAVA_HOME
+  - jdk_switcher use oraclejdk8 && export JAVA8_HOME=$JAVA_HOME
+  - ./gradlew build coverage -s -i
+
+after_success:
+  - ./gradlew coverage coveralls -s -i

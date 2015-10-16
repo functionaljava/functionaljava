@@ -1,10 +1,9 @@
 package fj.control.parallel;
 
-import fj.F;
-import fj.F2;
-import fj.Function;
+import fj.*;
+
 import static fj.Function.curry;
-import fj.P1;
+
 import fj.data.Either;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -167,16 +166,13 @@ public final class Callables {
    * @return An optional value that yields the value in the Callable, or None if the Callable fails.
    */
   public static <A> P1<Option<A>> option(final Callable<A> a) {
-    return new P1<Option<A>>() {
-      @SuppressWarnings({"UnusedCatchParameter"})
-      public Option<A> _1() {
+    return P.lazy(() -> {
         try {
           return some(a.call());
         } catch (Exception e) {
           return none();
         }
-      }
-    };
+    });
   }
 
   /**
@@ -195,15 +191,13 @@ public final class Callables {
    * @return Either the value in the given Callable, or the Exception with which the Callable fails.
    */
   public static <A> P1<Either<Exception, A>> either(final Callable<A> a) {
-    return new P1<Either<Exception, A>>() {
-      public Either<Exception, A> _1() {
+    return P.lazy(() -> {
         try {
-          return right(a.call());
+            return right(a.call());
         } catch (Exception e) {
-          return left(e);
+            return left(e);
         }
-      }
-    };
+    });
   }
 
   /**
@@ -221,10 +215,10 @@ public final class Callables {
    * @param e Either an exception or a value to wrap in a Callable
    * @return A Callable equivalent to the given Either value.
    */
-  public static <A> Callable<A> fromEither(final P1<Either<Exception, A>> e) {
+  public static <A> Callable<A> fromEither(final F0<Either<Exception, A>> e) {
     return new Callable<A>() {
       public A call() throws Exception {
-        final Either<Exception, A> e1 = e._1();
+        final Either<Exception, A> e1 = e.f();
         if (e1.isLeft())
           throw e1.left().value();
         else
@@ -248,10 +242,10 @@ public final class Callables {
    * @param o An optional value to turn into a Callable.
    * @return A Callable that yields some value or throws an exception in the case of no value.
    */
-  public static <A> Callable<A> fromOption(final P1<Option<A>> o) {
+  public static <A> Callable<A> fromOption(final F0<Option<A>> o) {
     return new Callable<A>() {
       public A call() throws Exception {
-        final Option<A> o1 = o._1();
+        final Option<A> o1 = o.f();
         if (o1.isSome())
           return o1.some();
         else

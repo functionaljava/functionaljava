@@ -1,0 +1,90 @@
+
+= Release 4.4
+
+Released: 6 July 2015
+
+== Enhancements
+
+* Added optics lenses inspired from the Monocle Scala library, instances for List and P2 (#130, #131, #132, #159).
+* Added functionality to FingerTree and Seq: head, last, tail, init, split, split1, update, toJavaList, Iterable (#140).
+* Added OrdComparator and fixed TreeMap.toMutableMap (#110).
+* Added bimap to Either (#121).
+* Added monoid composition.
+* Changed comap methods to contramap (#142, #170)
+* Provide hard, soft and weak memoisation implementations, default to weak (#153, #151).
+* Added optics (see the Scala Monocle library https://github.com/julien-truffaut/Monocle and the Haskell lens lbrary https://github.com/ekmett/lens for an overview) (#154).
+* Added Validation.sequence (#163, #167).
+* Add PropertyTestRunner (#144).
+* Added Equal.notEq, List.isPrefixOf, List.isSuffixOf (#146).
+* Made enhancements to support Real World Haskell example (#155)
+    ** made P1.toString lazy
+    ** added IOFunctions.interact
+    ** added IOFunctions.getContents
+    ** added map, bind and eval to LazyString
+    ** added IO wrapper with static methods from IOFunctions as instance methods
+    ** Stream.take evaluates one those items necessary (one less than currently)
+    ** Made Stream.toString lazy
+    ** Added Strings methods lines and unlines
+    ** Made IOFunctions.sequenceWhile lazy
+    ** Changed IOFunctions io to be fromF and fromTry.
+* Enhanced Property to run individual tests (#156).
+* Added Seq.isNotEmpty (#158).
+* Added List.partition (#161).
+* Added Validation.partition, arbitrary validations for testing (#165).
+* Added Validation.sequence (using semigroup) (#163, #167).
+
+== Fixes
+
+* Fixed LazyString.toString for Android (#109)
+* Fixed exhausted ScalaCheck tests (#115).
+* Fixed overflow in standard Rand (#112).
+* Fixed equals for anonymous classes (#122, #125).
+* Fixed List.init (#128, #129).
+* Fixed Effect.f ignoring argument (#133, #134).
+* Made Effect.comap static (#135, #134).
+* Fixed Class.inheritance infinite list (#137).
+* Fixed Stream.toString to human readable representation (#138).
+* Fixed P1.memo cache in threaded environment (#141, #108).
+* Fixed Stream join and bind for infinite streams (#140).
+* Fixed Validation.sequence and renamed to sequenceNonCumulative (#162).
+* Scalacheck property Stream.bindStackOverflow sometimes fails (#168, #169).
+* Fixed bug in FingerTree.append (#144).
+* Fixed arrayShow (#145).
+* Fixed Stream.bindStackOverflow test that occasionally failed (#157).
+
+== Internal
+
+* Added Travis build (#115).
+* Upgraded to Gradle 2.4 (#143, #118).
+* Added Gradle uptodate plugin (#119).
+* Updated Scala and ScalaCheck to 2.11.6 and 1.12.2 respectively (#120).
+* Replaced P1 by F0 in various APIs (#136).
+* Split quickcheck property testing into separate module (#147, #148).
+* Updated libraries used: Uptodate 1.5.1, Retrolambda plugin 3.2.0, JUnit 4.12, Scala 2.11.7, Scalacheck 1.12.4 (#171, #172).
+* Fixed unnecessary P1.memo wrapping (#150).
+* Added property tests for List, Stream and Array (#158).
+
+== Breaking Changes
+
+* Comap methods renamed to contramap.
+* Split quickcheck into separate module.
+* Validation.sequence renamed to sequenceNonCumulative.
+* Changed IOFunctions io to be fromF and fromTry.
+
+== Documentation
+
+None.
+
+== Contributors
+
+* Mark Perry
+* Jean-Baptiste Giraudeau
+* Zheka Kozlov
+* daneko
+* Dobes Vandermeer
+* Kenji Yoshida
+* Runar Bjarnason
+* Paul Horn
+* John Sullivan
+
+

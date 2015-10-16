@@ -8,6 +8,7 @@ import static fj.P.p;
 
 import static fj.Unit.unit;
 import static fj.Bottom.error;
+import static fj.data.List.list;
 
 import java.util.Iterator;
 
@@ -84,7 +85,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return a failing projection of this validation.
    */
   public FailProjection<E, T> f() {
-    return new FailProjection<E, T>(this);
+    return new FailProjection<>(this);
   }
 
   /**
@@ -102,7 +103,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param err The error message to fail with.
    * @return The success value.
    */
-  public T successE(final P1<String> err) {
+  public T successE(final F0<String> err) {
     return e.right().valueE(err);
   }
 
@@ -122,7 +123,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param t The value to return if this is failure.
    * @return The success value or the given value.
    */
-  public T orSuccess(final P1<T> t) {
+  public T orSuccess(final F0<T> t) {
     return e.right().orValue(t);
   }
 
@@ -200,6 +201,18 @@ public class Validation<E, T> implements Iterable<T> {
   }
 
   /**
+   * If list contains a failure, returns a failure of the reduction of
+   * all the failures using the semigroup, otherwise returns the successful list.
+   */
+  public static <E, A> Validation<E, List<A>> sequence(final Semigroup<E> s, final List<Validation<E, A>> list) {
+    if (list.exists(v -> v.isFail())) {
+      return Validation.<E, List<A>>fail(list.filter(v -> v.isFail()).map(v -> v.fail()).foldLeft1((e1, e2) -> s.sum(e1, e2)));
+    } else {
+      return Validation.success(list.foldLeft((List<A> acc, Validation<E, A> v) -> acc.cons(v.success()), List.nil()).reverse());
+    }
+  }
+
+  /**
    * Returns <code>None</code> if this is a failure or if the given predicate <code>p</code> does not hold for the
    * success value, otherwise, returns a success in <code>Some</code>.
    *
@@ -218,11 +231,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return The result of function application in validation.
    */
   public <A> Validation<E, A> apply(final Validation<E, F<T, A>> v) {
-    return v.bind(new F<F<T, A>, Validation<E, A>>() {
-      public Validation<E, A> f(final F<T, A> f) {
-        return map(f);
-      }
-    });
+    return v.bind(this::map);
   }
 
   /**
@@ -247,6 +256,16 @@ public class Validation<E, T> implements Iterable<T> {
    */
   public boolean exists(final F<T, Boolean> f) {
     return e.right().exists(f);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return Equal.equals0(Validation.class, this, other, () -> Equal.validationEqual(Equal.<E>anyEqual(), Equal.<T>anyEqual()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.validationHash(Hash.<E>anyHash(), Hash.<T>anyHash()).hash(this);
   }
 
   /**
@@ -736,7 +755,7 @@ public class Validation<E, T> implements Iterable<T> {
 
 
     public <B, C, D> Validation<List<E>, D> accumulate(Validation<E, B> v2, Validation<E, C> v3, F3<T, B, C, D> f) {
-        List<E> list = fails(List.list(this, v2, v3));
+        List<E> list = fails(list(this, v2, v3));
         if (!list.isEmpty()) {
             return Validation.fail(list);
         } else {
@@ -744,8 +763,8 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B, C, D, $E> Validation<List<E>, E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, E> f) {
-        List<E> list = fails(List.list(this, v2, v3, v4));
+    public <B, C, D, $E> Validation<List<E>, $E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, $E> f) {
+        List<E> list = fails(list(this, v2, v3, v4));
         if (!list.isEmpty()) {
             return Validation.fail(list);
         } else {
@@ -754,7 +773,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
     public <B, C, D, $E, $F> Validation<List<E>, $F> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, F5<T, B, C, D, $E, $F> f) {
-        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return Validation.fail(list);
         } else {
@@ -764,7 +783,7 @@ public class Validation<E, T> implements Iterable<T> {
 
 
     public <B, C, D, $E, $F, G> Validation<List<E>, G> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, F6<T, B, C, D, $E, $F, G> f) {
-        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return Validation.fail(list);
         } else {
@@ -773,7 +792,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
     public <B, C, D, $E, $F, G, H> Validation<List<E>, H> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, F7<T, B, C, D, $E, $F, G, H> f) {
-        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return Validation.fail(list);
         } else {
@@ -782,7 +801,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
     public <B, C, D, $E, $F, G, H, I> Validation<List<E>, I> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, Validation<E, H> v8, F8<T, B, C, D, $E, $F, G, H, I> f) {
-        List<E> list = fails(List.list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return Validation.fail(list);
         } else {
@@ -790,21 +809,51 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-
-
-    public static <A, E> Validation<List<E>, List<A>> sequence(List<Validation<E, A>> list) {
-        F2<Validation<E, A>, Validation<List<E>, List<A>>, Validation<List<E>, List<A>>> f2 = (v, acc) -> {
-            if (acc.isFail() && v.isFail()) {
-                return Validation.validation(acc.toEither().left().map(l -> l.cons(v.fail())));
-            } else if (acc.isSuccess() && v.isSuccess()) {
-                return acc.map(l -> l.cons(v.success()));
-            } else {
-                return acc;
-            }
-        };
-        return list.foldRight(f2, Validation.success(List.nil()));
+  /**
+   * If the list contains a failure, returns a Validation of the list of
+   * fails in the list, otherwise returns a successful Validation with
+   * the list of successful values.  Does not accumulate the failures into a
+   * single failure using a semigroup.
+   */
+    public static <A, E> Validation<List<E>, List<A>> sequenceNonCumulative(List<Validation<E, A>> list) {
+      if (list.exists(v -> v.isFail())) {
+        F2<List<E>, Validation<E, A>, List<E>> f = (acc, v) -> acc.cons(v.fail());
+        return Validation.fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
+      } else {
+        F2<List<A>, Validation<E, A>, List<A>> f = (acc, v) -> acc.cons(v.success());
+        return Validation.success(list.filter(v -> v.isSuccess()).foldLeft(f, List.nil()).reverse());
+      }
     }
 
+    public <C> List<Validation<E, C>> traverseList(F<T, List<C>> f){
+        return isSuccess() ?
+            f.f(success()).map(Validation::success) :
+            list(fail(e.left().value()));
+    }
+
+    public <C> Stream<Validation<E, C>> traverseStream(F<T, Stream<C>> f){
+        return isSuccess() ?
+            f.f(success()).map(Validation::success) :
+            Stream.stream(fail(e.left().value()));
+    }
+
+    public <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f){
+        return isSuccess() ?
+            f.f(success()).map(Validation::success) :
+            Option.some(fail(e.left().value()));
+    }
+
+    public <C> IO<Validation<E, C>> traverseIO(F<T, IO<C>> f){
+        return isSuccess() ?
+            IOFunctions.map(f.f(success()), Validation::success) :
+            IOFunctions.unit(fail(e.left().value()));
+    }
+
+    public <C> P1<Validation<E, C>> traverseP1(F<T, P1<C>> f){
+        return isSuccess() ?
+                f.f(success()).map(Validation::success) :
+                P.p(fail(e.left().value()));
+    }
 
 
     public static <A, E> List<E> fails(List<Validation<E, ?>> list) {
@@ -818,7 +867,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A failing projection of a validation.
    */
-  public final class FailProjection<E, T> implements Iterable<E> {
+  public static final class FailProjection<E, T> implements Iterable<E> {
     private final Validation<E, T> v;
 
     private FailProjection(final Validation<E, T> v) {
@@ -840,7 +889,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @param err The error message to fail with.
      * @return The failing value.
      */
-    public E failE(final P1<String> err) {
+    public E failE(final F0<String> err) {
       return v.toEither().left().valueE(err);
     }
 
@@ -860,7 +909,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @param e The value to return if this is success.
      * @return The failing value or the given value.
      */
-    public E orFail(final P1<E> e) {
+    public E orFail(final F0<E> e) {
       return v.toEither().left().orValue(e);
     }
 
@@ -932,10 +981,6 @@ public class Validation<E, T> implements Iterable<T> {
     public <A> Validation<A, T> sequence(final Validation<A, T> v) {
       return bind(e1 -> v);
     }
-
-
-
-
 
 
 	  /**
@@ -1049,7 +1094,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A validation using the given either value.
    */
   public static <E, T> Validation<E, T> validation(final Either<E, T> e) {
-    return new Validation<E, T>(e);
+    return new Validation<>(e);
   }
 
   /**
@@ -1130,11 +1175,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a byte.
    */
-  public static final F<String, Validation<NumberFormatException, Byte>> parseByte = new F<String, Validation<NumberFormatException, Byte>>() {
-    public Validation<NumberFormatException, Byte> f(final String s) {
-      return parseByte(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Byte>> parseByte = s -> parseByte(s);
 
   /**
    * Parses the given string into a double.
@@ -1153,11 +1194,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a double.
    */
-  public static final F<String, Validation<NumberFormatException, Double>> parseDouble = new F<String, Validation<NumberFormatException, Double>>() {
-    public Validation<NumberFormatException, Double> f(final String s) {
-      return parseDouble(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Double>> parseDouble = s -> parseDouble(s);
 
   /**
    * Parses the given string into a float.
@@ -1176,11 +1213,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a float.
    */
-  public static final F<String, Validation<NumberFormatException, Float>> parseFloat = new F<String, Validation<NumberFormatException, Float>>() {
-    public Validation<NumberFormatException, Float> f(final String s) {
-      return parseFloat(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Float>> parseFloat = s -> parseFloat(s);
 
   /**
    * Parses the given string into a integer.
@@ -1199,11 +1232,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into an integer.
    */
-  public static final F<String, Validation<NumberFormatException, Integer>> parseInt = new F<String, Validation<NumberFormatException, Integer>>() {
-    public Validation<NumberFormatException, Integer> f(final String s) {
-      return parseInt(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Integer>> parseInt = s -> parseInt(s);
 
   /**
    * Parses the given string into a long.
@@ -1222,11 +1251,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a long.
    */
-  public static final F<String, Validation<NumberFormatException, Long>> parseLong = new F<String, Validation<NumberFormatException, Long>>() {
-    public Validation<NumberFormatException, Long> f(final String s) {
-      return parseLong(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Long>> parseLong = s -> parseLong(s);
 
   /**
    * Parses the given string into a short.
@@ -1245,12 +1270,19 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a short. 
    */
-  public static final F<String, Validation<NumberFormatException, Short>> parseShort = new F<String, Validation<NumberFormatException, Short>>() {
-    public Validation<NumberFormatException, Short> f(final String s) {
-      return parseShort(s);
-    }
-  };
+  public static final F<String, Validation<NumberFormatException, Short>> parseShort = s -> parseShort(s);
 
+  /**
+   * Partitions the list into the list of fails and the list of successes
+   */
+  public static <A, B> P2<List<A>, List<B>> partition(List<Validation<A, B>> list) {
+    return P.p(
+            list.filter(v -> v.isFail()).map(v -> v.fail()),
+            list.filter(v -> v.isSuccess()).map(v -> v.success())
+    );
+  }
+
+    @Override
     public String toString() {
         return Show.validationShow(Show.<E>anyShow(), Show.<T>anyShow()).showS(this);
     }

@@ -25,7 +25,6 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.data.Stream.nil;
 import static fj.data.Stream.repeat;
-import static fj.F2Functions.*;
 
 /**
  * Provides a pointed stream, which is a non-empty zipper-like stream structure that tracks an index (focus)
@@ -104,7 +103,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    */
   public static <A> Ord<Zipper<A>> ord(final Ord<A> o) {
     final Ord<Stream<A>> so = Ord.streamOrd(o);
-    return Ord.p3Ord(so, o, so).comap(Zipper.<A>p_());
+    return Ord.p3Ord(so, o, so).contramap(Zipper.<A>p_());
   }
 
   /**
@@ -115,7 +114,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    */
   public static <A> Equal<Zipper<A>> eq(final Equal<A> e) {
     final Equal<Stream<A>> se = Equal.streamEqual(e);
-    return Equal.p3Equal(se, e, se).comap(Zipper.<A>p_());
+    return Equal.p3Equal(se, e, se).contramap(Zipper.<A>p_());
   }
 
   /**
@@ -126,7 +125,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    */
   public static <A> Show<Zipper<A>> show(final Show<A> s) {
     final Show<Stream<A>> ss = Show.streamShow(s);
-    return Show.p3Show(ss, s, ss).comap(Zipper.<A>p_());
+    return Show.p3Show(ss, s, ss).contramap(Zipper.<A>p_());
   }
 
   /**

@@ -21,11 +21,7 @@ function that puts its result in Some is equivalent to calling map on o with f.
 */
 public final class OptionMonadFunctorLaw {
   public static void main(final String[] args) {
-    final Property unitMap = property(arbOption(arbInteger), Arbitrary.<Integer, String>arbFInvariant(arbString), new F2<Option<Integer>, F<Integer, String>, Property>() {
-      public Property f(final Option<Integer> o, final F<Integer, String> f) {
-        return prop(optionEqual(stringEqual).eq(o.bind(andThen(f, Option.<String>some_())), o.map(f)));
-      }
-    });
+    final Property unitMap = property(arbOption(arbInteger), Arbitrary.<Integer, String>arbFInvariant(arbString), (o, f) -> prop(optionEqual(stringEqual).eq(o.bind(andThen(f, Option.<String>some_())), o.map(f))));
     summary.println(unitMap.minSuccessful(500)); // OK, passed 500 tests.     
   }
 }

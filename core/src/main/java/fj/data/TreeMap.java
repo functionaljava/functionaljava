@@ -1,12 +1,8 @@
 package fj.data;
 
-import fj.F;
-import fj.F1Functions;
-import fj.P;
-import fj.P2;
-import fj.P3;
-import fj.Ord;
+import fj.*;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -27,7 +23,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   }
 
   private static <K, V> Ord<P2<K, V>> ord(final Ord<K> keyOrd) {
-    return keyOrd.comap(P2.<K, V>__1());
+    return keyOrd.contramap(P2.<K, V>__1());
   }
 
   /**
@@ -40,6 +36,21 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
     return new TreeMap<K, V>(Set.empty(TreeMap.<K, Option<V>>ord(keyOrd)));
   }
 
+  @Override
+  public boolean equals(Object other) {
+    return Equal.equals0(TreeMap.class, this, other, () -> Equal.treeMapEqual(Equal.<K>anyEqual(), Equal.<V>anyEqual()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.treeMapHash(Hash.<K>anyHash(), Hash.<V>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.treeMapShow(Show.<K>anyShow(), Show.<V>anyShow()).showS(this);
+  }
+
   /**
    * Constructs a tree map from the given elements.
    *
@@ -47,7 +58,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @param p2s The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
-  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
+  @SafeVarargs public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
     return treeMap(keyOrd, List.list(p2s));
   }
 
@@ -162,16 +173,31 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return A new mutable map isomorphic to this tree map.
    */
   public Map<K, V> toMutableMap() {
-    final Map<K, V> m = new java.util.TreeMap<K, V>();
+    final F<K, P2<K, Option<V>>> fakePair = k -> P.p(k, Option.none());
+	final Comparator<K> comparator = tree.ord().contramap(fakePair).toComparator();
+	final Map<K, V> m = new java.util.TreeMap<K, V>(comparator);
     for (final P2<K, V> e : this) {
       m.put(e._1(), e._2());
     }
     return m;
   }
 
-  public Stream<P2<K, V>> toStream() {
-    return Stream.iteratorStream(iterator());
-  }
+    public Stream<P2<K, V>> toStream() {
+        return tree.toStream().map(p -> p.map2(o -> o.some()));
+    }
+
+    public Stream<P2<K, V>> toStreamReverse() {
+        return tree.toStreamReverse().map(p -> p.map2(o -> o.some()));
+    }
+
+    public List<P2<K, V>> toList() {
+        return tree.toList().map(p -> p.map2(o -> o.some()));
+    }
+
+    public List<P2<K, V>> toListReverse() {
+        return tree.toListReverse().map(p -> p.map2(o -> o.some()));
+    }
+
   /**
    * An immutable projection of the given mutable map.
    *
@@ -206,7 +232,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   public P2<Boolean, TreeMap<K, V>> update(final K k, final F<V, V> f) {
     final P2<Boolean, Set<P2<K, Option<V>>>> up =
-        tree.update(p(k, Option.<V>none()), P2.<K, Option<V>, Option<V>>map2_(Option.<V, V>map().f(f)));
+        tree.update(p(k, Option.<V>none()), compose(P2.tuple(P.p2()), P2.<K, Option<V>, Option<V>>map2_(Option.<V, V>map().f(f))));
     return P.p(up._1(), new TreeMap<K, V>(up._2()));
   }
 
@@ -277,7 +303,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   public P3<TreeMap<K, V>, Option<V>, TreeMap<K, V>> splitLookup(final K k) {
     P3<Set<P2<K, Option<V>>>, Option<P2<K, Option<V>>>, Set<P2<K, Option<V>>>> p3 = tree.split(P.p(k, get(k)));
-    Ord<K> o = tree.ord().<K>comap(k2 -> P.p(k2, Option.<V>none()));
+    Ord<K> o = tree.ord().<K>contramap(k2 -> P.p(k2, Option.<V>none()));
     return P.p(treeMap(o, p3._1()), get(k), treeMap(o, p3._3()));
   }
 
@@ -291,8 +317,69 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   public <W> TreeMap<K, W> map(final F<V, W> f) {
     final F<P2<K, Option<V>>, P2<K, Option<W>>> g = P2.map2_(F1Functions.mapOption(f));
     final F<K, P2<K, Option<V>>> coord = flip(P.<K, Option<V>>p2()).f(Option.<V>none());
-    final Ord<K> o = tree.ord().comap(coord);
+    final Ord<K> o = tree.ord().contramap(coord);
     return new TreeMap<K, W>(tree.map(TreeMap.<K, Option<W>>ord(o), g));
   }
+
+    /**
+     * Returns the minimum (key, value) pair in the tree if the tree is not empty.
+     */
+    public Option<P2<K, V>> min() {
+        return tree.min().map(p -> p(p._1(), p._2().some()));
+    }
+
+    /**
+     * Returns the minimum key in the tree if the tree is not empty.
+     */
+    public Option<K> minKey() {
+        return tree.min().map(p -> p._1());
+    }
+
+    /**
+     * Returns the maximum (key, value) pair in the tree if the tree is not empty.
+     */
+    public Option<P2<K, V>> max() {
+        return tree.max().map(p -> p(p._1(), p._2().some()));
+    }
+
+    /**
+     * Returns the maximum key in the tree if the tree is not empty.
+     */
+    public Option<K> maxKey() {
+        return tree.max().map(p -> p._1());
+    }
+
+  	/**
+	 * The expression <code>t1.union(t2)</code> takes the left-biased union of <code>t1</code>
+	 * and <code>t2</code>. It prefers <code>t1</code> when duplicate keys are encountered.
+	 *
+	 * @param t2 The other tree we wish to combine with this one
+	 * @return The combined TreeMap
+	 */
+	public TreeMap<K, V> union(TreeMap<K, V> t2) {
+		// TODO This could be implemented more efficiently using "hedge union"
+		TreeMap<K, V> result = t2;
+		for(P2<K,V> p : this) {
+			result = result.set(p._1(), p._2());
+		}
+		return result;
+	}
+
+  	/**
+	 * The expression <code>t1.union(t2)</code> takes the left-biased union of <code>t1</code>
+	 * and <code>t2</code>. It prefers <code>t1</code> when duplicate keys are encountered.
+	 *
+	 * @param t2 The other list/set of pairs we wish to combine with this one
+	 * @return The combined TreeMap
+	 */
+	public TreeMap<K, V> union(Iterable<P2<K, V>> t2) {
+		TreeMap<K, V> result = this;
+		for(P2<K,V> p : t2) {
+			if(!this.contains(p._1())) {
+				result = result.set(p._1(), p._2());
+			}
+		}
+		return result;
+	}
 
 }

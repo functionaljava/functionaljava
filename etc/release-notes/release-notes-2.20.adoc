@@ -1,0 +1,17 @@
+= Release 2.20
+
+Released: July 2009
+
+The highlight of this release is a parallel module built on top of
+actors for doing some very clever and high-level parallel programming.
+e.g. An implementation of the parallel map/reduce algorithm
+(parFoldMap) and APIs for making use of actors easier for you, the user.
+
+Other new bits includes:
+
+* A heap of bug fixes, particularly on Stream (and therefore, many of
+its dependencies)
+* LazyString -- a lazy sequence of characters
+* Function Wrappers
+* Improvements to the Tree and Zipper implementations
+* Other tidbits and additional APIs

@@ -1,7 +1,6 @@
 package fj.demo;
 
 import fj.data.List;
-
 import static fj.data.List.list;
 import static fj.function.Integers.add;
 import static fj.Show.intShow;

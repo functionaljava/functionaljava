@@ -1,19 +1,13 @@
 package fj.data;
 
-import fj.F;
-import fj.F2;
-import fj.Function;
-import fj.Monoid;
-import fj.Ord;
-import fj.P;
-import fj.P2;
-import fj.P3;
+import fj.*;
+
 import static fj.Function.*;
 import static fj.data.Either.right;
+import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.function.Booleans.not;
 
-import fj.Ordering;
 import static fj.Ordering.GT;
 import static fj.Ordering.LT;
 
@@ -147,6 +141,21 @@ public abstract class Set<A> implements Iterable<A> {
     return new Empty<A>(ord);
   }
 
+  @Override
+  public boolean equals(Object other) {
+    return Equal.equals0(Set.class, this, other, () -> Equal.setEqual(Equal.<A>anyEqual()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Hash.setHash(Hash.<A>anyHash()).hash(this);
+  }
+
+  @Override
+  public String toString() {
+    return Show.setShow(Show.<A>anyShow()).showS(this);
+  }
+
   /**
    * Checks if the given element is a member of this set.
    *
@@ -257,8 +266,21 @@ public abstract class Set<A> implements Iterable<A> {
   public final <B> B foldMap(final F<A, B> f, final Monoid<B> m) {
     return isEmpty() ?
            m.zero() :
-           m.sum(m.sum(r().foldMap(f, m), f.f(head())), l().foldMap(f, m));
+           m.sum(m.sum(l().foldMap(f, m), f.f(head())), r().foldMap(f, m));
   }
+
+    /**
+     * Folds this Set from the right using the given monoid.
+     *
+     * @param f A transformation from this Set's elements, to the monoid.
+     * @param m The monoid to fold this Set with.
+     * @return The result of folding the Set from the right with the given monoid.
+     */
+    public final <B> B foldMapRight(final F<A, B> f, final Monoid<B> m) {
+        return isEmpty() ?
+                m.zero() :
+                m.sum(m.sum(r().foldMapRight(f, m), f.f(head())), l().foldMapRight(f, m));
+    }
 
   /**
    * Returns a list representation of this set.
@@ -269,16 +291,46 @@ public abstract class Set<A> implements Iterable<A> {
     return foldMap(List.cons(List.<A>nil()), Monoid.<A>listMonoid());
   }
 
+    /**
+     * Returns a list representation of this set in reverse order.
+     *
+     * @return a list representation of this set in reverse order.
+     */
+    public final List<A> toListReverse() {
+        return foldMapRight(List.cons(List.<A>nil()), Monoid.<A>listMonoid());
+    }
+
   /**
    * Returns a stream representation of this set.
    *
    * @return a stream representation of this set.
    */
-  public final Stream<A> toStream() {
-    return foldMap(Stream.<A>single(), Monoid.<A>streamMonoid());
-  }
+    public final Stream<A> toStream() {
+        if (isEmpty()) {
+            return Stream.nil();
+        } else if (l().isEmpty()) {
+            return Stream.cons(head(), () -> r().toStream());
+        } else {
+            return l().toStream().append(Stream.cons(head(), () -> r().toStream()));
+        }
+    }
 
-  /**
+    /**
+     * Returns a stream representation of this set in reverse order.
+     *
+     * @return a stream representation of this set in reverse order.
+     */
+    public final Stream<A> toStreamReverse() {
+        if (isEmpty()) {
+            return Stream.nil();
+        } else if (r().isEmpty()) {
+            return Stream.cons(head(), () -> l().toStreamReverse());
+        } else {
+            return r().toStreamReverse().append(Stream.cons(head(), () -> l().toStreamReverse()));
+        }
+    }
+
+    /**
    * Binds the given function across this set.
    *
    * @param o An order for the elements of the target set.
@@ -379,6 +431,14 @@ public abstract class Set<A> implements Iterable<A> {
     return curry((s1, s2) -> s1.minus(s2));
   }
 
+    public Option<A> min() {
+        return isEmpty() ? none() : l().min().orElse(some(head()));
+    }
+
+    public Option<A> max() {
+        return isEmpty() ? none() : r().max().orElse(some(head()));
+    }
+
   /**
    * Returns the size of this set.
    *
@@ -467,7 +527,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @param as The elements to add to a set.
    * @return A new set containing the elements of the given iterable.
    */
-  public static <A> Set<A> set(final Ord<A> o, final A ... as) {
+  @SafeVarargs public static <A> Set<A> set(final Ord<A> o, final A ... as) {
     Set<A> s = empty(o);
     for (final A a : as)
       s = s.insert(a);
