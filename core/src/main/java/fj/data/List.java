@@ -823,16 +823,19 @@ public abstract class List<A> implements Iterable<A> {
    * @return A pair of lists split at the given index of this list.
    */
   public final P2<List<A>, List<A>> splitAt(final int i) {
-    P2<List<A>, List<A>> s = p(List.<A>nil(), List.<A>nil());
-
     int c = 0;
+    List<A> first = List.<A>nil();
+    List<A> second = List.nil();
     for (List<A> xs = this; xs.isNotEmpty(); xs = xs.tail()) {
       final A h = xs.head();
-      s = c < i ? s.map1(as -> as.snoc(h)) : s.map2(as1 -> as1.snoc(h));
+      if (c < i) {
+          first = first.cons(h);
+      } else {
+          second = second.cons(h);
+      }
       c++;
     }
-
-    return s;
+    return P.p(first.reverse(), second.reverse());
   }
 
   /**
