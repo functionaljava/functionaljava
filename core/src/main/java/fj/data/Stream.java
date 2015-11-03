@@ -18,10 +18,7 @@ import fj.control.parallel.Strategy;
 import fj.Ordering;
 import fj.function.Effect1;
 
-import java.util.AbstractCollection;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static fj.Bottom.error;
 import static fj.Function.compose;
@@ -232,7 +229,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
       public Stream<A> prefix(final A x, final Stream<A> xs) {
         return xs.isEmpty() ? xs : cons(x, p(cons(xs.head(), () -> prefix(a, xs.tail()._1()))));
-     }
+      }
     });
   }
 
@@ -551,6 +548,14 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public final Stream<A> interleave(final Stream<A> as) {
     return isEmpty() ? as : as.isEmpty() ? this : cons(head(), () -> as.interleave(tail()._1()));
+  }
+
+  public static <A> Stream<A> enumerationStream(Enumeration<A> e) {
+    if (e.hasMoreElements()) {
+      return Stream.cons(e.nextElement(), () -> enumerationStream(e));
+    } else {
+      return Stream.nil();
+    }
   }
 
   /**
