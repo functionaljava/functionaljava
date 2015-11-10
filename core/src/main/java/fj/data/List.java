@@ -795,7 +795,15 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list with a length the same, or less than, this list.
    */
   public final List<A> take(final int i) {
-    return i <= 0 || isEmpty() ? List.<A>nil() : cons(head(), tail().take(i - 1));
+    Buffer<A> result = Buffer.empty();
+    List<A> list = this;
+    int index = i;
+    while (index > 0 && list.isNotEmpty()) {
+      result.snoc(list.head());
+      list = list.tail();
+      index--;
+    }
+    return result.toList();
   }
 
   /**
