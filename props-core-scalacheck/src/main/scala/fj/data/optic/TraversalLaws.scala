@@ -34,7 +34,7 @@ object TraversalLaws {
     }
 
     property("headMaybe returns the first element of getAll (if getAll is finite)") = forAll { s: S =>
-      optionEqual(aEqual).eq(traversal.headOption(s), traversal.getAll(s).toOption())
+      optionEqual(aEqual).eq(traversal.headOption(s), traversal.getAll(s).headOption())
     }
 
   }

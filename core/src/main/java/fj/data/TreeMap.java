@@ -1,6 +1,14 @@
 package fj.data;
 
-import fj.*;
+import fj.Equal;
+import fj.F;
+import fj.F1Functions;
+import fj.Hash;
+import fj.Ord;
+import fj.P;
+import fj.P2;
+import fj.P3;
+import fj.Show;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -10,6 +18,7 @@ import static fj.Function.compose;
 import static fj.Function.flip;
 import static fj.P.p;
 import static fj.data.IterableW.join;
+import static fj.data.List.fromIterable;
 import static fj.data.List.iterableList;
 
 /**
@@ -134,7 +143,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return All values in this tree map.
    */
   public List<V> values() {
-    return iterableList(join(tree.toList().map(compose(IterableW.<V, Option<V>>wrap(), P2.<K, Option<V>>__2()))));
+    return fromIterable(join(tree.toList().map(compose(IterableW.<V, Option<V>>wrap(), P2.<K, Option<V>>__2()))));
   }
 
   /**

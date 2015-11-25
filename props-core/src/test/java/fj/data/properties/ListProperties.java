@@ -60,7 +60,7 @@ public class ListProperties {
 
   public Property toOption() {
     return property(arbList(arbInteger), list ->
-      prop(list.toOption().isNone() || intEqual.eq(list.toOption().some(), list.head())));
+      prop(list.headOption().isNone() || intEqual.eq(list.headOption().some(), list.head())));
   }
 
   public Property consHead() {
