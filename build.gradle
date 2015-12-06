@@ -36,11 +36,11 @@ allprojects {
 
 	ext {
         isSnapshot = false
-        fjBaseVersion = "4.4"
+        fjBaseVersion = "4.4.1"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "4.3"
+        fjConsumeVersion = "4.4"
 
         signModule = false
         useRetroLambda = true
@@ -62,7 +62,9 @@ allprojects {
         primaryEmail = "functionaljava@googlegroups.com"
 
         dependencyJunit = "junit:junit:4.12"
-
+        backportVersion = JavaVersion.VERSION_1_6
+        backportJdk = System.getenv("JAVA8_HOME")
+        backportOldJdk = System.getenv("JAVA6_HOME")
     }
 
 	version = fjVersion
