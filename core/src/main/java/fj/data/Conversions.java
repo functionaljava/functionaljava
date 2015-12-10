@@ -54,7 +54,7 @@ public final class Conversions {
    * @return A function that converts lists to options.
    */
   public static <A> F<List<A>, Option<A>> List_Option() {
-    return as -> as.toOption();
+    return as -> as.headOption();
   }
 
   /**
@@ -471,7 +471,7 @@ public final class Conversions {
   /**
    * A function that converts strings to options.
    */
-  public static final F<String, Option<Character>> String_Option = s -> fromString(s).toOption();
+  public static final F<String, Option<Character>> String_Option = s -> fromString(s).headOption();
 
   /**
    * A function that converts string to eithers.
@@ -519,7 +519,7 @@ public final class Conversions {
   /**
    * A function that converts string buffers to options.
    */
-  public static final F<StringBuffer, Option<Character>> StringBuffer_Option = s -> fromString(s.toString()).toOption();
+  public static final F<StringBuffer, Option<Character>> StringBuffer_Option = s -> fromString(s.toString()).headOption();
 
   /**
    * A function that converts string buffers to eithers.
@@ -562,7 +562,7 @@ public final class Conversions {
   /**
    * A function that converts string builders to options.
    */
-  public static final F<StringBuilder, Option<Character>> StringBuilder_Option = s -> fromString(s.toString()).toOption();
+  public static final F<StringBuilder, Option<Character>> StringBuilder_Option = s -> fromString(s.toString()).headOption();
 
   /**
    * A function that converts string builders to eithers.

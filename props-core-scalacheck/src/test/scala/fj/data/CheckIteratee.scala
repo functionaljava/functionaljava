@@ -25,7 +25,7 @@ object CheckIteratee extends Properties("Iteratee") {
     enumerate[Int, java.lang.Integer](a, IterV.length[Int]).run == a.length)
 
   property("head") = forAll((a: List[Int]) =>
-    enumerate(a, IterV.head[Int]).run == a.toOption)
+    enumerate(a, IterV.head[Int]).run == a.headOption)
 
   property("drop") = forAll((a: List[String], x: Byte) => (a.length > 0) ==> {
     val n = math.abs(x) % a.length

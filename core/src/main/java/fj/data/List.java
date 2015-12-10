@@ -1,20 +1,22 @@
 package fj.data;
 
 import static fj.Bottom.error;
-import fj.F0;
-import fj.F2Functions;
+
 import fj.Equal;
-import fj.F;
-import fj.F2;
-import fj.Function;
+import fj.F2Functions;
 import fj.Hash;
 import fj.Monoid;
 import fj.Ord;
+import fj.Ordering;
 import fj.P;
 import fj.P1;
-import fj.P2;
 import fj.Show;
 import fj.Unit;
+import fj.P2;
+import fj.F0;
+import fj.F;
+import fj.F2;
+import fj.Function;
 
 import static fj.Function.*;
 import static fj.P.p;
@@ -30,7 +32,8 @@ import static fj.data.vector.V.v;
 import static fj.function.Booleans.not;
 import static fj.Ordering.GT;
 import static fj.Ord.intOrd;
-import fj.Ordering;
+
+
 import fj.control.Trampoline;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
@@ -111,13 +114,19 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Performs a reduction on this list using the given arguments.
+   * @deprecated As of release 4.5, use {@link #reduce}
    *
    * @param nil  The value to return if this list is empty.
    * @param cons The function to apply to the head and tail of this list if it is not empty.
    * @return A reduction on this list.
    */
+  @Deprecated
   public final <B> B list(final B nil, final F<A, F<List<A>, B>> cons) {
-    return isEmpty() ? nil : cons.f(head()).f(tail());
+    return reduce(Function.uncurryF2(cons), nil);
+  }
+
+  public final <B> B reduce(final F2<A, List<A>, B> cons, final B nil) {
+    return isEmpty() ? nil : cons.f(head(), tail());
   }
 
   /**
@@ -143,10 +152,21 @@ public abstract class List<A> implements Iterable<A> {
   /**
    * Returns an option projection of this list; <code>None</code> if empty, or the first element in
    * <code>Some</code>.  Equivalent to {@link #headOption()}.
-   *
+   * @deprecated As of release 4.5, use {@link #headOption()}
    * @return An option projection of this list.
    */
+  @Deprecated
   public final Option<A> toOption() {
+    return headOption();
+
+  }
+
+  /**
+   * Returns the head of the list, if any.  Equivalent to {@link #toOption()} .
+   *
+   * @return The optional head of the list.
+   */
+  public Option<A> headOption() {
     return isEmpty() ? Option.<A>none() : some(head());
   }
 
@@ -1134,14 +1154,6 @@ public abstract class List<A> implements Iterable<A> {
     return list -> list.head();
   }
 
-	/**
-	 * Returns the head of the list, if any.  Equivalent to {@link #toOption()} .
-	 *
-	 * @return The optional head of the list.
-	 */
-	public Option<A> headOption() {
-		return toOption();
-	}
 
 	/**
 	 * Reutrns the tail of the list, if any.
@@ -1529,13 +1541,24 @@ public abstract class List<A> implements Iterable<A> {
     return Array.array(as).toList();
   }
 
-
+  /**
+   * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
+     */
+  @Deprecated
   public static <A> List<A> list(final Iterable<A> i) {
-    return iterableList(i);
+    return fromIterable(i);
   }
 
+  /**
+   * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
+   */
+  @Deprecated
   public static <A> List<A> list(final Iterator<A> it) {
-    return iterableList(() -> it);
+    return fromIterable(() -> it);
+  }
+
+  public static <A> List<A> fromIterator(final Iterator<A> it) {
+    return fromIterable(() -> it);
   }
 
   /**
@@ -1840,19 +1863,23 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Takes the given iterable to a list.
+   * @deprecated From release 4.5 use {@link #fromIterable(Iterable)}
    *
    * @param i The iterable to take to a list.
    * @return A list from the given iterable.
    */
+  @Deprecated
   public static <A> List<A> iterableList(final Iterable<A> i) {
-    final Buffer<A> bs = empty();
-
-    for (final A a : i)
-      bs.snoc(a);
-
-    return bs.toList();
+    return fromIterable(i);
   }
 
+  public static <A> List<A> fromIterable(final Iterable<A> i) {
+    final Buffer<A> bs = empty();
+    for (final A a : i) {
+      bs.snoc(a);
+    }
+    return bs.toList();
+  }
 
   /**
    * A mutable, singly linked list. This structure should be used <em>very</em> sparingly, in favour
@@ -2156,6 +2183,10 @@ public abstract class List<A> implements Iterable<A> {
     public static <A> Prism<List<A>, P2<A, List<A>>> cons() {
       return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(P.p(h, tail))), c -> List.cons(c._1(), c._2()));
     }
+
+  }
+
+  public static final class Unsafe {
 
   }
 

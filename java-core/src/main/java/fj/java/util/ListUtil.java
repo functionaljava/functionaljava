@@ -11,19 +11,19 @@ import java.util.List;
 public class ListUtil {
 
     public static <A, B> List<B> map(List<A> list, F<A, B> f) {
-        return fj.data.List.list(list).map(f).toJavaList();
+        return fj.data.List.fromIterable(list).map(f).toJavaList();
     }
 
     public static<A> List<A> filter(List<A> list, F<A, Boolean> f) {
-        return fj.data.List.list(list).filter(f).toJavaList();
+        return fj.data.List.fromIterable(list).filter(f).toJavaList();
     }
 
     public static <A, B> B fold(List<A> list, F2<B, A, B> f, B b) {
-        return fj.data.List.list(list).foldLeft(f, b);
+        return fj.data.List.fromIterable(list).foldLeft(f, b);
     }
 
     public static <A, B> List<B> flatMap(List<A> list, F<A, List<B>> f) {
-        return fj.data.List.list(list).bind(a -> fj.data.List.list(f.f(a))).toJavaList();
+        return fj.data.List.fromIterable(list).bind(a -> fj.data.List.fromIterable(f.f(a))).toJavaList();
     }
 
     public static <A, B> List<B> bind(List<A> list, F<A, List<B>> f) {

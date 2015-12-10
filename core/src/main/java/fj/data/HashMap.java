@@ -309,7 +309,7 @@ public final class HashMap<K, V> implements Iterable<K> {
   }
 
   public Option<P2<K, V>> toOption() {
-    return toList().toOption();
+    return toList().headOption();
   }
 
   public Array<P2<K, V>> toArray() {

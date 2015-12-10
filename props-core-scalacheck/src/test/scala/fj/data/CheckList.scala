@@ -33,7 +33,7 @@ object CheckList extends Properties("List") {
     (listEqual(stringEqual).eq(a.orTail(n), a.tail)))
 
   property("toOption") = forAll((a: List[Int]) =>
-    a.toOption.isNone || a.toOption.some == a.head)
+    a.headOption.isNone || a.headOption.some == a.head)
 
   // crashes the type checker for unknown reason
   // property("toEither") = property((a: List[Int], n: P1[Int]) =>

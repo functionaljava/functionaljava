@@ -6,8 +6,10 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -37,7 +39,7 @@ public class ListTest {
     @Test
     public void integration() {
         java.util.List<Integer> ul = Arrays.asList(1, 2, 3);
-        List<Integer> dl = List.list(ul);
+        List<Integer> dl = List.fromIterable(ul);
         assertTrue(ul.equals(dl.toJavaList()));
 
     }
@@ -70,6 +72,13 @@ public class ListTest {
         int n = 100000;
         List<Integer> list = List.replicate(n, 1).intersperse(2);
         String s = list.toString();
+    }
+
+    @Test
+    public void listReduce() {
+        String list = List.range(1, 11).reduce((a, la) -> List.cons(a, la).toString(), "");
+        String expected = List.range(1, 11).toString();
+        assertThat(expected, equalTo(list));
     }
 
 }
