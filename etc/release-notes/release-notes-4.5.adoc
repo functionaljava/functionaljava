@@ -5,24 +5,68 @@ Proposed release: last quarter 2015
 
 == Enhancements
 
-* TODO.
+* Added Seq toList and delete (#198).
+* Added functions to P1: map_, liftM2, sequence (#200).
+* Added liftM2 to Option (#201).
+* Added headOption and tailOption to List (#202).
+* Replaced usage of P1 with F0 in Stream orTail, sequence and cons (#203).
+* Added Arbitrary.arbSet (48d4c8358f1257e2126726be0808b48568f372bf).
+* Added to Arbitrary arbitrary lists for integer, string, boolean and double (#183).
+* Updated Stream.toList using List.Buffer for performance (#180).
+* Added java-core module for simple handling of core Java types, e.g. List map, bind, filter, fold (4611c3524eca1786c112fcae0a727f2243b2d492, 13ebd6f22db7a8bf8247f0f4ea4ac3cd8afef4b9).
+* Added Tree isLeaf and length (#185).
+* Added min and max to Set (#176).
+* Added min, minKey, max and maxKey for TreeMap.  Added arbitrary TreeMap's (#176).
+* Added ordering a P2 by first or second element in the tuple (#175).
+* Added Set.toStream (#175).
+* Added TreeMap.toList (#175).
+* Added toListReverse and toStreamReverse for Set and TreeMap (#177).
+* Added headOption to Seq and FingerTree.  Added length to FingerTree (7e1d3a9300af84b3c4c5204e4b7a5a0e89c44303).
+* Added Stream.enumerationStream (0028ef0f8e6a36b77cbd75b29e92d77eacc167bd).
+* Support use of FunctionalJava on Java 6 runtime (67f1fc9f2c35479bf18d9ef948062e01ef740d5e).
 
 == Fixes
 
-* TODO.
+* Fixed constructors of fixed length monomorphic traversal (#179).
+* Fixed defect in Buffer.copy (#181).
+* Fixed order of foldMap for Set which switch the left and right branches (#205).
+* Fixed List.intersperse to use heap, not stack space (#188).
+* Fixed Validation.accumulate for 4 validations (#190).
+* Avoid stackoverflow for List.splitAt (0ca0e13a4106e7dad676b9c389e7ea3b79854c62).
+* Avoid stackoverflow for List.take (aec491c84c7c7761f8a1ddddd67b4678b485c1af).
+* Resolved overloaded List methods (d3e99ced4ec5f3ae4c4066a02a50da55ffc981b2).
 
 == Internal
 
-* TODO.
+* Added @SafeVargs to suppress various unchecked warnings (#174).
+* Suppressed various unchecked compiler warnings (9853c6a26309cf9f4936d431a6bc65b4c37550b1).
+* Added compiler warnings for unchecked and deprecation (#204).
+* Simplified code to avoid function creation and inner static class (#179).
+* Upgraded to Gradle 2.9.
+* Added example of badly creating a Stream from an iterator (d38a694f9f1728417cb178c685850f627b10bf5b).
+* Configure Retro Lambda using variables (6aa26bcb56dd43d36bede2e8c34cbb21f69c1c8a).
+* Updated package fj, fj.control, fj.data, fj.data.fingertrees, fj.data.hlist, fj.data.vector, fj.function, fj.parser to use lambdas (#206).
+* Added test coverage report, run "gradlew coverage", report is under root/build/reports/jacoco/coverage/html/index.html (#207).
+* Updated Travis CI to use latest Java 8 (8ddc11546badbeafb0b16bc1e0fb922b06f23079).
+* Replaced usage of new P1 with P.lazy (2d6a8dd4412220a749331b6ffec45bd720ac7479).
+* Replaced P1 with F0 instances where possible (5b8248c51445e92aa8c8ff241e717f909a5bdd63, 0ca5248a3016209c9e62df509a79ed9432421322).
+* Replace anonymous F2 instances with lambdas (b438b1b89705f6d0bfd5e7c31bd217d173c43dfc).
+* Replace anonymous F3 instances with lambdas (721118902a5af76665df347b073534debf384f69).
+* Added coverall integration, submodules not consolidated into single report.
+* Replaced annonymous P2 with static constructor (92f663384541dfbea013c14b7f60951d925bcd26).
 
 == Breaking Changes
 
-* TODO.
+* None.
 
 == Documentation
 
-* TODO.
+* Added release process doc (#174).
 
 == Contributors
 
-* TODO.
+* Mark Perry
+* Zheka Kozlov
+* Jean-Baptiste Giraudeau
+* Shintaro Murakami
+
