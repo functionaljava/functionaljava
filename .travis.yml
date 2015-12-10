@@ -11,6 +11,7 @@ addons:
       - oracle-java8-installer
 
 script:
+  - jdk_switcher use openjdk6 && export JAVA6_HOME=$JAVA_HOME
   - jdk_switcher use oraclejdk7 && export JAVA7_HOME=$JAVA_HOME
   - jdk_switcher use oraclejdk8 && export JAVA8_HOME=$JAVA_HOME
   - ./gradlew build coverage -s -i

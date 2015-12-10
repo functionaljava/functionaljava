@@ -78,8 +78,8 @@ allprojects {
         displayCompilerWarnings = true
 
         newJdkEnvVar = "JAVA8_HOME"
-        oldJdkEnvVar = "JAVA7_HOME"
-        retroLambdaTarget = JavaVersion.VERSION_1_7
+        oldJdkEnvVar = "JAVA6_HOME"
+        retroLambdaTarget = JavaVersion.VERSION_1_6
     }
 
     repositories {
