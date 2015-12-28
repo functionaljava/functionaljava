@@ -1,7 +1,6 @@
 package fj.function;
 
 import fj.F;
-import fj.F2;
 import fj.data.List;
 import fj.data.Stream;
 import static fj.Function.curry;
@@ -86,7 +85,7 @@ public final class Strings {
 
   public static String unlines(List<String> list) {
     StringBuilder sb = new StringBuilder();
-    list.intersperse(lineSeparator).forEach(s -> sb.append(s));
+    list.intersperse(lineSeparator).foreachDoEffect(s -> sb.append(s));
     return sb.toString();
   }
 
