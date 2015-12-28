@@ -8,6 +8,8 @@ import fj.data.Natural;
 import fj.data.Option;
 import fj.data.Set;
 import fj.data.Stream;
+
+import static fj.Semigroup.multiply1p;
 import static fj.data.Stream.iterableStream;
 
 import java.math.BigInteger;
@@ -90,15 +92,20 @@ public final class Monoid<A> {
   }
 
   /**
-   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
+   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>).
+   * The default definition uses peasant multiplication, exploiting
+   * associativity to only require `O(log n)` uses of
+   * {@link #sum(Object, Object)}.
+   *
    * @param n multiplier
-   * @param a the value to multiply
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   * @param a the value to be reapeatly summed
+   * @return {@code a} summed {@code n} times. If {@code n <= 0}, returns
+   * {@code zero()}
    */
   public A multiply(final int n, final A a) {
-    A m = zero();
-    for (int i = 0; i < n; i++) { m = sum(m, a); }
-    return m;
+    return (n <= 0)
+        ? zero
+        : multiply1p(sum, n - 1, a);
   }
 
   /**

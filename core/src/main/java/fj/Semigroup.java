@@ -1,7 +1,5 @@
 package fj;
 
-import static fj.Function.curry;
-
 import fj.data.Array;
 import fj.data.List;
 import fj.data.Natural;
@@ -10,8 +8,10 @@ import fj.data.Option;
 import fj.data.Set;
 import fj.data.Stream;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static fj.Function.curry;
 
 /**
  * Implementations must satisfy the law of associativity:
@@ -56,6 +56,42 @@ public final class Semigroup<A> {
    */
   public F<A, F<A, A>> sum() {
     return sum;
+  }
+
+  /**
+   * Returns a value summed <code>n + 1</code> times (
+   * <code>a + a + ... + a</code>) The default definition uses peasant
+   * multiplication, exploiting associativity to only require `O(log n)` uses of
+   * {@link #sum(Object, Object)}.
+   *
+   * @param n multiplier
+   * @param a the value to be reapeatly summed n + 1 times
+   * @return {@code a} summed {@code n} times. If {@code n <= 0}, returns
+   * {@code zero()}
+   */
+  public A multiply1p(int n, A a) {
+    return multiply1p(sum, n, a);
+  }
+
+  // shared implementation between Semigroup and Monoid
+  static <A> A multiply1p(F<A, F<A, A>> sum, int n, A a) {
+    if (n <= 0) {
+      return a;
+    }
+
+    A xTmp = a;
+    int yTmp = n;
+    A zTmp = a;
+    while (true) {
+      if ((yTmp & 1) == 1) {
+        zTmp = sum.f(xTmp).f(zTmp);
+        if (yTmp == 1) {
+          return zTmp;
+        }
+      }
+      xTmp = sum.f(xTmp).f(xTmp);
+      yTmp = (yTmp) >>> 1;
+    }
   }
 
   /**
@@ -316,7 +352,7 @@ public final class Semigroup<A> {
    * @return A semigroup for binary products.
    */
   public static <A, B> Semigroup<P2<A, B>> p2Semigroup(final Semigroup<A> sa, final Semigroup<B> sb) {
-      return semigroup((a1, a2) -> P.lazy(() -> sa.sum(a1._1(), a2._1()), () -> sb.sum(a1._2(), a2._2())));
+    return semigroup((a1, a2) -> P.lazy(() -> sa.sum(a1._1(), a2._1()), () -> sb.sum(a1._2(), a2._2())));
   }
 
   /**
