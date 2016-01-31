@@ -23,8 +23,8 @@ public final class Option_filter {
         final Option<Integer> o8 = o5.filter(f);
         final Option<Integer> o9 = o6.filter(i -> i % 2 == 0);
 
-        optionShow(intShow).println(o4); // None
-        optionShow(intShow).println(o5); // None
-        optionShow(intShow).println(o6); // Some(4)
+        optionShow(intShow).println(o7); // None
+        optionShow(intShow).println(o8); // None
+        optionShow(intShow).println(o9); // Some(4)
     }
 }
