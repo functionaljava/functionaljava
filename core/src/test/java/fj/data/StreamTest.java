@@ -41,7 +41,7 @@ public class StreamTest {
     @Test(expected = ConcurrentModificationException.class)
     public void iterableStreamWithStructureUpdate() {
         java.util.List<Integer> list = List.list(1, 2, 3).toJavaList();
-        Stream<Integer> s1 = Stream.iterableStream(list);
+        Stream<Integer> s1 = Stream.fromIterable(list);
         int x = s1.head();
         list.remove(1);
         Stream<Integer> s2 = s1.tail()._1();

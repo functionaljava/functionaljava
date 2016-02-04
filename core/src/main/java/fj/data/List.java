@@ -1542,14 +1542,16 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
+   * Constructs a list from the given Iterable.
    * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
-     */
+   */
   @Deprecated
   public static <A> List<A> list(final Iterable<A> i) {
     return fromIterable(i);
   }
 
   /**
+   * Constructs a list from the given Iterator.
    * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
    */
   @Deprecated
@@ -1557,6 +1559,9 @@ public abstract class List<A> implements Iterable<A> {
     return fromIterable(() -> it);
   }
 
+  /**
+   * Constructs a list from the given Iterator.
+   */
   public static <A> List<A> fromIterator(final Iterator<A> it) {
     return fromIterable(() -> it);
   }
@@ -1873,6 +1878,9 @@ public abstract class List<A> implements Iterable<A> {
     return fromIterable(i);
   }
 
+  /**
+   * Constructs a list from the Iterable.
+   */
   public static <A> List<A> fromIterable(final Iterable<A> i) {
     final Buffer<A> bs = empty();
     for (final A a : i) {

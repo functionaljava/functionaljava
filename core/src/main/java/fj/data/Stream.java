@@ -90,13 +90,27 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
+   * Performs a reduction on this stream using the given arguments.  Equivalent to {@link #reduce}.
+   *
+   * @deprecated As of release 4.5, use {@link #reduce}
+   *
+   * @param nil  The value to return if this stream is empty.
+   * @param cons The function to apply to the head and tail of this stream if it is not empty.
+   * @return A reduction on this stream.
+   */
+  @Deprecated
+  public final <B> B stream(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
+    return reduce(nil, cons);
+  }
+
+  /**
    * Performs a reduction on this stream using the given arguments.
    *
    * @param nil  The value to return if this stream is empty.
    * @param cons The function to apply to the head and tail of this stream if it is not empty.
    * @return A reduction on this stream.
    */
-  public final <B> B stream(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
+  public final <B> B reduce(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
     return isEmpty() ? nil : cons.f(head()).f(tail());
   }
 
@@ -701,14 +715,43 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
 
+  /**
+   * Constructs a stream with the given elements in the Iterable.  Equivalent to {@link #fromIterable(Iterable)} .
+   *
+   * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
+   */
+  @Deprecated
   public static <A> Stream<A> stream(Iterable<A> it) {
-    return iterableStream(it);
+    return fromIterable(it);
   }
 
+  /**
+   * Constructs a stream with the given elements in the Iterable.
+   */
+  public static <A> Stream<A> fromIterable(Iterable<A> it) {
+    return fromIterator(it.iterator());
+  }
+
+  /**
+   * Constructs a stream with the given elements in the Iterator.  Equivalent to {@link #fromIterator(Iterator)} .
+   *
+   * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
+   */
+  @Deprecated
   public static <A> Stream<A> stream(Iterator<A> it) {
-    return iteratorStream(it);
+    return fromIterator(it);
   }
 
+  /**
+   * Constructs a stream with the given elements in the Iterator.
+   */
+  public static <A> Stream<A> fromIterator(Iterator<A> it) {
+    if (it.hasNext()) {
+      final A a = it.next();
+      return cons(a, () -> fromIterator(it));
+    } else
+      return nil();
+  }
 
   /**
    * Returns a stream that is either infinite or bounded up to the maximum value of the given iterator starting at the
@@ -1545,27 +1588,29 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
-   * Takes the given iterable to a stream.
+   * Takes the given iterable to a stream.  Equivalent to {@link #fromIterable(Iterable)}.
+   *
+   * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
    *
    * @param i The iterable to take to a stream.
    * @return A stream from the given iterable.
    */
+  @Deprecated
   public static <A> Stream<A> iterableStream(final Iterable<A> i) {
-    return iteratorStream(i.iterator());
+    return fromIterable(i);
   }
 
   /**
-   * Takes the given iterator to a stream.
+   * Takes the given iterator to a stream.  Equivalent to {@link #fromIterator(Iterator)}.
+   *
+   * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
    *
    * @param i The iterator to take to a stream.
    * @return A stream from the given iterator.
    */
+  @Deprecated
   public static <A> Stream<A> iteratorStream(final Iterator<A> i) {
-    if (i.hasNext()) {
-      final A a = i.next();
-      return cons(a, () -> iteratorStream(i));
-    } else
-      return nil();
+    return fromIterator(i);
   }
 
   /**

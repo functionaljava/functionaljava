@@ -834,7 +834,7 @@ public class Validation<E, T> implements Iterable<T> {
     public <C> Stream<Validation<E, C>> traverseStream(F<T, Stream<C>> f){
         return isSuccess() ?
             f.f(success()).map(Validation::success) :
-            Stream.stream(fail(e.left().value()));
+            Stream.fromIterable(fail(e.left().value()));
     }
 
     public <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f){

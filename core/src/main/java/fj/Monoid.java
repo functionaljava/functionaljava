@@ -10,6 +10,7 @@ import fj.data.Set;
 import fj.data.Stream;
 
 import static fj.Semigroup.multiply1p;
+import static fj.data.Stream.fromIterable;
 import static fj.data.Stream.iterableStream;
 
 import java.math.BigInteger;
@@ -183,7 +184,7 @@ public final class Monoid<A> {
    * @return The sum of the given values and the interspersed value.
    */
   public A join(final Iterable<A> as, final A a) {
-    final Stream<A> s = iterableStream(as);
+    final Stream<A> s = fromIterable(as);
     return s.isEmpty() ?
            zero :
            s.foldLeft1(Function.compose(sum, flip(sum).f(a)));
