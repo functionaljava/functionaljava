@@ -17,4 +17,4 @@ script:
   - ./gradlew build coverage -s -i
 
 after_success:
-  - ./gradlew coverage coveralls -s -i
+  - ./gradlew jacocoRootReport coveralls

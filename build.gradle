@@ -19,14 +19,13 @@ buildscript {
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
         classpath "me.tatarka:gradle-retrolambda:$retrolambdaVersion"
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
 
 
 apply plugin: "jacoco"
 apply plugin: 'com.github.kt3k.coveralls'
-
 
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
@@ -100,14 +99,9 @@ subprojects {
         repositories {
             mavenCentral()
         }
-
-        dependencies {
-            classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
-        }
     }
 
     apply plugin: "jacoco"
-    apply plugin: 'com.github.kt3k.coveralls'
 
     apply from: "$rootDir/lib.gradle"
 	apply plugin: "java"
@@ -213,4 +207,24 @@ configure(subprojects.findAll { it.name != "props-core" }) {
 
 task env << {
 	println System.getenv()
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+	dependsOn = subprojects.jacocoTestReport
+	sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+	classDirectories = files(subprojects.sourceSets.main.output)
+	executionData = files(subprojects.jacocoTestReport.executionData)
+	reports {
+		xml.enabled true
+		xml.destination ="${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+	}
+	// We could remove the following setOnlyIf line, but then
+	// jacocoRootReport would silently be SKIPPED if something with
+	// the projectsWithUnitTests is wrong (e.g. a project is missing
+	// in there).
+	setOnlyIf { true }
+}
+
+coveralls {
+	sourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs).files.absolutePath
 }
