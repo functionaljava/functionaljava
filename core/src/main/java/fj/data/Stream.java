@@ -894,6 +894,12 @@ public abstract class Stream<A> implements Iterable<A> {
         return buf.toList();
     }
 
+  /**
+   * Returns a java.util.List projection of this stream.
+   */
+  public final java.util.List<A> toJavaList() {
+    return new java.util.LinkedList<A>(toCollection());
+  }
 
   /**
    * Returns a array projection of this stream.
