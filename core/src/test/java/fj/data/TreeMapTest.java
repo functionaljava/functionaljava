@@ -51,7 +51,7 @@ public class TreeMapTest {
     }
 
     private static Set<String> toSetString(List<Integer> list) {
-        return Set.set(Ord.stringOrd, list.map(i -> i.toString()));
+        return Set.fromList(Ord.stringOrd, list.map(i -> i.toString()));
     }
 
     @Test

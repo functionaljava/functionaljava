@@ -291,7 +291,43 @@ public abstract class Set<A> implements Iterable<A> {
     return foldMap(List.cons(List.<A>nil()), Monoid.<A>listMonoid());
   }
 
-    /**
+  /**
+   * Returns a java.util.Set representation of this set.
+   *
+   * @return a java.util.Set representation of this set.
+   */
+  public final java.util.Set<A> toJavaSet() {
+    return toJavaHashSet();
+  }
+
+  /**
+   * Returns a java.util.HashSet representation of this set.
+   *
+   * @return a java.util.HashSet representation of this set.
+   */
+  public final java.util.HashSet<A> toJavaHashSet() {
+    return new java.util.HashSet<A>(toStream().toCollection());
+  }
+
+  /**
+   * Returns a java.util.TreeSet representation of this set.
+   *
+   * @return a java.util.TreeSet representation of this set.
+   */
+  public final java.util.TreeSet<A> toJavaTreeSet() {
+    return new java.util.TreeSet<A>(toStream().toCollection());
+  }
+
+  /**
+   * Returns a java.util.List representation of this set.
+   *
+   * @return a java.util.List representation of this set.
+   */
+  public final java.util.List toJavaList() {
+    return new java.util.ArrayList<A>(toStream().toCollection());
+  }
+
+  /**
      * Returns a list representation of this set in reverse order.
      *
      * @return a list representation of this set in reverse order.
@@ -509,15 +545,51 @@ public abstract class Set<A> implements Iterable<A> {
   /**
    * Return the elements of the given iterable as a set.
    *
+   * @deprecated As of release 4.5, use {@link #fromIterable}
+   *
    * @param o  An order for the elements of the new set.
    * @param as An iterable of elements to add to a set.
    * @return A new set containing the elements of the given iterable.
    */
+  @Deprecated
   public static <A> Set<A> iterableSet(final Ord<A> o, final Iterable<A> as) {
+    return fromIterable(o, as);
+  }
+
+  /**
+   * Return the elements of the given iterable as a set.
+   *
+   * @param o  An order for the elements of the new set.
+   * @param as An iterable of elements to add to a set.
+   * @return A new set containing the elements of the given iterable.
+   */
+  public static <A> Set<A> fromIterable(final Ord<A> o, final Iterable<A> as) {
     Set<A> s = empty(o);
     for (final A a : as)
       s = s.insert(a);
     return s;
+  }
+
+  /**
+   * Return the elements of the given java.util.Set as a set.
+   *
+   * @param o  An order for the elements of the new set.
+   * @param as A set of elements to create the set.
+   * @return A new set containing the elements of the given set.
+   */
+  public static <A> Set<A> fromJavaSet(final Ord<A> o, final java.util.Set<A> as) {
+    return fromIterable(o, as);
+  }
+
+  /**
+   * Return the elements of the given iterator as a set.
+   *
+   * @param o  An order for the elements of the new set.
+   * @param as An iterator of elements to add to a set.
+   * @return A new set containing the elements of the given iterator.
+   */
+  public static <A> Set<A> fromIterator(final Ord<A> o, final Iterator<A> as) {
+    return fromIterable(o, () -> as);
   }
 
   /**
@@ -535,17 +607,24 @@ public abstract class Set<A> implements Iterable<A> {
   }
 
   /**
-   * Constructs a set from the given elements.
+   * Constructs a set from the list.
+   *
+   * @deprecated As of release 4.5, use {@link #fromList}
    *
    * @param o  An order for the elements of the new set.
    * @param list The elements to add to a set.
    * @return A new set containing the elements of the given list.
    */
+  @Deprecated
   public static <A> Set<A> set(final Ord<A> o, List<A> list) {
-    Set<A> s = empty(o);
-    for (final A a : list)
-      s = s.insert(a);
-    return s;
+    return fromList(o, list);
+  }
+
+  /**
+   * Constructs a set from the list.
+   */
+  public static <A> Set<A> fromList(final Ord<A> o, List<A> list) {
+    return fromIterable(o, list);
   }
 
 }
