@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main;
+package fj.data;
 
 import fj.data.DList;
 import fj.data.List;
@@ -14,7 +14,7 @@ import fj.data.Stream;
  *
  * @author clintonselke
  */
-public class Main {
+public class DListPerformance {
 
     private interface BenchmarkMethods<C> {
         C range(int from, int to);
