@@ -65,12 +65,66 @@ public final class Seq<A> implements Iterable<A> {
     return new Seq<A>(Seq.<A>mkTree().single(a));
   }
 
+  /**
+   * Constructs a sequence from the given elements.
+   * @param as The elements to create the sequence from.
+   * @return A sequence with the given elements.
+     */
   @SafeVarargs public static <A> Seq<A> seq(final A... as) {
-    return seq(List.list(as));
+    return fromList(List.list(as));
   }
 
+  /**
+   * Constructs a sequence from the given list.
+   *
+   * @deprecated As of release 4.5, use {@link #fromList(List)}
+   *
+   * @param list The list to create the sequence from.
+   * @return A sequence with the given elements in the list.
+   */
+  @Deprecated
   public static <A>Seq<A> seq(final List<A> list) {
-    return list.foldLeft((b, a) -> b.snoc(a), Seq.<A>empty());
+    return fromList(list);
+  }
+
+  /**
+   * Constructs a sequence from the given list.
+   * @param list The list to create the sequence from.
+   * @return A sequence with the elements of the list.
+   */
+  public static <A>Seq<A> fromList(final List<A> list) {
+    return fromIterable(list);
+  }
+
+  /**
+   * Constructs a sequence from the iterable.
+   * @param i The iterable to create the sequence from.
+   * @return A sequence with the elements of the iterable.
+   */
+  public static <A>Seq<A> fromIterable(final Iterable<A> i) {
+    Seq<A> s = Seq.empty();
+    for (final A a: i) {
+      s = s.snoc(a);
+    }
+    return s;
+  }
+
+  /**
+   * Constructs a sequence from the iterator.
+   * @param i The iterator to create the sequence from.
+   * @return A sequence with the elements of the iterator.
+   */
+  public static <A>Seq<A> fromIterator(final Iterator<A> i) {
+    return fromIterable(() -> i);
+  }
+
+  /**
+   * Constructs a sequence from the given list.
+   * @param list The list to create the sequence from.
+   * @return A sequence with the elements of the list.
+   */
+  public static <A>Seq<A> fromJavaList(final java.util.List<A> list) {
+    return fromIterable(list);
   }
 
   /**
@@ -145,6 +199,9 @@ public final class Seq<A> implements Iterable<A> {
     return buf.toList();
   }
 
+  /**
+   * Converts the sequence to a java.util.List
+   */
   public final java.util.List<A> toJavaList() {
     return new AbstractList<A>() {
       @Override public A get(int i) { return index(i); }
