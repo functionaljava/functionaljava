@@ -14,3 +14,4 @@ build
 MANIFEST.MF
 */bin/**
 *~
+/.nb-gradle/
