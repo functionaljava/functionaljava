@@ -1,12 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fj.data;
 
 /**
- *
+ * Difference List performance benchmarks comparing DList to Seq and List
+ * over 10 runs for the methods range, append and unbox.
+ * 
  * @author clintonselke
  */
 public class DListPerformance {
