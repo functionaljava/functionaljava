@@ -10,7 +10,7 @@ import Ord.intOrd
 import Ord.stringOrd
 import P.p
 import Unit.unit
-import Set.{empty, single, join, iterableSet}
+import Set.{empty, single, join, iterableSet, fromIterable}
 import org.scalacheck.Properties
 
 object CheckSet extends Properties("Set") {
@@ -38,10 +38,10 @@ object CheckSet extends Properties("Set") {
     single(oi, n).member(n))
 
   property("noDupesFromList") = forAll((a: List[String]) =>
-    setEqual(stringEqual).eq(iterableSet(os, a.nub(stringEqual)), iterableSet(os, a)))
+    setEqual(stringEqual).eq(fromIterable(os, a.nub(stringEqual)), fromIterable(os, a)))
 
   property("noDupesToList") = forAll((a: List[String]) =>
-    iterableSet(os, a).toList().length() == a.nub(stringEqual).length())
+    fromIterable(os, a).toList().length() == a.nub(stringEqual).length())
 
   property("subsetEmpty") = forAll((a: Set[Int]) =>
     empty(oi).subsetOf(a))

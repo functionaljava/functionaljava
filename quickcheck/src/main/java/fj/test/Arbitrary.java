@@ -815,11 +815,11 @@ public final class Arbitrary<A> {
   }
 
 	public static <A> Arbitrary<Set<A>> arbSet(Ord<A> ord, final Arbitrary<A> aa) {
-		return arbitrary(arbList(aa).gen.map(list -> Set.set(ord, list)));
+		return arbitrary(arbList(aa).gen.map(list -> Set.fromList(ord, list)));
 	}
 
     public static <A> Arbitrary<Set<A>> arbSet(Ord<A> ord, final Arbitrary<A> aa, int max) {
-        Gen<Set<A>> g = Gen.choose(0, max).bind(i -> Gen.sequenceN(i, aa.gen)).map(list -> Set.set(ord, list));
+        Gen<Set<A>> g = Gen.choose(0, max).bind(i -> Gen.sequenceN(i, aa.gen)).map(list -> Set.fromList(ord, list));
         return arbitrary(g);
     }
 
