@@ -25,6 +25,6 @@ public final class Option_filter {
 
         optionShow(intShow).println(o7); // None
         optionShow(intShow).println(o8); // None
-        optionShow(intShow).println(o9); // Some(4)
+        optionShow(intShow).println(o9); // Some(8)
     }
 }
