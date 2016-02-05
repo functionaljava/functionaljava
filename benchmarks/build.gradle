@@ -1,0 +1,6 @@
+
+configureAllRetroLambda()
+
+dependencies {
+    testCompile dependencyJunit
+}
