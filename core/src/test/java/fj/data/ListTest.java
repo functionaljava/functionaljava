@@ -39,7 +39,7 @@ public class ListTest {
     @Test
     public void integration() {
         java.util.List<Integer> ul = Arrays.asList(1, 2, 3);
-        List<Integer> dl = List.fromIterable(ul);
+        List<Integer> dl = List.iterableList(ul);
         assertTrue(ul.equals(dl.toJavaList()));
 
     }
@@ -76,7 +76,7 @@ public class ListTest {
 
     @Test
     public void listReduce() {
-        String list = List.range(1, 11).reduce((a, la) -> List.cons(a, la).toString(), "");
+        String list = List.range(1, 11).uncons((a, la) -> List.cons(a, la).toString(), "");
         String expected = List.range(1, 11).toString();
         assertThat(expected, equalTo(list));
     }

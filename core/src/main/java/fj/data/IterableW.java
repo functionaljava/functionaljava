@@ -1,7 +1,6 @@
 package fj.data;
 
 import static fj.data.Option.some;
-import static fj.data.Stream.fromIterable;
 import static fj.data.Stream.iterableStream;
 import fj.Equal;
 import fj.F;
@@ -86,7 +85,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return an iterable result of binding the given function over the wrapped Iterable.
    */
   public <B, T extends Iterable<B>> IterableW<B> bind(final F<A, T> f) {
-    return wrap(fromIterable(this).bind(a -> fromIterable(f.f(a))));
+    return wrap(iterableStream(this).bind(a -> iterableStream(f.f(a))));
   }
 
   /**
@@ -129,12 +128,12 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A iterable of iterables containing the results of the bind operations across all given iterables.
    */
   public static <A, T extends Iterable<A>> IterableW<IterableW<A>> sequence(final Iterable<T> as) {
-    final Stream<T> ts = fromIterable(as);
+    final Stream<T> ts = iterableStream(as);
     return ts.isEmpty() ?
         iterable(wrap(Option.<A>none())) :
         wrap(ts.head()).bind(a ->
             sequence(ts.tail().map(IterableW.<T, Stream<T>>wrap())._1()).bind(as2 ->
-                iterable(wrap(Stream.cons(a, () -> fromIterable(as2))))
+                iterable(wrap(Stream.cons(a, () -> iterableStream(as2))))
             )
         );
   }
@@ -222,7 +221,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public A foldLeft1(final F<A, F<A, A>> f) {
-    return fromIterable(this).foldLeft1(f);
+    return iterableStream(this).foldLeft1(f);
   }
 
   /**
@@ -255,7 +254,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A new iterable with the results of applying the functions to this iterable.
    */
   public <B> IterableW<B> zapp(final Iterable<F<A, B>> fs) {
-    return wrap(fromIterable(this).zapp(fromIterable(fs)));
+    return wrap(iterableStream(this).zapp(iterableStream(fs)));
   }
 
   /**
@@ -269,7 +268,7 @@ public final class IterableW<A> implements Iterable<A> {
    *         iterable.
    */
   public <B, C> Iterable<C> zipWith(final Iterable<B> bs, final F<A, F<B, C>> f) {
-    return wrap(fromIterable(this).zipWith(fromIterable(bs), f));
+    return wrap(iterableStream(this).zipWith(iterableStream(bs), f));
   }
 
   /**
@@ -296,7 +295,7 @@ public final class IterableW<A> implements Iterable<A> {
    *         iterable.
    */
   public <B> Iterable<P2<A, B>> zip(final Iterable<B> bs) {
-    return wrap(fromIterable(this).zip(fromIterable(bs)));
+    return wrap(iterableStream(this).zip(iterableStream(bs)));
   }
 
   /**
@@ -305,7 +304,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A new iterable with the same length as this iterable.
    */
   public Iterable<P2<A, Integer>> zipIndex() {
-    return wrap(fromIterable(this).zipIndex());
+    return wrap(iterableStream(this).zipIndex());
   }
 
   /**
@@ -318,16 +317,16 @@ public final class IterableW<A> implements Iterable<A> {
     return new List<A>() {
 
       public int size() {
-        return fromIterable(IterableW.this).length();
+        return iterableStream(IterableW.this).length();
       }
 
       public boolean isEmpty() {
-        return fromIterable(IterableW.this).isEmpty();
+        return iterableStream(IterableW.this).isEmpty();
       }
 
       @SuppressWarnings({"unchecked"})
       public boolean contains(final Object o) {
-        return fromIterable(IterableW.this).exists(Equal.<A>anyEqual().eq((A) o));
+        return iterableStream(IterableW.this).exists(Equal.<A>anyEqual().eq((A) o));
       }
 
       public Iterator<A> iterator() {
@@ -335,12 +334,12 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public Object[] toArray() {
-        return Array.iterableArray(fromIterable(IterableW.this)).array();
+        return Array.iterableArray(iterableStream(IterableW.this)).array();
       }
 
       @SuppressWarnings({"SuspiciousToArrayCall"})
       public <T> T[] toArray(final T[] a) {
-        return fromIterable(IterableW.this).toCollection().toArray(a);
+        return iterableStream(IterableW.this).toCollection().toArray(a);
       }
 
       public boolean add(final A a) {
@@ -352,7 +351,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public boolean containsAll(final Collection<?> c) {
-        return fromIterable(IterableW.this).toCollection().containsAll(c);
+        return iterableStream(IterableW.this).toCollection().containsAll(c);
       }
 
       public boolean addAll(final Collection<? extends A> c) {
@@ -376,7 +375,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public A get(final int index) {
-        return fromIterable(IterableW.this).index(index);
+        return iterableStream(IterableW.this).index(index);
       }
 
       public A set(final int index, final A element) {
@@ -421,7 +420,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public List<A> subList(final int fromIndex, final int toIndex) {
-        return wrap(Stream.fromIterable(IterableW.this).drop(fromIndex).take(toIndex - fromIndex)).toStandardList();
+        return wrap(Stream.iterableStream(IterableW.this).drop(fromIndex).take(toIndex - fromIndex)).toStandardList();
       }
 
       private ListIterator<A> toListIterator(final Option<Zipper<A>> z) {
@@ -477,6 +476,6 @@ public final class IterableW<A> implements Iterable<A> {
   }
 
   public Option<Zipper<A>> toZipper() {
-    return Zipper.fromStream(fromIterable(this));
+    return Zipper.fromStream(iterableStream(this));
   }
 }

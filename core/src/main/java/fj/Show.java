@@ -324,7 +324,7 @@ public final class Show<A> {
    */
   public static <K, V> Show<TreeMap<K, V>> treeMapShow(final Show<K> sk, final Show<V> sv) {
     return show(tm -> {
-      Stream<P2<K, V>> stream = Stream.fromIterator(tm.iterator());
+      Stream<P2<K, V>> stream = Stream.iteratorStream(tm.iterator());
       return streamShow(Show.p2MapShow(sk, sv), "TreeMap(", ",", ")").show(stream);
     });
   }

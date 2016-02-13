@@ -90,9 +90,9 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
-   * Performs a reduction on this stream using the given arguments.  Equivalent to {@link #reduce}.
+   * Performs a reduction on this stream using the given arguments.  Equivalent to {@link #uncons}.
    *
-   * @deprecated As of release 4.5, use {@link #reduce}
+   * @deprecated As of release 4.5, use {@link #uncons}
    *
    * @param nil  The value to return if this stream is empty.
    * @param cons The function to apply to the head and tail of this stream if it is not empty.
@@ -100,7 +100,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   @Deprecated
   public final <B> B stream(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
-    return reduce(nil, cons);
+    return uncons(nil, cons);
   }
 
   /**
@@ -110,7 +110,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @param cons The function to apply to the head and tail of this stream if it is not empty.
    * @return A reduction on this stream.
    */
-  public final <B> B reduce(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
+  public final <B> B uncons(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
     return isEmpty() ? nil : cons.f(head()).f(tail());
   }
 
@@ -709,46 +709,36 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a new stream with the given elements.
    */
   @SafeVarargs public static <A> Stream<A> stream(final A... as) {
-    return as.length == 0 ? Stream.<A>nil()
-                          : unfold(P2.tuple((as1, i) -> i >= as.length ? Option.<P2<A, P2<A[], Integer>>>none()
-                                                : some(P.p(as[i], P.p(as, i + 1)))), P.p(as, 0));
+    return arrayStream(as);
   }
 
-
   /**
-   * Constructs a stream with the given elements in the Iterable.  Equivalent to {@link #fromIterable(Iterable)} .
+   * Constructs a stream with the given elements in the Iterable.  Equivalent to {@link #iterableStream(Iterable)} .
    *
-   * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
+   * @deprecated As of release 4.5, use {@link #iterableStream(Iterable)}
    */
   @Deprecated
   public static <A> Stream<A> stream(Iterable<A> it) {
-    return fromIterable(it);
+    return iterableStream(it);
   }
 
   /**
-   * Constructs a stream with the given elements in the Iterable.
-   */
-  public static <A> Stream<A> fromIterable(Iterable<A> it) {
-    return fromIterator(it.iterator());
-  }
-
-  /**
-   * Constructs a stream with the given elements in the Iterator.  Equivalent to {@link #fromIterator(Iterator)} .
+   * Constructs a stream with the given elements in the Iterator.  Equivalent to {@link #iteratorStream(Iterator)} .
    *
-   * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
+   * @deprecated As of release 4.5, use {@link #iteratorStream(Iterator)}
    */
   @Deprecated
-  public static <A> Stream<A> stream(Iterator<A> it) {
-    return fromIterator(it);
+  public static <A> Stream<A> stream(final Iterator<A> it) {
+    return iteratorStream(it);
   }
 
   /**
    * Constructs a stream with the given elements in the Iterator.
    */
-  public static <A> Stream<A> fromIterator(Iterator<A> it) {
+  public static <A> Stream<A> iteratorStream(final Iterator<A> it) {
     if (it.hasNext()) {
       final A a = it.next();
-      return cons(a, () -> fromIterator(it));
+      return cons(a, () -> iteratorStream(it));
     } else
       return nil();
   }
@@ -1588,29 +1578,20 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
-   * Takes the given iterable to a stream.  Equivalent to {@link #fromIterable(Iterable)}.
-   *
-   * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
+   * Takes the given iterable to a stream.
    *
    * @param i The iterable to take to a stream.
    * @return A stream from the given iterable.
    */
-  @Deprecated
   public static <A> Stream<A> iterableStream(final Iterable<A> i) {
-    return fromIterable(i);
+    return iteratorStream(i.iterator());
   }
 
-  /**
-   * Takes the given iterator to a stream.  Equivalent to {@link #fromIterator(Iterator)}.
-   *
-   * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
-   *
-   * @param i The iterator to take to a stream.
-   * @return A stream from the given iterator.
-   */
-  @Deprecated
-  public static <A> Stream<A> iteratorStream(final Iterator<A> i) {
-    return fromIterator(i);
+  @SafeVarargs
+  public static <A> Stream<A> arrayStream(final A...as) {
+    return as.length == 0 ? Stream.<A>nil()
+            : unfold(P2.tuple((as1, i) -> i >= as.length ? Option.<P2<A, P2<A[], Integer>>>none()
+            : some(P.p(as[i], P.p(as, i + 1)))), P.p(as, 0));
   }
 
   /**

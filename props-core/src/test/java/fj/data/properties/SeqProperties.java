@@ -3,8 +3,6 @@ package fj.data.properties;
 
 import fj.P;
 import fj.P2;
-import fj.data.Array;
-import fj.data.Option;
 import fj.data.Seq;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
@@ -14,8 +12,6 @@ import fj.test.Property;
 import org.junit.runner.RunWith;
 
 import static fj.Function.identity;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
 import static fj.test.Arbitrary.*;
 import static fj.test.Property.implies;
 import static fj.test.Property.prop;
@@ -122,7 +118,7 @@ public class SeqProperties {
 
     public Property length() {
         return property(arbList(arbInteger), list ->
-            prop(Seq.fromList(list).length() == list.length())
+            prop(Seq.listSeq(list).length() == list.length())
         );
     }
 

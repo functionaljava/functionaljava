@@ -4,6 +4,10 @@ import fj.F;
 import fj.P;
 import fj.control.Trampoline;
 
+import java.util.Iterator;
+
+import static fj.data.List.iterableList;
+
 /**
  * Difference List. It converts left associative appends into right associative ones to improve performance.
  *
@@ -12,20 +16,51 @@ import fj.control.Trampoline;
 public class DList<A> {
     private final F<List<A>,Trampoline<List<A>>> appendFn;
     
-    private DList(F<List<A>,Trampoline<List<A>>> appendFn) {
+    private DList(final F<List<A>,Trampoline<List<A>>> appendFn) {
         this.appendFn = appendFn;
     }
-    
+
     /**
-     * Wraps a list with a DList.
-     * @param <A>
-     * @param a the regular List
-     * @return the DList
+     * Creates a DList from the function
+     *
+     * For alternatives functions to create a DList see:
+     * @see #iterableDList
+     * @see #iteratorDList
+     * @see #arrayDList
      */
-    public static <A> DList<A> fromList(List<A> a) {
-        return new DList<>((List<A> tail) -> Trampoline.pure(a.append(tail)));
+    public static <A> DList<A> dlist(final F<List<A>,Trampoline<List<A>>> f) {
+        return new DList<>(f);
     }
-    
+
+    /**
+     * Creates a DList from a List
+     */
+    public static <A> DList<A> listDList(final List<A> a) {
+        return dlist((List<A> tail) -> Trampoline.pure(a.append(tail)));
+    }
+
+    /**
+     * Creates a DList from an Iterable
+     */
+    public static <A> DList<A> iterableDList(final Iterable<A> it) {
+        return listDList(iterableList(it));
+    }
+
+    /**
+     * Creates a DList from an Iterator
+     */
+    public static <A> DList<A> iteratorDList(final Iterator<A> it) {
+        return iterableDList(() -> it);
+    }
+
+    /**
+     * Creates a DList from an array
+     */
+    @SafeVarargs
+    public static <A> DList<A> arrayDList(final A...as) {
+        return listDList(List.list(as));
+    }
+
     /**
      * Concatenates all the internal Lists together that are held in
      * the DList's lambda's state to produce a List.

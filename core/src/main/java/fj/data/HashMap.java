@@ -111,8 +111,15 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A new hash map that uses {@link Object#equals} and {@link Object#hashCode}.
    */
   public static <K, V> HashMap<K, V> hashMap() {
-    final Equal<K> e = Equal.anyEqual();
-    final Hash<K> h = Hash.anyHash();
+    return hashMap(Equal.anyEqual(), Hash.anyHash());
+  }
+
+  /**
+   * Construct a hash map.
+   *
+   * @return A new hash map.
+   */
+  public static <K, V> HashMap<K, V> hashMap(final Equal<K> e, final Hash<K> h) {
     return new HashMap<K, V>(e, h);
   }
 
@@ -324,15 +331,72 @@ public final class HashMap<K, V> implements Iterable<K> {
     return result;
   }
 
-  public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries) {
-    return from(entries, Equal.<K>anyEqual(), Hash.<K>anyHash());
+  /**
+   * Converts the Iterable to a HashMap
+   *
+   * @deprecated As of release 4.5, use {@link #iterableHashMap(Iterable)}
+   */
+  @Deprecated
+  public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries) {
+    return iterableHashMap(Equal.<K>anyEqual(), Hash.<K>anyHash(), entries);
   }
 
-  public static <K, V> HashMap<K, V> from(Iterable<P2<K, V>> entries, Equal<K> equal, Hash<K> hash) {
+  /**
+   * Converts the Iterable to a HashMap
+   *
+   * @deprecated As of release 4.5, use {@link #iterableHashMap}
+   */
+  @Deprecated
+  public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries, final Equal<K> equal, final Hash<K> hash) {
+    return iterableHashMap(equal, hash, entries);
+  }
+
+  /**
+   * Converts the Iterable to a HashMap
+   */
+  public static <K, V> HashMap<K, V> iterableHashMap(final Equal<K> equal, final Hash<K> hash, final Iterable<P2<K, V>> entries) {
     final HashMap<K, V> map = new HashMap<K, V>(equal, hash);
     for (P2<K, V> entry : entries) {
-        map.set(entry._1(), entry._2());
+      map.set(entry._1(), entry._2());
     }
     return map;
   }
+
+  /**
+   * Converts the Iterable to a HashMap
+   */
+  public static <K, V> HashMap<K, V> iterableHashMap(final Iterable<P2<K, V>> entries) {
+    return iterableHashMap(Equal.<K>anyEqual(), Hash.<K>anyHash(), entries);
+  }
+
+  /**
+   * Converts the array to a HashMap
+   */
+  @SafeVarargs
+  public static <K, V> HashMap<K, V> arrayHashMap(final P2<K, V>...entries) {
+    return iterableHashMap(Array.array(entries));
+  }
+
+  /**
+   * Converts the array to a HashMap
+   */
+  @SafeVarargs
+  public static <K, V> HashMap<K, V> arrayHashMap(final Equal<K> equal, final Hash<K> hash, final P2<K, V>...entries) {
+    return iterableHashMap(equal, hash, Array.array(entries));
+  }
+
+  /**
+   * Converts the Iterator to a HashMap
+   */
+  public static <K, V> HashMap<K, V> iteratorHashMap(final Equal<K> equal, final Hash<K> hash, final Iterator<P2<K, V>> entries) {
+    return iterableHashMap(equal, hash, () -> entries);
+  }
+
+  /**
+   * Converts the Iterator to a HashMap
+   */
+  public static <K, V> HashMap<K, V> iteratorHashMap(final Iterator<P2<K, V>> entries) {
+    return iterableHashMap(() -> entries);
+  }
+
 }

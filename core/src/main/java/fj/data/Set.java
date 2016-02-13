@@ -545,40 +545,15 @@ public abstract class Set<A> implements Iterable<A> {
   /**
    * Return the elements of the given iterable as a set.
    *
-   * @deprecated As of release 4.5, use {@link #fromIterable}
-   *
    * @param o  An order for the elements of the new set.
    * @param as An iterable of elements to add to a set.
    * @return A new set containing the elements of the given iterable.
    */
-  @Deprecated
   public static <A> Set<A> iterableSet(final Ord<A> o, final Iterable<A> as) {
-    return fromIterable(o, as);
-  }
-
-  /**
-   * Return the elements of the given iterable as a set.
-   *
-   * @param o  An order for the elements of the new set.
-   * @param as An iterable of elements to add to a set.
-   * @return A new set containing the elements of the given iterable.
-   */
-  public static <A> Set<A> fromIterable(final Ord<A> o, final Iterable<A> as) {
     Set<A> s = empty(o);
     for (final A a : as)
       s = s.insert(a);
     return s;
-  }
-
-  /**
-   * Return the elements of the given java.util.Set as a set.
-   *
-   * @param o  An order for the elements of the new set.
-   * @param as A set of elements to create the set.
-   * @return A new set containing the elements of the given set.
-   */
-  public static <A> Set<A> fromJavaSet(final Ord<A> o, final java.util.Set<A> as) {
-    return fromIterable(o, as);
   }
 
   /**
@@ -588,8 +563,20 @@ public abstract class Set<A> implements Iterable<A> {
    * @param as An iterator of elements to add to a set.
    * @return A new set containing the elements of the given iterator.
    */
-  public static <A> Set<A> fromIterator(final Ord<A> o, final Iterator<A> as) {
-    return fromIterable(o, () -> as);
+  public static <A> Set<A> iteratorSet(final Ord<A> o, final Iterator<A> as) {
+    return iterableSet(o, () -> as);
+  }
+
+  /**
+   * Return the elements of the given iterator as a set.
+   *
+   * @param o  An order for the elements of the new set.
+   * @param as An iterator of elements to add to a set.
+   * @return A new set containing the elements of the given iterator.
+   */
+  @SafeVarargs
+  public static <A> Set<A> arraySet(final Ord<A> o, final A...as) {
+    return iterableSet(o, Array.array(as));
   }
 
   /**
@@ -600,10 +587,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @return A new set containing the elements of the given iterable.
    */
   @SafeVarargs public static <A> Set<A> set(final Ord<A> o, final A ... as) {
-    Set<A> s = empty(o);
-    for (final A a : as)
-      s = s.insert(a);
-    return s;
+    return arraySet(o, as);
   }
 
   /**
@@ -617,14 +601,14 @@ public abstract class Set<A> implements Iterable<A> {
    */
   @Deprecated
   public static <A> Set<A> set(final Ord<A> o, List<A> list) {
-    return fromList(o, list);
+    return iterableSet(o, list);
   }
 
   /**
    * Constructs a set from the list.
    */
   public static <A> Set<A> fromList(final Ord<A> o, List<A> list) {
-    return fromIterable(o, list);
+    return iterableSet(o, list);
   }
 
 }
