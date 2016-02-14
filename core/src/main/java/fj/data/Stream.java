@@ -916,6 +916,17 @@ public abstract class Stream<A> implements Iterable<A> {
     return isEmpty() ? Option.<A>none() : some(head());
   }
 
+  @SuppressWarnings({"unchecked", "UnnecessaryFullyQualifiedName"})
+  public final A[] toJavaArray() {
+    final A[] array = (A[]) new Object[length()];
+    int i = 0;
+    for (A a: this) {
+      array[i] = a;
+      i++;
+    }
+    return array;
+  }
+
   /**
    * Returns a list projection of this stream.
    *

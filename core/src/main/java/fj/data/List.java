@@ -197,6 +197,10 @@ public abstract class List<A> implements Iterable<A> {
    */
   @SuppressWarnings({"unchecked"})
   public final Array<A> toArray() {
+    return mkArray(toArrayObject());
+  }
+
+  public final Object[] toArrayObject() {
     final int length = length();
     final Object[] a = new Object[length];
     List<A> x = this;
@@ -204,8 +208,11 @@ public abstract class List<A> implements Iterable<A> {
       a[i] = x.head();
       x = x.tail();
     }
+    return a;
+  }
 
-    return mkArray(a);
+  public final A[] toJavaArray() {
+    return (A[]) toArrayObject();
   }
 
   /**

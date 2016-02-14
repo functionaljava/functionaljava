@@ -225,6 +225,18 @@ public final class HashSet<A> implements Iterable<A> {
     return m.keys();
   }
 
+  public java.util.List<A> toJavaList() {
+    return toList().toJavaList();
+  }
+
+  public java.util.Set<A> toJavaSet() {
+    return new java.util.HashSet<A>(toCollection());
+  }
+
+  public static <A> HashSet<A> fromSet(java.util.Set<A> s) {
+    return iterableHashSet(s);
+  }
+
   /**
    * Projects an immutable collection of this hash set.
    *

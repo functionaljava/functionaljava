@@ -127,6 +127,10 @@ public final class Array<A> implements Iterable<A> {
     return copyOf(a, a.length);
   }
 
+  public A[] toJavaArray() {
+    return (A[]) array();
+  }
+
   /**
    * Returns an option projection of this array; <code>None</code> if empty, or the first element in
    * <code>Some</code>.
@@ -793,6 +797,13 @@ public final class Array<A> implements Iterable<A> {
         return a.length;
       }
     };
+  }
+
+  /**
+   * Returns a standard java.util.List projection of this array.
+   */
+  java.util.List<A> toJavaList() {
+    return new ArrayList<A>(toCollection());
   }
 
   /**

@@ -5,6 +5,7 @@ import fj.function.Effect1;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import static fj.P.p;
 import static fj.data.Option.fromNull;
@@ -339,6 +340,18 @@ public final class HashMap<K, V> implements Iterable<K> {
   @Deprecated
   public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries) {
     return iterableHashMap(Equal.<K>anyEqual(), Hash.<K>anyHash(), entries);
+  }
+
+  public static <K, V> HashMap<K, V> fromMap(java.util.Map<K, V> map) {
+    return fromMap(Equal.anyEqual(), Hash.anyHash(), map);
+  }
+
+  public static <K, V> HashMap<K, V> fromMap(Equal<K> eq, Hash<K> h, java.util.Map<K, V> map) {
+    HashMap<K, V> m = HashMap.hashMap(eq, h);
+    for (Map.Entry<K, V> e: map.entrySet()) {
+      m.set(e.getKey(), e.getValue());
+    }
+    return m;
   }
 
   /**
