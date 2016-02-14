@@ -12,6 +12,7 @@ import fj.Unit;
 import fj.function.Effect1;
 
 import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -125,6 +126,11 @@ public final class Array<A> implements Iterable<A> {
    */
   public Object[] array() {
     return copyOf(a, a.length);
+  }
+
+  @SuppressWarnings("unchecked")
+  public A[] toJavaArray() {
+    return (A[]) array();
   }
 
   /**
@@ -793,6 +799,13 @@ public final class Array<A> implements Iterable<A> {
         return a.length;
       }
     };
+  }
+
+  /**
+   * Returns a standard java.util.List projection of this array.
+   */
+  java.util.List<A> toJavaList() {
+    return new ArrayList<A>(toCollection());
   }
 
   /**

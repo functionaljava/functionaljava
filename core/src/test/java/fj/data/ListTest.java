@@ -81,4 +81,14 @@ public class ListTest {
         assertThat(expected, equalTo(list));
     }
 
+    @Test
+    public void toJavaArray() {
+        final int max = 3;
+        Integer[] ints = new Integer[max];
+        for (int i = 0; i < max; i++) {
+            ints[i] = i + 1;
+        };
+        assertThat(List.range(1, max + 1).toJavaArray(), equalTo(ints));
+    }
+
 }

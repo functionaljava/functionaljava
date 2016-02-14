@@ -71,6 +71,13 @@ public class DList<A> {
     public List<A> run() {
         return appendFn.f(List.<A>nil()).run();
     }
+
+    /**
+     * Converts the DList to a standard java.util.List.
+     */
+    public java.util.List toJavaList() {
+        return run().toJavaList();
+    }
     
     /**
      * A empty DList.
