@@ -1,7 +1,7 @@
 
 = Release 4.5
 
-Proposed release: last quarter 2015
+Proposed release: Feb 2016
 
 == Enhancements
 
@@ -24,6 +24,15 @@ Proposed release: last quarter 2015
 * Added headOption to Seq and FingerTree.  Added length to FingerTree (7e1d3a9300af84b3c4c5204e4b7a5a0e89c44303).
 * Added Stream.enumerationStream (0028ef0f8e6a36b77cbd75b29e92d77eacc167bd).
 * Support use of FunctionalJava on Java 6 runtime (67f1fc9f2c35479bf18d9ef948062e01ef740d5e).
+* Added Void, a logically uninhabited type (#193).
+* Log n multiply for Semigroup/Monoid (61ec2b09e5acc629f334d7c4264a92b99dd9fd3b).
+* Added coverage badge.
+* Added Stream.toJavaList
+* Added support to create fj.data types from standard Java iterable, iterator and array types.
+* Added support to convert to standard java.util.* classes for standard fj.data types where similar java.util class exists.
+* Added difference list support (DList, #214).
+* Made Array.ImmutableProjection static (#210).
+* Added Gitter room and badge at the top of the main Github page.
 
 == Fixes
 
@@ -42,22 +51,24 @@ Proposed release: last quarter 2015
 * Suppressed various unchecked compiler warnings (9853c6a26309cf9f4936d431a6bc65b4c37550b1).
 * Added compiler warnings for unchecked and deprecation (#204).
 * Simplified code to avoid function creation and inner static class (#179).
-* Upgraded to Gradle 2.9.
+* Upgraded to Gradle 2.10.
 * Added example of badly creating a Stream from an iterator (d38a694f9f1728417cb178c685850f627b10bf5b).
 * Configure Retro Lambda using variables (6aa26bcb56dd43d36bede2e8c34cbb21f69c1c8a).
 * Updated package fj, fj.control, fj.data, fj.data.fingertrees, fj.data.hlist, fj.data.vector, fj.function, fj.parser to use lambdas (#206).
-* Added test coverage report, run "gradlew coverage", report is under root/build/reports/jacoco/coverage/html/index.html (#207).
+* Added test coverage report, run "gradlew jacocoRootReport coveralls", report is under root/build/reports/jacoco/coverage/html/index.html (#207).
 * Updated Travis CI to use latest Java 8 (8ddc11546badbeafb0b16bc1e0fb922b06f23079).
 * Replaced usage of new P1 with P.lazy (2d6a8dd4412220a749331b6ffec45bd720ac7479).
 * Replaced P1 with F0 instances where possible (5b8248c51445e92aa8c8ff241e717f909a5bdd63, 0ca5248a3016209c9e62df509a79ed9432421322).
 * Replace anonymous F2 instances with lambdas (b438b1b89705f6d0bfd5e7c31bd217d173c43dfc).
 * Replace anonymous F3 instances with lambdas (721118902a5af76665df347b073534debf384f69).
 * Added coverall integration, submodules not consolidated into single report.
-* Replaced annonymous P2 with static constructor (92f663384541dfbea013c14b7f60951d925bcd26).
+* Replaced annonymous P2 with static constructor (#189, 92f663384541dfbea013c14b7f60951d925bcd26).
+* Created performance module to keep code demonstrating performance based reasoning.
+* Added JUnit for Doubles (#226).
 
 == Breaking Changes
 
-* None.
+* Made Array.ImmutableProjection static (#210).  This previously forced usage by `Array<TypeName>.ImmutableProjection<TypeName>` or `Array<?>.ImmutableProjection<TypeName>`.
 
 == Documentation
 
@@ -69,4 +80,10 @@ Proposed release: last quarter 2015
 * Zheka Kozlov
 * Jean-Baptiste Giraudeau
 * Shintaro Murakami
+* @daneko
+* Gabor Liptak
+* Michal Samek
+* Clinton Selke
+* Roy Brokvam
+
 
