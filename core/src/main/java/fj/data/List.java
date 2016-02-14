@@ -211,6 +211,7 @@ public abstract class List<A> implements Iterable<A> {
     return a;
   }
 
+  @SuppressWarnings("unchecked")
   public final A[] toJavaArray() {
     return (A[]) toArrayObject();
   }

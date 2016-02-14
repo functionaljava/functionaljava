@@ -128,6 +128,7 @@ public final class Array<A> implements Iterable<A> {
     return copyOf(a, a.length);
   }
 
+  @SuppressWarnings("unchecked")
   public A[] toJavaArray() {
     return (A[]) array();
   }
