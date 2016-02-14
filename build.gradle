@@ -48,7 +48,7 @@ allprojects {
 	defaultTasks "build"
 
 	ext {
-        isSnapshot = false
+        isSnapshot = true
         fjBaseVersion = "4.6"
 
         snapshotAppendix = "-SNAPSHOT"
@@ -56,7 +56,7 @@ allprojects {
         fjConsumeVersion = "4.5"
 
         signModule = false
-        useRetroLambda = true
+        useRetroLambda = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
