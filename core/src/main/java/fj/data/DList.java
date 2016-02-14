@@ -23,7 +23,7 @@ public class DList<A> {
     /**
      * Creates a DList from the function
      *
-     * For alternatives functions to create a DList see:
+     * For alternatives functions to create a DList:
      * @see #iterableDList
      * @see #iteratorDList
      * @see #arrayDList

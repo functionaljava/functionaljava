@@ -118,7 +118,7 @@ public class SeqProperties {
 
     public Property length() {
         return property(arbList(arbInteger), list ->
-            prop(Seq.listSeq(list).length() == list.length())
+            prop(Seq.iterableSeq(list).length() == list.length())
         );
     }
 

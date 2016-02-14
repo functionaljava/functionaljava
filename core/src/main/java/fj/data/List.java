@@ -1541,10 +1541,14 @@ public abstract class List<A> implements Iterable<A> {
     return arrayList(as);
   }
 
+  /**
+   * Constructs a list from the given elements.
+   */
   @SafeVarargs
   public static <A> List<A> arrayList(final A... as) {
     return Array.array(as).toList();
   }
+
   /**
    * Constructs a list from the given Iterable.
    * @deprecated As of release 4.5, use {@link #iterableList(Iterable)}

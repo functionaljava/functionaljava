@@ -84,14 +84,18 @@ public final class Seq<A> implements Iterable<A> {
    */
   @Deprecated
   public static <A>Seq<A> seq(final List<A> list) {
-    return listSeq(list);
+    return iterableSeq(list);
   }
 
   /**
    * Constructs a sequence from the given list.
+   *
+   * @deprecated As of release 4.5, use {@link #iterableSeq}
+   *
    * @param list The list to create the sequence from.
    * @return A sequence with the elements of the list.
    */
+  @Deprecated
   public static <A>Seq<A> listSeq(final List<A> list) {
     return iterableSeq(list);
   }
@@ -118,6 +122,9 @@ public final class Seq<A> implements Iterable<A> {
     return iterableSeq(() -> i);
   }
 
+  /**
+   * Constructs a sequence from the array.
+   */
   @SafeVarargs
   public static <A>Seq<A> arraySeq(A... as) {
     return iterableSeq(Array.array(as));

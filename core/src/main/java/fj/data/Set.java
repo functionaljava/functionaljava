@@ -593,7 +593,7 @@ public abstract class Set<A> implements Iterable<A> {
   /**
    * Constructs a set from the list.
    *
-   * @deprecated As of release 4.5, use {@link #fromList}
+   * @deprecated As of release 4.5, use {@link #iterableSet}
    *
    * @param o  An order for the elements of the new set.
    * @param list The elements to add to a set.
@@ -606,7 +606,10 @@ public abstract class Set<A> implements Iterable<A> {
 
   /**
    * Constructs a set from the list.
+   *
+   * @deprecated As of release 4.5, use {@link #iterableSet}
    */
+  @Deprecated
   public static <A> Set<A> fromList(final Ord<A> o, List<A> list) {
     return iterableSet(o, list);
   }

@@ -97,10 +97,16 @@ public final class HashSet<A> implements Iterable<A> {
     return empty(anyEqual(), anyHash());
   }
 
+  /**
+   * Create a HashSet from the Iterable.
+   */
   public static <A> HashSet<A> iterableHashSet(final Iterable<A> it) {
     return iterableHashSet(anyEqual(), anyHash(), it);
   }
 
+  /**
+   * Create a HashSet from the Iterable.
+   */
   public static <A> HashSet<A> iterableHashSet(final Equal<A> e, final Hash<A> h, final Iterable<A> it) {
     final HashSet<A> hs = empty(e, h);
     for (A a: it) {
@@ -109,29 +115,47 @@ public final class HashSet<A> implements Iterable<A> {
     return hs;
   }
 
+  /**
+   * Create a HashSet from the Iterator.
+   */
   public static <A> HashSet<A> iteratorHashSet(final Iterator<A> it) {
     return iterableHashSet(() -> it);
   }
 
+  /**
+   * Create a HashSet from the Iterator.
+   */
   public static <A> HashSet<A> iteratorHashSet(final Equal<A> e, final Hash<A> h, final Iterator<A> it) {
     return iterableHashSet(e, h, () -> it);
   }
 
+  /**
+   * Create a HashSet from the array.
+   */
   @SafeVarargs
   public static <A> HashSet<A> arrayHashSet(final A...as) {
     return iterableHashSet(Array.array(as));
   }
 
+  /**
+   * Create a HashSet from the array.
+   */
   @SafeVarargs
   public static <A> HashSet<A> arrayHashSet(final Equal<A> e, final Hash<A> h, final A...as) {
     return iterableHashSet(e, h, Array.array(as));
   }
 
+  /**
+   * Create a HashSet from the array.
+   */
   @SafeVarargs
   public static <A> HashSet<A> hashSet(final A...as) {
     return arrayHashSet(as);
   }
 
+  /**
+   * Create a HashSet from the array.
+   */
   @SafeVarargs
   public static <A> HashSet<A> hashSet(final Equal<A> e, final Hash<A> h, final A...as) {
     return arrayHashSet(e, h, as);

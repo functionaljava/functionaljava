@@ -34,7 +34,7 @@ public class DListPerformance {
     private static final BenchmarkMethods<Seq<Integer>> seqMethods = new BenchmarkMethods<Seq<Integer>>() {
         @Override
         public Seq<Integer> range(int from, int to) {
-            return Seq.listSeq(List.range(from, to));
+            return Seq.iterableSeq(List.range(from, to));
         }
         @Override
         public Seq<Integer> append(Seq<Integer> a, Seq<Integer> b) {

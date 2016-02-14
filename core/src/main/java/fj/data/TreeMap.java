@@ -73,14 +73,24 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   /**
    * Constructs a tree map from the given elements.
    *
+   * @deprecated As of release 4.5, use {@link #iterableTreeMap(Ord, Iterable)}
+   *
    * @param keyOrd An order for the keys of the tree map.
    * @param list The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
+  @Deprecated
   public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final List<P2<K, V>> list) {
     return iterableTreeMap(keyOrd, list);
   }
 
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param it The elements to construct the tree map with.
+   * @return A TreeMap with the given elements.
+   */
   public static <K, V> TreeMap<K, V> iterableTreeMap(final Ord<K> keyOrd, final Iterable<P2<K, V>> it) {
     TreeMap<K, V> tm = empty(keyOrd);
     for (final P2<K, V> p2 : it) {
@@ -89,10 +99,24 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
     return tm;
   }
 
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param it The elements to construct the tree map with.
+   * @return A TreeMap with the given elements.
+   */
   public static <K, V> TreeMap<K, V> iteratorTreeMap(final Ord<K> keyOrd, final Iterator<P2<K, V>> it) {
     return iterableTreeMap(keyOrd, () -> it);
   }
 
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param ps The elements to construct the tree map with.
+   * @return A TreeMap with the given elements.
+   */
   @SafeVarargs
   public static <K, V> TreeMap<K, V> arrayTreeMap(final Ord<K> keyOrd, final P2<K, V>...ps) {
     return iterableTreeMap(keyOrd, Array.array(ps));

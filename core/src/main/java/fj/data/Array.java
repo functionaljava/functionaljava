@@ -805,6 +805,9 @@ public final class Array<A> implements Iterable<A> {
     return iterableList(i).toArray();
   }
 
+  /**
+   * Creates an Array from the iterator.
+   */
   public static <A> Array<A> iteratorArray(final Iterator<A> i) {
     return iterableArray(() -> i);
   }
