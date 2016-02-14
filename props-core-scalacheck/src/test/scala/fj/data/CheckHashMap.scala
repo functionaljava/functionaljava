@@ -67,7 +67,7 @@ object CheckHashMap extends Properties("HashMap") {
   })
 
   property("from") = forAll((entries: java.lang.Iterable[P2[Int, String]]) => {
-    val map = HashMap.from[Int, String](entries, equalInt, hashInt)
+    val map = HashMap.iterableHashMap[Int, String](equalInt, hashInt, entries)
     entries.groupBy(_._1)
       .forall((e: (Int, Iterable[P2[Int, String]])) => e._2
       .exists((elem: P2[Int, String]) => optionEqual(stringEqual).eq(map.get(e._1), Option.some(elem._2))))

@@ -114,7 +114,7 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Performs a reduction on this list using the given arguments.
-   * @deprecated As of release 4.5, use {@link #reduce}
+   * @deprecated As of release 4.5, use {@link #uncons}
    *
    * @param nil  The value to return if this list is empty.
    * @param cons The function to apply to the head and tail of this list if it is not empty.
@@ -122,10 +122,10 @@ public abstract class List<A> implements Iterable<A> {
    */
   @Deprecated
   public final <B> B list(final B nil, final F<A, F<List<A>, B>> cons) {
-    return reduce(Function.uncurryF2(cons), nil);
+    return uncons(Function.uncurryF2(cons), nil);
   }
 
-  public final <B> B reduce(final F2<A, List<A>, B> cons, final B nil) {
+  public final <B> B uncons(final F2<A, List<A>, B> cons, final B nil) {
     return isEmpty() ? nil : cons.f(head(), tail());
   }
 
@@ -1538,32 +1538,40 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list with the given elements.
    */
   @SafeVarargs public static <A> List<A> list(final A... as) {
+    return arrayList(as);
+  }
+
+  /**
+   * Constructs a list from the given elements.
+   */
+  @SafeVarargs
+  public static <A> List<A> arrayList(final A... as) {
     return Array.array(as).toList();
   }
 
   /**
    * Constructs a list from the given Iterable.
-   * @deprecated As of release 4.5, use {@link #fromIterable(Iterable)}
+   * @deprecated As of release 4.5, use {@link #iterableList(Iterable)}
    */
   @Deprecated
   public static <A> List<A> list(final Iterable<A> i) {
-    return fromIterable(i);
+    return iterableList(i);
   }
 
   /**
    * Constructs a list from the given Iterator.
-   * @deprecated As of release 4.5, use {@link #fromIterator(Iterator)}
+   * @deprecated As of release 4.5, use {@link #iteratorList(Iterator)}
    */
   @Deprecated
   public static <A> List<A> list(final Iterator<A> it) {
-    return fromIterable(() -> it);
+    return iteratorList(it);
   }
 
   /**
    * Constructs a list from the given Iterator.
    */
   public static <A> List<A> fromIterator(final Iterator<A> it) {
-    return fromIterable(() -> it);
+    return iterableList(() -> it);
   }
 
   /**
@@ -1868,25 +1876,23 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Takes the given iterable to a list.
-   * @deprecated From release 4.5 use {@link #fromIterable(Iterable)}
    *
    * @param i The iterable to take to a list.
    * @return A list from the given iterable.
    */
-  @Deprecated
   public static <A> List<A> iterableList(final Iterable<A> i) {
-    return fromIterable(i);
-  }
-
-  /**
-   * Constructs a list from the Iterable.
-   */
-  public static <A> List<A> fromIterable(final Iterable<A> i) {
     final Buffer<A> bs = empty();
     for (final A a : i) {
       bs.snoc(a);
     }
     return bs.toList();
+  }
+
+  /**
+   * Constructs a list from the given Iterator.
+   */
+  public static <A> List<A> iteratorList(final Iterator<A> it) {
+    return iterableList(() -> it);
   }
 
   /**

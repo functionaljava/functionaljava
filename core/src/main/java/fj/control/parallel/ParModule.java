@@ -18,7 +18,6 @@ import fj.data.Zipper;
 import fj.function.Effect1;
 
 import static fj.data.Option.some;
-import static fj.data.Stream.fromIterable;
 import static fj.data.Stream.iterableStream;
 
 /**
@@ -293,7 +292,7 @@ public final class ParModule {
    * @return A Promise of a new Iterable with the given function applied to each element.
    */
   public <A, B> Promise<Iterable<B>> parMap(final Iterable<A> as, final F<A, B> f) {
-    return parMap(fromIterable(as), f)
+    return parMap(iterableStream(as), f)
         .fmap(Function.<Stream<B>, Iterable<B>>vary(Function.<Stream<B>>identity()));
   }
 
@@ -465,7 +464,7 @@ public final class ParModule {
    * @return A Promise of a new iterable with the results of applying the given function across the two iterables, stepwise.
    */
   public <A, B, C> Promise<Iterable<C>> parZipWith(final Iterable<A> as, final Iterable<B> bs, final F<A, F<B, C>> f) {
-    return parZipWith(fromIterable(as), fromIterable(bs), f).fmap(
+    return parZipWith(iterableStream(as), iterableStream(bs), f).fmap(
         Function.<Stream<C>, Iterable<C>>vary(Function.<Iterable<C>>identity()));
   }
 
@@ -515,8 +514,8 @@ public final class ParModule {
    */
   public <A, B> Promise<B> parFoldMap(final Iterable<A> as, final F<A, B> map, final Monoid<B> reduce,
                                       final F<Iterable<A>, P2<Iterable<A>, Iterable<A>>> chunking) {
-    return parFoldMap(fromIterable(as), map, reduce, (Stream<A> stream) -> {
-      final F<Iterable<A>, Stream<A>> is = iterable -> fromIterable(iterable);
+    return parFoldMap(iterableStream(as), map, reduce, (Stream<A> stream) -> {
+      final F<Iterable<A>, Stream<A>> is = iterable -> iterableStream(iterable);
       return chunking.f(stream).map1(is).map2(is);
     });
   }
@@ -531,7 +530,7 @@ public final class ParModule {
    * @return A promise of a result of mapping and folding in parallel.
    */
   public <A, B> Promise<B> parFoldMap(final Iterable<A> as, final F<A, B> map, final Monoid<B> reduce) {
-    return parFoldMap(fromIterable(as), map, reduce);
+    return parFoldMap(iterableStream(as), map, reduce);
   }
 
 

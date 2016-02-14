@@ -18,7 +18,6 @@ import static fj.Function.compose;
 import static fj.Function.flip;
 import static fj.P.p;
 import static fj.data.IterableW.join;
-import static fj.data.List.fromIterable;
 import static fj.data.List.iterableList;
 
 /**
@@ -68,22 +67,59 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return a TreeMap with the given elements.
    */
   @SafeVarargs public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final P2<K, V>... p2s) {
-    return treeMap(keyOrd, List.list(p2s));
+    return arrayTreeMap(keyOrd, p2s);
+  }
+
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @deprecated As of release 4.5, use {@link #iterableTreeMap(Ord, Iterable)}
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param list The elements to construct the tree map with.
+   * @return a TreeMap with the given elements.
+   */
+  @Deprecated
+  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final List<P2<K, V>> list) {
+    return iterableTreeMap(keyOrd, list);
   }
 
   /**
    * Constructs a tree map from the given elements.
    *
    * @param keyOrd An order for the keys of the tree map.
-   * @param list The elements to construct the tree map with.
-   * @return a TreeMap with the given elements.
+   * @param it The elements to construct the tree map with.
+   * @return A TreeMap with the given elements.
    */
-  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final List<P2<K, V>> list) {
+  public static <K, V> TreeMap<K, V> iterableTreeMap(final Ord<K> keyOrd, final Iterable<P2<K, V>> it) {
     TreeMap<K, V> tm = empty(keyOrd);
-    for (final P2<K, V> p2 : list) {
+    for (final P2<K, V> p2 : it) {
       tm = tm.set(p2._1(), p2._2());
     }
     return tm;
+  }
+
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param it The elements to construct the tree map with.
+   * @return A TreeMap with the given elements.
+   */
+  public static <K, V> TreeMap<K, V> iteratorTreeMap(final Ord<K> keyOrd, final Iterator<P2<K, V>> it) {
+    return iterableTreeMap(keyOrd, () -> it);
+  }
+
+  /**
+   * Constructs a tree map from the given elements.
+   *
+   * @param keyOrd An order for the keys of the tree map.
+   * @param ps The elements to construct the tree map with.
+   * @return A TreeMap with the given elements.
+   */
+  @SafeVarargs
+  public static <K, V> TreeMap<K, V> arrayTreeMap(final Ord<K> keyOrd, final P2<K, V>...ps) {
+    return iterableTreeMap(keyOrd, Array.array(ps));
   }
 
   /**
@@ -143,7 +179,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return All values in this tree map.
    */
   public List<V> values() {
-    return fromIterable(join(tree.toList().map(compose(IterableW.<V, Option<V>>wrap(), P2.<K, Option<V>>__2()))));
+    return iterableList(join(tree.toList().map(compose(IterableW.<V, Option<V>>wrap(), P2.<K, Option<V>>__2()))));
   }
 
   /**

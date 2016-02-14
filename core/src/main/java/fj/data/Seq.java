@@ -71,29 +71,33 @@ public final class Seq<A> implements Iterable<A> {
    * @return A sequence with the given elements.
      */
   @SafeVarargs public static <A> Seq<A> seq(final A... as) {
-    return fromList(List.list(as));
+    return arraySeq(as);
   }
 
   /**
    * Constructs a sequence from the given list.
    *
-   * @deprecated As of release 4.5, use {@link #fromList(List)}
+   * @deprecated As of release 4.5, use {@link #listSeq(List)}
    *
    * @param list The list to create the sequence from.
    * @return A sequence with the given elements in the list.
    */
   @Deprecated
   public static <A>Seq<A> seq(final List<A> list) {
-    return fromList(list);
+    return iterableSeq(list);
   }
 
   /**
    * Constructs a sequence from the given list.
+   *
+   * @deprecated As of release 4.5, use {@link #iterableSeq}
+   *
    * @param list The list to create the sequence from.
    * @return A sequence with the elements of the list.
    */
-  public static <A>Seq<A> fromList(final List<A> list) {
-    return fromIterable(list);
+  @Deprecated
+  public static <A>Seq<A> listSeq(final List<A> list) {
+    return iterableSeq(list);
   }
 
   /**
@@ -101,7 +105,7 @@ public final class Seq<A> implements Iterable<A> {
    * @param i The iterable to create the sequence from.
    * @return A sequence with the elements of the iterable.
    */
-  public static <A>Seq<A> fromIterable(final Iterable<A> i) {
+  public static <A>Seq<A> iterableSeq(final Iterable<A> i) {
     Seq<A> s = Seq.empty();
     for (final A a: i) {
       s = s.snoc(a);
@@ -114,8 +118,16 @@ public final class Seq<A> implements Iterable<A> {
    * @param i The iterator to create the sequence from.
    * @return A sequence with the elements of the iterator.
    */
-  public static <A>Seq<A> fromIterator(final Iterator<A> i) {
-    return fromIterable(() -> i);
+  public static <A>Seq<A> iteratorSeq(final Iterator<A> i) {
+    return iterableSeq(() -> i);
+  }
+
+  /**
+   * Constructs a sequence from the array.
+   */
+  @SafeVarargs
+  public static <A>Seq<A> arraySeq(A... as) {
+    return iterableSeq(Array.array(as));
   }
 
   /**
@@ -124,7 +136,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A sequence with the elements of the list.
    */
   public static <A>Seq<A> fromJavaList(final java.util.List<A> list) {
-    return fromIterable(list);
+    return iterableSeq(list);
   }
 
   /**

@@ -2,11 +2,9 @@ package fj;
 
 import fj.control.parallel.Promise;
 import fj.data.*;
-import fj.function.Try2;
 
 import static fj.P.p;
 import static fj.data.IterableW.wrap;
-import static fj.data.Set.fromIterable;
 import static fj.data.Set.iterableSet;
 import static fj.data.Tree.node;
 import static fj.data.TreeZipper.treeZipper;
@@ -201,7 +199,7 @@ public class F2Functions {
      * @return A function that zips two sets with this function.
      */
     static public <A, B, C> F2<Set<A>, Set<B>, Set<C>> zipSetM(final F2<A, B, C> f, final Ord<C> o) {
-        return (as, bs) -> fromIterable(o, as.toStream().zipWith(bs.toStream(), f));
+        return (as, bs) -> iterableSet(o, as.toStream().zipWith(bs.toStream(), f));
     }
 
     /**

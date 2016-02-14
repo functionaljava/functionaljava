@@ -3,6 +3,9 @@ package fj.data;
 import fj.Equal;
 import fj.Hash;
 import fj.Unit;
+
+import static fj.Equal.anyEqual;
+import static fj.Hash.anyHash;
 import static fj.Unit.unit;
 
 import java.util.Collection;
@@ -78,6 +81,84 @@ public final class HashSet<A> implements Iterable<A> {
    */
   public int hash(final A a) {
     return m.hash(a);
+  }
+
+  /**
+   * Creates a new HashSet using the given Equal and Hash
+   */
+  public static <A> HashSet<A> empty(final Equal<A> e, final Hash<A> h) {
+    return new HashSet<A>(e, h);
+  }
+
+  /**
+   * Creates an empty HashSet
+   */
+  public static <A> HashSet<A> empty() {
+    return empty(anyEqual(), anyHash());
+  }
+
+  /**
+   * Create a HashSet from the Iterable.
+   */
+  public static <A> HashSet<A> iterableHashSet(final Iterable<A> it) {
+    return iterableHashSet(anyEqual(), anyHash(), it);
+  }
+
+  /**
+   * Create a HashSet from the Iterable.
+   */
+  public static <A> HashSet<A> iterableHashSet(final Equal<A> e, final Hash<A> h, final Iterable<A> it) {
+    final HashSet<A> hs = empty(e, h);
+    for (A a: it) {
+      hs.set(a);
+    }
+    return hs;
+  }
+
+  /**
+   * Create a HashSet from the Iterator.
+   */
+  public static <A> HashSet<A> iteratorHashSet(final Iterator<A> it) {
+    return iterableHashSet(() -> it);
+  }
+
+  /**
+   * Create a HashSet from the Iterator.
+   */
+  public static <A> HashSet<A> iteratorHashSet(final Equal<A> e, final Hash<A> h, final Iterator<A> it) {
+    return iterableHashSet(e, h, () -> it);
+  }
+
+  /**
+   * Create a HashSet from the array.
+   */
+  @SafeVarargs
+  public static <A> HashSet<A> arrayHashSet(final A...as) {
+    return iterableHashSet(Array.array(as));
+  }
+
+  /**
+   * Create a HashSet from the array.
+   */
+  @SafeVarargs
+  public static <A> HashSet<A> arrayHashSet(final Equal<A> e, final Hash<A> h, final A...as) {
+    return iterableHashSet(e, h, Array.array(as));
+  }
+
+  /**
+   * Create a HashSet from the array.
+   */
+  @SafeVarargs
+  public static <A> HashSet<A> hashSet(final A...as) {
+    return arrayHashSet(as);
+  }
+
+  /**
+   * Create a HashSet from the array.
+   */
+  @SafeVarargs
+  public static <A> HashSet<A> hashSet(final Equal<A> e, final Hash<A> h, final A...as) {
+    return arrayHashSet(e, h, as);
   }
 
   /**

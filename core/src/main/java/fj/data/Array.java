@@ -22,7 +22,7 @@ import static fj.Function.identity;
 import static fj.P.p;
 import static fj.P.p2;
 import static fj.Unit.unit;
-import static fj.data.List.fromIterable;
+import static fj.data.List.iterableList;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static java.lang.Math.min;
@@ -559,12 +559,12 @@ public final class Array<A> implements Iterable<A> {
   /**
    * Constructs an array from the given elements.
    *
-   * @param a The elements to construct the array with.
+   * @param as The elements to construct the array with.
    * @return A new array of the given elements.
    */
   @SafeVarargs
-  public static <A> Array<A> array(final A... a) {
-    return new Array<A>(a);
+  public static <A> Array<A> array(final A...as) {
+    return arrayArray(as);
   }
 
   /**
@@ -802,7 +802,25 @@ public final class Array<A> implements Iterable<A> {
    * @return An array from the given iterable.
    */
   public static <A> Array<A> iterableArray(final Iterable<A> i) {
-    return fromIterable(i).toArray();
+    return iterableList(i).toArray();
+  }
+
+  /**
+   * Creates an Array from the iterator.
+   */
+  public static <A> Array<A> iteratorArray(final Iterator<A> i) {
+    return iterableArray(() -> i);
+  }
+
+  /**
+   * Returns a copy of the underlying primitive array.
+   * Equivalent to array(A...)
+   *
+   * @return A copy of the underlying primitive array.
+   */
+  @SafeVarargs
+  public static <A> Array<A> arrayArray(final A...as) {
+    return new Array<A>(as);
   }
 
   /**

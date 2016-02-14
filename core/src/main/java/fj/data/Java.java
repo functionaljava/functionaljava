@@ -1458,7 +1458,7 @@ public final class Java {
   }
 
   public static <A> List<A> JavaList_List(java.util.List<A> list) {
-    return List.fromIterable(list);
+    return List.iterableList(list);
   }
 
   // BEGIN BitSet ->

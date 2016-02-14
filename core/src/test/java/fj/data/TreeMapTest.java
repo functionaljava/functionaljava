@@ -13,6 +13,7 @@ import org.junit.Test;
 import static fj.P.p;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static fj.data.TreeMap.iterableTreeMap;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -29,7 +30,7 @@ public class TreeMapTest {
         int pivot = 4;
         int max = 5;
         List<Integer> l = List.range(1, max + 1);
-        TreeMap<Integer, String> m2 = TreeMap.treeMap(Ord.intOrd, l.zip(l.map(i -> i.toString())));
+        TreeMap<Integer, String> m2 = iterableTreeMap(Ord.intOrd, l.zip(l.map(i -> i.toString())));
         P3<Set<String>, Option<String>, Set<String>> p = m2.split(Ord.stringOrd, pivot);
 
         // print debug info
@@ -51,7 +52,7 @@ public class TreeMapTest {
     }
 
     private static Set<String> toSetString(List<Integer> list) {
-        return Set.fromList(Ord.stringOrd, list.map(i -> i.toString()));
+        return Set.iterableSet(Ord.stringOrd, list.map(i -> i.toString()));
     }
 
     @Test
@@ -60,14 +61,14 @@ public class TreeMapTest {
         int pivot = 4;
         int max = 5;
         List<Integer> l = List.range(1, max + 1);
-        TreeMap<Integer, String> m2 = TreeMap.treeMap(Ord.intOrd, l.zip(l.map(i -> i.toString())));
+        TreeMap<Integer, String> m2 = iterableTreeMap(Ord.intOrd, l.zip(l.map(i -> i.toString())));
         P3<TreeMap<Integer, String>, Option<String>, TreeMap<Integer, String>> p3 = m2.splitLookup(pivot);
 
         // create expected output
         List<Integer> leftList = List.range(1, pivot);
-        TreeMap<Integer, String> leftMap = TreeMap.treeMap(Ord.intOrd, leftList.zip(leftList.map(i -> i.toString())));
+        TreeMap<Integer, String> leftMap = iterableTreeMap(Ord.intOrd, leftList.zip(leftList.map(i -> i.toString())));
         List<Integer> rightList = List.range(pivot + 1, max + 1);
-        TreeMap<Integer, String> rightMap = TreeMap.treeMap(Ord.intOrd, rightList.zip(rightList.map(i -> i.toString())));
+        TreeMap<Integer, String> rightMap = iterableTreeMap(Ord.intOrd, rightList.zip(rightList.map(i -> i.toString())));
 
         // debug info
         if (true) {
@@ -86,9 +87,9 @@ public class TreeMapTest {
     public void toMutableMap() {
         int max = 5;
         List<List<Integer>> l = List.range(1, max + 1).map(n -> List.single(n));
-        TreeMap<List<Integer>, String> m2 = TreeMap.treeMap(Ord.listOrd(Ord.intOrd), l.zip(l.map(i -> i.toString())));
+        TreeMap<List<Integer>, String> m2 = iterableTreeMap(Ord.listOrd(Ord.intOrd), l.zip(l.map(i -> i.toString())));
         Map<List<Integer>, String> mm = m2.toMutableMap();
-        assertEquals(m2.keys(), List.fromIterable(mm.keySet()));
+        assertEquals(m2.keys(), List.iterableList(mm.keySet()));
     }
 
 
