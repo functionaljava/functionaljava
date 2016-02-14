@@ -8,12 +8,12 @@ image::http://www.functionaljava.org/img/logo-600x144.png[]
 
 Functional Java is an open source library facilitating functional programming in Java. The library implements numerous basic and advanced programming abstractions that assist composition oriented development. Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language.
 
-The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck and Functional Java's quickcheck module. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 5 to 8.
+The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck and Functional Java's quickcheck module. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are backported with the Retro Lambda library, supporting Java versions 6 to 8.
 
 Functional Java provides abstractions for the following types:
 
-* Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation).
-* Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list.
+* Basic Data Structures - total and partial functions, products, unit, option, unbiased and right biased unions (either and validation), void.
+* Immutable Collections - array, list, vector, stream, set, map, finger tree, heterogenous list, difference list.
 * Other Abstractions - monoid, semigroup, natural, random number generator, reader, writer, state, input/output, parser, zipper, specification based testing (quickcheck), actors, optics (lens, prism, fold, traversal and others), concurrency and type conversion.
 
 == URLs
@@ -35,11 +35,12 @@ The Functional Java artifact is published to Maven Central using the group `org.
 * Java 8 specific support (`functionaljava-java8`)
 * property based testing (`functionaljava-quickcheck`)
 
-The latest stable version is `4.4`.  This can be added to your Gradle project by adding the dependencies:
+The latest stable version is `4.5`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.4"
-compile "org.functionaljava:functionaljava-java8:4.4"
-compile "org.functionaljava:functionaljava-quickcheck:4.4"
+compile "org.functionaljava:functionaljava:4.5"
+compile "org.functionaljava:functionaljava-java8:4.5"
+compile "org.functionaljava:functionaljava-quickcheck:4.5"
+compile "org.functionaljava:functionaljava-java-core:4.5"
 ----
 
 and in Maven:
@@ -47,25 +48,30 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.4</version>
+    <version>4.5</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java8</artifactId>
-    <version>4.4</version>
+    <version>4.5</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-quickcheck</artifactId>
-    <version>4.4</version>
+    <version>4.5</version>
+</dependency>
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava-java-core</artifactId>
+    <version>4.5</version>
 </dependency>
 ----
 
 == Building
 
-FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 7 bytecode.  This requires access to both JDK 7 and 8.  The build system requires the environment variables `JAVA7_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
+FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 6 bytecode.  This requires access to both JDK 6 and 8.  The build system requires the environment variables `JAVA6_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
 
-Building is done using Gradle 2.4.  In the root directory run:
+Building is done using Gradle 2.10.  In the root directory run:
 ----
 ./gradlew
 ----
@@ -94,6 +100,7 @@ A more complete description of the features mentioned above are:
 ** Immutable set implementation using a red/black tree (`fj.data.Set`).
 ** Immutable multi-way tree - aka rose tree (`fj.data.Tree`).
 ** Immutable tree-map using a red/black tree implementation (`fj.data.TreeMap`).
+** Difference lists, a highly performant list.
 * Other Abstractions
 ** Monoid (`fj.Monoid`).
 ** Semigroup (`fj.Semigroup`).
@@ -109,6 +116,7 @@ A more complete description of the features mentioned above are:
 ** Automated specification-based testing framework (`fj.test`).
 ** Fully operational Actors for parallel computations (`fj.control.parallel`) and layered abstractions such as parallel-map, map-reduce, parallel-zip.
 ** Optics for updating immutable data including lens, prism, iso, optional, traversal, getter, fold and setter.  Inspired by the Scala Monocle library (https://github.com/julien-truffaut/Monocle) and the Haskell lens library (https://github.com/ekmett/lens).
+** Void, a logically uninhabited type.
 
 == License
 
