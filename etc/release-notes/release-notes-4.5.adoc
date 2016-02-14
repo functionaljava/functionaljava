@@ -1,7 +1,7 @@
 
 = Release 4.5
 
-Proposed release: Feb 2016
+Released: 15 February 2016
 
 == Enhancements
 
