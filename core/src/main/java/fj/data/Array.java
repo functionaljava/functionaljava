@@ -12,6 +12,7 @@ import fj.Unit;
 import fj.function.Effect1;
 
 import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
