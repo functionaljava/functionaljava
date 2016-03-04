@@ -211,7 +211,14 @@ public abstract class List<A> implements Iterable<A> {
     return a;
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * To be removed in future release:
+   * affectation of the result of this method to a non generic array
+   * will result in runtime error (ClassCastException).
+   *
+   * @deprecated use {@link #array(Class)}
+   */
+  @Deprecated
   public final A[] toJavaArray() {
     return (A[]) toArrayObject();
   }

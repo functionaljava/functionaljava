@@ -916,7 +916,14 @@ public abstract class Stream<A> implements Iterable<A> {
     return isEmpty() ? Option.<A>none() : some(head());
   }
 
-  @SuppressWarnings({"unchecked", "UnnecessaryFullyQualifiedName"})
+  /**
+   * To be removed in future release:
+   * affectation of the result of this method to a non generic array
+   * will result in runtime error (ClassCastException).
+   *
+   * @deprecated use {@link #array(Class)}
+   */
+  @Deprecated
   public final A[] toJavaArray() {
     final A[] array = (A[]) new Object[length()];
     int i = 0;
