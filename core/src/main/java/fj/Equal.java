@@ -544,25 +544,6 @@ public final class Equal<A> {
   public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {
     return equal(w1 -> w2 -> p2Equal(eq1, eq2).eq(w1.run(), w2.run()));
   }
-
-  /**
-   * @return Returns none if no equality can be determined by checking the nullity and reference values, else the equality
-   * @deprecated see issue #122.
-   */
-  @Deprecated
-  public static Option<Boolean> shallowEqualsO(Object o1, Object o2) {
-    if (o1 == null && o2 == null) {
-      return Option.some(true);
-    } else if (o1 == o2) {
-      return Option.some(true);
-    } else if (o1 != null && o2 != null) {
-      java.lang.Class<?> c = o1.getClass();
-      // WARNING: this may return some(false) for two instance of same type (and thus comparable) but of different class (typicaly anonymous class instance).
-      return c.isInstance(o2) ? Option.none() : Option.some(false);
-    } else {
-      return Option.some(false);
-    }
-  }
   
   /**
    * Helper method to implement {@link Object#equals(Object)} correctly. DO NOT USE it for any other purpose.
