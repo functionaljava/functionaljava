@@ -12,7 +12,7 @@ import static fj.demo.StateDemo_VendingMachine.Input.TURN;
  */
 public class StateDemo_VendingMachine {
 
-	public enum Input { COIN, TURN };
+	public enum Input { COIN, TURN }
 
 	public static class VendingMachine {
 
