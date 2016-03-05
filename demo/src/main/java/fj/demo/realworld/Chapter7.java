@@ -36,7 +36,7 @@ public class Chapter7 {
      * Read each line, convert to uppercase and print on stdout, until an empty line
      */
     public static void toUpperByLine() {
-        Stream<IO<String>> s1 = Stream.repeat(IOFunctions.stdinReadLine());
+        Stream<IO<String>> s1 = Stream.repeat(stdinReadLine());
         IO<Stream<String>> io = sequenceWhile(s1, s -> s.trim().length() > 0);
         runSafe(io).foreachDoEffect(s -> runSafe(stdoutPrintln(s.toUpperCase())));
     }

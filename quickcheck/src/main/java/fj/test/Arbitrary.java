@@ -128,7 +128,7 @@ public final class Arbitrary<A> {
   }
 
     public static <A, B> Arbitrary<Reader<A, B>> arbReader(Coarbitrary<A> aa, Arbitrary<B> ab) {
-        return arbitrary(Arbitrary.arbF(aa, ab).gen.map(f -> Reader.unit(f)));
+        return arbitrary(arbF(aa, ab).gen.map(f -> Reader.unit(f)));
     }
 
     /**
@@ -819,7 +819,7 @@ public final class Arbitrary<A> {
 	}
 
     public static <A> Arbitrary<Set<A>> arbSet(Ord<A> ord, final Arbitrary<A> aa, int max) {
-        Gen<Set<A>> g = Gen.choose(0, max).bind(i -> Gen.sequenceN(i, aa.gen)).map(list -> Set.iterableSet(ord, list));
+        Gen<Set<A>> g = choose(0, max).bind(i -> Gen.sequenceN(i, aa.gen)).map(list -> Set.iterableSet(ord, list));
         return arbitrary(g);
     }
 
@@ -902,7 +902,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary for instances of the supplied enum type.
    */
   public static <A extends Enum<A>> Arbitrary<A> arbEnumValue(final Class<A> clazz) {
-    return arbitrary(Gen.elements(clazz.getEnumConstants()));
+    return arbitrary(elements(clazz.getEnumConstants()));
   }
 
   /**
@@ -1161,7 +1161,7 @@ public final class Arbitrary<A> {
             if (i < 0) {
                 Bottom.error("Undefined: arbitrary natural is negative (" + i + ")");
             }
-            return Gen.sequenceN(Math.max(i, 0), Arbitrary.arbP2(ak, av).gen);
+            return Gen.sequenceN(Math.max(i, 0), arbP2(ak, av).gen);
         });
         return arbTreeMap(ord, arbitrary(gl2));
     }
@@ -1173,7 +1173,7 @@ public final class Arbitrary<A> {
         if (maxSize < 0) {
             Bottom.error("Undefined: arbitrary natural is negative (" + maxSize + ")");
         }
-        return arbTreeMap(ord, ak, av, arbitrary(Gen.choose(0, maxSize)));
+        return arbTreeMap(ord, ak, av, arbitrary(choose(0, maxSize)));
     }
 
   /**

@@ -59,7 +59,7 @@ public final class Writer<W, A> {
 	}
 
 	public static <A> F<A, Writer<String, A>> stringLogger() {
-		return a -> Writer.unit(a, Monoid.stringMonoid);
+		return a -> unit(a, Monoid.stringMonoid);
 	}
 
 }

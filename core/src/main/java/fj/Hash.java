@@ -268,7 +268,7 @@ public final class Hash<A> {
   }
 
     public static <K, V> Hash<TreeMap<K, V>> treeMapHash(final Hash<K> h, final Hash<V> v) {
-        return hash(t -> streamHash(Hash.p2Hash(h, v)).hash(t.toStream()));
+        return hash(t -> streamHash(p2Hash(h, v)).hash(t.toStream()));
     }
 
   /**

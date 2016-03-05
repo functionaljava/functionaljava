@@ -420,7 +420,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public List<A> subList(final int fromIndex, final int toIndex) {
-        return wrap(Stream.iterableStream(IterableW.this).drop(fromIndex).take(toIndex - fromIndex)).toStandardList();
+        return wrap(iterableStream(IterableW.this).drop(fromIndex).take(toIndex - fromIndex)).toStandardList();
       }
 
       private ListIterator<A> toListIterator(final Option<Zipper<A>> z) {

@@ -126,7 +126,7 @@ public final class IOFunctions {
     }
 
     public static IO<BufferedReader> bufferedReader(final File f, final Option<Charset> encoding) {
-        return IOFunctions.map(fileReader(f, encoding), a -> new BufferedReader(a));
+        return map(fileReader(f, encoding), a -> new BufferedReader(a));
     }
 
     public static IO<Reader> fileReader(final File f, final Option<Charset> encoding) {
@@ -372,15 +372,15 @@ public final class IOFunctions {
      */
     public static <A> IO<List<A>> sequence(List<IO<A>> list) {
         F2<IO<A>, IO<List<A>>, IO<List<A>>> f2 = (io, ioList) ->
-                IOFunctions.bind(ioList, (xs) -> map(io, x -> List.cons(x, xs)));
-        return list.foldRight(f2, IOFunctions.unit(List.<A>nil()));
+                bind(ioList, (xs) -> map(io, x -> List.cons(x, xs)));
+        return list.foldRight(f2, unit(List.<A>nil()));
     }
 
 
     public static <A> IO<Stream<A>> sequence(Stream<IO<A>> stream) {
         F2<IO<Stream<A>>, IO<A>, IO<Stream<A>>> f2 = (ioList, io) ->
-                IOFunctions.bind(ioList, (xs) -> map(io, x -> Stream.cons(x, () -> xs)));
-        return stream.foldLeft(f2, IOFunctions.unit(Stream.<A>nil()));
+                bind(ioList, (xs) -> map(io, x -> Stream.cons(x, () -> xs)));
+        return stream.foldLeft(f2, unit(Stream.<A>nil()));
     }
 
 
@@ -418,7 +418,7 @@ public final class IOFunctions {
      * @param transform Function to change line value
      */
     public static IO<Unit> interactWhile(F<String, Boolean> condition, F<String, String> transform) {
-        Stream<IO<String>> s1 = Stream.repeat(IOFunctions.stdinReadLine());
+        Stream<IO<String>> s1 = Stream.repeat(stdinReadLine());
         IO<Stream<String>> io = sequenceWhile(s1, condition);
         return () -> runSafe(io).foreach(s -> runSafe(stdoutPrintln(transform.f(s))));
     }
@@ -507,7 +507,7 @@ public final class IOFunctions {
 
     public static IO<LazyString> getContents() {
         Stream<IO<Integer>> s = Stream.<IO<Integer>>repeat(() -> (int) stdinBufferedReader.read());
-        return IOFunctions.map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.<Character>map(i -> {
+        return map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.<Character>map(i -> {
             return (char) i.intValue();
         })));
     }

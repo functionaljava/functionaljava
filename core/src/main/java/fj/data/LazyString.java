@@ -224,7 +224,7 @@ public final class LazyString implements CharSequence {
    * @return The first index of the given character in this lazy string, or None if the character is not present.
    */
   public Option<Integer> indexOf(final char c) {
-    return s.indexOf(Equal.charEqual.eq(c));
+    return s.indexOf(charEqual.eq(c));
   }
 
   /**

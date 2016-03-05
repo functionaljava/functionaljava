@@ -79,7 +79,7 @@ public final class State<S, A> {
 	}
 
 	public static <S> State<S, Unit> put(S s) {
-		return State.unit((S z) -> p(s, Unit.unit()));
+		return unit((S z) -> p(s, Unit.unit()));
 	}
 
 	public A eval(S s) {

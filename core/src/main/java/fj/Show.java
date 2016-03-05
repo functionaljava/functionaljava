@@ -159,7 +159,7 @@ public final class Show<A> {
    * @return A show instance that uses {@link Object#toString()} to perform the display rendering.
    */
   public static <A> Show<A> anyShow() {
-    return show(a -> Stream.fromString((a == null) ? "null" : a.toString()));
+    return show(a -> fromString((a == null) ? "null" : a.toString()));
   }
 
   /**
@@ -325,7 +325,7 @@ public final class Show<A> {
   public static <K, V> Show<TreeMap<K, V>> treeMapShow(final Show<K> sk, final Show<V> sv) {
     return show(tm -> {
       Stream<P2<K, V>> stream = Stream.iteratorStream(tm.iterator());
-      return streamShow(Show.p2MapShow(sk, sv), "TreeMap(", ",", ")").show(stream);
+      return streamShow(p2MapShow(sk, sv), "TreeMap(", ",", ")").show(stream);
     });
   }
 
@@ -425,7 +425,7 @@ public final class Show<A> {
   }
 
   public static <A> Show<P1<A>> p1ShowLazy(final Show<A> sa) {
-    return show(p -> Stream.fromString("(?)"));
+    return show(p -> fromString("(?)"));
   }
 
   public static <A> Show<P1<A>> p1ShowEager(final Show<A> sa) {

@@ -417,7 +417,7 @@ public abstract class Either<A, B> {
    public <C> Option<Either<C,B>> traverseOption(F<A, Option<C>> f) {
        return isLeft() ?
                f.f(value()).map(x -> Either.<C, B>left(x)) :
-               Option.some(Either.<C, B>right(e.right().value()));
+               some(Either.<C, B>right(e.right().value()));
    }
 
   public <C> Stream<Either<C, B>> traverseStream(F<A, Stream<C>> f) {
@@ -561,7 +561,7 @@ public abstract class Either<A, B> {
     */
       public <C> List<Either<A, C>> traverseList(final F<B, List<C>> f) {
           return isRight() ?
-                  f.f(value()).map(x -> Either.right(x)) :
+                  f.f(value()).map(x -> right(x)) :
                   list(Either.<A, C>left(e.left().value()));
       }
 
@@ -580,13 +580,13 @@ public abstract class Either<A, B> {
       public <C> P1<Either<A, C>> traverseP1(final F<B, P1<C>> f) {
           return isRight() ?
                   f.f(value()).map(x -> Either.<A, C>right(x)) :
-                  P.p(Either.<A, C>left(e.left().value()));
+                  p(Either.<A, C>left(e.left().value()));
       }
 
       public <C> Option<Either<A, C>> traverseOption(final F<B, Option<C>> f) {
           return isRight() ?
                   f.f(value()).map(x -> Either.<A, C>right(x)) :
-                  Option.some(Either.<A, C>left(e.left().value()));
+                  some(Either.<A, C>left(e.left().value()));
       }
 
     /**
@@ -693,8 +693,8 @@ public abstract class Either<A, B> {
 
       public <C> Stream<Either<A, C>> traverseStream(F<B, Stream<C>> f) {
           return isRight() ?
-                  f.f(value()).map(x -> Either.right(x)) :
-                  Stream.<Either<A,C>>single(Either.left(e.left().value()));
+                  f.f(value()).map(x -> right(x)) :
+                  Stream.<Either<A,C>>single(left(e.left().value()));
 
       }
   }

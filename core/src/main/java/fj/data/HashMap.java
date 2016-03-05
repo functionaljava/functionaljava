@@ -347,7 +347,7 @@ public final class HashMap<K, V> implements Iterable<K> {
   }
 
   public static <K, V> HashMap<K, V> fromMap(Equal<K> eq, Hash<K> h, java.util.Map<K, V> map) {
-    HashMap<K, V> m = HashMap.hashMap(eq, h);
+    HashMap<K, V> m = hashMap(eq, h);
     for (Map.Entry<K, V> e: map.entrySet()) {
       m.set(e.getKey(), e.getValue());
     }

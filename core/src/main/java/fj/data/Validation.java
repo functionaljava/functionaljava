@@ -208,7 +208,7 @@ public class Validation<E, T> implements Iterable<T> {
     if (list.exists(v -> v.isFail())) {
       return Validation.<E, List<A>>fail(list.filter(v -> v.isFail()).map(v -> v.fail()).foldLeft1((e1, e2) -> s.sum(e1, e2)));
     } else {
-      return Validation.success(list.foldLeft((List<A> acc, Validation<E, A> v) -> acc.cons(v.success()), List.nil()).reverse());
+      return success(list.foldLeft((List<A> acc, Validation<E, A> v) -> acc.cons(v.success()), List.nil()).reverse());
     }
   }
 
@@ -722,17 +722,17 @@ public class Validation<E, T> implements Iterable<T> {
 
     public Validation<List<E>, T> accumulate() {
         if (isFail()) {
-            return Validation.fail(List.<E>single(fail()));
+            return fail(List.<E>single(fail()));
         } else {
-            return Validation.success(success());
+            return success(success());
         }
     }
 
     public <B> Validation<List<E>, B> accumulate(F<T, B> f) {
         if (isFail()) {
-            return Validation.fail(List.<E>single(fail()));
+            return fail(List.<E>single(fail()));
         } else {
-            return Validation.success(f.f(success()));
+            return success(f.f(success()));
         }
     }
 
@@ -746,9 +746,9 @@ public class Validation<E, T> implements Iterable<T> {
             list = list.cons(v2.fail());
         }
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success()));
+            return success(f.f(success(), v2.success()));
         }
     }
 
@@ -757,27 +757,27 @@ public class Validation<E, T> implements Iterable<T> {
     public <B, C, D> Validation<List<E>, D> accumulate(Validation<E, B> v2, Validation<E, C> v3, F3<T, B, C, D> f) {
         List<E> list = fails(list(this, v2, v3));
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success(), v3.success()));
+            return success(f.f(success(), v2.success(), v3.success()));
         }
     }
 
     public <B, C, D, $E> Validation<List<E>, $E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, $E> f) {
         List<E> list = fails(list(this, v2, v3, v4));
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success()));
+            return success(f.f(success(), v2.success(), v3.success(), v4.success()));
         }
     }
 
     public <B, C, D, $E, $F> Validation<List<E>, $F> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, F5<T, B, C, D, $E, $F> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success()));
+            return success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success()));
         }
     }
 
@@ -785,27 +785,27 @@ public class Validation<E, T> implements Iterable<T> {
     public <B, C, D, $E, $F, G> Validation<List<E>, G> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, F6<T, B, C, D, $E, $F, G> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success()));
+            return success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success()));
         }
     }
 
     public <B, C, D, $E, $F, G, H> Validation<List<E>, H> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, F7<T, B, C, D, $E, $F, G, H> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success(), v7.success()));
+            return success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success(), v7.success()));
         }
     }
 
     public <B, C, D, $E, $F, G, H, I> Validation<List<E>, I> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, Validation<E, H> v8, F8<T, B, C, D, $E, $F, G, H, I> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
-            return Validation.fail(list);
+            return fail(list);
         } else {
-            return Validation.success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success(), v7.success(), v8.success()));
+            return success(f.f(success(), v2.success(), v3.success(), v4.success(), v5.success(), v6.success(), v7.success(), v8.success()));
         }
     }
 
@@ -818,10 +818,10 @@ public class Validation<E, T> implements Iterable<T> {
     public static <A, E> Validation<List<E>, List<A>> sequenceNonCumulative(List<Validation<E, A>> list) {
       if (list.exists(v -> v.isFail())) {
         F2<List<E>, Validation<E, A>, List<E>> f = (acc, v) -> acc.cons(v.fail());
-        return Validation.fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
+        return fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
       } else {
         F2<List<A>, Validation<E, A>, List<A>> f = (acc, v) -> acc.cons(v.success());
-        return Validation.success(list.filter(v -> v.isSuccess()).foldLeft(f, List.nil()).reverse());
+        return success(list.filter(v -> v.isSuccess()).foldLeft(f, List.nil()).reverse());
       }
     }
 
@@ -852,7 +852,7 @@ public class Validation<E, T> implements Iterable<T> {
     public <C> P1<Validation<E, C>> traverseP1(F<T, P1<C>> f){
         return isSuccess() ?
                 f.f(success()).map(Validation::success) :
-                P.p(fail(e.left().value()));
+                p(fail(e.left().value()));
     }
 
 
@@ -1276,7 +1276,7 @@ public class Validation<E, T> implements Iterable<T> {
    * Partitions the list into the list of fails and the list of successes
    */
   public static <A, B> P2<List<A>, List<B>> partition(List<Validation<A, B>> list) {
-    return P.p(
+    return p(
             list.filter(v -> v.isFail()).map(v -> v.fail()),
             list.filter(v -> v.isSuccess()).map(v -> v.success())
     );

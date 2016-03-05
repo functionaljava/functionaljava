@@ -93,7 +93,7 @@ public final class Callables {
    * @return That function lifted to a function on Callables.
    */
   public static <A, B> F<Callable<A>, Callable<B>> fmap(final F<A, B> f) {
-    return a -> Callables.bind(a, callable(f));
+    return a -> bind(a, callable(f));
   }
 
   /**

@@ -75,7 +75,7 @@ public final class Promise<A> {
    */
   public static <A> Promise<A> promise(final Strategy<Unit> s, final P1<A> a) {
     final Promise<A> p = mkPromise(s);
-    p.actor.act(P.p(Either.<P1<A>, Actor<A>>left(a), p));
+    p.actor.act(p(Either.<P1<A>, Actor<A>>left(a), p));
     return p;
   }
 
@@ -118,7 +118,7 @@ public final class Promise<A> {
    * @param a An actor that will receive this Promise's value in the future.
    */
   public void to(final Actor<A> a) {
-    actor.act(P.p(Either.<P1<A>, Actor<A>>right(a), this));
+    actor.act(p(Either.<P1<A>, Actor<A>>right(a), this));
   }
 
   /**
@@ -176,7 +176,7 @@ public final class Promise<A> {
     final Promise<B> r = mkPromise(s);
     final Actor<B> ab = actor(s, new Effect1<B>() {
       public void f(final B b) {
-        r.actor.act(P.p(Either.<P1<B>, Actor<B>>left(P.p(b)), r));
+        r.actor.act(p(Either.<P1<B>, Actor<B>>left(p(b)), r));
       }
     });
     to(ab.promise().contramap(f));
@@ -233,7 +233,7 @@ public final class Promise<A> {
    * @return A single promise for the given List.
    */
   public static <A> Promise<List<A>> sequence(final Strategy<Unit> s, final List<Promise<A>> as) {
-    return join(foldRight(s, liftM2(List.<A>cons()), promise(s, P.p(List.<A>nil()))).f(as));
+    return join(foldRight(s, liftM2(List.<A>cons()), promise(s, p(List.<A>nil()))).f(as));
   }
 
   /**
@@ -254,7 +254,7 @@ public final class Promise<A> {
    * @return A single promise for the given Stream.
    */
   public static <A> Promise<Stream<A>> sequence(final Strategy<Unit> s, final Stream<Promise<A>> as) {
-    return join(foldRightS(s, curry((Promise<A> o, P1<Promise<Stream<A>>> p) -> o.bind(a -> p._1().fmap(Stream.<A>cons_().f(a)))), promise(s, P.p(Stream.<A>nil()))).f(as));
+    return join(foldRightS(s, curry((Promise<A> o, P1<Promise<Stream<A>>> p) -> o.bind(a -> p._1().fmap(Stream.<A>cons_().f(a)))), promise(s, p(Stream.<A>nil()))).f(as));
   }
 
   /**
@@ -289,7 +289,7 @@ public final class Promise<A> {
   public static <A, B> F<List<A>, Promise<B>> foldRight(final Strategy<Unit> s, final F<A, F<B, B>> f, final B b) {
     return new F<List<A>, Promise<B>>() {
       public Promise<B> f(final List<A> as) {
-        return as.isEmpty() ? promise(s, p(b)) : liftM2(f).f(promise(s, P.p(as.head()))).f(
+        return as.isEmpty() ? promise(s, p(b)) : liftM2(f).f(promise(s, p(as.head()))).f(
             join(s, P1.curry(this).f(as.tail())));
       }
     };
@@ -307,7 +307,7 @@ public final class Promise<A> {
                                                            final B b) {
     return new F<Stream<A>, Promise<B>>() {
       public Promise<B> f(final Stream<A> as) {
-        return as.isEmpty() ? promise(s, P.p(b)) : liftM2(f).f(promise(s, P.p(as.head()))).f(
+        return as.isEmpty() ? promise(s, p(b)) : liftM2(f).f(promise(s, p(as.head()))).f(
                 Promise.<P1<B>>join(s, P.lazy(() -> f(as.tail()._1()).fmap(P.<B>p1()))));
       }
     };

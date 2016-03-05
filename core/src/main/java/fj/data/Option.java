@@ -432,7 +432,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   public <B> P1<Option<B>> traverseP1(F<A, P1<B>> f) {
-    return map(a -> f.f(a).map(b -> some(b))).orSome(P.p(none()));
+    return map(a -> f.f(a).map(b -> some(b))).orSome(p(none()));
   }
 
   public <B> Seq<Option<B>> traverseSeq(F<A, Seq<B>> f) {

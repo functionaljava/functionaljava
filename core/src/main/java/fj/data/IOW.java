@@ -40,6 +40,6 @@ public final class IOW<A> implements IO<A> {
     }
 
     public IOW<Unit> interact(F<LazyString, LazyString> f) {
-        return IOW.lift(() -> IOFunctions.interact(f).run());
+        return lift(() -> IOFunctions.interact(f).run());
     }
 }

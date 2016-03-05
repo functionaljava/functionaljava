@@ -293,7 +293,7 @@ public final class Conversions {
     public static IO<Unit> Effect_IO(Effect0 e) {
         return () ->{
             e.f();
-            return Unit.unit();
+            return unit();
         };
     }
 

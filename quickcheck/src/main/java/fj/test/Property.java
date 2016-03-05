@@ -367,7 +367,7 @@ public final class Property {
      * will be taken from the given boolean b.
      */
     public static Property impliesBoolean(final boolean a, final boolean b) {
-        return implies(a, () -> Property.prop(b));
+        return implies(a, () -> prop(b));
     }
 
     /**
@@ -375,7 +375,7 @@ public final class Property {
      * will be taken from the given lazy boolean b.
      */
     public static Property impliesBoolean(final boolean a, final F0<Boolean> b) {
-        return implies(a, () -> Property.prop(b.f()));
+        return implies(a, () -> prop(b.f()));
     }
 
   /**

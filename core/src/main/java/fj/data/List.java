@@ -122,7 +122,7 @@ public abstract class List<A> implements Iterable<A> {
    */
   @Deprecated
   public final <B> B list(final B nil, final F<A, F<List<A>, B>> cons) {
-    return uncons(Function.uncurryF2(cons), nil);
+    return uncons(uncurryF2(cons), nil);
   }
 
   public final <B> B uncons(final F2<A, List<A>, B> cons, final B nil) {
@@ -410,9 +410,9 @@ public abstract class List<A> implements Iterable<A> {
       if (p.f(xs.head()))
         b.snoc(xs.head());
       else
-        return P.p(b.toList(), xs);
+        return p(b.toList(), xs);
     }
-    return P.p(b.toList(), List.<A>nil());
+    return p(b.toList(), List.<A>nil());
   }
 
   /**
@@ -614,7 +614,7 @@ public abstract class List<A> implements Iterable<A> {
     public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
         return foldRight(
                 (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
-                Option.some(List.<B>nil())
+                some(List.<B>nil())
         );
     }
 
@@ -641,7 +641,7 @@ public abstract class List<A> implements Iterable<A> {
     public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
         return foldRight(
                 (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-                P.p(List.<B>nil())
+                p(List.<B>nil())
         );
     }
 
@@ -656,7 +656,7 @@ public abstract class List<A> implements Iterable<A> {
     return this.foldRight(
         (a, acc) -> Function.bind(acc,
             (bs) -> Function.<C, B, List<B>> compose(b -> bs.cons(b), f.f(a))),
-        Function.constant(List.<B> nil())
+        constant(List.<B> nil())
         );
   }
 
@@ -675,7 +675,7 @@ public abstract class List<A> implements Iterable<A> {
   public <B> List<List<B>> traverseList(final F<A, List<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-        List.single(List.<B> nil()));
+        single(List.<B> nil()));
   }
 
   public <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
@@ -707,7 +707,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that has appended the given list.
    */
   public final List<A> append(final List<A> as) {
-    return Buffer.fromList(this).prependToList(as);
+    return fromList(this).prependToList(as);
   }
 
   /**
@@ -830,7 +830,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list with a length the same, or less than, this list.
    */
   public final List<A> take(final int i) {
-    Buffer<A> result = Buffer.empty();
+    Buffer<A> result = empty();
     List<A> list = this;
     int index = i;
     while (index > 0 && list.isNotEmpty()) {
@@ -868,7 +868,7 @@ public abstract class List<A> implements Iterable<A> {
   public final P2<List<A>, List<A>> splitAt(final int i) {
     int c = 0;
     List<A> first = List.<A>nil();
-    List<A> second = List.nil();
+    List<A> second = nil();
     for (List<A> xs = this; xs.isNotEmpty(); xs = xs.tail()) {
       final A h = xs.head();
       if (c < i) {
@@ -878,7 +878,7 @@ public abstract class List<A> implements Iterable<A> {
       }
       c++;
     }
-    return P.p(first.reverse(), second.reverse());
+    return p(first.reverse(), second.reverse());
   }
 
   /**
@@ -906,10 +906,10 @@ public abstract class List<A> implements Iterable<A> {
    */
   public P2<List<A>, List<A>> partition(F<A, Boolean> f) {
     P2<List<A>, List<A>> p2 = foldLeft(acc -> a ->
-      f.f(a) ? P.p(acc._1().cons(a), acc._2()) : P.p(acc._1(), acc._2().cons(a)),
-      P.p(nil(), nil())
+      f.f(a) ? p(acc._1().cons(a), acc._2()) : p(acc._1(), acc._2().cons(a)),
+      p(nil(), nil())
     );
-    return P.p(p2._1().reverse(), p2._2().reverse());
+    return p(p2._1().reverse(), p2._2().reverse());
   }
 
   /**
@@ -1115,7 +1115,7 @@ public abstract class List<A> implements Iterable<A> {
   public final List<A> intersperse(final A a) {
     return isEmpty() || tail().isEmpty() ?
            this :
-            cons(head(), tail().bind(a2 -> List.list(a, a2)));
+            cons(head(), tail().bind(a2 -> list(a, a2)));
   }
 
   /**
@@ -1320,7 +1320,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A TreeMap containing the keys with the accumulated list of matched elements.
    */
   public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction, final Ord<B> keyOrd) {
-    return groupBy(keyFunction, Function.identity(), keyOrd);
+    return groupBy(keyFunction, identity(), keyOrd);
   }
 
   /**
@@ -1372,7 +1372,7 @@ public abstract class List<A> implements Iterable<A> {
       final Monoid<C> monoid,
       final Ord<B> keyOrd) {
     return groupBy(keyFunction, valueFunction, monoid.zero(),
-        Function.uncurryF2(monoid.sum()), keyOrd);
+        uncurryF2(monoid.sum()), keyOrd);
   }
 
   /**
@@ -1709,7 +1709,7 @@ public abstract class List<A> implements Iterable<A> {
       ba = ba.snoc(p._1());
       bb = bb.snoc(p._2());
     }
-    return P.p(ba.toList(), bb.toList());
+    return p(ba.toList(), bb.toList());
   }
 
   /**
@@ -1720,7 +1720,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of the given value replicated the given number of times.
    */
   public static <A> List<A> replicate(final int n, final A a) {
-    List<A> list = List.nil();
+    List<A> list = nil();
     for (int i = 0; i < n; i++) { list = list.cons(a); }
     return list;
   }
@@ -1735,7 +1735,7 @@ public abstract class List<A> implements Iterable<A> {
    *         <code>to</code> value (exclusive).
    */
   public static List<Integer> range(final int from, final int to) {
-    final Buffer<Integer> buf = Buffer.empty();
+    final Buffer<Integer> buf = empty();
     for (int i = from; i < to; i++) {
       buf.snoc(i);
     }
@@ -1815,7 +1815,7 @@ public abstract class List<A> implements Iterable<A> {
    */
   public static <A> List<A> iterateWhile(final F<A, A> f, final F<A, Boolean> p, final A a) {
     return unfold(
-            o -> Option.iif(p2 -> p.f(o), P.p(o, f.f(o)))
+            o -> Option.iif(p2 -> p.f(o), p(o, f.f(o)))
             , a);
   }
 
@@ -2210,7 +2210,7 @@ public abstract class List<A> implements Iterable<A> {
      * Cons prism
      */
     public static <A> Prism<List<A>, P2<A, List<A>>> cons() {
-      return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(P.p(h, tail))), c -> List.cons(c._1(), c._2()));
+      return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(p(h, tail))), c -> List.cons(c._1(), c._2()));
     }
 
   }

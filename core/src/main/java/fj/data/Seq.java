@@ -106,7 +106,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A sequence with the elements of the iterable.
    */
   public static <A>Seq<A> iterableSeq(final Iterable<A> i) {
-    Seq<A> s = Seq.empty();
+    Seq<A> s = empty();
     for (final A a: i) {
       s = s.snoc(a);
     }

@@ -225,7 +225,7 @@ public abstract class FingerTree<V, A> {
     public abstract int length();
 
     public static <A> FingerTree<Integer, A> emptyIntAddition() {
-        return FingerTree.mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
+        return mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
     }
 
 }

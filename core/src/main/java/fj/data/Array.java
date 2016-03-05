@@ -859,7 +859,7 @@ public final class Array<A> implements Iterable<A> {
       aa.set(i, p._1());
       ab.set(i, p._2());
     }
-    return P.p(aa, ab);
+    return p(aa, ab);
   }
 
   /**
@@ -1074,8 +1074,8 @@ public final class Array<A> implements Iterable<A> {
     final T[] copy = (Object)newType == Object[].class
         ? (T[]) new Object[len]
         : (T[]) java.lang.reflect.Array.newInstance(newType.getComponentType(), len);
-    System.arraycopy(a, 0, copy, 0,
-        Math.min(a.length, len));
+    arraycopy(a, 0, copy, 0,
+        min(a.length, len));
     return copy;
   }
 
@@ -1089,8 +1089,8 @@ public final class Array<A> implements Iterable<A> {
       if (len < 0)
           throw new IllegalArgumentException(from + " > " + to);
       final char[] copy = new char[len];
-      System.arraycopy(a, from, copy, 0,
-                       Math.min(a.length - from, len));
+      arraycopy(a, from, copy, 0,
+                       min(a.length - from, len));
       return copy;
   }
 }

@@ -330,7 +330,7 @@ public final class F1Functions {
      */
     @SuppressWarnings("unchecked")
     public static <A, B> F<Iterable<A>, IterableW<B>> mapIterable(final F<A, B> f) {
-        return F1Functions.o(IterableW.<A, B>map().f(f), IterableW.<A, Iterable<A>>wrap());
+        return o(IterableW.<A, B>map().f(f), IterableW.<A, Iterable<A>>wrap());
     }
 
     /**

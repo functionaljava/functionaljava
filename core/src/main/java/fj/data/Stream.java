@@ -351,7 +351,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *         and returns a stream of the results.
    */
   public static <A, B> F<B, Stream<A>> sequence_(final Stream<F<B, A>> fs) {
-    return fs.foldRight((baf, p1) -> Function.bind(baf, p1._1(), Function.curry((a, stream) -> cons(a, p(stream)))), Function
+    return fs.foldRight((baf, p1) -> Function.bind(baf, p1._1(), curry((a, stream) -> cons(a, p(stream)))), Function
             .<B, Stream<A>>constant(Stream.<A>nil()));
   }
 
@@ -531,7 +531,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The stream of (pre-calculated) lazy values after sequencing.
    */
   public static <A> Stream<P1<A>> sequence(final F0<Stream<A>> p) {
-    return p.f().map(a -> P.p(a));
+    return p.f().map(a -> p(a));
   }
 
   /**
@@ -541,7 +541,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The stream of options after sequencing.
    */
   public static <A> Stream<Option<A>> sequence(final Option<Stream<A>> o) {
-    return o.isNone() ? Stream.nil() : o.some().map(a -> Option.some(a));
+    return o.isNone() ? nil() : o.some().map(a -> some(a));
   }
 
   /**
@@ -566,9 +566,9 @@ public abstract class Stream<A> implements Iterable<A> {
 
   public static <A> Stream<A> enumerationStream(Enumeration<A> e) {
     if (e.hasMoreElements()) {
-      return Stream.cons(e.nextElement(), () -> enumerationStream(e));
+      return cons(e.nextElement(), () -> enumerationStream(e));
     } else {
-      return Stream.nil();
+      return nil();
     }
   }
 
@@ -627,7 +627,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
   private Promise<Stream<A>> qs(final Ord<A> o, final Strategy<Unit> s) {
     if (isEmpty())
-      return promise(s, P.p(this));
+      return promise(s, p(this));
     else {
       final F<Boolean, Boolean> id = identity();
       final A x = head();
@@ -797,7 +797,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static <A> Stream<A> range(final Enumerator<A> e, final A from, final A to, final long step) {
     final Ordering o = e.order().compare(from, to);
-    return o == EQ || step > 0L && o == GT || step < 0L && o == LT ? single(from) : cons(from, () -> Stream.join(e.plus(from, step).filter(a -> !(o == LT
+    return o == EQ || step > 0L && o == GT || step < 0L && o == LT ? single(from) : cons(from, () -> join(e.plus(from, step).filter(a -> !(o == LT
                 ? e.order().isLessThan(to, a)
                 : e.order().isGreaterThan(to, a))).map(a1 -> range(e, a1, to, step)).toStream()));
   }
@@ -1336,7 +1336,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a stream of the prefixes of this stream, starting with the stream itself.
    */
   public final Stream<Stream<A>> inits() {
-    final Stream<Stream<A>> nil = Stream.cons(Stream.<A>nil(), () -> nil());
+    final Stream<Stream<A>> nil = cons(Stream.<A>nil(), () -> nil());
     return isEmpty() ? nil : nil.append(() -> tail()._1().inits().map(Stream.<A>cons_().f(head())));
   }
 
@@ -1418,8 +1418,8 @@ public abstract class Stream<A> implements Iterable<A> {
   public static <A, B> P2<Stream<A>, Stream<B>> unzip(final Stream<P2<A, B>> xs) {
     return xs.foldRight((p, ps) -> {
       final P2<Stream<A>, Stream<B>> pp = ps._1();
-      return P.p(cons(p._1(), P.p(pp._1())), cons(p._2(), P.p(pp._2())));
-    }, P.p(Stream.<A>nil(), Stream.<B>nil()));
+      return p(cons(p._1(), p(pp._1())), cons(p._2(), p(pp._2())));
+    }, p(Stream.<A>nil(), Stream.<B>nil()));
   }
 
   /**
@@ -1591,7 +1591,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static <A> Stream<A> iterateWhile(final F<A, A> f, final F<A, Boolean> p, final A a) {
     return unfold(
-            o -> Option.iif(p2 -> p.f(o), P.p(o, f.f(o)))
+            o -> Option.iif(p2 -> p.f(o), p(o, f.f(o)))
             , a);
   }
 
@@ -1609,7 +1609,7 @@ public abstract class Stream<A> implements Iterable<A> {
   public static <A> Stream<A> arrayStream(final A...as) {
     return as.length == 0 ? Stream.<A>nil()
             : unfold(P2.tuple((as1, i) -> i >= as.length ? Option.<P2<A, P2<A[], Integer>>>none()
-            : some(P.p(as[i], P.p(as, i + 1)))), P.p(as, 0));
+            : some(p(as[i], p(as, i + 1)))), p(as, 0));
   }
 
   /**

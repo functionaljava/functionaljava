@@ -368,12 +368,12 @@ public final class Enumerator<A> {
    * An enumerator for <code>Natural</code>
    */
   public static final Enumerator<Natural> naturalEnumerator = enumerator(
-      n -> Option.some(n.succ()),
+      n -> some(n.succ()),
       n -> n.pred(),
       Option.<Natural>none(), some(Natural.ZERO), naturalOrd,
       curry((n, l) ->
         some(n).apply(
-          Natural.natural(l).map(Function.curry((n1, n2) -> n1.add(n2)))
+          Natural.natural(l).map(curry((n1, n2) -> n1.add(n2)))
         )
       )
   );

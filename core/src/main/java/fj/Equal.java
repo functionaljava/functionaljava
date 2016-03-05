@@ -538,7 +538,7 @@ public final class Equal<A> {
   }
 
   public static <K, V> Equal<TreeMap<K, V>> treeMapEqual(Equal<K> k, Equal<V> v) {
-    return equal(t1 -> t2 -> Equal.streamEqual(p2Equal(k, v)).eq(t1.toStream(), t2.toStream()));
+    return equal(t1 -> t2 -> streamEqual(p2Equal(k, v)).eq(t1.toStream(), t2.toStream()));
   }
 
   public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {

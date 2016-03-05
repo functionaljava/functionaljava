@@ -60,7 +60,7 @@ public final class Function {
    * @return A function that composes two functions to produce a new function.
    */
   public static <A, B, C> F<F<A, B>, F<F<B, C>, F<A, C>>> andThen() {
-    return g -> f -> Function.andThen(g, f);
+    return g -> f -> andThen(g, f);
   }
 
   /**

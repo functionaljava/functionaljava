@@ -104,7 +104,7 @@ public final class DList<A> {
      * @return the new DList.
      */
     public DList<A> cons(A a) {
-        return DList.single(a).append(this);
+        return single(a).append(this);
     }
     
     /**
@@ -113,7 +113,7 @@ public final class DList<A> {
      * @return the new DList.
      */
     public DList<A> snoc(A a) {
-        return this.append(DList.single(a));
+        return this.append(single(a));
     }
     
     /**

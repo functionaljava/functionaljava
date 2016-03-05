@@ -45,7 +45,7 @@ public final class Try {
     public static <A, B, E extends Exception> F<A, Validation<E, B>> f(final Try1<A, B, E> t) {
         return a -> {
             try {
-                return Validation.success(t.f(a));
+                return success(t.f(a));
             } catch (Exception e) {
                 return fail((E) e);
             }

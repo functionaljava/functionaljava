@@ -81,7 +81,7 @@ public final class Single<V, A> extends FingerTree<V, A> {
 
   @Override P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc) {
     final Empty<V, A> empty = new Empty<>(measured());
-    return P.p(empty, a, empty);
+    return p(empty, a, empty);
   }
 
   @Override public P2<Integer, A> lookup(final F<V, Integer> o, final int i) { return p(i, a); }

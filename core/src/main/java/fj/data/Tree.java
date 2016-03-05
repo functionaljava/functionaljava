@@ -252,7 +252,7 @@ public final class Tree<A> implements Iterable<A> {
   }
 
   private static Stream<String> shift(final String f, final String o, final Stream<String> s) {
-    return Stream.repeat(o).cons(f).zipWith(s, Monoid.stringMonoid.sum());
+    return repeat(o).cons(f).zipWith(s, Monoid.stringMonoid.sum());
   }
 
   private Stream<String> drawTree(final Show<A> s) {
@@ -328,7 +328,7 @@ public final class Tree<A> implements Iterable<A> {
   public static <A, B> Tree<B> bottomUp(Tree<A> t, final F<P2<A, Stream<B>>, B> f) {
     final F<Tree<A>, Tree<B>> recursiveCall = a -> bottomUp(a, f);
     final Stream<Tree<B>> tbs = t.subForest()._1().map(recursiveCall);
-    return Tree.node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
+    return node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
    }
  
    /**
