@@ -15,5 +15,5 @@ public interface F3<A, B, C, D> {
    * @param c The <code>C</code> to transform.
    * @return The result of the transformation.
    */
-  public D f(A a, B b, C c);
+  D f(A a, B b, C c);
 }

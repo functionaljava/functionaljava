@@ -19,5 +19,5 @@ public interface F5<A, B, C, D, E, F$> {
    * @param e The <code>E</code> to transform.
    * @return The result of the transformation.
    */
-  public F$ f(A a, B b, C c, D d, E e);
+  F$ f(A a, B b, C c, D d, E e);
 }

@@ -8,7 +8,7 @@ import java.io.IOException;
 public interface SafeIO<A> extends IO<A> {
 
 	@Override
-	public A run();
+	A run();
 
 }
 

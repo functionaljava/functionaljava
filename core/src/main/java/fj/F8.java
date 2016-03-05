@@ -22,5 +22,5 @@ public interface F8<A, B, C, D, E, F$, G, H, I> {
    * @param h The <code>H</code> to transform.
    * @return The result of the transformation.
    */
-  public I f(A a, B b, C c, D d, E e, F$ f, G g, H h);
+  I f(A a, B b, C c, D d, E e, F$ f, G g, H h);
 }

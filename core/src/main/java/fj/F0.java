@@ -5,6 +5,6 @@ package fj;
  */
 public interface F0<A> {
 
-    public A f();
+    A f();
 
 }

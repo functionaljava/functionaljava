@@ -33,6 +33,6 @@ public interface F2<A, B, C> {
    * @param b The <code>B</code> to transform.
    * @return The result of the transformation.
    */
-  public C f(A a, B b);
+  C f(A a, B b);
 
 }

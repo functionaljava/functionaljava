@@ -45,6 +45,6 @@ public interface F<A, B> {
    * @param a The <code>A</code> to transform.
    * @return The result of the transformation.
    */
-  public abstract B f(A a);
+  B f(A a);
 
 }
