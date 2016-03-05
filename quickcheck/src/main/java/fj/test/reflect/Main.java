@@ -43,7 +43,7 @@ public final class Main {
             }
         });
       } catch(ClassNotFoundException e) {
-        System.err.println(e);
+        e.printStackTrace();
         //noinspection CallToSystemExit
         exit(144);
       }
