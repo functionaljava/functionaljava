@@ -30,7 +30,7 @@ public final class V2<A> implements Iterable<A> {
    * @return A new vector-2.
    */
   public static <A> V2<A> p(final P2<A, A> p) {
-    return new V2<A>(p);
+    return new V2<>(p);
   }
 
   /**

@@ -530,7 +530,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, A> __1() {
-    return P8<A, B, C, D, E, F$, G, H>::_1;
+    return P8::_1;
   }
 
   /**
@@ -539,7 +539,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, B> __2() {
-    return P8<A, B, C, D, E, F$, G, H>::_2;
+    return P8::_2;
   }
 
   /**
@@ -548,7 +548,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, C> __3() {
-    return P8<A, B, C, D, E, F$, G, H>::_3;
+    return P8::_3;
   }
 
   /**
@@ -557,7 +557,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the fourth element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, D> __4() {
-    return P8<A, B, C, D, E, F$, G, H>::_4;
+    return P8::_4;
   }
 
   /**
@@ -566,7 +566,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the fifth element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, E> __5() {
-    return P8<A, B, C, D, E, F$, G, H>::_5;
+    return P8::_5;
   }
 
   /**
@@ -575,7 +575,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the sixth element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, F$> __6() {
-    return P8<A, B, C, D, E, F$, G, H>::_6;
+    return P8::_6;
   }
 
   /**
@@ -584,7 +584,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the seventh element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, G> __7() {
-    return P8<A, B, C, D, E, F$, G, H>::_7;
+    return P8::_7;
   }
 
   /**
@@ -593,7 +593,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
    * @return A function that returns the eighth element of a product.
    */
   public static <A, B, C, D, E, F$, G, H> fj.F<P8<A, B, C, D, E, F$, G, H>, H> __8() {
-    return P8<A, B, C, D, E, F$, G, H>::_8;
+    return P8::_8;
   }
 
   @Override
@@ -604,7 +604,7 @@ public abstract class P8<A, B, C, D, E, F, G, H> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P8.class, this, other,
-        () -> Equal.p8Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual(), Equal.<H>anyEqual()));
+        () -> Equal.p8Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override

@@ -103,7 +103,7 @@ public final class Semigroup<A> {
    * @return A semigroup from the given function.
    */
   public static <A> Semigroup<A> semigroup(final F<A, F<A, A>> sum) {
-    return new Semigroup<A>(sum);
+    return new Semigroup<>(sum);
   }
 
   /**
@@ -113,7 +113,7 @@ public final class Semigroup<A> {
    * @return A semigroup from the given function.
    */
   public static <A> Semigroup<A> semigroup(final F2<A, A, A> sum) {
-    return new Semigroup<A>(curry(sum));
+    return new Semigroup<>(curry(sum));
   }
 
   /**

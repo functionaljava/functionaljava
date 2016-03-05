@@ -108,7 +108,7 @@ public abstract class Trampoline<A> {
 
   @SuppressWarnings("unchecked")
   protected static <A, B> Codense<B> codense(final Normal<A> a, final F<A, Trampoline<B>> k) {
-    return new Codense<B>((Normal<Object>) a, (F<Object, Trampoline<B>>) k);
+    return new Codense<>((Normal<Object>) a, (F<Object, Trampoline<B>>) k);
   }
 
   /**
@@ -125,7 +125,7 @@ public abstract class Trampoline<A> {
    * @return A trampoline that results in the given value.
    */
   public static <A> Trampoline<A> pure(final A a) {
-    return new Pure<A>(a);
+    return new Pure<>(a);
   }
 
   /**
@@ -135,7 +135,7 @@ public abstract class Trampoline<A> {
    * @return A trampoline whose next step runs the given thunk.
    */
   public static <A> Trampoline<A> suspend(final P1<Trampoline<A>> a) {
-    return new Suspend<A>(a);
+    return new Suspend<>(a);
   }
 
   /**
@@ -162,7 +162,7 @@ public abstract class Trampoline<A> {
    * @return A new trampoline that runs this trampoline, then applies the given function to the result.
    */
   public final <B> Trampoline<B> map(final F<A, B> f) {
-    return bind(F1Functions.o(Trampoline.<B>pure(), f));
+    return bind(F1Functions.o(Trampoline.pure(), f));
   }
 
   /**
@@ -257,7 +257,7 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.<Trampoline<C>>lazy(() -> ta.zipWith(tb, f))))));
+        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.lazy(() -> ta.zipWith(tb, f))))));
       }
       for (final B y : eb.right()) {
         return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));

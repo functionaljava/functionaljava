@@ -168,7 +168,7 @@ public final class Function {
    * not apply the value, instead returning an empty optional value.
    */
   public static <A, B> F<A, Option<B>> nullable(final F<A, B> f) {
-    return a -> a == null ? Option.<B>none() : Option.some(f.f(a));
+    return a -> a == null ? Option.none() : Option.some(f.f(a));
   }
 
   /**
@@ -761,7 +761,7 @@ public final class Function {
    * @return A function of arity-1 whose argument is substituted for both parameters of <em>f</em>.
    */
   public static <A, B> F<B, A> join(final F<B, F<B, A>> f) {
-    return bind(f, Function.<F<B, A>>identity());
+    return bind(f, Function.identity());
   }
 
 

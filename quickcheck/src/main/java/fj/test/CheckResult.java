@@ -55,7 +55,7 @@ public final class CheckResult {
    * @return A result that the property has passed.
    */
   public static CheckResult passed(final int succeeded, final int discarded) {
-    return new CheckResult(R.Passed, Option.<List<Arg<?>>>none(), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Passed, Option.none(), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -67,7 +67,7 @@ public final class CheckResult {
    * @return A result that the property has been proven.
    */
   public static CheckResult proven(final List<Arg<?>> args, final int succeeded, final int discarded) {
-    return new CheckResult(R.Proven, some(args), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Proven, some(args), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -79,7 +79,7 @@ public final class CheckResult {
    * @return A result that the property has been falsified.
    */
   public static CheckResult falsified(final List<Arg<?>> args, final int succeeded, final int discarded) {
-    return new CheckResult(R.Falsified, some(args), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Falsified, some(args), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -90,7 +90,7 @@ public final class CheckResult {
    * @return A result that the property has been exhausted in checking.
    */
   public static CheckResult exhausted(final int succeeded, final int discarded) {
-    return new CheckResult(R.Exhausted, Option.<List<Arg<?>>>none(), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Exhausted, Option.none(), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -117,7 +117,7 @@ public final class CheckResult {
    * @return A result that generating values to check the property threw an exception.
    */
   public static CheckResult genException(final Throwable ex, final int succeeded, final int discarded) {
-    return new CheckResult(R.GenException, Option.<List<Arg<?>>>none(), some(ex), succeeded, discarded);
+    return new CheckResult(R.GenException, Option.none(), some(ex), succeeded, discarded);
   }
 
   /**

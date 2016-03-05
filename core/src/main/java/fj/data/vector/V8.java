@@ -30,36 +30,36 @@ public final class V8<A> implements Iterable<A> {
    * @return A new vector-8.
    */
   public static <A> V8<A> p(final P8<A, A, A, A, A, A, A, A> p) {
-    return new V8<A>(P.lazy(p::_1),
-    V7.p(new P7<A, A, A, A, A, A, A>() {
-      public A _1() {
-        return p._2();
-      }
+    return new V8<>(P.lazy(p::_1),
+        V7.p(new P7<A, A, A, A, A, A, A>() {
+          public A _1() {
+            return p._2();
+          }
 
-      public A _2() {
-        return p._3();
-      }
+          public A _2() {
+            return p._3();
+          }
 
-      public A _3() {
-        return p._4();
-      }
+          public A _3() {
+            return p._4();
+          }
 
-      public A _4() {
-        return p._5();
-      }
+          public A _4() {
+            return p._5();
+          }
 
-      public A _5() {
-        return p._6();
-      }
+          public A _5() {
+            return p._6();
+          }
 
-      public A _6() {
-        return p._7();
-      }
+          public A _6() {
+            return p._7();
+          }
 
-      public A _7() {
-        return p._8();
-      }
-    }));
+          public A _7() {
+            return p._8();
+          }
+        }));
   }
 
   /**
@@ -70,7 +70,7 @@ public final class V8<A> implements Iterable<A> {
    * @return The new vector.
    */
   public static <A> V8<A> cons(final P1<A> head, final V7<A> tail) {
-    return new V8<A>(head, tail);
+    return new V8<>(head, tail);
   }
 
   /**
@@ -248,7 +248,7 @@ public final class V8<A> implements Iterable<A> {
    * @return A new vector after the given function has been applied to each element.
    */
   public <B> V8<B> map(final F<A, B> f) {
-    return new V8<B>(head.map(f), tail.map(f));
+    return new V8<>(head.map(f), tail.map(f));
   }
 
   /**
@@ -258,7 +258,7 @@ public final class V8<A> implements Iterable<A> {
    * @return A new vector after zipping the given vector of functions over this vector.
    */
   public <B> V8<B> apply(final V8<F<A, B>> vf) {
-    return new V8<B>(head.<B>apply(vf.head()), tail.apply(vf.tail()));
+    return new V8<>(head.apply(vf.head()), tail.apply(vf.tail()));
   }
 
   /**

@@ -38,7 +38,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A nullary tree with the root element in it.
    */
   public static <A> Tree<A> leaf(final A root) {
-    return node(root, Stream.<Tree<A>>nil());
+    return node(root, Stream.nil());
   }
 
   /**
@@ -49,7 +49,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A newly sprouted tree.
    */
   public static <A> Tree<A> node(final A root, final P1<Stream<Tree<A>>> forest) {
-    return new Tree<A>(root, forest);
+    return new Tree<>(root, forest);
   }
 
   /**
@@ -60,7 +60,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A newly sprouted tree.
    */
   public static <A> Tree<A> node(final A root, final Stream<Tree<A>> forest) {
-    return new Tree<A>(root, P.p(forest));
+    return new Tree<>(root, P.p(forest));
   }
 
   /**
@@ -130,7 +130,7 @@ public final class Tree<A> implements Iterable<A> {
         return cons(t.root(), t.subForest().map(Stream.<Tree<A>, Stream<A>>foldRight().f(F2Functions.curry(this)).f(xs._1())));
       }
     };
-    return squish.f(this, P.p(Stream.<A>nil()));
+    return squish.f(this, P.p(Stream.nil()));
   }
 
   /**
@@ -152,9 +152,9 @@ public final class Tree<A> implements Iterable<A> {
    */
   public Stream<Stream<A>> levels() {
     final F<Stream<Tree<A>>, Stream<Tree<A>>> flatSubForests =
-        Stream.<Tree<A>, Tree<A>>bind_().f(compose(P1.<Stream<Tree<A>>>__1(), Tree.<A>subForest_()));
-    final F<Stream<Tree<A>>, Stream<A>> roots = Stream.<Tree<A>, A>map_().f(Tree.<A>root_());
-    return iterateWhile(flatSubForests, Stream.<Tree<A>>isNotEmpty_(), single(this)).map(roots);
+        Stream.<Tree<A>, Tree<A>>bind_().f(compose(P1.__1(), Tree.subForest_()));
+    final F<Stream<Tree<A>>, Stream<A>> roots = Stream.<Tree<A>, A>map_().f(Tree.root_());
+    return iterateWhile(flatSubForests, Stream.isNotEmpty_(), single(this)).map(roots);
   }
 
   /**
@@ -245,7 +245,7 @@ public final class Tree<A> implements Iterable<A> {
   }
 
   private static <A> Stream<String> drawSubTrees(final Show<A> s, final Stream<Tree<A>> ts) {
-    return ts.isEmpty() ? Stream.<String>nil()
+    return ts.isEmpty() ? Stream.nil()
                         : ts.tail()._1().isEmpty() ? shift("`- ", "   ", ts.head().drawTree(s)).cons("|")
                                                    : shift("+- ", "|  ", ts.head().drawTree(s))
                                                        .append(drawSubTrees(s, ts.tail()._1()));
@@ -261,7 +261,7 @@ public final class Tree<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(Tree.class, this, other, () -> Equal.treeEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(Tree.class, this, other, () -> Equal.treeEqual(Equal.anyEqual()));
   }
 
   @Override
@@ -328,7 +328,7 @@ public final class Tree<A> implements Iterable<A> {
   public static <A, B> Tree<B> bottomUp(Tree<A> t, final F<P2<A, Stream<B>>, B> f) {
     final F<Tree<A>, Tree<B>> recursiveCall = a -> bottomUp(a, f);
     final Stream<Tree<B>> tbs = t.subForest()._1().map(recursiveCall);
-    return node(f.f(P.p(t.root(), tbs.map(Tree.<B> getRoot()))), tbs);
+    return node(f.f(P.p(t.root(), tbs.map(Tree.getRoot()))), tbs);
    }
  
    /**

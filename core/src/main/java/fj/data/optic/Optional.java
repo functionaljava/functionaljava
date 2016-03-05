@@ -180,7 +180,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
       @Override
       public Either<S, A> getOrModify(final S s) {
-        return getOption.f(s).option(Either.left(s), Either.<S, A> right_());
+        return getOption.f(s).option(Either.left(s), Either.right_());
       }
 
       @Override
@@ -213,7 +213,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
       public F<S, IO<S>> modifyIOF(final F<A, IO<A>> f) {
         return s -> getOption.f(s).option(
             IOFunctions.unit(s),
-            a -> IOFunctions.<A, S> map(f.f(a), b -> set.f(b).f(s))
+            a -> IOFunctions.map(f.f(a), b -> set.f(b).f(s))
             );
       }
 

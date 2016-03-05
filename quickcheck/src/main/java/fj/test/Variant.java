@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @version %build.number%
  */
 public final class Variant {
-  private static final HashMap<LongGen, Gen<?>> variantMemo = new HashMap<LongGen, Gen<?>>();
+  private static final HashMap<LongGen, Gen<?>> variantMemo = new HashMap<>();
 
   private static final class LongGen {
     private final long n;

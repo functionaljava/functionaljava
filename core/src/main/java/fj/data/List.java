@@ -167,7 +167,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The optional head of the list.
    */
   public Option<A> headOption() {
-    return isEmpty() ? Option.<A>none() : some(head());
+    return isEmpty() ? Option.none() : some(head());
   }
 
   /**
@@ -178,7 +178,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return An either projection of this list.
    */
   public final <X> Either<X, A> toEither(final F0<X> x) {
-    return isEmpty() ? Either.<X, A>left(x.f()) : Either.<X, A>right(head());
+    return isEmpty() ? Either.left(x.f()) : Either.right(head());
   }
 
   /**
@@ -258,7 +258,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list with the given element at the head.
    */
   public final List<A> cons(final A a) {
-    return new Cons<A>(a, this);
+    return new Cons<>(a, this);
   }
 
   /**
@@ -269,7 +269,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list with the given element at the head.
    */
   public final List<A> conss(final A a) {
-    return new Cons<A>(a, this);
+    return new Cons<>(a, this);
   }
 
   /**
@@ -412,7 +412,7 @@ public abstract class List<A> implements Iterable<A> {
       else
         return p(b.toList(), xs);
     }
-    return p(b.toList(), List.<A>nil());
+    return p(b.toList(), List.nil());
   }
 
   /**
@@ -614,7 +614,7 @@ public abstract class List<A> implements Iterable<A> {
     public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
         return foldRight(
                 (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
-                some(List.<B>nil())
+                some(List.nil())
         );
     }
 
@@ -627,67 +627,67 @@ public abstract class List<A> implements Iterable<A> {
     public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
         return foldRight(
                 (a, acc) -> f.f(a).right().bind(e -> acc.right().map(es -> es.cons(e))),
-                Either.<E, List<B>>right(List.<B>nil())
+                Either.right(List.nil())
         );
     }
 
     public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
         return foldRight(
                 (a, acc) -> f.f(a).bind(s -> acc.map(ss -> ss.cons(s))),
-                Stream.<List<B>>nil()
+                Stream.nil()
         );
     }
 
     public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
         return foldRight(
                 (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-                p(List.<B>nil())
+                p(List.nil())
         );
     }
 
     public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
         return this.foldRight(
                 (a, acc) -> IOFunctions.bind(f.f(a), b -> IOFunctions.map(acc, bs -> bs.cons(b))),
-                IOFunctions.unit(List.<B>nil())
+                IOFunctions.unit(List.nil())
         );
     }
 
   public <C, B> F<C, List<B>> traverseF(F<A, F<C, B>> f) {
     return this.foldRight(
         (a, acc) -> Function.bind(acc,
-            (bs) -> Function.<C, B, List<B>> compose(bs::cons, f.f(a))),
-        constant(List.<B> nil())
+            (bs) -> Function.compose(bs::cons, f.f(a))),
+        constant(List.nil())
         );
   }
 
   public <B> Trampoline<List<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-        Trampoline.pure(List.<B> nil()));
+        Trampoline.pure(List.nil()));
   }
 
   public <B> Promise<List<B>> traversePromise(final F<A, Promise<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.fmap(bs -> bs.cons(b))),
-        Promise.promise(Strategy.idStrategy(), p(List.<B> nil())));
+        Promise.promise(Strategy.idStrategy(), p(List.nil())));
   }
 
   public <B> List<List<B>> traverseList(final F<A, List<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-        single(List.<B> nil()));
+        single(List.nil()));
   }
 
   public <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-        Validation.success(List.<B> nil()));
+        Validation.success(List.nil()));
   }
 
   public <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
     return foldRight(
         (a, acc) -> acc.apply(f.f(a).<F<List<B>, List<B>>> map(e -> es -> es.cons(e))),
-        v(List.<B> nil(), List.<B> nil()));
+        v(List.nil(), List.nil()));
   }
 
     /**
@@ -800,7 +800,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that is the reverse of this one.
    */
   public final List<A> reverse() {
-    return foldLeft(as -> a -> cons(a, as), List.<A>nil());
+    return foldLeft(as -> a -> cons(a, as), List.nil());
   }
 
   /**
@@ -865,7 +865,7 @@ public abstract class List<A> implements Iterable<A> {
    */
   public final P2<List<A>, List<A>> splitAt(final int i) {
     int c = 0;
-    List<A> first = List.<A>nil();
+    List<A> first = List.nil();
     List<A> second = nil();
     for (List<A> xs = this; xs.isNotEmpty(); xs = xs.tail()) {
       final A h = xs.head();
@@ -891,7 +891,7 @@ public abstract class List<A> implements Iterable<A> {
       throw error("Can't create list partitions shorter than 1 element long.");
     if (isEmpty())
       throw error("Partition on empty list.");
-    return unfold(as -> as.isEmpty() ? Option.<P2<List<A>, List<A>>>none() : some(as.splitAt(n)), this);
+    return unfold(as -> as.isEmpty() ? Option.none() : some(as.splitAt(n)), this);
   }
 
   /**
@@ -916,7 +916,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The list of initial segments of this list, shortest first.
    */
   public final List<List<A>> inits() {
-    List<List<A>> s = single(List.<A>nil());
+    List<List<A>> s = single(List.nil());
     if (isNotEmpty())
       s = s.append(tail().inits().map(List.<A>cons().f(head())));
     return s;
@@ -928,7 +928,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The list of final segments of this list, longest first.
    */
   public final List<List<A>> tails() {
-    return isEmpty() ? single(List.<A>nil()) : cons(this, tail().tails());
+    return isEmpty() ? single(List.nil()) : cons(this, tail().tails());
   }
 
   /**
@@ -1133,7 +1133,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list without duplicates according to object equality.
    */
   public final List<A> nub() {
-    return nub(Equal.<A>anyEqual());
+    return nub(Equal.anyEqual());
   }
 
   /**
@@ -1154,7 +1154,7 @@ public abstract class List<A> implements Iterable<A> {
    */
   @SuppressWarnings("unchecked")
   public final List<A> nub(final Ord<A> o) {
-    return sort(o).group(o.equal()).map(List.<A>head_());
+    return sort(o).group(o.equal()).map(List.head_());
   }
 
 
@@ -1227,7 +1227,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of values in the Trampoline monad.
    */
   public final <B> Trampoline<List<B>> mapMTrampoline(final F<A, Trampoline<B>> f) {
-    return foldRight((a, bs) -> f.f(a).bind(b -> bs.map(bbs -> bbs.cons(b))), Trampoline.<List<B>>pure(List.<B>nil()));
+    return foldRight((a, bs) -> f.f(a).bind(b -> bs.map(bbs -> bbs.cons(b))), Trampoline.pure(List.nil()));
   }
 
   /**
@@ -1296,7 +1296,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The most common element in this list.
    */
   public final A mode(final Ord<A> o) {
-    return sort(o).group(o.equal()).maximum(intOrd.contramap(List.<A>length_())).head();
+    return sort(o).group(o.equal()).maximum(intOrd.contramap(List.length_())).head();
   }
 
   /**
@@ -1350,7 +1350,7 @@ public abstract class List<A> implements Iterable<A> {
       final F<A, B> keyFunction,
       final F<A, C> valueFunction,
       final Ord<B> keyOrd) {
-    return this.<B, C, List<C>>groupBy(keyFunction, valueFunction, List.<C>nil(), List::cons, keyOrd);
+    return this.groupBy(keyFunction, valueFunction, List.nil(), List::cons, keyOrd);
   }
 
   /**
@@ -1398,7 +1398,7 @@ public abstract class List<A> implements Iterable<A> {
           return map.set(key, map.get(key)
               .map(existing -> groupingAcc.f(value, existing))
               .orSome(groupingAcc.f(value, groupingIdentity)));
-        }, TreeMap.<B, D>empty(keyOrd)
+        }, TreeMap.empty(keyOrd)
     );
   }
 
@@ -1470,7 +1470,7 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   public final java.util.List<A> toJavaList() {
-    return new java.util.LinkedList<A>(toCollection());
+    return new java.util.LinkedList<>(toCollection());
   }
 
   /**
@@ -1511,7 +1511,7 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   private static final class Nil<A> extends List<A> {
-    public static final Nil<Object> INSTANCE = new Nil<Object>();
+    public static final Nil<Object> INSTANCE = new Nil<>();
 
     public A head() {
       throw error("head on empty list");
@@ -1638,7 +1638,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The list with the given element prepended.
    */
   public static <A> List<A> cons(final A head, final List<A> tail) {
-    return new Cons<A>(head, tail);
+    return new Cons<>(head, tail);
   }
 
   /**
@@ -1798,7 +1798,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list of one element containing the given value.
    */
   public static <A> List<A> single(final A a) {
-    return cons(a, List.<A>nil());
+    return cons(a, List.nil());
   }
 
   /**
@@ -1826,7 +1826,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return An associated value with the given key in the list of pairs.
    */
   public static <A, B> Option<B> lookup(final Equal<A> e, final List<P2<A, B>> x, final A a) {
-    return x.find(p -> e.eq(p._1(), a)).map(P2.<A, B>__2());
+    return x.find(p -> e.eq(p._1(), a)).map(P2.__2());
   }
 
   /**
@@ -1865,8 +1865,8 @@ public abstract class List<A> implements Iterable<A> {
    *         and returns a list of the results.
    */
   public static <A, B> F<B, List<A>> sequence_(final List<F<B, A>> fs) {
-    return fs.foldRight(Function.<A, List<A>, List<A>, B>lift(List.<A>cons()), Function
-        .<B, List<A>>constant(List.<A>nil()));
+    return fs.foldRight(Function.lift(List.cons()), Function
+        .constant(List.nil()));
   }
 
   /**
@@ -1936,7 +1936,7 @@ public abstract class List<A> implements Iterable<A> {
       if (exported)
         copy();
 
-      final Cons<A> t = new Cons<A>(a, List.<A>nil());
+      final Cons<A> t = new Cons<>(a, List.nil());
 
       if (tail == null)
         start = t;
@@ -2009,7 +2009,7 @@ public abstract class List<A> implements Iterable<A> {
      * @return An empty buffer.
      */
     public static <A> Buffer<A> empty() {
-      return new Buffer<A>();
+      return new Buffer<>();
     }
 
     /**
@@ -2019,7 +2019,7 @@ public abstract class List<A> implements Iterable<A> {
      * @return A buffer from the given list.
      */
     public static <A> Buffer<A> fromList(final List<A> as) {
-      final Buffer<A> b = new Buffer<A>();
+      final Buffer<A> b = new Buffer<>();
 
       for (List<A> xs = as; xs.isNotEmpty(); xs = xs.tail())
         b.snoc(xs.head());
@@ -2067,7 +2067,7 @@ public abstract class List<A> implements Iterable<A> {
      * @return true if this list is equal to the provided argument
      */
     @Override public boolean equals( final Object obj ) {
-        return Equal.equals0(List.class, this, obj, () -> Equal.listEqual(Equal.<A>anyEqual()));
+        return Equal.equals0(List.class, this, obj, () -> Equal.listEqual(Equal.anyEqual()));
     }
 
     /**

@@ -75,7 +75,7 @@ public class StateDemo_VendingMachine {
 	}
 
 	static State<VendingMachine, VendingMachine> simulate(List<Input> list) {
-		return list.foldLeft((s, i) -> s.map(m -> m.next(i)), State.<VendingMachine>init());
+		return list.foldLeft((s, i) -> s.map(m -> m.next(i)), State.init());
 	}
 
 	static void test() {

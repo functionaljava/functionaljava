@@ -403,7 +403,7 @@ public abstract class POptional<S, T, A, B> {
       public F<S, IO<T>> modifyIOF(final F<A, IO<B>> f) {
         return s -> getOrModify.f(s).either(
             IOFunctions::unit,
-            t -> IOFunctions.<B, T> map(f.f(t), b -> set.f(b).f(s))
+            t -> IOFunctions.map(f.f(t), b -> set.f(b).f(s))
             );
       }
 

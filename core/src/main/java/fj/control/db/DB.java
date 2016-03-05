@@ -103,6 +103,6 @@ public abstract class DB<A> {
    * @return A new database action equivalent to the result of the given action.
    */
   public static <A> DB<A> join(final DB<DB<A>> a) {
-    return a.bind(Function.<DB<A>>identity());
+    return a.bind(Function.identity());
   }
 }

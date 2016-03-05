@@ -682,6 +682,6 @@ public abstract class F1W<A, B> implements F<A, B> {
      * Lifts the function into the fully featured function wrapper
      */
     public static <A, B> F1W<A, B> lift(final F<A, B> f) {
-        return new F1WFunc<A, B>(f);
+        return new F1WFunc<>(f);
     }
 }

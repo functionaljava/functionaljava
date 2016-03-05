@@ -31,7 +31,7 @@ public final class Node2<V, A> extends Node<V, A> {
   }
 
   public Digit<V, A> toDigit() {
-    return new Two<V, A>(measured(), as);
+    return new Two<>(measured(), as);
   }
 
   P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc) {

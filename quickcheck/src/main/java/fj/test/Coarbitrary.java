@@ -574,7 +574,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<EnumMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final EnumMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }
@@ -589,7 +589,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<EnumSet<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final EnumSet<A> as, final Gen<B> g) {
-        return coarbHashSet(c).coarbitrary(new HashSet<A>(as), g);
+        return coarbHashSet(c).coarbitrary(new HashSet<>(as), g);
       }
     };
   }
@@ -614,7 +614,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<HashMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final HashMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }
@@ -668,7 +668,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<IdentityHashMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final IdentityHashMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }
@@ -685,7 +685,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<LinkedHashMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final LinkedHashMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }
@@ -700,7 +700,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<LinkedHashSet<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final LinkedHashSet<A> as, final Gen<B> g) {
-        return coarbHashSet(c).coarbitrary(new HashSet<A>(as), g);
+        return coarbHashSet(c).coarbitrary(new HashSet<>(as), g);
       }
     };
   }
@@ -741,7 +741,7 @@ public abstract class Coarbitrary<A> {
   public static final Coarbitrary<Properties> coarbProperties = new Coarbitrary<Properties>() {
     @SuppressWarnings("UseOfObsoleteCollectionType")
     public <B> Gen<B> coarbitrary(final Properties p, final Gen<B> g) {
-      final Hashtable<String, String> t = new Hashtable<String, String>();
+      final Hashtable<String, String> t = new Hashtable<>();
 
       for (final Object s : p.keySet()) {
         t.put((String) s, p.getProperty((String) s));
@@ -777,7 +777,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<TreeMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final TreeMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }
@@ -792,7 +792,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<TreeSet<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final TreeSet<A> as, final Gen<B> g) {
-        return coarbHashSet(c).coarbitrary(new HashSet<A>(as), g);
+        return coarbHashSet(c).coarbitrary(new HashSet<>(as), g);
       }
     };
   }
@@ -824,7 +824,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<WeakHashMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final WeakHashMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }
@@ -860,7 +860,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<ConcurrentHashMap<K, V>>() {
       @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final ConcurrentHashMap<K, V> m, final Gen<B> g) {
-        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
+        return coarbHashtable(ck, cv).coarbitrary(new Hashtable<>(m), g);
       }
     };
   }

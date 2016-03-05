@@ -94,8 +94,8 @@ public final class IOFunctions {
      */
     public static <A> IO<IterV<String, A>> enumFileLines(final File f, final Option<Charset> encoding, final IterV<String, A> i) {
         return bracket(bufferedReader(f, encoding)
-                , Function.<BufferedReader, IO<Unit>>vary(closeReader)
-                , partialApply2(IOFunctions.<A>lineReader(), i));
+                , Function.vary(closeReader)
+                , partialApply2(IOFunctions.lineReader(), i));
     }
 
     /**
@@ -107,8 +107,8 @@ public final class IOFunctions {
      */
     public static <A> IO<IterV<char[], A>> enumFileCharChunks(final File f, final Option<Charset> encoding, final IterV<char[], A> i) {
         return bracket(fileReader(f, encoding)
-                , Function.<Reader, IO<Unit>>vary(closeReader)
-                , partialApply2(IOFunctions.<A>charChunkReader(), i));
+                , Function.vary(closeReader)
+                , partialApply2(IOFunctions.charChunkReader(), i));
     }
 
     /**
@@ -120,8 +120,8 @@ public final class IOFunctions {
      */
     public static <A> IO<IterV<Character, A>> enumFileChars(final File f, final Option<Charset> encoding, final IterV<Character, A> i) {
         return bracket(fileReader(f, encoding)
-                , Function.<Reader, IO<Unit>>vary(closeReader)
-                , partialApply2(IOFunctions.<A>charChunkReader2(), i));
+                , Function.vary(closeReader)
+                , partialApply2(IOFunctions.charChunkReader2(), i));
     }
 
     public static IO<BufferedReader> bufferedReader(final File f, final Option<Charset> encoding) {
@@ -194,8 +194,8 @@ public final class IOFunctions {
                         if (s == null) {
                             return i;
                         }
-                        final Input<String> input = Input.<String>el(s);
-                        final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.<Input<String>, IterV<String, A>>apply(input));
+                        final Input<String> input = Input.el(s);
+                        final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.apply(input));
                         i = i.fold(done, cont)._1();
                     }
                     return i;
@@ -238,9 +238,9 @@ public final class IOFunctions {
                         if (numRead < buffer.length) {
                             buffer = Arrays.copyOfRange(buffer, 0, numRead);
                         }
-                        final Input<char[]> input = Input.<char[]>el(buffer);
+                        final Input<char[]> input = Input.el(buffer);
                         final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
-                                F1Functions.lazy(Function.<Input<char[]>, IterV<char[], A>>apply(input));
+                                F1Functions.lazy(Function.apply(input));
                         i = i.fold(done, cont)._1();
                     }
                     return i;
@@ -286,7 +286,7 @@ public final class IOFunctions {
                         for (int c = 0; c < buffer.length; c++) {
                             final Input<Character> input = Input.el(buffer[c]);
                             final F<F<Input<Character>, IterV<Character, A>>, IterV<Character, A>> cont =
-                                    Function.<Input<Character>, IterV<Character, A>>apply(input);
+                                    Function.apply(input);
                             i = i.fold(done, cont);
                         }
                     }
@@ -326,14 +326,14 @@ public final class IOFunctions {
     public static <A> IO<List<A>> sequence(List<IO<A>> list) {
         F2<IO<A>, IO<List<A>>, IO<List<A>>> f2 = (io, ioList) ->
                 bind(ioList, (xs) -> map(io, x -> List.cons(x, xs)));
-        return list.foldRight(f2, unit(List.<A>nil()));
+        return list.foldRight(f2, unit(List.nil()));
     }
 
 
     public static <A> IO<Stream<A>> sequence(Stream<IO<A>> stream) {
         F2<IO<Stream<A>>, IO<A>, IO<Stream<A>>> f2 = (ioList, io) ->
                 bind(ioList, (xs) -> map(io, x -> Stream.cons(x, () -> xs)));
-        return stream.foldLeft(f2, unit(Stream.<A>nil()));
+        return stream.foldLeft(f2, unit(Stream.nil()));
     }
 
 
@@ -380,7 +380,7 @@ public final class IOFunctions {
         return () -> {
             boolean loop = true;
             Stream<IO<A>> input = stream;
-            Stream<A> result = Stream.<A>nil();
+            Stream<A> result = Stream.nil();
             while (loop) {
                 if (input.isEmpty()) {
                     loop = false;
@@ -453,8 +453,8 @@ public final class IOFunctions {
     }
 
     public static IO<LazyString> getContents() {
-        Stream<IO<Integer>> s = Stream.<IO<Integer>>repeat(() -> (int) stdinBufferedReader.read());
-        return map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.<Character>map(i -> (char) i.intValue())));
+        Stream<IO<Integer>> s = Stream.repeat(() -> stdinBufferedReader.read());
+        return map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.map(i -> (char) i.intValue())));
     }
 
     public static IO<Unit> interact(F<LazyString, LazyString> f) {

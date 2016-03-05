@@ -40,7 +40,7 @@ public final class Node3<V, A> extends Node<V, A> {
     }
 
     public Digit<V, A> toDigit() {
-    return new Three<V, A>(measured(), as);
+    return new Three<>(measured(), as);
   }
 
   P3<Option<Digit<V, A>>, A, Option<Digit<V, A>>> split1(final F<V, Boolean> predicate, final V acc) {

@@ -30,20 +30,20 @@ public final class V4<A> implements Iterable<A> {
    * @return A new vector-4.
    */
   public static <A> V4<A> p(final P4<A, A, A, A> p) {
-    return new V4<A>(P.lazy(p::_1),
-    V3.p(new P3<A, A, A>() {
-      public A _1() {
-        return p._2();
-      }
+    return new V4<>(P.lazy(p::_1),
+        V3.p(new P3<A, A, A>() {
+          public A _1() {
+            return p._2();
+          }
 
-      public A _2() {
-        return p._3();
-      }
+          public A _2() {
+            return p._3();
+          }
 
-      public A _3() {
-        return p._4();
-      }
-    }));
+          public A _3() {
+            return p._4();
+          }
+        }));
   }
 
   /**
@@ -54,7 +54,7 @@ public final class V4<A> implements Iterable<A> {
    * @return The new vector.
    */
   public static <A> V4<A> cons(final P1<A> head, final V3<A> tail) {
-    return new V4<A>(head, tail);
+    return new V4<>(head, tail);
   }
 
   /**
@@ -180,7 +180,7 @@ public final class V4<A> implements Iterable<A> {
    * @return A new vector after the given function has been applied to each element.
    */
   public <B> V4<B> map(final F<A, B> f) {
-    return new V4<B>(head.map(f), tail.map(f));
+    return new V4<>(head.map(f), tail.map(f));
   }
 
   /**
@@ -190,7 +190,7 @@ public final class V4<A> implements Iterable<A> {
    * @return A new vector after zipping the given vector of functions over this vector.
    */
   public <B> V4<B> apply(final V4<F<A, B>> vf) {
-    return new V4<B>(head.<B>apply(vf.head()), tail.apply(vf.tail()));
+    return new V4<>(head.apply(vf.head()), tail.apply(vf.tail()));
   }
 
   /**

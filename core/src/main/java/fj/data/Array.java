@@ -88,7 +88,7 @@ public final class Array<A> implements Iterable<A> {
   }
 
   public ImmutableProjection<A> immutable() {
-    return new ImmutableProjection<A>(this);
+    return new ImmutableProjection<>(this);
   }
 
   /**
@@ -148,7 +148,7 @@ public final class Array<A> implements Iterable<A> {
    */
   @SuppressWarnings("unchecked")
   public Option<A> toOption() {
-    return a.length == 0 ? Option.<A>none() : some((A) a[0]);
+    return a.length == 0 ? Option.none() : some((A) a[0]);
   }
 
   /**
@@ -160,7 +160,7 @@ public final class Array<A> implements Iterable<A> {
    */
   @SuppressWarnings("unchecked")
   public <X> Either<X, A> toEither(final F0<X> x) {
-    return a.length == 0 ? Either.<X, A> left(x.f()) : Either.<X, A> right((A) a[0]);
+    return a.length == 0 ? Either.left(x.f()) : Either.right((A) a[0]);
   }
 
   /**
@@ -187,7 +187,7 @@ public final class Array<A> implements Iterable<A> {
   @SuppressWarnings("unchecked")
   public Stream<A> toStream() {
     return Stream.unfold(o ->
-        a.length > o ? some(p((A) a[o], o + 1)) : Option.<P2<A, Integer>>none(), 0
+        a.length > o ? some(p((A) a[o], o + 1)) : Option.none(), 0
     );
   }
 
@@ -210,7 +210,7 @@ public final class Array<A> implements Iterable<A> {
       bs[i] = f.f((A) a[i]);
     }
 
-    return new Array<B>(bs);
+    return new Array<>(bs);
   }
 
   /**
@@ -333,7 +333,7 @@ public final class Array<A> implements Iterable<A> {
       bs[i] = x;
     }
     
-    return new Array<B>(bs);
+    return new Array<>(bs);
   }
 
   /**
@@ -368,7 +368,7 @@ public final class Array<A> implements Iterable<A> {
       bs[i] = x;
     }
 
-    return new Array<A>(bs);
+    return new Array<>(bs);
   }
 
   /**
@@ -402,7 +402,7 @@ public final class Array<A> implements Iterable<A> {
       bs[i] = x;
     }
 
-    return new Array<B>(bs);
+    return new Array<>(bs);
   }
 
   /**
@@ -437,7 +437,7 @@ public final class Array<A> implements Iterable<A> {
       bs[i] = x;
     }
 
-    return new Array<A>(bs);
+    return new Array<>(bs);
   }
 
   /**
@@ -482,7 +482,7 @@ public final class Array<A> implements Iterable<A> {
       }
     });
 
-    return new Array<B>(bs);
+    return new Array<>(bs);
   }
 
   /**
@@ -542,7 +542,7 @@ public final class Array<A> implements Iterable<A> {
       x[a.length - 1 - i] = a[i];
     }
 
-    return new Array<A>(x);
+    return new Array<>(x);
   }
 
   /**
@@ -557,7 +557,7 @@ public final class Array<A> implements Iterable<A> {
     arraycopy(a, 0, x, 0, a.length);
     arraycopy(aas.a, 0, x, a.length, aas.a.length);
 
-    return new Array<A>(x);
+    return new Array<>(x);
   }
 
   /**
@@ -566,7 +566,7 @@ public final class Array<A> implements Iterable<A> {
    * @return An empty array.
    */
   public static <A> Array<A> empty() {
-    return new Array<A>(new Object[0]);
+    return new Array<>(new Object[0]);
   }
 
   /**
@@ -587,7 +587,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A wrapped array.
    */
   static <A> Array<A> mkArray(final Object[] a) {
-    return new Array<A>(a);
+    return new Array<>(a);
   }
 
   /**
@@ -597,7 +597,7 @@ public final class Array<A> implements Iterable<A> {
    * @return An array with the given single element.
    */
   public static <A> Array<A> single(final A a) {
-    return new Array<A>(new Object[]{a});
+    return new Array<>(new Object[]{a});
   }
 
   /**
@@ -674,7 +674,7 @@ public final class Array<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object o) {
-    return Equal.equals0(Array.class, this, o, () -> Equal.arrayEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(Array.class, this, o, () -> Equal.arrayEqual(Equal.anyEqual()));
   }
 
   /**
@@ -707,7 +707,7 @@ public final class Array<A> implements Iterable<A> {
     if (from >= to)
       return empty();
     else {
-      final Array<Integer> a = new Array<Integer>(new Integer[to - from]);
+      final Array<Integer> a = new Array<>(new Integer[to - from]);
 
       for (int i = from; i < to; i++)
         a.set(i - from, i);
@@ -727,7 +727,7 @@ public final class Array<A> implements Iterable<A> {
    */
   public <B, C> Array<C> zipWith(final Array<B> bs, final F<A, F<B, C>> f) {
     final int len = min(a.length, bs.length());
-    final Array<C> x = new Array<C>(new Object[len]);
+    final Array<C> x = new Array<>(new Object[len]);
 
     for (int i = 0; i < len; i++) {
       x.set(i, f.f(get(i)).f(bs.get(i)));
@@ -812,7 +812,7 @@ public final class Array<A> implements Iterable<A> {
    * Returns a standard java.util.List projection of this array.
    */
   java.util.List<A> toJavaList() {
-    return new ArrayList<A>(toCollection());
+    return new ArrayList<>(toCollection());
   }
 
   /**
@@ -840,7 +840,7 @@ public final class Array<A> implements Iterable<A> {
    */
   @SafeVarargs
   public static <A> Array<A> arrayArray(final A...as) {
-    return new Array<A>(as);
+    return new Array<>(as);
   }
 
   /**
@@ -852,8 +852,8 @@ public final class Array<A> implements Iterable<A> {
   @SuppressWarnings("unchecked")
   public static <A, B> P2<Array<A>, Array<B>> unzip(final Array<P2<A, B>> xs) {
     final int len = xs.length();
-    final Array<A> aa = new Array<A>(new Object[len]);
-    final Array<B> ab = new Array<B>(new Object[len]);
+    final Array<A> aa = new Array<>(new Object[len]);
+    final Array<B> ab = new Array<>(new Object[len]);
     for (int i = len - 1; i >= 0; i--) {
       final P2<A, B> p = xs.get(i);
       aa.set(i, p._1());

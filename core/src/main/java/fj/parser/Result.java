@@ -133,7 +133,7 @@ public final class Result<I, A> implements Iterable<A> {
    * @return A result with the given remainder of the parse input and parse value.
    */
   public static <A, I> Result<I, A> result(final I i, final A a) {
-    return new Result<I, A>(i, a);
+    return new Result<>(i, a);
   }
 
   /**

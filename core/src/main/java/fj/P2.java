@@ -28,7 +28,7 @@ public abstract class P2<A, B> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(P2.class, this, other, () -> Equal.p2Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
+    return Equal.equals0(P2.class, this, other, () -> Equal.p2Equal(Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
@@ -155,7 +155,7 @@ public abstract class P2<A, B> {
    */
   public final <C> Stream<C> sequenceW(final Stream<F<P2<A, B>, C>> fs) {
     return fs.isEmpty()
-           ? Stream.<C>nil()
+           ? Stream.nil()
            : Stream.cons(fs.head().f(this), () -> sequenceW(fs.tail()._1()));
   }
 

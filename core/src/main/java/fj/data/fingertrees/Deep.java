@@ -57,24 +57,24 @@ public final class Deep<V, A> extends FingerTree<V, A> {
   }
 
   @Override public <B> B foldRight(final F<A, F<B, B>> aff, final B z) {
-    return prefix.foldRight(aff, middle.foldRight(flip(Node.<V, A, B>foldRight_(aff)), suffix.foldRight(aff, z)));
+    return prefix.foldRight(aff, middle.foldRight(flip(Node.foldRight_(aff)), suffix.foldRight(aff, z)));
   }
 
   @Override public A reduceRight(final F<A, F<A, A>> aff) {
-    return prefix.foldRight(aff, middle.foldRight(flip(Node.<V, A, A>foldRight_(aff)), suffix.reduceRight(aff)));
+    return prefix.foldRight(aff, middle.foldRight(flip(Node.foldRight_(aff)), suffix.reduceRight(aff)));
   }
 
   @Override public <B> B foldLeft(final F<B, F<A, B>> bff, final B z) {
-    return suffix.foldLeft(bff, middle.foldLeft(Node.<V, A, B>foldLeft_(bff), prefix.foldLeft(bff, z)));
+    return suffix.foldLeft(bff, middle.foldLeft(Node.foldLeft_(bff), prefix.foldLeft(bff, z)));
   }
 
   @Override public A reduceLeft(final F<A, F<A, A>> aff) {
-    return suffix.foldLeft(aff, middle.foldLeft(Node.<V, A, A>foldLeft_(aff), prefix.reduceLeft(aff)));
+    return suffix.foldLeft(aff, middle.foldLeft(Node.foldLeft_(aff), prefix.reduceLeft(aff)));
   }
 
   @Override public <B> FingerTree<V, B> map(final F<A, B> abf, final Measured<V, B> m) {
-    return new Deep<V, B>(m, v, prefix.map(abf, m), middle.map(Node.<V, A, B>liftM(abf, m), m.nodeMeasured()),
-                          suffix.map(abf, m));
+    return new Deep<>(m, v, prefix.map(abf, m), middle.map(Node.liftM(abf, m), m.nodeMeasured()),
+        suffix.map(abf, m));
   }
 
   /**
@@ -281,9 +281,9 @@ public final class Deep<V, A> extends FingerTree<V, A> {
                                                           final Node<V, A> a, final FingerTree<V, Node<V, A>> ys) {
     return xs.match(empty -> ys.cons(a), single -> ys.cons(a).cons(single.value()), deep1 -> ys.match(empty -> xs.snoc(a), single -> xs.snoc(a).snoc(single.value()), deep2 -> {
       final Measured<V, Node<V, A>> nm = m.nodeMeasured();
-      return new Deep<V, Node<V, A>>(nm, m.sum(m.sum(deep1.v, nm.measure(a)), deep2.v), deep1.prefix,
-                                     addDigits1(nm, deep1.middle, deep1.suffix, a, deep2.prefix, deep2.middle),
-                                     deep2.suffix);
+      return new Deep<>(nm, m.sum(m.sum(deep1.v, nm.measure(a)), deep2.v), deep1.prefix,
+          addDigits1(nm, deep1.middle, deep1.suffix, a, deep2.prefix, deep2.middle),
+          deep2.suffix);
     }));
   }
 
@@ -336,11 +336,11 @@ public final class Deep<V, A> extends FingerTree<V, A> {
   private static <V, A> FingerTree<V, Node<V, A>> append2(final Measured<V, A> m, final FingerTree<V, Node<V, A>> t1,
                                                           final Node<V, A> n1, final Node<V, A> n2,
                                                           final FingerTree<V, Node<V, A>> t2) {
-    return t1.match(empty -> t2.cons(n2).cons(n1), single -> t2.cons(n2).cons(n1).cons(single.value()), deep -> t2.match(empty -> deep.snoc(n1).snoc(n2), single -> deep.snoc(n1).snoc(n2).snoc(single.value()), deep2 -> new Deep<V, Node<V, A>>(m.nodeMeasured(),
-                                   m.sum(m.sum(m.sum(deep.measure(), n1.measure()), n2.measure()),
-                                         deep2.measure()), deep.prefix,
-                                   addDigits2(m.nodeMeasured(), deep.middle, deep.suffix, n1, n2, deep2.prefix,
-                                              deep2.middle), deep2.suffix)));
+    return t1.match(empty -> t2.cons(n2).cons(n1), single -> t2.cons(n2).cons(n1).cons(single.value()), deep -> t2.match(empty -> deep.snoc(n1).snoc(n2), single -> deep.snoc(n1).snoc(n2).snoc(single.value()), deep2 -> new Deep<>(m.nodeMeasured(),
+        m.sum(m.sum(m.sum(deep.measure(), n1.measure()), n2.measure()),
+            deep2.measure()), deep.prefix,
+        addDigits2(m.nodeMeasured(), deep.middle, deep.suffix, n1, n2, deep2.prefix,
+            deep2.middle), deep2.suffix)));
   }
 
   private static <V, A> FingerTree<V, Node<V, Node<V, A>>> addDigits2(final Measured<V, Node<V, A>> m,
@@ -395,10 +395,10 @@ public final class Deep<V, A> extends FingerTree<V, A> {
                                                           final Node<V, A> n1, final Node<V, A> n2, final Node<V, A> n3,
                                                           final FingerTree<V, Node<V, A>> t2) {
     final Measured<V, Node<V, A>> nm = m.nodeMeasured();
-    return t1.match(empty -> t2.cons(n3).cons(n2).cons(n1), single -> t2.cons(n3).cons(n2).cons(n1).cons(single.value()), deep -> t2.match(empty -> deep.snoc(n1).snoc(n2).snoc(n3), single -> deep.snoc(n1).snoc(n2).snoc(n3).snoc(single.value()), deep2 -> new Deep<V, Node<V, A>>(nm, nm.monoid().sumLeft(
+    return t1.match(empty -> t2.cons(n3).cons(n2).cons(n1), single -> t2.cons(n3).cons(n2).cons(n1).cons(single.value()), deep -> t2.match(empty -> deep.snoc(n1).snoc(n2).snoc(n3), single -> deep.snoc(n1).snoc(n2).snoc(n3).snoc(single.value()), deep2 -> new Deep<>(nm, nm.monoid().sumLeft(
         list(deep.v, n1.measure(), n2.measure(), n3.measure(), deep2.v)), deep.prefix,
-                                   addDigits3(nm, deep.middle, deep.suffix, n1, n2, n3, deep2.prefix,
-                                              deep2.middle), deep2.suffix)));
+        addDigits3(nm, deep.middle, deep.suffix, n1, n2, n3, deep2.prefix,
+            deep2.middle), deep2.suffix)));
   }
 
   private static <V, A> FingerTree<V, Node<V, Node<V, A>>> addDigits3(final Measured<V, Node<V, A>> m,
@@ -462,10 +462,10 @@ public final class Deep<V, A> extends FingerTree<V, A> {
                                                           final Node<V, A> n4,
                                                           final FingerTree<V, Node<V, A>> t2) {
     final Measured<V, Node<V, A>> nm = m.nodeMeasured();
-    return t1.match(empty -> t2.cons(n4).cons(n3).cons(n2).cons(n1), single -> t2.cons(n4).cons(n3).cons(n2).cons(n1).cons(single.value()), deep -> t2.match(empty -> t1.snoc(n1).snoc(n2).snoc(n3).snoc(n4), single -> t1.snoc(n1).snoc(n2).snoc(n3).snoc(n4).snoc(single.value()), deep2 -> new Deep<V, Node<V, A>>(nm, m.monoid().sumLeft(
+    return t1.match(empty -> t2.cons(n4).cons(n3).cons(n2).cons(n1), single -> t2.cons(n4).cons(n3).cons(n2).cons(n1).cons(single.value()), deep -> t2.match(empty -> t1.snoc(n1).snoc(n2).snoc(n3).snoc(n4), single -> t1.snoc(n1).snoc(n2).snoc(n3).snoc(n4).snoc(single.value()), deep2 -> new Deep<>(nm, m.monoid().sumLeft(
         list(deep.v, n1.measure(), n2.measure(), n3.measure(), n4.measure(), deep2.v)), deep.prefix,
-                                   addDigits4(nm, deep.middle, deep.suffix, n1, n2, n3, n4, deep2.prefix,
-                                              deep2.middle), deep2.suffix)));
+        addDigits4(nm, deep.middle, deep.suffix, n1, n2, n3, n4, deep2.prefix,
+            deep2.middle), deep2.suffix)));
   }
 
   private static <V, A> FingerTree<V, Node<V, Node<V, A>>> addDigits4(final Measured<V, Node<V, A>> m,

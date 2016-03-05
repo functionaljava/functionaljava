@@ -40,7 +40,7 @@ Note that to test this second law requires the generation of arbitrary functions
 @SuppressWarnings("PackageVisibleField")
 @CheckParams(minSuccessful = 1000)
 public final class ListFunctorLaws {
-  final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.<String>identity()))));
+  final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.identity()))));
 
   final Property composition = property(arbF(coarbInteger, arbString), arbF(coarbLong, arbInteger), arbList(arbLong), (f, g, x) -> {
       final List<String> s1 = x.map(compose(f, g));

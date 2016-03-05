@@ -95,7 +95,7 @@ public final class Prism<S, A> extends PPrism<S, S, A, A> {
 
       @Override
       public Either<S, A> getOrModify(final S s) {
-        return getOption.f(s).option(Either.left(s), Either.<S, A> right_());
+        return getOption.f(s).option(Either.left(s), Either.right_());
       }
 
       @Override

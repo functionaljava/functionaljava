@@ -77,7 +77,7 @@ public abstract class FingerTree<V, A> {
   public abstract <B> FingerTree<V, B> map(final F<A, B> f, final Measured<V, B> m);
 
     public <B> FingerTree<V, A> filter(final F<A, Boolean> f) {
-        FingerTree<V, A> tree = new Empty<V, A>(m);
+        FingerTree<V, A> tree = new Empty<>(m);
         return foldLeft((acc, a) -> f.f(a) ? acc.snoc(a) : acc, tree);
     }
 
@@ -134,7 +134,7 @@ public abstract class FingerTree<V, A> {
    * @return A builder of trees and tree components that annotates them using the given Measured instance.
    */
   public static <V, A> MakeTree<V, A> mkTree(final Measured<V, A> m) {
-    return new MakeTree<V, A>(m);
+    return new MakeTree<>(m);
   }
 
   /**
@@ -161,7 +161,7 @@ public abstract class FingerTree<V, A> {
   public abstract A head();
 
   public Option<A> headOption() {
-      return isEmpty() ? Option.<A>none() : Option.some(head());
+      return isEmpty() ? Option.none() : Option.some(head());
   }
 
   /**

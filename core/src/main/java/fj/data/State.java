@@ -20,7 +20,7 @@ public final class State<S, A> {
 	}
 
 	public static <S, A> State<S, A> unit(F<S, P2<S, A>> f) {
-		return new State<S, A>(f);
+		return new State<>(f);
 	}
 
 	public static <S> State<S, S> units(F<S, S> f) {
@@ -102,7 +102,7 @@ public final class State<S, A> {
 	public static <S, A> State<S, List<A>> sequence(List<State<S, A>> list) {
 		return list.foldLeft((State<S, List<A>> acc, State<S, A> ma) ->
 			acc.flatMap((List<A> xs) -> ma.map(xs::snoc)
-		), constant(List.<A>nil()));
+		), constant(List.nil()));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public final class State<S, A> {
 	public static <S, A, B> State<S, List<B>> traverse(List<A> list, F<A, State<S, B>> f) {
 		return list.foldLeft((State<S, List<B>> acc, A a) ->
 			acc.flatMap(bs -> f.f(a).map(bs::snoc)
-		), constant(List.<B>nil()));
+		), constant(List.nil()));
 	}
 
 }

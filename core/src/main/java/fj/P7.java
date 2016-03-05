@@ -437,7 +437,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, A> __1() {
-    return P7<A, B, C, D, E, F$, G>::_1;
+    return P7::_1;
   }
 
   /**
@@ -446,7 +446,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, B> __2() {
-    return P7<A, B, C, D, E, F$, G>::_2;
+    return P7::_2;
   }
 
   /**
@@ -455,7 +455,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, C> __3() {
-    return P7<A, B, C, D, E, F$, G>::_3;
+    return P7::_3;
   }
 
   /**
@@ -464,7 +464,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the fourth element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, D> __4() {
-    return P7<A, B, C, D, E, F$, G>::_4;
+    return P7::_4;
   }
 
   /**
@@ -473,7 +473,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the fifth element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, E> __5() {
-    return P7<A, B, C, D, E, F$, G>::_5;
+    return P7::_5;
   }
 
   /**
@@ -482,7 +482,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the sixth element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, F$> __6() {
-    return P7<A, B, C, D, E, F$, G>::_6;
+    return P7::_6;
   }
 
   /**
@@ -491,7 +491,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the seventh element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, G> __7() {
-    return P7<A, B, C, D, E, F$, G>::_7;
+    return P7::_7;
   }
 
   @Override
@@ -502,7 +502,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P7.class, this, other,
-        () -> Equal.p7Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual(), Equal.<G>anyEqual()));
+        () -> Equal.p7Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override

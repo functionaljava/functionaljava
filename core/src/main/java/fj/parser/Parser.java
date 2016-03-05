@@ -210,7 +210,7 @@ public final class Parser<I, A, E> {
    * @return A new parser after function application.
    */
   public <B> Parser<I, B, E> apply(final Parser<I, F<A, B>, E> p) {
-    return p.bind((F<F<A, B>, Parser<I, B, E>>) this::map);
+    return p.bind(this::map);
   }
 
   /**
@@ -265,8 +265,8 @@ public final class Parser<I, A, E> {
    */
   public Parser<I, Unit, E> not(final F0<E> e) {
     return parser(i -> parse(i).isFail() ?
-        Validation.<E, Result<I, Unit>>success(result(i, unit())) :
-        Validation.<E, Result<I, Unit>>fail(e.f()));
+        Validation.success(result(i, unit())) :
+        Validation.fail(e.f()));
   }
 
   /**
@@ -285,7 +285,7 @@ public final class Parser<I, A, E> {
    * @return A parser that repeats application of this parser zero or many times.
    */
   public Parser<I, Stream<A>, E> repeat() {
-    return repeat1().or(() -> value(Stream.<A>nil()));
+    return repeat1().or(() -> value(Stream.nil()));
   }
 
   /**
@@ -345,7 +345,7 @@ public final class Parser<I, A, E> {
    */
   public static <I, A, E> Parser<I, List<A>, E> sequence(final List<Parser<I, A, E>> ps) {
     return ps.isEmpty() ?
-        Parser.<I, List<A>, E>value(List.<A>nil()) :
+        Parser.value(List.nil()) :
         ps.head().bind(a -> sequence(ps.tail()).map(cons_(a)));
   }
 
@@ -365,8 +365,8 @@ public final class Parser<I, A, E> {
      */
     public static <I, E> Parser<Stream<I>, I, E> element(final F0<E> e) {
       return parser(is -> is.isEmpty() ?
-          Validation.<E, Result<Stream<I>, I>>fail(e.f()) :
-          Validation.<E, Result<Stream<I>, I>>success(result(is.tail()._1(), is.head())));
+          Validation.fail(e.f()) :
+          Validation.success(result(is.tail()._1(), is.head())));
     }
 
     /**
@@ -390,8 +390,8 @@ public final class Parser<I, A, E> {
     public static <I, E> Parser<Stream<I>, I, E> satisfy(final F0<E> missing, final F<I, E> sat,
                                                          final F<I, Boolean> f) {
       return StreamParser.<I, E>element(missing).bind(x -> f.f(x) ?
-          Parser.<Stream<I>, I, E>value(x) :
-          Parser.<Stream<I>, I, E>fail(sat.f(x)));
+          Parser.value(x) :
+          Parser.fail(sat.f(x)));
     }
 
     /**
@@ -470,8 +470,8 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Stream<Character>, E> characters(final F0<E> missing, final int n) {
       return n <= 0 ?
-          Parser.<Stream<Character>, Stream<Character>, E>value(Stream.<Character>nil()) :
-          character(missing).bind(characters(missing, n - 1), Stream.<Character>cons_());
+          Parser.value(Stream.nil()) :
+          character(missing).bind(characters(missing, n - 1), Stream.cons_());
     }
 
     /**
@@ -497,8 +497,8 @@ public final class Parser<I, A, E> {
                                                                                  final F<Character, E> sat,
                                                                                  final Stream<Character> cs) {
       return cs.isEmpty() ?
-          Parser.<Stream<Character>, Stream<Character>, E>value(Stream.<Character>nil()) :
-          character(missing, sat, cs.head()).bind(characters(missing, sat, cs.tail()._1()), Stream.<Character>cons_());
+          Parser.value(Stream.nil()) :
+          character(missing, sat, cs.head()).bind(characters(missing, sat, cs.tail()._1()), Stream.cons_());
     }
 
     /**

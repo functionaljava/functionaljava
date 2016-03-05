@@ -126,7 +126,7 @@ public final class Callables {
    * @return A new Callable that is the join of the given Callable.
    */
   public static <A> Callable<A> join(final Callable<Callable<A>> a) {
-    return bind(a, Function.<Callable<A>>identity());
+    return bind(a, Function.identity());
   }
 
   /**
@@ -146,8 +146,7 @@ public final class Callables {
    * @return A single callable for the given List.
    */
   public static <A> Callable<List<A>> sequence(final List<Callable<A>> as) {
-    return as.foldRight(Callables.<A, List<A>,
-        List<A>>liftM2(List.<A>cons()), callable(List.<A>nil()));
+    return as.foldRight(Callables.liftM2(List.cons()), callable(List.nil()));
   }
 
   /**

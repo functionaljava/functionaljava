@@ -30,7 +30,7 @@ public final class $<A, B> extends P1<B> {
 	}
 
 	public static <A, B> $<A, B> constant(final B b) {
-		return new $<A, B>(b);
+		return new $<>(b);
 	}
 
 

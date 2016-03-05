@@ -28,7 +28,7 @@ public final class Arg<T> {
    * @return A new argument.
    */
   public static <T> Arg<T> arg(final T value, final int shrinks) {
-    return new Arg<T>(value, shrinks);
+    return new Arg<>(value, shrinks);
   }
 
   /**

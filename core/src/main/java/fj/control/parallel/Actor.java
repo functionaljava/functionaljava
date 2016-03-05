@@ -33,13 +33,13 @@ public final class Actor<A> {
    * as they are sent.
    */
   public static <T> Actor<T> queueActor(final Strategy<Unit> s, final Effect1<T> ea) {
-    return actor(Strategy.<Unit>seqStrategy(), new Effect1<T>() {
+    return actor(Strategy.seqStrategy(), new Effect1<T>() {
 
       // Lock to ensure the actor only acts on one message at a time
       final AtomicBoolean suspended = new AtomicBoolean(true);
 
       // Queue to hold pending messages
-      final ConcurrentLinkedQueue<T> mbox = new ConcurrentLinkedQueue<T>();
+      final ConcurrentLinkedQueue<T> mbox = new ConcurrentLinkedQueue<>();
 
       // Product so the actor can use its strategy (to act on messages in other threads,
       // to handle exceptions, etc.)
@@ -90,7 +90,7 @@ public final class Actor<A> {
    * @return A new actor that uses the given parallelization strategy and has the given side-effect.
    */
   public static <A> Actor<A> actor(final Strategy<Unit> s, final Effect1<A> e) {
-    return new Actor<A>(s, P1.curry(Effect.f(e)));
+    return new Actor<>(s, P1.curry(Effect.f(e)));
   }
 
   /**
@@ -101,7 +101,7 @@ public final class Actor<A> {
    * @return A new actor that uses the given parallelization strategy and has the given side-effect.
    */
   public static <A> Actor<A> actor(final Strategy<Unit> s, final F<A, P1<Unit>> e) {
-    return new Actor<A>(s, e);
+    return new Actor<>(s, e);
   }
 
   /**

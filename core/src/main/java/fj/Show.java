@@ -282,7 +282,7 @@ public final class Show<A> {
    * @return A show instance for the {@link NonEmptyList} type.
    */
   public static <A> Show<NonEmptyList<A>> nonEmptyListShow(final Show<A> sa) {
-    return listShow(sa).contramap(NonEmptyList.<A>toList_());
+    return listShow(sa).contramap(NonEmptyList.toList_());
   }
 
   /**
@@ -557,7 +557,7 @@ public final class Show<A> {
    * @return A show instance for a vector-2.
    */
   public static <A> Show<V2<A>> v2Show(final Show<A> ea) {
-    return streamShow(ea, "V2(", ",", ")").contramap(V2.<A>toStream_());
+    return streamShow(ea, "V2(", ",", ")").contramap(V2.toStream_());
   }
 
   /**
@@ -567,7 +567,7 @@ public final class Show<A> {
    * @return A show instance for a vector-3.
    */
   public static <A> Show<V3<A>> v3Show(final Show<A> ea) {
-    return streamShow(ea, "V3(", ",", ")").contramap(V3.<A>toStream_());
+    return streamShow(ea, "V3(", ",", ")").contramap(V3.toStream_());
   }
 
   /**
@@ -577,7 +577,7 @@ public final class Show<A> {
    * @return A show instance for a vector-4.
    */
   public static <A> Show<V4<A>> v4Show(final Show<A> ea) {
-    return streamShow(ea, "V4(", ",", ")").contramap(V4.<A>toStream_());
+    return streamShow(ea, "V4(", ",", ")").contramap(V4.toStream_());
   }
 
   /**
@@ -587,7 +587,7 @@ public final class Show<A> {
    * @return A show instance for a vector-5.
    */
   public static <A> Show<V5<A>> v5Show(final Show<A> ea) {
-    return streamShow(ea, "V5(", ",", ")").contramap(V5.<A>toStream_());
+    return streamShow(ea, "V5(", ",", ")").contramap(V5.toStream_());
   }
 
   /**
@@ -597,7 +597,7 @@ public final class Show<A> {
    * @return A show instance for a vector-6.
    */
   public static <A> Show<V6<A>> v6Show(final Show<A> ea) {
-    return streamShow(ea, "V6(", ",", ")").contramap(V6.<A>toStream_());
+    return streamShow(ea, "V6(", ",", ")").contramap(V6.toStream_());
   }
 
   /**
@@ -607,7 +607,7 @@ public final class Show<A> {
    * @return A show instance for a vector-7.
    */
   public static <A> Show<V7<A>> v7Show(final Show<A> ea) {
-    return streamShow(ea, "V7(", ",", ")").contramap(V7.<A>toStream_());
+    return streamShow(ea, "V7(", ",", ")").contramap(V7.toStream_());
   }
 
   /**
@@ -617,7 +617,7 @@ public final class Show<A> {
    * @return A show instance for a vector-8.
    */
   public static <A> Show<V8<A>> v8Show(final Show<A> ea) {
-    return streamShow(ea, "V8(", ",", ")").contramap(V8.<A>toStream_());
+    return streamShow(ea, "V8(", ",", ")").contramap(V8.toStream_());
   }
 
   /**
@@ -643,7 +643,7 @@ public final class Show<A> {
   /**
    * A show instance for the empty heterogeneous Stream.
    */
-  public static final Show<HList.HNil> HListShow = showS(Function.<HList.HNil, String>constant("Nil"));
+  public static final Show<HList.HNil> HListShow = showS(Function.constant("Nil"));
 
   /**
    * A show instance for heterogeneous Streams.

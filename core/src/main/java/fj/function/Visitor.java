@@ -42,7 +42,7 @@ public final class Visitor {
    * @return The first non-<code>null</code> value in the given list of optional values. If none is found return the given default value.
    */
   public static <X> X nullablefindFirst(final List<X> values, final F0<X> def) {
-    return findFirst(values.map(Option.<X>fromNull()), def);
+    return findFirst(values.map(Option.fromNull()), def);
   }
 
   /**
@@ -56,7 +56,7 @@ public final class Visitor {
    * given default.
    */
   public static <A, B> B visitor(final List<F<A, Option<B>>> visitors, final F0<B> def, final A value) {
-    return findFirst(visitors.map(Function.<A, Option<B>>apply(value)), def);
+    return findFirst(visitors.map(Function.apply(value)), def);
   }
 
   /**
@@ -70,7 +70,7 @@ public final class Visitor {
    * given default.
    */
   public static <A, B> B nullableVisitor(final List<F<A, B>> visitors, final F0<B> def, final A value) {
-    return visitor(visitors.map(k -> compose(Option.<B>fromNull(), k)), def, value);
+    return visitor(visitors.map(k -> compose(Option.fromNull(), k)), def, value);
   }
 
   /**

@@ -261,7 +261,7 @@ public final class F1Functions {
      */
     @SuppressWarnings("unchecked")
     public static <A, B, C> F<A, Either<B, C>> eitherLeftK(final F<A, B> f) {
-        return o(Either.<B, C>left_(), f);
+        return o(Either.left_(), f);
     }
 
     /**
@@ -272,7 +272,7 @@ public final class F1Functions {
      */
     @SuppressWarnings("unchecked")
     public static <A, B, C> F<A, Either<C, B>> eitherRightK(final F<A, B> f) {
-        return o(Either.<C, B>right_(), f);
+        return o(Either.right_(), f);
     }
 
     /**
@@ -330,7 +330,7 @@ public final class F1Functions {
      */
     @SuppressWarnings("unchecked")
     public static <A, B> F<Iterable<A>, IterableW<B>> mapIterable(final F<A, B> f) {
-        return o(IterableW.<A, B>map().f(f), IterableW.<A, Iterable<A>>wrap());
+        return o(IterableW.<A, B>map().f(f), IterableW.wrap());
     }
 
     /**
@@ -340,7 +340,7 @@ public final class F1Functions {
      */
     @SuppressWarnings("unchecked")
     public static <A, B> F<A, NonEmptyList<B>> nelK(final F<A, B> f) {
-        return o(NonEmptyList.<B>nel(), f);
+        return o(NonEmptyList.nel(), f);
     }
 
     /**
@@ -408,7 +408,7 @@ public final class F1Functions {
      * @return This function promoted to return its value in a TreeZipper.
      */
     public static <A, B> F<A, TreeZipper<B>> treeZipperK(final F<A, B> f) {
-        return andThen(treeK(f), TreeZipper.<B>fromTree());
+        return andThen(treeK(f), TreeZipper.fromTree());
     }
 
     /**
@@ -560,7 +560,7 @@ public final class F1Functions {
      * @return A new SynchronousQueue with this function applied to each element.
      */
     public static <A, B> SynchronousQueue<B> mapJ(final F<A, B> f, final SynchronousQueue<A> as) {
-        final SynchronousQueue<B> bs = new SynchronousQueue<B>();
+        final SynchronousQueue<B> bs = new SynchronousQueue<>();
         bs.addAll(iterableStream(as).map(f).toCollection());
         return bs;
     }
@@ -573,7 +573,7 @@ public final class F1Functions {
      * @return A new PriorityBlockingQueue with this function applied to each element.
      */
     public static <A, B> PriorityBlockingQueue<B> mapJ(final F<A, B> f, final PriorityBlockingQueue<A> as) {
-        return new PriorityBlockingQueue<B>(iterableStream(as).map(f).toCollection());
+        return new PriorityBlockingQueue<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -583,7 +583,7 @@ public final class F1Functions {
      * @return A new LinkedBlockingQueue with this function applied to each element.
      */
     public static <A, B> LinkedBlockingQueue<B> mapJ(final F<A, B> f, final LinkedBlockingQueue<A> as) {
-        return new LinkedBlockingQueue<B>(iterableStream(as).map(f).toCollection());
+        return new LinkedBlockingQueue<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -593,7 +593,7 @@ public final class F1Functions {
      * @return A new CopyOnWriteArraySet with this function applied to each element.
      */
     public static <A, B> CopyOnWriteArraySet<B> mapJ(final F<A, B> f, final CopyOnWriteArraySet<A> as) {
-        return new CopyOnWriteArraySet<B>(iterableStream(as).map(f).toCollection());
+        return new CopyOnWriteArraySet<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -603,7 +603,7 @@ public final class F1Functions {
      * @return A new CopyOnWriteArrayList with this function applied to each element.
      */
     public static <A, B> CopyOnWriteArrayList<B> mapJ(final F<A, B> f, final CopyOnWriteArrayList<A> as) {
-        return new CopyOnWriteArrayList<B>(iterableStream(as).map(f).toCollection());
+        return new CopyOnWriteArrayList<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -613,7 +613,7 @@ public final class F1Functions {
      * @return A new ConcurrentLinkedQueue with this function applied to each element.
      */
     public static <A, B> ConcurrentLinkedQueue<B> mapJ(final F<A, B> f, final ConcurrentLinkedQueue<A> as) {
-        return new ConcurrentLinkedQueue<B>(iterableStream(as).map(f).toCollection());
+        return new ConcurrentLinkedQueue<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -623,7 +623,7 @@ public final class F1Functions {
      * @return A new ArrayBlockingQueue with this function applied to each element.
      */
     public static <A, B> ArrayBlockingQueue<B> mapJ(final F<A, B> f, final ArrayBlockingQueue<A> as) {
-        final ArrayBlockingQueue<B> bs = new ArrayBlockingQueue<B>(as.size());
+        final ArrayBlockingQueue<B> bs = new ArrayBlockingQueue<>(as.size());
         bs.addAll(iterableStream(as).map(f).toCollection());
         return bs;
     }
@@ -636,7 +636,7 @@ public final class F1Functions {
      * @return A new TreeSet with this function applied to each element.
      */
     public static <A, B> TreeSet<B> mapJ(final F<A, B> f, final TreeSet<A> as) {
-        return new TreeSet<B>(iterableStream(as).map(f).toCollection());
+        return new TreeSet<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -646,7 +646,7 @@ public final class F1Functions {
      * @return A new PriorityQueue with this function applied to each element.
      */
     public static <A, B> PriorityQueue<B> mapJ(final F<A, B> f, final PriorityQueue<A> as) {
-        return new PriorityQueue<B>(iterableStream(as).map(f).toCollection());
+        return new PriorityQueue<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -656,7 +656,7 @@ public final class F1Functions {
      * @return A new LinkedList with this function applied to each element.
      */
     public static <A, B> LinkedList<B> mapJ(final F<A, B> f, final LinkedList<A> as) {
-        return new LinkedList<B>(iterableStream(as).map(f).toCollection());
+        return new LinkedList<>(iterableStream(as).map(f).toCollection());
     }
 
     /**
@@ -666,7 +666,7 @@ public final class F1Functions {
      * @return A new ArrayList with this function applied to each element.
      */
     public static <A, B> ArrayList<B> mapJ(final F<A, B> f, final ArrayList<A> as) {
-        return new ArrayList<B>(iterableStream(as).map(f).toCollection());
+        return new ArrayList<>(iterableStream(as).map(f).toCollection());
     }
 
     public static <A, B, C> F<A, C> map(F<A, B> target, F<B, C> f) {

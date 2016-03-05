@@ -34,11 +34,11 @@ public final class Writer<W, A> {
 	}
 
 	public static <W, A> Writer<W, A> unit(A a, W w, Monoid<W> m) {
-		return new Writer<W, A>(a, w, m);
+		return new Writer<>(a, w, m);
 	}
 
     public static <W, A> Writer<W, A> unit(A a, Monoid<W> m) {
-        return new Writer<W, A>(a, m.zero(), m);
+        return new Writer<>(a, m.zero(), m);
     }
 
     public Writer<W, A> tell(W w) {

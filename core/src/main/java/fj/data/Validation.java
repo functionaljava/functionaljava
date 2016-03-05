@@ -175,8 +175,8 @@ public class Validation<E, T> implements Iterable<T> {
   @SuppressWarnings("unchecked")
   public <A> Validation<E, A> map(final F<T, A> f) {
     return isFail() ?
-        Validation.<E, A>fail(fail()) :
-        Validation.<E, A>success(f.f(success()));
+        Validation.fail(fail()) :
+        Validation.success(f.f(success()));
   }
 
   /**
@@ -187,7 +187,7 @@ public class Validation<E, T> implements Iterable<T> {
    */
   @SuppressWarnings("unchecked")
   public <A> Validation<E, A> bind(final F<T, Validation<E, A>> f) {
-    return isSuccess() ? f.f(success()) : Validation.<E, A>fail(fail());
+    return isSuccess() ? f.f(success()) : Validation.fail(fail());
   }
 
   /**
@@ -197,7 +197,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A validation after binding.
    */
   public <A> Validation<E, A> sequence(final Validation<E, A> v) {
-    return bind(Function.<T, Validation<E, A>>constant(v));
+    return bind(Function.constant(v));
   }
 
   /**
@@ -206,7 +206,7 @@ public class Validation<E, T> implements Iterable<T> {
    */
   public static <E, A> Validation<E, List<A>> sequence(final Semigroup<E> s, final List<Validation<E, A>> list) {
     if (list.exists(Validation::isFail)) {
-      return Validation.<E, List<A>>fail(list.filter(Validation::isFail).map(v -> v.fail()).foldLeft1((F2<E, E, E>) s::sum));
+      return Validation.fail(list.filter(Validation::isFail).map(v -> v.fail()).foldLeft1((F2<E, E, E>) s::sum));
     } else {
       return success(list.foldLeft((List<A> acc, Validation<E, A> v) -> acc.cons(v.success()), List.nil()).reverse());
     }
@@ -221,7 +221,7 @@ public class Validation<E, T> implements Iterable<T> {
    *         success value, otherwise, returns a success in <code>Some</code>.
    */
   public <A> Option<Validation<A, T>> filter(final F<T, Boolean> f) {
-    return e.right().<A>filter(f).map(Validation.<A, T>validation());
+    return e.right().<A>filter(f).map(Validation.validation());
   }
 
   /**
@@ -260,7 +260,7 @@ public class Validation<E, T> implements Iterable<T> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(Validation.class, this, other, () -> Equal.validationEqual(Equal.<E>anyEqual(), Equal.<T>anyEqual()));
+    return Equal.equals0(Validation.class, this, other, () -> Equal.validationEqual(Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
@@ -316,12 +316,12 @@ public class Validation<E, T> implements Iterable<T> {
   @SuppressWarnings("unchecked")
   public <A> Validation<E, A> accumapply(final Semigroup<E> s, final Validation<E, F<T, A>> v) {
     return isFail() ?
-        Validation.<E, A>fail(v.isFail() ?
+        Validation.fail(v.isFail() ?
             s.sum(v.fail(), fail()) :
             fail()) :
         v.isFail() ?
-            Validation.<E, A>fail(v.fail()) :
-            Validation.<E, A>success(v.success().f(success()));
+            Validation.fail(v.fail()) :
+            Validation.success(v.success().f(success()));
   }
 
   /**
@@ -722,7 +722,7 @@ public class Validation<E, T> implements Iterable<T> {
 
     public Validation<List<E>, T> accumulate() {
         if (isFail()) {
-            return fail(List.<E>single(fail()));
+            return fail(List.single(fail()));
         } else {
             return success(success());
         }
@@ -730,7 +730,7 @@ public class Validation<E, T> implements Iterable<T> {
 
     public <B> Validation<List<E>, B> accumulate(F<T, B> f) {
         if (isFail()) {
-            return fail(List.<E>single(fail()));
+            return fail(List.single(fail()));
         } else {
             return success(f.f(success()));
         }
@@ -969,7 +969,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @return A new validation value after binding.
      */
     public <A> Validation<A, T> bind(final F<E, Validation<A, T>> f) {
-      return v.isFail() ? f.f(v.fail()) : Validation.<A, T>success(v.success());
+      return v.isFail() ? f.f(v.fail()) : Validation.success(v.success());
     }
 
     /**
@@ -992,7 +992,7 @@ public class Validation<E, T> implements Iterable<T> {
      *         failing value, otherwise, returns a fail in <code>Some</code>.
      */
     public <A> Option<Validation<E, A>> filter(final F<E, Boolean> f) {
-      return v.toEither().left().<A>filter(f).map(Validation.<E, A>validation());
+      return v.toEither().left().<A>filter(f).map(Validation.validation());
     }
 
     /**
@@ -1083,8 +1083,8 @@ public class Validation<E, T> implements Iterable<T> {
   @SuppressWarnings("unchecked")
   public Validation<NonEmptyList<E>, T> nel() {
     return isSuccess() ?
-        Validation.<NonEmptyList<E>, T>success(success()) :
-        Validation.<NonEmptyList<E>, T>fail(NonEmptyList.nel(fail()));
+        Validation.success(success()) :
+        Validation.fail(NonEmptyList.nel(fail()));
   }
 
   /**
@@ -1122,7 +1122,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation containing the given value.
    */
   public static <E, T> Validation<E, T> success(final T t) {
-    return validation(Either.<E, T>right(t));
+    return validation(Either.right(t));
   }
 
   /**
@@ -1132,7 +1132,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A failing validation containing the given value.
    */
   public static <E, T> Validation<E, T> fail(final E e) {
-    return validation(Either.<E, T>left(e));
+    return validation(Either.left(e));
   }
 
   /**
@@ -1155,7 +1155,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A validation based on a boolean condition.
    */
   public static <E, T> Validation<E, T> condition(final boolean c, final E e, final T t) {
-    return c ? Validation.<E, T>success(t) : Validation.<E, T>fail(e);
+    return c ? Validation.success(t) : Validation.fail(e);
   }
 
   /**

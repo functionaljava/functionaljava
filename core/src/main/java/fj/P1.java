@@ -114,7 +114,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A new P1 that is the join of the given P1.
      */
     public static <A> P1<A> join(final P1<P1<A>> a) {
-        return a.bind(Function.<P1<A>>identity());
+        return a.bind(Function.identity());
     }
 
     /**
@@ -138,7 +138,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given List.
      */
     public static <A> P1<List<A>> sequence(final List<P1<A>> as) {
-        return as.foldRight(liftM2(List.<A>cons()), P.p(List.<A>nil()));
+        return as.foldRight(liftM2(List.cons()), P.p(List.nil()));
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given stream.
      */
     public static <A> P1<Stream<A>> sequence(final Stream<P1<A>> as) {
-        return as.foldRight(liftM2(Stream.<A>cons()), P.p(Stream.<A>nil()));
+        return as.foldRight(liftM2(Stream.cons()), P.p(Stream.nil()));
     }
 
 	/**
@@ -174,7 +174,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given array.
      */
     public static <A> P1<Array<A>> sequence(final Array<P1<A>> as) {
-        return P.lazy(() -> as.map(P1.<A>__1()));
+        return P.lazy(() -> as.map(P1.__1()));
     }
 
     /**
@@ -341,7 +341,7 @@ public abstract class P1<A> implements F0<A> {
 
     @Override
     public boolean equals(Object other) {
-        return Equal.equals0(P1.class, this, other, () -> Equal.p1Equal(Equal.<A>anyEqual()));
+        return Equal.equals0(P1.class, this, other, () -> Equal.p1Equal(Equal.anyEqual()));
     }
 
     @Override

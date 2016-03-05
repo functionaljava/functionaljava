@@ -325,7 +325,7 @@ public abstract class P5<A, B, C, D, E> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P5.class, this, other,
-        () -> Equal.p5Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual()));
+        () -> Equal.p5Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override

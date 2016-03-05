@@ -69,7 +69,7 @@ public final class DList<A> {
      * @return the final List
      */
     public List<A> run() {
-        return appendFn.f(List.<A>nil()).run();
+        return appendFn.f(List.nil()).run();
     }
 
     /**
@@ -85,7 +85,7 @@ public final class DList<A> {
      * @return a empty DList.
      */
     public static <A> DList<A> nil() {
-        return new DList<>(Trampoline.<List<A>>pure());
+        return new DList<>(Trampoline.pure());
     }
     
     /**

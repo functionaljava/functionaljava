@@ -32,7 +32,7 @@ public final class Natural extends Number {
    */
   public static Option<Natural> natural(final BigInteger i) {
     return i.compareTo(BigInteger.ZERO) < 0
-           ? Option.<Natural>none()
+           ? Option.none()
            : Option.some(new Natural(i));
   }
 

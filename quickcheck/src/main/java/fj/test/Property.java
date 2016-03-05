@@ -368,7 +368,7 @@ public final class Property {
    *         otherwise.
    */
   public static Property prop(final boolean b) {
-    return b ? prop(Result.proven(List.<Arg<?>>nil())) : prop(Result.falsified(List.<Arg<?>>nil()));
+    return b ? prop(Result.proven(List.nil())) : prop(Result.falsified(List.nil()));
   }
 
   /**
@@ -471,7 +471,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A> Property propertyP(final Arbitrary<A> aa, final F<A, P1<Property>> f) {
-    return propertyP(aa, Shrink.<A>empty(), f);
+    return propertyP(aa, Shrink.empty(), f);
   }
 
   /**
@@ -521,7 +521,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, Property>> f) {
-    return propertyP(aa, ab, sa, sb, compose2(P.<Property>p1(), f));
+    return propertyP(aa, ab, sa, sb, compose2(P.p1(), f));
   }
 
   /**
@@ -549,7 +549,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final F<A, F<B, Property>> f) {
-    return propertyP(aa, ab, compose2(P.<Property>p1(), f));
+    return propertyP(aa, ab, compose2(P.p1(), f));
   }
 
   /**
@@ -581,7 +581,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F2<A, B, Property> f) {
-    return propertyP(aa, ab, sa, sb, compose2(P.<Property>p1(), curry(f)));
+    return propertyP(aa, ab, sa, sb, compose2(P.p1(), curry(f)));
   }
 
   /**
@@ -609,7 +609,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final F2<A, B, Property> f) {
-    return propertyP(aa, ab, compose2(P.<Property>p1(), curry(f)));
+    return propertyP(aa, ab, compose2(P.p1(), curry(f)));
   }
 
   /**
@@ -1320,7 +1320,7 @@ public final class Property {
     try {
       return p.f();
     } catch (final Throwable t) {
-      return new Property(i -> r -> Result.exception(List.<Arg<?>>nil(), t));
+      return new Property(i -> r -> Result.exception(List.nil(), t));
     }
   }
 

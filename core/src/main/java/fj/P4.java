@@ -250,7 +250,7 @@ public abstract class P4<A, B, C, D> {
   @Override
   public boolean equals(Object other) {
     return Equal.equals0(P4.class, this, other,
-        () -> Equal.p4Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual()));
+        () -> Equal.p4Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override

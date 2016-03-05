@@ -101,7 +101,7 @@ public final class Class<T> {
       }
       types = Tree.node(pt.getRawType(), typeArgs);
     } else {
-      types = Tree.node(t, List.<Tree<Type>>nil());
+      types = Tree.node(t, List.nil());
     }
     return types;
   }
@@ -122,6 +122,6 @@ public final class Class<T> {
    * @return A class from the given argument.
    */
   public static <T> Class<T> clas(final java.lang.Class<T> c) {
-    return new Class<T>(c);
+    return new Class<>(c);
   }
 }

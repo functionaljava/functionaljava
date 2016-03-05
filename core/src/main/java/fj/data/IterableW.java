@@ -33,7 +33,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return An iterable equipped with some useful functions.
    */
   public static <A> IterableW<A> wrap(final Iterable<A> a) {
-    return new IterableW<A>(a);
+    return new IterableW<>(a);
   }
 
   /**
@@ -128,9 +128,9 @@ public final class IterableW<A> implements Iterable<A> {
   public static <A, T extends Iterable<A>> IterableW<IterableW<A>> sequence(final Iterable<T> as) {
     final Stream<T> ts = iterableStream(as);
     return ts.isEmpty() ?
-        iterable(wrap(Option.<A>none())) :
+        iterable(wrap(Option.none())) :
         wrap(ts.head()).bind(a ->
-            sequence(ts.tail().map(IterableW.<T, Stream<T>>wrap())._1()).bind(as2 ->
+            sequence(ts.tail().map(IterableW.wrap())._1()).bind(as2 ->
                 iterable(wrap(Stream.cons(a, () -> iterableStream(as2))))
             )
         );

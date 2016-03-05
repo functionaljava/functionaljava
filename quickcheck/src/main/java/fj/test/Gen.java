@@ -110,7 +110,7 @@ public final class Gen<A> {
    * @return A new generator after applying the mapping function.
    */
   public <B> Gen<B> map(final F<A, B> f) {
-    return new Gen<B>(i -> r -> f.f(gen(i, r)));
+    return new Gen<>(i -> r -> f.f(gen(i, r)));
   }
 
   /**
@@ -161,7 +161,7 @@ public final class Gen<A> {
    * @return A new generator after binding the given function.
    */
   public <B> Gen<B> bind(final F<A, Gen<B>> f) {
-    return new Gen<B>(i -> r -> f.f(gen(i, r)).f.f(i).f(r));
+    return new Gen<>(i -> r -> f.f(gen(i, r)).f.f(i).f(r));
   }
 
   /**
@@ -286,7 +286,7 @@ public final class Gen<A> {
    * @return A new generator that uses the given size.
    */
   public Gen<A> resize(final int s) {
-    return new Gen<A>(i -> r -> f.f(s).f(r));
+    return new Gen<>(i -> r -> f.f(s).f(r));
   }
 
   /**
@@ -296,7 +296,7 @@ public final class Gen<A> {
    * @return A new generator that uses the given function.
    */
   public static <A> Gen<A> gen(final F<Integer, F<Rand, A>> f) {
-    return new Gen<A>(f);
+    return new Gen<>(f);
   }
 
   /**
@@ -328,7 +328,7 @@ public final class Gen<A> {
    * @return A new generator.
    */
   public static <A> Gen<A> parameterised(final F<Integer, F<Rand, Gen<A>>> f) {
-    return new Gen<A>(curry((i, r) -> f.f(i).f(r).gen(i, r)));
+    return new Gen<>(curry((i, r) -> f.f(i).f(r).gen(i, r)));
   }
 
   /**
@@ -338,7 +338,7 @@ public final class Gen<A> {
    * @return A new generator.
    */
   public static <A> Gen<A> sized(final F<Integer, Gen<A>> f) {
-    return parameterised(flip(Function.<Rand, F<Integer, Gen<A>>>constant(f)));
+    return parameterised(flip(Function.constant(f)));
   }
 
   /**
@@ -348,7 +348,7 @@ public final class Gen<A> {
    * @return A generator that always produces the given value.
    */
   public static <A> Gen<A> value(final A a) {
-    return new Gen<A>(i -> r -> a);
+    return new Gen<>(i -> r -> a);
   }
 
   /**
@@ -383,7 +383,7 @@ public final class Gen<A> {
    * @return A generator that never returns a value.
    */
   public static <A> Gen<A> fail() {
-    return new Gen<A>(i -> r -> {
+    return new Gen<>(i -> r -> {
       throw error("Failing generator");
     });
   }
@@ -395,7 +395,7 @@ public final class Gen<A> {
    * @return A new generator after joining the given generator.
    */
   public static <A> Gen<A> join(final Gen<Gen<A>> g) {
-    return g.bind(Function.<Gen<A>>identity());
+    return g.bind(Function.identity());
   }
 
   /**
@@ -443,7 +443,7 @@ public final class Gen<A> {
    */
   @SafeVarargs
   public static <A> Gen<A> elements(final A... as) {
-    return array(as).isEmpty() ? Gen.<A>fail() : choose(0, as.length - 1).map(i -> as[i]);
+    return array(as).isEmpty() ? Gen.fail() : choose(0, as.length - 1).map(i -> as[i]);
   }
 
   /**
@@ -455,7 +455,7 @@ public final class Gen<A> {
    *         requests.
    */
   public static <A> Gen<A> oneOf(final List<Gen<A>> gs) {
-    return gs.isEmpty() ? Gen.<A>fail() : choose(0, gs.length() - 1).bind(gs::index);
+    return gs.isEmpty() ? Gen.fail() : choose(0, gs.length() - 1).bind(gs::index);
   }
 
   /**
@@ -723,6 +723,6 @@ public final class Gen<A> {
    * @return A generator for functions.
    */
   public static <A, B> Gen<F<A, B>> promote(final F<A, Gen<B>> f) {
-    return new Gen<F<A, B>>(i -> r -> a -> f.f(a).f.f(i).f(r));
+    return new Gen<>(i -> r -> a -> f.f(a).f.f(i).f(r));
   }
 }

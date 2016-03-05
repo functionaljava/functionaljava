@@ -30,7 +30,7 @@ public final class V3<A> implements Iterable<A> {
    * @return A new vector-3.
    */
   public static <A> V3<A> p(final P3<A, A, A> p) {
-    return new V3<A>(
+    return new V3<>(
         P.lazy(p::_1),
         V2.p(P.lazy(p::_2, p::_3))
     );
@@ -44,7 +44,7 @@ public final class V3<A> implements Iterable<A> {
    * @return The new vector.
    */
   public static <A> V3<A> cons(final P1<A> head, final V2<A> tail) {
-    return new V3<A>(head, tail);
+    return new V3<>(head, tail);
   }
 
   /**
@@ -131,7 +131,7 @@ public final class V3<A> implements Iterable<A> {
    * @return A new vector after zipping the given vector of functions over this vector.
    */
   public <B> V3<B> apply(final V3<F<A, B>> vf) {
-    return new V3<B>(head.<B>apply(vf.head()), tail.apply(vf.tail()));
+    return new V3<>(head.apply(vf.head()), tail.apply(vf.tail()));
   }
 
   /**
@@ -202,7 +202,7 @@ public final class V3<A> implements Iterable<A> {
    * @return A new vector after the given function has been applied to each element.
    */
   public <B> V3<B> map(final F<A, B> f) {
-    return new V3<B>(head().map(f), tail().map(f));
+    return new V3<>(head().map(f), tail().map(f));
   }
 
   /**

@@ -82,17 +82,17 @@ public final class Iteratee {
     public final A run() {
       final F<IterV<E, A>, Option<A>> runCont =
         new F<IterV<E, A>, Option<A>>() {
-          final F<P2<A, Input<E>>, Option<A>> done = F1Functions.andThen(P2.<A, Input<E>>__1(), Option.<A>some_());
-          final F<F<Input<E>, IterV<E, A>>, Option<A>> cont = Function.constant(Option.<A>none());
+          final F<P2<A, Input<E>>, Option<A>> done = F1Functions.andThen(P2.__1(), Option.some_());
+          final F<F<Input<E>, IterV<E, A>>, Option<A>> cont = Function.constant(Option.none());
 
           @Override
           public Option<A> f(final IterV<E, A> i) {
             return i.fold(done, cont);
           }
         };
-      final F<P2<A, Input<E>>, A> done = P2.<A, Input<E>>__1();
+      final F<P2<A, Input<E>>, A> done = P2.__1();
       final F<F<Input<E>, IterV<E, A>>, A> cont =
-              k -> runCont.f(k.f(Input.<E>eof())).valueE("diverging iteratee");
+              k -> runCont.f(k.f(Input.eof())).valueE("diverging iteratee");
       return fold(done, cont);
     }
 
@@ -154,7 +154,7 @@ public final class Iteratee {
           }
         };
       return n == 0
-        ? done(Unit.unit(), Input.<E>empty())
+        ? done(Unit.unit(), Input.empty())
         : cont(step);
     }
 
@@ -166,7 +166,7 @@ public final class Iteratee {
 
           final F0<IterV<E, Option<E>>> empty = () -> cont(step);
 
-          final F0<F<E, IterV<E, Option<E>>>> el = () -> e -> done(Option.<E>some(e), Input.<E>empty());
+          final F0<F<E, IterV<E, Option<E>>>> el = () -> e -> done(Option.some(e), Input.<E>empty());
 
           final F0<IterV<E, Option<E>>> eof = () -> done(Option.<E>none(), Input.<E>eof());
 
@@ -186,7 +186,7 @@ public final class Iteratee {
 
           final F0<IterV<E, Option<E>>> empty = () -> cont(step);
 
-          final F0<F<E, IterV<E, Option<E>>>> el = () -> e -> done(Option.<E>some(e), Input.<E>el(e));
+          final F0<F<E, IterV<E, Option<E>>>> el = () -> e -> done(Option.some(e), Input.el(e));
 
           final F0<IterV<E, Option<E>>> eof = () -> done(Option.<E>none(), Input.<E>eof());
 
@@ -216,7 +216,7 @@ public final class Iteratee {
               return s -> s.apply(empty, el, eof);
             }
           };
-        return cont(step.f(List.<E> nil()));
+        return cont(step.f(List.nil()));
     }
   }
 

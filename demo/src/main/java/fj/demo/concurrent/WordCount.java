@@ -56,7 +56,7 @@ public class WordCount {
   
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunkIteratee = fileName -> {
       try {
-        return IOFunctions.enumFileCharChunks(new File(fileName), Option.<Charset>none(), wordCountsFromCharChunks()).run().run();
+        return IOFunctions.enumFileCharChunks(new File(fileName), Option.none(), wordCountsFromCharChunks()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -64,7 +64,7 @@ public class WordCount {
   
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunk2Iteratee = fileName -> {
       try {
-        return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
+        return IOFunctions.enumFileChars(new File(fileName), Option.none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -72,7 +72,7 @@ public class WordCount {
   
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharIteratee = fileName -> {
       try {
-        return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
+        return IOFunctions.enumFileChars(new File(fileName), Option.none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -115,9 +115,9 @@ public class WordCount {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
-                  return IterV.done(map, Input.<char[]>eof());
+                  return IterV.done(map, Input.eof());
                 }
-                return IterV.done(acc._2(), Input.<char[]>eof());
+                return IterV.done(acc._2(), Input.eof());
               });
 
           return s -> s.apply(empty, el, eof);
@@ -157,9 +157,9 @@ public class WordCount {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
-                  return IterV.done(map, Input.<Character>eof());
+                  return IterV.done(map, Input.eof());
                 }
-                return IterV.done(acc._2(), Input.<Character>eof());
+                return IterV.done(acc._2(), Input.eof());
               }
             );
           return s -> s.apply(empty, el, eof);
@@ -268,7 +268,7 @@ public class WordCount {
 
   private static P2<List<String>, Map<String, Integer>> writeSampleFiles(
       int numFiles, int numSharedWords) throws IOException {
-    final Map<String, Integer> expectedWordsAndCounts = new HashMap<String, Integer>();
+    final Map<String, Integer> expectedWordsAndCounts = new HashMap<>();
     List<String> fileNames = nil();
     for(int i = 0; i < numFiles; i++) {
       final File file = File.createTempFile("wordcount-"+ i + "-", ".txt");
@@ -294,7 +294,7 @@ public class WordCount {
   public static Map<String, Integer> getWordsAndCountsFromFilesInParallel(
       final List<String> fileNames, final F<String, Map<String, Integer>> fileNameToWordsAndCounts, int numThreads) {
     final ExecutorService pool = newFixedThreadPool(numThreads);
-    final ParModule m = parModule(Strategy.<Unit> executorStrategy(pool));
+    final ParModule m = parModule(Strategy.executorStrategy(pool));
 
     // Long wordCount = countWords(fileNames.map(readFile), m).claim();    
     final Map<String, Integer> result = getWordsAndCountsFromFiles(fileNames, fileNameToWordsAndCounts, m).claim();
@@ -315,7 +315,7 @@ public class WordCount {
   }
   
   private static Map<String, Integer> plus(Map<String, Integer> a, Map<String, Integer> b) {
-    final Map<String, Integer> result = new HashMap<String, Integer>(a);
+    final Map<String, Integer> result = new HashMap<>(a);
     for(Map.Entry<String, Integer> entry : b.entrySet()) {
       final Integer num = result.get(entry.getKey());
       result.put(entry.getKey(), num != null ? num.intValue() + entry.getValue() : entry.getValue());

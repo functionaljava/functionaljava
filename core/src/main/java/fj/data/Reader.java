@@ -20,7 +20,7 @@ public class Reader<A, B> {
 	}
 
 	public static <A, B> Reader<A, B> unit(F<A, B> f) {
-		return new Reader<A, B>(f);
+		return new Reader<>(f);
 	}
 
 	public static <A, B> Reader<A, B> constant(B b) {

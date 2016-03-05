@@ -264,7 +264,7 @@ public final class Check {
       @SuppressWarnings("unchecked")
       final List<Boolean> bss = somes(list(fromNull(e.getAnnotation(Category.class)).map(p1),
         fromNull(declaringClass.getAnnotation(Category.class)).map(p1)));
-      return bss.exists(Function.<Boolean>identity());
+      return bss.exists(Function.identity());
     };
 
     final F<Name, String> nameS = Name::value;
@@ -281,7 +281,7 @@ public final class Check {
       try {
         final Option<CheckParams> params = fromNull(m.element().getAnnotation(CheckParams.class)).orElse(fromNull(declaringClass.getAnnotation(CheckParams.class)));
         final String name = fromNull(m.element().getAnnotation(Name.class)).map(nameS).orSome(m.name());
-        return p(m.invoke(t.orSome(P.<T>p(null))), name, params);
+        return p(m.invoke(t.orSome(P.p(null))), name, params);
       } catch(Exception e) {
         throw new Error(e.getMessage(), e);
       }

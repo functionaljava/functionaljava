@@ -40,7 +40,7 @@ public class LcgRng extends Rng {
      */
     static P2<Long, Long> nextLong(long seed) {
         long newSeed = (seed * 0x5DEECE66DL + 0xBL) & 0xFFFFFFFFFFFFL;
-        long n = (Long) (newSeed >>> 16);
+        long n = newSeed >>> 16;
         return P.p(newSeed, n);
     }
 

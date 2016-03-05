@@ -79,7 +79,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A new list with the given list appended.
    */
   public NonEmptyList<A> append(final NonEmptyList<A> as) {
-    final List.Buffer<A> b = new List.Buffer<A>();
+    final List.Buffer<A> b = new List.Buffer<>();
     b.append(tail);
     b.snoc(as.head);
     b.append(as.tail);
@@ -104,7 +104,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A new list after performing the map, then final join.
    */
   public <B> NonEmptyList<B> bind(final F<A, NonEmptyList<B>> f) {
-    final List.Buffer<B> b = new List.Buffer<B>();
+    final List.Buffer<B> b = new List.Buffer<>();
     final NonEmptyList<B> p = f.f(head);
     b.snoc(p.head);
     b.append(p.tail);
@@ -125,7 +125,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public NonEmptyList<NonEmptyList<A>> sublists() {
     return fromList(
         somes(toList().toStream().substreams()
-            .map(F1Functions.o(NonEmptyList::fromList, Conversions.<A>Stream_List())).toList())).some();
+            .map(F1Functions.o(NonEmptyList::fromList, Conversions.Stream_List())).toList())).some();
   }
 
   /**
@@ -277,7 +277,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A non-empty list with the given head and tail.
    */
   public static <A> NonEmptyList<A> nel(final A head, final List<A> tail) {
-    return new NonEmptyList<A>(head, tail);
+    return new NonEmptyList<>(head, tail);
   }
 
   /**
@@ -308,7 +308,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    */
   public static <A> Option<NonEmptyList<A>> fromList(final List<A> as) {
     return as.isEmpty() ?
-           Option.<NonEmptyList<A>>none() :
+           Option.none() :
            some(nel(as.head(), as.tail()));
   }
 
@@ -328,7 +328,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return true if this list is equal to the provided argument
    */
   @Override public boolean equals( final Object obj ) {
-    return Equal.equals0(NonEmptyList.class, this, obj, () -> Equal.nonEmptyListEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(NonEmptyList.class, this, obj, () -> Equal.nonEmptyListEqual(Equal.anyEqual()));
   }
 
   @Override public int hashCode() {

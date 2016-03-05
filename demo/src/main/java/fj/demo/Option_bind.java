@@ -18,9 +18,9 @@ public final class Option_bind {
         final Option<Integer> o5 = o2.bind(f);
         final Option<Integer> o6 = o3.bind(f);
 
-        final Option<Integer> p1 = o1.bind(i -> i % 2 == 0 ? some(i * 3) : Option.<Integer>none());
-        final Option<Integer> p2 = o2.bind(i -> i % 2 == 0 ? some(i * 3) : Option.<Integer>none());
-        final Option<Integer> p3 = o3.bind(i -> i % 2 == 0 ? some(i * 3) : Option.<Integer>none());
+        final Option<Integer> p1 = o1.bind(i -> i % 2 == 0 ? some(i * 3) : Option.none());
+        final Option<Integer> p2 = o2.bind(i -> i % 2 == 0 ? some(i * 3) : Option.none());
+        final Option<Integer> p3 = o3.bind(i -> i % 2 == 0 ? some(i * 3) : Option.none());
 
         optionShow(intShow).println(o4); // None
         optionShow(intShow).println(o5); // Some(24)

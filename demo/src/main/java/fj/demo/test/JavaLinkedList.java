@@ -17,7 +17,7 @@ public final class JavaLinkedList {
   public static void main(final String[] args) {
     final Property p = property(arbLinkedList(arbInteger), arbLinkedList(arbInteger),
             (x, y) -> {
-        final LinkedList<Integer> xy = new LinkedList<Integer>(x);
+        final LinkedList<Integer> xy = new LinkedList<>(x);
         xy.addAll(y);
         return prop(xy.size() == x.size() + y.size());
     });
