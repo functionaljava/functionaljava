@@ -7,9 +7,9 @@ import fj.*;
  */
 public final class Writer<W, A> {
 
-	private A val;
-	private W logValue;
-    private Monoid<W> monoid;
+	private final A val;
+	private final W logValue;
+	private final Monoid<W> monoid;
 
 	private Writer(A a, W w, Monoid<W> m) {
 		val = a;

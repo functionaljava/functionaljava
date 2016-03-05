@@ -9,7 +9,7 @@ import fj.F1Functions;
  */
 public class Reader<A, B> {
 
-	private F<A, B> function;
+	private final F<A, B> function;
 
 	public Reader(F<A, B> f) {
 		function = f;

@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 public final class IOW<A> implements IO<A> {
 
-    private IO<A> io;
+    private final IO<A> io;
 
     private IOW(IO<A> in) {
         io = in;

@@ -11,7 +11,7 @@ import static fj.P.p;
  */
 public final class State<S, A> {
 
-	private F<S, P2<S, A>> run;
+	private final F<S, P2<S, A>> run;
 
 	private State(F<S, P2<S, A>> f) {
 		run = f;
