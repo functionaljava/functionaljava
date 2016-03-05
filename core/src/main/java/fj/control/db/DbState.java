@@ -94,18 +94,21 @@ public final class DbState {
    * @throws SQLException in case of a database error.
    */
   public <A> A run(final DB<A> dba) throws SQLException {
-    final Connection c = pc.connect();
-    c.setAutoCommit(false);
-    try {
-      final A a = dba.run(c);
+    try (Connection c = pc.connect()) {
+      c.setAutoCommit(false);
+      final A a;
+      try {
+        a = dba.run(c);
+      } catch (RuntimeException | SQLException e) {
+        try {
+          c.rollback();
+        } catch (Exception re) {
+          e.addSuppressed(re);
+        }
+        throw e;
+      }
       terminal.run(c);
       return a;
-    } catch (SQLException e) {
-      c.rollback();
-      throw e;
-    }
-    finally {
-      c.close();
     }
   }
 }
