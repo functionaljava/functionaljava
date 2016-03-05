@@ -94,11 +94,11 @@ public abstract class Getter<S, A> {
     return PIso.<A, A> pId().asGetter();
   }
 
-  public static final <A> Getter<Either<A, A>, A> codiagonal() {
+  public static <A> Getter<Either<A, A>, A> codiagonal() {
     return getter(e -> e.either(Function.identity(), Function.identity()));
   }
 
-  public static final <S, A> Getter<S, A> getter(final F<S, A> get) {
+  public static <S, A> Getter<S, A> getter(final F<S, A> get) {
     return new Getter<S, A>() {
 
       @Override

@@ -13,10 +13,13 @@ import static fj.data.Zipper.zipper;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F2Functions {
+public final class F2Functions {
 
 
-    /**
+  private F2Functions() {
+  }
+
+  /**
      * Partial application.
      *
      * @param a The <code>A</code> to which to apply this function.

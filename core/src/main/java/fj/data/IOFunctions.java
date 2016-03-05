@@ -26,9 +26,12 @@ import fj.function.Try0;
  *
  * @author Martin Grotzke
  */
-public class IOFunctions {
+public final class IOFunctions {
 
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+    private IOFunctions() {
+    }
 
     public static <A> Try0<A, IOException> toTry(IO<A> io) {
         return () -> io.run();
@@ -133,7 +136,7 @@ public class IOFunctions {
         };
     }
 
-    public static final <A, B, C> IO<C> bracket(final IO<A> init, final F<A, IO<B>> fin, final F<A, IO<C>> body) {
+    public static <A, B, C> IO<C> bracket(final IO<A> init, final F<A, IO<B>> fin, final F<A, IO<C>> body) {
         return new IO<C>() {
             @Override
             public C run() throws IOException {
@@ -149,7 +152,7 @@ public class IOFunctions {
         };
     }
 
-    public static final <A> IO<A> unit(final A a) {
+    public static <A> IO<A> unit(final A a) {
         return new IO<A>() {
             @Override
             public A run() throws IOException {
@@ -160,19 +163,19 @@ public class IOFunctions {
 
     public static final IO<Unit> ioUnit = unit(Unit.unit());
 
-    public static final <A> IO<A> lazy(final F0<A> p) {
+    public static <A> IO<A> lazy(final F0<A> p) {
         return fromF(p);
     }
 
-    public static final <A> IO<A> lazy(final F<Unit, A> f) {
+    public static <A> IO<A> lazy(final F<Unit, A> f) {
         return () -> f.f(Unit.unit());
     }
 
-    public static final <A> SafeIO<A> lazySafe(final F<Unit, A> f) {
+    public static <A> SafeIO<A> lazySafe(final F<Unit, A> f) {
         return () -> f.f(Unit.unit());
     }
 
-    public static final <A> SafeIO<A> lazySafe(final F0<A> f) {
+    public static <A> SafeIO<A> lazySafe(final F0<A> f) {
         return f::f;
     }
 
@@ -330,7 +333,7 @@ public class IOFunctions {
         };
     }
 
-    public static final <A, B> IO<B> map(final IO<A> io, final F<A, B> f) {
+    public static <A, B> IO<B> map(final IO<A> io, final F<A, B> f) {
         return new IO<B>() {
             @Override
             public B run() throws IOException {
@@ -339,15 +342,15 @@ public class IOFunctions {
         };
     }
 
-    public static final <A, B> IO<B> as(final IO<A> io, final B b) {
+    public static <A, B> IO<B> as(final IO<A> io, final B b) {
         return map(io, ignored -> b);
     }
 
-    public static final <A> IO<Unit> voided(final IO <A> io) {
+    public static <A> IO<Unit> voided(final IO <A> io) {
         return as(io, Unit.unit());
     }
 
-    public static final <A, B> IO<B> bind(final IO<A> io, final F<A, IO<B>> f) {
+    public static <A, B> IO<B> bind(final IO<A> io, final F<A, IO<B>> f) {
         return new IO<B>() {
             @Override
             public B run() throws IOException {
@@ -356,11 +359,11 @@ public class IOFunctions {
         };
     }
 
-    public static final IO<Unit> when(final Boolean b, final IO<Unit> io) {
+    public static IO<Unit> when(final Boolean b, final IO<Unit> io) {
         return b ? io : ioUnit;
     }
 
-    public static final IO<Unit> unless(final Boolean b, final IO<Unit> io) {
+    public static IO<Unit> unless(final Boolean b, final IO<Unit> io) {
         return when(!b, io);
     }
 

@@ -6,9 +6,12 @@ import fj.function.Try4;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F4Functions {
+public final class F4Functions {
 
-    /**
+  private F4Functions() {
+  }
+
+  /**
      * Partial application.
      *
      * @param a The <code>A</code> to which to apply this function.

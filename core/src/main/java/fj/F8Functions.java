@@ -6,7 +6,10 @@ import fj.function.Try8;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F8Functions {
+public final class F8Functions {
+
+	private F8Functions() {
+	}
 
 	/**
 	 * Partial application.

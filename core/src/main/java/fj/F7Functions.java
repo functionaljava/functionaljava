@@ -6,7 +6,10 @@ import fj.function.Try7;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F7Functions {
+public final class F7Functions {
+
+	private F7Functions() {
+	}
 
 	/**
 	 * Partial application.

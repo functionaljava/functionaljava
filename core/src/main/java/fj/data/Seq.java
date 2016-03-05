@@ -214,7 +214,7 @@ public final class Seq<A> implements Iterable<A> {
   /**
    * Converts the sequence to a java.util.List
    */
-  public final java.util.List<A> toJavaList() {
+  public java.util.List<A> toJavaList() {
     return new AbstractList<A>() {
       @Override public A get(int i) { return index(i); }
       @Override public Iterator<A> iterator() { return Seq.this.iterator(); }
@@ -227,7 +227,7 @@ public final class Seq<A> implements Iterable<A> {
    *
    * @return A iterator for this seq.
    */
-  public final Iterator<A> iterator() {
+  public Iterator<A> iterator() {
     return new Iterator<A>() {
       private FingerTree<Integer, A> ftree = Seq.this.ftree;
 

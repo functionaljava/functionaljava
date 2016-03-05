@@ -69,13 +69,13 @@ public final class Actor<A> {
       }
 
       // If there are pending messages, use the strategy to run the processor
-      protected void work() {
+      void work() {
         if (!mbox.isEmpty() && suspended.compareAndSet(true, false)) {
           s.par(processor);
         }
       }
     });
-  };
+  }
   
   private Actor(final Strategy<Unit> s, final F<A, P1<Unit>> e) {
     this.s = s;

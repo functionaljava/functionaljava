@@ -157,7 +157,7 @@ public final class Ord<A> {
    */
   public final F<A, F<A, A>> min = curry((a, a1) -> min(a, a1));
 
-  public final Ord<A> reverse() { return ord(Function.flip(f)); }
+  public Ord<A> reverse() { return ord(Function.flip(f)); }
 
   /**
    * Returns an order instance that uses the given equality test and ordering function.

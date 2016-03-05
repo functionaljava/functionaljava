@@ -134,14 +134,14 @@ public final class Deep<V, A> extends FingerTree<V, A> {
       four -> four.values()._4());
   }
 
-  private static final <V, A> FingerTree<V, A> deepL(final Measured<V, A> measured, final Option<Digit<V, A>> lOpt, final FingerTree<V, Node<V, A>> m, final Digit<V, A> r) {
+  private static <V, A> FingerTree<V, A> deepL(final Measured<V, A> measured, final Option<Digit<V, A>> lOpt, final FingerTree<V, Node<V, A>> m, final Digit<V, A> r) {
     return lOpt.option(
       P.lazy(() -> m.isEmpty() ? r.toTree() : mkTree(measured).deep(m.head().toDigit(), m.tail(), r)),
       (F<Digit<V, A>, FingerTree<V, A>>) l -> mkTree(measured).deep(l, m, r)
     );
   }
 
-  private static final <V, A> FingerTree<V, A> deepR(final Measured<V, A> measured, final Option<Digit<V, A>> rOpt, final FingerTree<V, Node<V, A>> m, final Digit<V, A> l) {
+  private static <V, A> FingerTree<V, A> deepR(final Measured<V, A> measured, final Option<Digit<V, A>> rOpt, final FingerTree<V, Node<V, A>> m, final Digit<V, A> l) {
     return rOpt.option(
       P.lazy(() -> m.isEmpty() ? l.toTree() : mkTree(measured).deep(l, m.init(), m.last().toDigit())),
       (F<Digit<V, A>, FingerTree<V, A>>) r -> mkTree(measured).deep(l, m, r)

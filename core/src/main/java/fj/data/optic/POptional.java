@@ -366,7 +366,7 @@ public abstract class POptional<S, T, A, B> {
   }
 
   /** create a {@link POptional} using the canonical functions: getOrModify and set */
-  public static final <S, T, A, B> POptional<S, T, A, B> pOptional(final F<S, Either<T, A>> getOrModify, final F<B, F<S, T>> set) {
+  public static <S, T, A, B> POptional<S, T, A, B> pOptional(final F<S, Either<T, A>> getOrModify, final F<B, F<S, T>> set) {
     return new POptional<S, T, A, B>() {
       @Override
       public Either<T, A> getOrModify(final S s) {

@@ -22,7 +22,7 @@ public final class Iteratee {
     public abstract <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof);
 
     /** Input that has no values available */
-    public static final <E> Input<E> empty() {
+    public static <E> Input<E> empty() {
       return new Input<E>() {
         @Override
         public <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof) {
@@ -32,7 +32,7 @@ public final class Iteratee {
     }
 
     /** Input that is exhausted */
-    public static final <E> Input<E> eof() {
+    public static <E> Input<E> eof() {
       return new Input<E>() {
         @Override
         public <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof) {
@@ -42,7 +42,7 @@ public final class Iteratee {
     }
 
     /** Input that has a value available */
-    public static final <E> Input<E> el(final E element) {
+    public static <E> Input<E> el(final E element) {
       return new Input<E>() {
         @Override
         public <Z> Z apply(final F0<Z> empty, final F0<F<E, Z>> el, final F0<Z> eof) {
@@ -121,7 +121,7 @@ public final class Iteratee {
     }
 
     /** An iteratee that counts and consumes the elements of the input */
-    public static final <E> IterV<E, Integer> length() {
+    public static <E> IterV<E, Integer> length() {
       final F<Integer, F<Input<E>, IterV<E, Integer>>> step =
         new F<Integer, F<Input<E>, IterV<E, Integer>>>() {
           final F<Integer, F<Input<E>, IterV<E, Integer>>> step = this;
@@ -141,7 +141,7 @@ public final class Iteratee {
     }
 
     /** An iteratee that skips the first n elements of the input */
-    public static final <E> IterV<E, Unit> drop(final int n) {
+    public static <E> IterV<E, Unit> drop(final int n) {
       final F<Input<E>, IterV<E, Unit>> step =
         new F<Input<E>, IterV<E, Unit>>() {
           final F<Input<E>, IterV<E, Unit>> step = this;
@@ -163,7 +163,7 @@ public final class Iteratee {
     }
 
     /** An iteratee that consumes the head of the input */
-    public static final <E> IterV<E, Option<E>> head() {
+    public static <E> IterV<E, Option<E>> head() {
       final F<Input<E>, IterV<E, Option<E>>> step =
         new F<Input<E>, IterV<E, Option<E>>>() {
           final F<Input<E>, IterV<E, Option<E>>> step = this;
@@ -183,7 +183,7 @@ public final class Iteratee {
     }
 
     /** An iteratee that returns the first element of the input */
-    public static final <E> IterV<E, Option<E>> peek() {
+    public static <E> IterV<E, Option<E>> peek() {
       final F<Input<E>, IterV<E, Option<E>>> step =
         new F<Input<E>, IterV<E, Option<E>>>() {
           final F<Input<E>, IterV<E, Option<E>>> step = this;
@@ -204,7 +204,7 @@ public final class Iteratee {
 
     /** An iteratee that consumes the input elements and returns them as a list in reverse order,
      * so that the last line is the first element. This allows to build a list from 2 iteratees. */
-    public static final <E> IterV<E, List<E>> list() {
+    public static <E> IterV<E, List<E>> list() {
         final F<List<E>, F<Input<E>, IterV<E, List<E>>>> step =
           new F<List<E>, F<Input<E>, IterV<E, List<E>>>>() {
             final F<List<E>, F<Input<E>, IterV<E, List<E>>>> step = this;

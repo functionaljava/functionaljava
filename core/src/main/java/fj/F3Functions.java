@@ -9,10 +9,13 @@ import static fj.data.Validation.success;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F3Functions {
+public final class F3Functions {
 
 
-    /**
+  private F3Functions() {
+  }
+
+  /**
      * Partial application.
      *
      * @param a The <code>A</code> to which to apply this function.

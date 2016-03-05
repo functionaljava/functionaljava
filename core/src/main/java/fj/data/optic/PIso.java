@@ -510,7 +510,7 @@ public abstract class PIso<S, T, A, B> {
   }
 
   /** create a {@link PIso} using a pair of functions: one to get the target and one to get the source. */
-  public static final <S, T, A, B> PIso<S, T, A, B> pIso(final F<S, A> get, final F<B, T> reverseGet) {
+  public static <S, T, A, B> PIso<S, T, A, B> pIso(final F<S, A> get, final F<B, T> reverseGet) {
     return new PIso<S, T, A, B>() {
 
       @Override

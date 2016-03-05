@@ -6,7 +6,10 @@ import fj.function.Try5;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F5Functions {
+public final class F5Functions {
+
+	private F5Functions() {
+	}
 
 	/**
 	 * Partial application.

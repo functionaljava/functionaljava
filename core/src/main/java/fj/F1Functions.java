@@ -18,8 +18,11 @@ import static fj.data.Zipper.fromStream;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F1Functions {
+public final class F1Functions {
 
+
+    private F1Functions() {
+    }
 
     /**
      * Function composition
