@@ -55,7 +55,7 @@ public final class Equal<A> {
    * @return A function that returns <code>true</code> if the two given arguments are equal.
    */
   public F2<A, A, Boolean> eq() {
-    return (a, a1) -> eq(a, a1);
+    return this::eq;
   }
 
   /**
@@ -96,7 +96,7 @@ public final class Equal<A> {
    *         equality.
    */
   public static <A> Equal<A> anyEqual() {
-    return equal(a1 -> a2 -> a1.equals(a2));
+    return equal(a1 -> a1::equals);
   }
 
   /**

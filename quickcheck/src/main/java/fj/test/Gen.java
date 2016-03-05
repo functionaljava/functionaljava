@@ -294,11 +294,7 @@ public final class Gen<A> {
   public <B> Gen<B> apply(final Gen<F<A, B>> gf) {
     return gf.bind(new F<F<A, B>, Gen<B>>() {
       public Gen<B> f(final F<A, B> f) {
-        return map(new F<A, B>() {
-          public B f(final A a) {
-            return f.f(a);
-          }
-        });
+        return map(f::f);
       }
     });
   }
@@ -492,11 +488,7 @@ public final class Gen<A> {
   public static <A> Gen<A> elemFrequency(final List<P2<Integer, A>> as) {
     return frequency(as.map(new F<P2<Integer, A>, P2<Integer, Gen<A>>>() {
       public P2<Integer, Gen<A>> f(final P2<Integer, A> p) {
-        return p.map2(new F<A, Gen<A>>() {
-          public Gen<A> f(final A a) {
-            return value(a);
-          }
-        });
+        return p.map2(Gen::value);
       }
     }));
   }
@@ -525,11 +517,7 @@ public final class Gen<A> {
    *         requests.
    */
   public static <A> Gen<A> oneOf(final List<Gen<A>> gs) {
-    return gs.isEmpty() ? Gen.<A>fail() : choose(0, gs.length() - 1).bind(new F<Integer, Gen<A>>() {
-      public Gen<A> f(final Integer i) {
-        return gs.index(i);
-      }
-    });
+    return gs.isEmpty() ? Gen.<A>fail() : choose(0, gs.length() - 1).bind(gs::index);
   }
 
   /**

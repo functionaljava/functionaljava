@@ -296,7 +296,7 @@ public abstract class Either<A, B> {
        */
       public <C> List<Either<C, B>> traverseList(final F<A, List<C>> f) {
           return isLeft() ?
-                  f.f(value()).map(x -> Either.<C, B>left(x)) :
+                  f.f(value()).map(Either::<C, B>left) :
                   list(Either.<C, B>right(e.right().value()));
       }
 
@@ -308,7 +308,7 @@ public abstract class Either<A, B> {
        */
       public <C> IO<Either<C, B>> traverseIO(final F<A, IO<C>> f) {
           return isRight() ?
-                  IOFunctions.map(f.f(value()), x -> Either.<C, B>left(x)) :
+                  IOFunctions.map(f.f(value()), Either::<C, B>left) :
                   IOFunctions.unit(Either.<C, B>right(e.right().value()));
       }
 
@@ -335,7 +335,7 @@ public abstract class Either<A, B> {
      * @return The result of function application within either.
      */
     public <X> Either<X, B> apply(final Either<F<A, X>, B> e) {
-      return e.left().bind(f -> map(f));
+      return e.left().bind(this::map);
     }
 
     /**
@@ -416,13 +416,13 @@ public abstract class Either<A, B> {
 
    public <C> Option<Either<C,B>> traverseOption(F<A, Option<C>> f) {
        return isLeft() ?
-               f.f(value()).map(x -> Either.<C, B>left(x)) :
+               f.f(value()).map(Either::<C, B>left) :
                some(Either.<C, B>right(e.right().value()));
    }
 
   public <C> Stream<Either<C, B>> traverseStream(F<A, Stream<C>> f) {
       return isLeft() ?
-              f.f(value()).map(c -> Either.<C, B>left(c)) :
+              f.f(value()).map(Either::<C, B>left) :
               Stream.single(Either.<C, B>right(e.right().value()));
   }
   }
@@ -561,7 +561,7 @@ public abstract class Either<A, B> {
     */
       public <C> List<Either<A, C>> traverseList(final F<B, List<C>> f) {
           return isRight() ?
-                  f.f(value()).map(x -> right(x)) :
+                  f.f(value()).map(Either::right) :
                   list(Either.<A, C>left(e.left().value()));
       }
 
@@ -573,19 +573,19 @@ public abstract class Either<A, B> {
        */
       public <C> IO<Either<A, C>> traverseIO(final F<B, IO<C>> f) {
           return isRight() ?
-                  IOFunctions.map(f.f(value()), x -> Either.<A, C>right(x)) :
+                  IOFunctions.map(f.f(value()), Either::<A, C>right) :
                   IOFunctions.lazy(() -> Either.<A, C>left(e.left().value()));
       }
 
       public <C> P1<Either<A, C>> traverseP1(final F<B, P1<C>> f) {
           return isRight() ?
-                  f.f(value()).map(x -> Either.<A, C>right(x)) :
+                  f.f(value()).map(Either::<A, C>right) :
                   p(Either.<A, C>left(e.left().value()));
       }
 
       public <C> Option<Either<A, C>> traverseOption(final F<B, Option<C>> f) {
           return isRight() ?
-                  f.f(value()).map(x -> Either.<A, C>right(x)) :
+                  f.f(value()).map(Either::<A, C>right) :
                   some(Either.<A, C>left(e.left().value()));
       }
 
@@ -612,7 +612,7 @@ public abstract class Either<A, B> {
      * @return The result of function application within either.
      */
     public <X> Either<A, X> apply(final Either<A, F<B, X>> e) {
-      return e.right().bind(f -> map(f));
+      return e.right().bind(this::map);
     }
 
     /**
@@ -693,7 +693,7 @@ public abstract class Either<A, B> {
 
       public <C> Stream<Either<A, C>> traverseStream(F<B, Stream<C>> f) {
           return isRight() ?
-                  f.f(value()).map(x -> right(x)) :
+                  f.f(value()).map(Either::right) :
                   Stream.<Either<A,C>>single(left(e.left().value()));
 
       }
@@ -715,7 +715,7 @@ public abstract class Either<A, B> {
    * @return A function that constructs a left value of either.
    */
   public static <A, B> F<A, Either<A, B>> left_() {
-    return a -> left(a);
+    return Either::left;
   }
 
   /**
@@ -724,7 +724,7 @@ public abstract class Either<A, B> {
    * @return A function that constructs a right value of either.
    */
   public static <A, B> F<B, Either<A, B>> right_() {
-    return b -> right(b);
+    return Either::right;
   }
 
   /**

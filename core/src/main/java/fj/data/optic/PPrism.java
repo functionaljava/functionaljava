@@ -126,7 +126,7 @@ public abstract class PPrism<S, T, A, B> {
   /** modify polymorphically the target of a {@link PPrism} with an Applicative function */
   public final <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
     return s -> getOrModify(s).either(
-        t -> Validation.<E, T> success(t),
+        Validation::<E, T>success,
         t -> f.f(t).map(this::reverseGet)
         );
   }

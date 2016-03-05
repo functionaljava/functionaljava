@@ -37,7 +37,7 @@ public class IODemo {
      * Read a stream of input lazily using interact, in effect reading the first line
      */
     public void readFirstLine() {
-        F<LazyString, LazyString> f = lift((LazyString s) -> s.lines()).andThen(unlines_());
+        F<LazyString, LazyString> f = lift(LazyString::lines).andThen(unlines_());
         runSafe(interact(f));
     }
 

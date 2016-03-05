@@ -437,11 +437,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, A> __1() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, A>() {
-      public A f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._1();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_1;
   }
 
   /**
@@ -450,11 +446,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, B> __2() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, B>() {
-      public B f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._2();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_2;
   }
 
   /**
@@ -463,11 +455,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, C> __3() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, C>() {
-      public C f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._3();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_3;
   }
 
   /**
@@ -476,11 +464,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the fourth element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, D> __4() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, D>() {
-      public D f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._4();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_4;
   }
 
   /**
@@ -489,11 +473,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the fifth element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, E> __5() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, E>() {
-      public E f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._5();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_5;
   }
 
   /**
@@ -502,11 +482,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the sixth element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, F$> __6() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, F$>() {
-      public F$ f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._6();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_6;
   }
 
   /**
@@ -515,11 +491,7 @@ public abstract class P7<A, B, C, D, E, F, G> {
    * @return A function that returns the seventh element of a product.
    */
   public static <A, B, C, D, E, F$, G> fj.F<P7<A, B, C, D, E, F$, G>, G> __7() {
-    return new fj.F<P7<A, B, C, D, E, F$, G>, G>() {
-      public G f(final P7<A, B, C, D, E, F$, G> p) {
-        return p._7();
-      }
-    };
+    return P7<A, B, C, D, E, F$, G>::_7;
   }
 
   @Override

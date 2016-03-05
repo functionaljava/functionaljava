@@ -156,7 +156,7 @@ public final class Result {
    * @return The result that may be {@link #noResult() noResult()}.
    */
   public static Result noResult(final Option<Result> r) {
-    return r.orSome(() -> noResult());
+    return r.orSome(Result::noResult);
   }
 
   /**

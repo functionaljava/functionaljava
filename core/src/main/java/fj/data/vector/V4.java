@@ -30,7 +30,7 @@ public final class V4<A> implements Iterable<A> {
    * @return A new vector-4.
    */
   public static <A> V4<A> p(final P4<A, A, A, A> p) {
-    return new V4<A>(P.lazy(() -> p._1()),
+    return new V4<A>(P.lazy(p::_1),
     V3.p(new P3<A, A, A>() {
       public A _1() {
         return p._2();
@@ -160,7 +160,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a stream of the elements of this vector.
    */
   public Stream<A> toStream() {
-    return Stream.cons(head._1(), () -> tail.toStream());
+    return Stream.cons(head._1(), tail::toStream);
   }
 
   /**
@@ -233,7 +233,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that transforms a vector-4 to a stream of its elements.
    */
   public static <A> F<V4<A>, Stream<A>> toStream_() {
-    return v -> v.toStream();
+    return V4::toStream;
   }
 
   /**
@@ -242,7 +242,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that transforms a vector-4 to the equivalent product-4.
    */
   public static <A> F<V4<A>, P4<A, A, A, A>> p_() {
-    return v -> v.p();
+    return V4::p;
   }
 
   /**
@@ -251,7 +251,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the first element of a given vector.
    */
   public static <A> F<V4<A>, A> __1() {
-    return v -> v._1();
+    return V4::_1;
   }
 
   /**
@@ -260,7 +260,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the second element of a given vector.
    */
   public static <A> F<V4<A>, A> __2() {
-    return v -> v._2();
+    return V4::_2;
   }
 
   /**
@@ -269,7 +269,7 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the third element of a given vector.
    */
   public static <A> F<V4<A>, A> __3() {
-    return v -> v._3();
+    return V4::_3;
   }
 
   /**
@@ -278,6 +278,6 @@ public final class V4<A> implements Iterable<A> {
    * @return a function that gets the fourth element of a given vector.
    */
   public static <A> F<V4<A>, A> __4() {
-    return v -> v._4();
+    return V4::_4;
   }
 }

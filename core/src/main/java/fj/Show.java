@@ -79,7 +79,7 @@ public final class Show<A> {
    * @return the transformation equivalent to this show.
    */
   public F<A, String> showS_() {
-    return a -> showS(a);
+    return this::showS;
   }
 
   /**

@@ -210,7 +210,7 @@ public final class Parser<I, A, E> {
    * @return A new parser after function application.
    */
   public <B> Parser<I, B, E> apply(final Parser<I, F<A, B>, E> p) {
-    return p.bind((F<F<A, B>, Parser<I, B, E>>) f1 -> map(f1));
+    return p.bind((F<F<A, B>, Parser<I, B, E>>) this::map);
   }
 
   /**
@@ -549,7 +549,7 @@ public final class Parser<I, A, E> {
      * @return A parser that produces a digit (0 to 9).
      */
     public static <E> Parser<Stream<Character>, Digit, E> digit(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isDigit(c)).map(c1 -> Digit.fromChar(c1).some());
+      return StreamParser.satisfy(missing, sat, Character::isDigit).map(c1 -> Digit.fromChar(c1).some());
     }
 
     /**
@@ -572,7 +572,7 @@ public final class Parser<I, A, E> {
      * @see Character#isLowerCase(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> lower(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isLowerCase(c));
+      return StreamParser.satisfy(missing, sat, Character::isLowerCase);
     }
 
     /**
@@ -596,7 +596,7 @@ public final class Parser<I, A, E> {
      * @see Character#isUpperCase(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> upper(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isUpperCase(c));
+      return StreamParser.satisfy(missing, sat, Character::isUpperCase);
     }
 
     /**
@@ -620,7 +620,7 @@ public final class Parser<I, A, E> {
      * @see Character#isDefined(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> defined(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isDefined(c));
+      return StreamParser.satisfy(missing, sat, Character::isDefined);
     }
 
     /**
@@ -645,7 +645,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> highSurrogate(final F0<E> missing,
                                                                             final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isHighSurrogate(c));
+      return StreamParser.satisfy(missing, sat, Character::isHighSurrogate);
     }
 
     /**
@@ -671,7 +671,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> identifierIgnorable(final F0<E> missing,
                                                                                   final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isIdentifierIgnorable(c));
+      return StreamParser.satisfy(missing, sat, Character::isIdentifierIgnorable);
     }
 
     /**
@@ -697,7 +697,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> isoControl(final F0<E> missing,
                                                                          final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isISOControl(c));
+      return StreamParser.satisfy(missing, sat, Character::isISOControl);
     }
 
     /**
@@ -722,7 +722,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> javaIdentifierPart(final F0<E> missing,
                                                                                  final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isJavaIdentifierPart(c));
+      return StreamParser.satisfy(missing, sat, Character::isJavaIdentifierPart);
     }
 
     /**
@@ -748,7 +748,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> javaIdentifierStart(final F0<E> missing,
                                                                                   final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isJavaIdentifierStart(c));
+      return StreamParser.satisfy(missing, sat, Character::isJavaIdentifierStart);
     }
 
     /**
@@ -773,7 +773,7 @@ public final class Parser<I, A, E> {
      * @see Character#isLetter(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> alpha(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isLetter(c));
+      return StreamParser.satisfy(missing, sat, Character::isLetter);
     }
 
     /**
@@ -797,7 +797,7 @@ public final class Parser<I, A, E> {
      * @see Character#isLetterOrDigit(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> alphaNum(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isLetterOrDigit(c));
+      return StreamParser.satisfy(missing, sat, Character::isLetterOrDigit);
     }
 
     /**
@@ -822,7 +822,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> lowSurrogate(final F0<E> missing,
                                                                            final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isLowSurrogate(c));
+      return StreamParser.satisfy(missing, sat, Character::isLowSurrogate);
     }
 
     /**
@@ -846,7 +846,7 @@ public final class Parser<I, A, E> {
      * @see Character#isMirrored(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> mirrored(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isMirrored(c));
+      return StreamParser.satisfy(missing, sat, Character::isMirrored);
     }
 
     /**
@@ -870,7 +870,7 @@ public final class Parser<I, A, E> {
      * @see Character#isSpace(char)
      */
     public static <E> Parser<Stream<Character>, Character, E> space(final F0<E> missing, final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isSpaceChar(c));
+      return StreamParser.satisfy(missing, sat, Character::isSpaceChar);
     }
 
     /**
@@ -895,7 +895,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> titleCase(final F0<E> missing,
                                                                         final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isTitleCase(c));
+      return StreamParser.satisfy(missing, sat, Character::isTitleCase);
     }
 
     /**
@@ -920,7 +920,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferPart(final F0<E> missing,
                                                                                    final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isUnicodeIdentifierPart(c));
+      return StreamParser.satisfy(missing, sat, Character::isUnicodeIdentifierPart);
     }
 
     /**
@@ -946,7 +946,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> unicodeIdentiferStart(final F0<E> missing,
                                                                                     final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isUnicodeIdentifierStart(c));
+      return StreamParser.satisfy(missing, sat, Character::isUnicodeIdentifierStart);
     }
 
     /**
@@ -972,7 +972,7 @@ public final class Parser<I, A, E> {
      */
     public static <E> Parser<Stream<Character>, Character, E> whitespace(final F0<E> missing,
                                                                          final F<Character, E> sat) {
-      return StreamParser.satisfy(missing, sat, c -> Character.isWhitespace(c));
+      return StreamParser.satisfy(missing, sat, Character::isWhitespace);
     }
 
     /**

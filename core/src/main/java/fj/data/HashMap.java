@@ -161,7 +161,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A curried version of {@link #get(Object)}.
    */
   public F<K, Option<V>> get() {
-    return k -> get(k);
+    return this::get;
   }
 
   /**

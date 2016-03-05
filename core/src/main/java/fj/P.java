@@ -18,7 +18,7 @@ public final class P {
    * @return A function that puts an element in a product-1.
    */
   public static <A> F<A, P1<A>> p1() {
-    return a -> p(a);
+    return P::p;
   }
 
   /**

@@ -74,7 +74,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return A function that yields a new zipper given streams on the left and right and a focus element.
    */
   public static <A> F3<Stream<A>, A, Stream<A>, Zipper<A>> zipper() {
-    return (l, a, r) -> zipper(l, a, r);
+    return Zipper::zipper;
   }
 
   /**
@@ -92,7 +92,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return A first-class function that yields the product-3 representation of a given Zipper.
    */
   public static <A> F<Zipper<A>, P3<Stream<A>, A, Stream<A>>> p_() {
-    return a -> a.p();
+    return Zipper::p;
   }
 
   /**
@@ -255,7 +255,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return A function that moves the given zipper's focus to the next element.
    */
   public static <A> F<Zipper<A>, Option<Zipper<A>>> next_() {
-    return as -> as.next();
+    return Zipper::next;
   }
 
   /**
@@ -264,7 +264,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return A function that moves the given zipper's focus to the previous element.
    */
   public static <A> F<Zipper<A>, Option<Zipper<A>>> previous_() {
-    return as -> as.previous();
+    return Zipper::previous;
   }
 
   /**

@@ -33,7 +33,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function that returns the first element of a product.
      */
     public static <A> F<P1<A>, A> __1() {
-        return p -> p._1();
+        return P1::_1;
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A function from a List of P1s to a single P1 of a List.
      */
     public static <A> F<List<P1<A>>, P1<List<A>>> sequenceList() {
-        return as -> sequence(as);
+        return P1::sequence;
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class P1<A> implements F0<A> {
 	 * Turns an optional P1 into a lazy option.
 	 */
 	public static <A> P1<Option<A>> sequence(final Option<P1<A>> o) {
-		return P.lazy(() -> o.map(p -> p._1()));
+		return P.lazy(() -> o.map(P1::_1));
 	}
 
     /**
@@ -184,7 +184,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A List of P1<B>
      */
     public <B> List<P1<B>> traverseList(final F<A, List<B>>  f){
-        return f.f(_1()).map(b -> P.p(b));
+        return f.f(_1()).map(P::p);
     }
 
     /**
@@ -194,7 +194,7 @@ public abstract class P1<A> implements F0<A> {
      * @return An Either of  P1<B>
      */
     public <B, X> Either<X, P1<B>> traverseEither(final F<A, Either<X, B>>  f){
-        return f.f(_1()).right().map(b -> P.p(b));
+        return f.f(_1()).right().map(P::p);
     }
 
     /**
@@ -204,7 +204,7 @@ public abstract class P1<A> implements F0<A> {
      * @return An Option of  P1<B>
      */
     public <B> Option<P1<B>> traverseOption(final F<A, Option<B>>  f){
-        return f.f(_1()).map(b -> P.p(b));
+        return f.f(_1()).map(P::p);
     }
 
     /**
@@ -214,7 +214,7 @@ public abstract class P1<A> implements F0<A> {
      * @return An Validation  of P1<B>
      */
     public <B, E> Validation<E, P1<B>> traverseValidation(final F<A, Validation<E, B>> f){
-        return f.f(_1()).map(b -> P.p(b));
+        return f.f(_1()).map(P::p);
     }
 
     /**
@@ -224,7 +224,7 @@ public abstract class P1<A> implements F0<A> {
      * @return An Stream of  P1<B>
      */
     public <B> Stream<P1<B>> traverseStream(final F<A, Stream<B>>  f){
-        return f.f(_1()).map(b -> P.p(b));
+        return f.f(_1()).map(P::p);
     }
 
     /**

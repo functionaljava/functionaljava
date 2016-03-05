@@ -264,7 +264,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return a functional representation of this TreeMap.
    */
   public F<K, Option<V>> get() {
-    return k -> get(k);
+    return this::get;
   }
 
   /**
@@ -377,7 +377,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
      * Returns the minimum key in the tree if the tree is not empty.
      */
     public Option<K> minKey() {
-        return tree.min().map(p -> p._1());
+        return tree.min().map(P2::_1);
     }
 
     /**
@@ -391,7 +391,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
      * Returns the maximum key in the tree if the tree is not empty.
      */
     public Option<K> maxKey() {
-        return tree.max().map(p -> p._1());
+        return tree.max().map(P2::_1);
     }
 
   	/**

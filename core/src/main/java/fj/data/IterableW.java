@@ -42,7 +42,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A function that returns the given iterable, wrapped.
    */
   public static <A, T extends Iterable<A>> F<T, IterableW<A>> wrap() {
-    return a -> wrap(a);
+    return IterableW::wrap;
   }
 
   /**
@@ -73,7 +73,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A transformation from a function to the equivalent Iterable-valued function.
    */
   public static <A, B> F<F<A, B>, F<A, IterableW<B>>> arrow() {
-    return f -> iterable(f);
+    return IterableW::iterable;
   }
 
   /**
@@ -93,7 +93,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A new iterable after applying the given iterable function to the wrapped iterable.
    */
   public <B> IterableW<B> apply(final Iterable<F<A, B>> f) {
-    return wrap(f).bind(f1 -> map(f1));
+    return wrap(f).bind(this::map);
   }
 
   /**
@@ -143,7 +143,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that binds a given function across a given iterable.
    */
   public static <A, B, T extends Iterable<B>> F<IterableW<A>, F<F<A, T>, IterableW<B>>> bind() {
-    return a -> f -> a.bind(f);
+    return a -> a::bind;
   }
 
   /**
@@ -163,7 +163,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that joins an Iterable of Iterables into a single Iterable.
    */
   public static <A, T extends Iterable<A>> F<Iterable<T>, IterableW<A>> join() {
-    return a -> join(a);
+    return IterableW::join;
   }
 
   /**

@@ -32,7 +32,7 @@ public final class Java8 {
     }
 
     public static <A> F<Supplier<A>, P1<A>> Supplier_P1() {
-        return s -> P.lazy(() -> s.get());
+        return s -> P.lazy(s::get);
     }
 
     public static <A> Supplier<A> P1_Supplier(final P1<A> p) {
@@ -40,7 +40,7 @@ public final class Java8 {
     }
 
     public static <A> F<P1<A>, Supplier<A>> P1_Supplier() {
-        return (p) -> () -> p._1();
+        return (p) -> p::_1;
     }
 
     public static <A, B> F<A, B> Function_F(final Function<A, B> f) {
@@ -48,7 +48,7 @@ public final class Java8 {
     }
 
     public static <A, B> F<Function<A, B>, F<A, B>> Function_F() {
-        return f -> a -> f.apply(a);
+        return f -> f::apply;
     }
 
     public static <A, B> Function<A, B> F_Function(final F<A, B> f) {
@@ -56,7 +56,7 @@ public final class Java8 {
     }
 
     public static <A, B> F<F<A, B>, Function<A, B>> F_Function() {
-        return f -> a -> f.f(a);
+        return f -> f::f;
     }
 
     public static <A, B, C> F2<A, B, C> BiFunction_F2(final BiFunction<A, B, C> f) {
@@ -64,7 +64,7 @@ public final class Java8 {
     }
 
     public static <A, B, C> F<BiFunction<A, B, C>, F2<A, B, C>> BiFunction_F2() {
-        return f -> (a, b) -> f.apply(a, b);
+        return f -> f::apply;
     }
 
     public static <A, B, C> BiFunction<A, B, C> F2_BiFunction(final F2<A, B, C> f) {
@@ -72,7 +72,7 @@ public final class Java8 {
     }
 
     public static <A, B, C> F<F2<A, B, C>, BiFunction<A, B, C>> F2_BiFunction() {
-        return f -> (a, b) -> f.f(a, b);
+        return f -> f::f;
     }
 
     public static <A, E extends Exception> Supplier<Validation<E, A>> TryCatch0_Supplier(final Try0<A, E> t) {
@@ -120,7 +120,7 @@ public final class Java8 {
     }
 
     public static <A> F<Consumer<A>, F<A, Unit>> Consumer_F() {
-        return c -> Consumer_F(c);
+        return Java8::Consumer_F;
     }
 
     public static <A> F<A, Unit> Consumer_F(final Consumer<A> c) {
@@ -143,7 +143,7 @@ public final class Java8 {
     }
 
     public static <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JavaStream() {
-        return s -> Stream_JavaStream(s);
+        return Java8::Stream_JavaStream;
     }
 
     public static <A> Stream<A> JavaStream_Stream(final java.util.stream.Stream<A> s) {

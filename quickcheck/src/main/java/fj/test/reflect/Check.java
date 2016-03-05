@@ -300,11 +300,7 @@ public final class Check {
       }
     };
 
-    final F<Name, String> nameS = new F<Name, String>() {
-      public String f(final Name name) {
-        return name.value();
-      }
-    };
+    final F<Name, String> nameS = Name::value;
 
     return ms.filter(new F<PropertyMember, Boolean>() {
       public Boolean f(final PropertyMember m) {

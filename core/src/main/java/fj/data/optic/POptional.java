@@ -458,7 +458,7 @@ public abstract class POptional<S, T, A, B> {
       @Override
       public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
         return s -> getOrModify.f(s).either(
-            t -> Validation.<E, T> success(t),
+            Validation::<E, T>success,
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }

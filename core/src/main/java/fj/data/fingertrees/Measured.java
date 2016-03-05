@@ -74,7 +74,7 @@ public final class Measured<V, A> {
    * @return A measured instance for nodes.
    */
   public Measured<V, Node<V, A>> nodeMeasured() {
-    return new Measured<V, Node<V, A>>(m, node -> node.measure());
+    return new Measured<V, Node<V, A>>(m, Node::measure);
   }
 
   /**
@@ -83,7 +83,7 @@ public final class Measured<V, A> {
    * @return A measured instance for digits.
    */
   public Measured<V, Digit<V, A>> digitMeasured() {
-    return new Measured<V, Digit<V, A>>(m, d -> d.measure());
+    return new Measured<V, Digit<V, A>>(m, Digit::measure);
   }
 
 }

@@ -56,7 +56,7 @@ public final class ParModule {
    * @return a function that evaluates a given product concurrently and returns a Promise of the result.
    */
   public <A> F<P1<A>, Promise<A>> promise() {
-    return ap1 -> promise(ap1);
+    return this::promise;
   }
 
   /**
@@ -77,7 +77,7 @@ public final class ParModule {
    * @return A higher-order function that takes pure functions to promise-valued functions.
    */
   public <A, B> F<F<A, B>, F<A, Promise<B>>> promisePure() {
-    return abf -> promise(abf);
+    return this::promise;
   }
 
   /**
@@ -110,7 +110,7 @@ public final class ParModule {
    * @return A function that takes an effect and returns a concurrent effect.
    */
   public <A> F<Effect1<A>, Actor<A>> effect() {
-    return effect -> effect(effect);
+    return this::effect;
   }
 
   /**
@@ -129,7 +129,7 @@ public final class ParModule {
    * @return A function that takes an effect and returns an actor that processes messages in some order.
    */
   public <A> F<Effect1<A>, Actor<A>> actor() {
-    return effect -> actor(effect);
+    return this::actor;
   }
 
   /**
@@ -148,7 +148,7 @@ public final class ParModule {
    * @return A first-class function that traverses a list inside a promise.
    */
   public <A> F<List<Promise<A>>, Promise<List<A>>> sequenceList() {
-    return list -> sequence(list);
+    return this::sequence;
   }
 
   /**
@@ -167,7 +167,7 @@ public final class ParModule {
    * @return A first-class function that traverses a stream inside a promise.
    */
   public <A> F<Stream<Promise<A>>, Promise<Stream<A>>> sequenceStream() {
-    return stream -> sequence(stream);
+    return this::sequence;
   }
 
   /**
@@ -313,7 +313,7 @@ public final class ParModule {
    * @return A Promise of a new Array with the given function applied to each element.
    */
   public <A, B> Promise<Array<B>> parMap(final Array<A> as, final F<A, B> f) {
-    return parMap(as.toStream(), f).fmap(stream -> stream.toArray());
+    return parMap(as.toStream(), f).fmap(Stream::toArray);
   }
 
   /**
@@ -452,7 +452,7 @@ public final class ParModule {
    * @return A Promise of a new array with the results of applying the given function across the two arrays, stepwise.
    */
   public <A, B, C> Promise<Array<C>> parZipWith(final Array<A> as, final Array<B> bs, final F<A, F<B, C>> f) {
-    return parZipWith(as.toStream(), bs.toStream(), f).fmap(stream -> stream.toArray());
+    return parZipWith(as.toStream(), bs.toStream(), f).fmap(Stream::toArray);
   }
 
   /**
@@ -515,7 +515,7 @@ public final class ParModule {
   public <A, B> Promise<B> parFoldMap(final Iterable<A> as, final F<A, B> map, final Monoid<B> reduce,
                                       final F<Iterable<A>, P2<Iterable<A>, Iterable<A>>> chunking) {
     return parFoldMap(iterableStream(as), map, reduce, (Stream<A> stream) -> {
-      final F<Iterable<A>, Stream<A>> is = iterable -> iterableStream(iterable);
+      final F<Iterable<A>, Stream<A>> is = Stream::iterableStream;
       return chunking.f(stream).map1(is).map2(is);
     });
   }

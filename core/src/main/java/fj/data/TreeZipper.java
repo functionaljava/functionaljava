@@ -81,7 +81,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
   F<Tree<A>, F<Stream<Tree<A>>, F<Stream<Tree<A>>, F<Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>>, TreeZipper<A>>>>>
   treeZipper() {
     return curry(
-            (tree, lefts, rights, parents) -> treeZipper(tree, lefts, rights, parents));
+        TreeZipper::treeZipper);
   }
 
   /**
@@ -100,7 +100,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    */
   public static <A>
   F<TreeZipper<A>, P4<Tree<A>, Stream<Tree<A>>, Stream<Tree<A>>, Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>>>> p_() {
-    return a -> a.p();
+    return TreeZipper::p;
   }
 
   /**
@@ -167,7 +167,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    * @return A function that returns a new tree-zipper focused on the root of the given tree zipper's tree.
    */
   public static <A> F<TreeZipper<A>, TreeZipper<A>> root_() {
-    return a -> a.root();
+    return TreeZipper::root;
   }
 
   /**
@@ -553,7 +553,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    * @return A function that takes a tree to its tree zipper representation.
    */
   public static <A> F<Tree<A>, TreeZipper<A>> fromTree() {
-    return t -> fromTree(t);
+    return TreeZipper::fromTree;
   }
 
   /**
@@ -562,7 +562,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    * @return A function that focuses the given tree zipper on its left sibling.
    */
   public static <A> F<TreeZipper<A>, Option<TreeZipper<A>>> left_() {
-    return z -> z.left();
+    return TreeZipper::left;
   }
 
   /**
@@ -571,7 +571,7 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    * @return A function that focuses the given tree zipper on its right sibling.
    */
   public static <A> F<TreeZipper<A>, Option<TreeZipper<A>>> right_() {
-    return z -> z.right();
+    return TreeZipper::right;
   }
 
   /**

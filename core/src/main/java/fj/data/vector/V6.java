@@ -30,7 +30,7 @@ public final class V6<A> implements Iterable<A> {
    * @return A new vector-6.
    */
   public static <A> V6<A> p(final P6<A, A, A, A, A, A> p) {
-    return new V6<A>(P.lazy(() -> p._1()),
+    return new V6<A>(P.lazy(p::_1),
     V5.p(new P5<A, A, A, A, A>() {
       public A _1() {
         return p._2();
@@ -194,7 +194,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a stream of the elements of this vector.
    */
   public Stream<A> toStream() {
-    return Stream.cons(head._1(), () -> tail.toStream());
+    return Stream.cons(head._1(), tail::toStream);
   }
 
   /**
@@ -267,7 +267,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that transforms a vector-6 to a stream of its elements.
    */
   public static <A> F<V6<A>, Stream<A>> toStream_() {
-    return v -> v.toStream();
+    return V6::toStream;
   }
 
   /**
@@ -276,7 +276,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that transforms a vector-6 to the equivalent product-6.
    */
   public static <A> F<V6<A>, P6<A, A, A, A, A, A>> p_() {
-    return v -> v.p();
+    return V6::p;
   }
 
   /**
@@ -285,7 +285,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that gets the first element of a given vector.
    */
   public static <A> F<V6<A>, A> __1() {
-    return v -> v._1();
+    return V6::_1;
   }
 
   /**
@@ -294,7 +294,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that gets the second element of a given vector.
    */
   public static <A> F<V6<A>, A> __2() {
-    return v -> v._2();
+    return V6::_2;
   }
 
   /**
@@ -303,7 +303,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that gets the third element of a given vector.
    */
   public static <A> F<V6<A>, A> __3() {
-    return v -> v._3();
+    return V6::_3;
   }
 
   /**
@@ -312,7 +312,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that gets the fourth element of a given vector.
    */
   public static <A> F<V6<A>, A> __4() {
-    return v -> v._4();
+    return V6::_4;
   }
 
   /**
@@ -321,7 +321,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that gets the fifth element of a given vector.
    */
   public static <A> F<V6<A>, A> __5() {
-    return v -> v._5();
+    return V6::_5;
   }
 
   /**
@@ -330,7 +330,7 @@ public final class V6<A> implements Iterable<A> {
    * @return a function that gets the sixth element of a given vector.
    */
   public static <A> F<V6<A>, A> __6() {
-    return v -> v._6();
+    return V6::_6;
   }
 
 }

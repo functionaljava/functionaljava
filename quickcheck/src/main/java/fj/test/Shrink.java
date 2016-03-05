@@ -235,7 +235,7 @@ public final class Shrink<A> {
                                                            .map(aas1 -> aas1.append(as2))
                                                            .interleave(removeChunks(n2, as2)
                                                                    .filter(isNotEmpty)
-                                                                   .map(aas -> as1.append(aas)))));
+                                                                   .map(as1::append))));
                   })
           );
         }
@@ -301,7 +301,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for throwables.
    */
   public static Shrink<Throwable> shrinkThrowable(final Shrink<String> ss) {
-    return ss.map(s -> new Throwable(s), t -> t.getMessage());
+    return ss.map(Throwable::new, Throwable::getMessage);
   }
 
   /**
@@ -341,7 +341,7 @@ public final class Shrink<A> {
    * A shrink strategy for dates.
    */
   public static final Shrink<Date> shrinkDate =
-      shrinkLong.map(i -> new Date(i), d -> d.getTime());
+      shrinkLong.map(Date::new, Date::getTime);
 
   /**
    * A shrink strategy for enum maps.
@@ -351,7 +351,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for enum maps.
    */
   public static <K extends Enum<K>, V> Shrink<EnumMap<K, V>> shrinkEnumMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new EnumMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(EnumMap::new, Hashtable::new);
   }
 
   /**
@@ -382,7 +382,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for hash maps.
    */
   public static <K, V> Shrink<HashMap<K, V>> shrinkHashMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new HashMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(HashMap::new, Hashtable::new);
   }
 
   /**
@@ -427,7 +427,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for identity hash maps.
    */
   public static <K, V> Shrink<IdentityHashMap<K, V>> shrinkIdentityHashMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new IdentityHashMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(IdentityHashMap::new, Hashtable::new);
   }
 
   /**
@@ -438,7 +438,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for linked hash maps.
    */
   public static <K, V> Shrink<LinkedHashMap<K, V>> shrinkLinkedHashMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new LinkedHashMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(LinkedHashMap::new, Hashtable::new);
   }
 
   /**
@@ -511,7 +511,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for tree maps.
    */
   public static <K, V> Shrink<TreeMap<K, V>> shrinkTreeMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new TreeMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(TreeMap::new, Hashtable::new);
   }
 
   /**
@@ -542,7 +542,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for weak hash maps.
    */
   public static <K, V> Shrink<WeakHashMap<K, V>> shrinkWeakHashMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new WeakHashMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(WeakHashMap::new, Hashtable::new);
   }
 
   // END java.util
@@ -567,7 +567,7 @@ public final class Shrink<A> {
    * @return A shrink strategy for concurrent hash maps.
    */
   public static <K, V> Shrink<ConcurrentHashMap<K, V>> shrinkConcurrentHashMap(final Shrink<K> sk, final Shrink<V> sv) {
-    return shrinkHashtable(sk, sv).map(h -> new ConcurrentHashMap<K, V>(h), m -> new Hashtable<K, V>(m));
+    return shrinkHashtable(sk, sv).map(ConcurrentHashMap::new, Hashtable::new);
   }
 
   /**
@@ -648,19 +648,19 @@ public final class Shrink<A> {
    * A shrink strategy for SQL dates.
    */
   public static final Shrink<java.sql.Date> shrinkSQLDate =
-      shrinkLong.map(i -> new java.sql.Date(i), c -> c.getTime());
+      shrinkLong.map(java.sql.Date::new, Date::getTime);
 
   /**
    * A shrink strategy for SQL times.
    */
   public static final Shrink<Time> shrinkTime =
-      shrinkLong.map(i -> new Time(i), c -> c.getTime());
+      shrinkLong.map(Time::new, Date::getTime);
 
   /**
    * A shrink strategy for SQL timestamps.
    */
   public static final Shrink<Timestamp> shrinkTimestamp =
-      shrinkLong.map(i -> new Timestamp(i), c -> c.getTime());
+      shrinkLong.map(Timestamp::new, Timestamp::getTime);
 
   // END java.sql
 
@@ -691,7 +691,7 @@ public final class Shrink<A> {
    * A shrink strategy for big decimals.
    */
   public static final Shrink<BigDecimal> shrinkBigDecimal =
-      shrinkBigInteger.map(i -> new BigDecimal(i), d -> d.toBigInteger());
+      shrinkBigInteger.map(BigDecimal::new, BigDecimal::toBigInteger);
 
   // END java.math
 
@@ -702,7 +702,7 @@ public final class Shrink<A> {
    * @return a shrinking strategy for product-1 values.
    */
   public static <A> Shrink<P1<A>> shrinkP1(final Shrink<A> sa) {
-    return shrink(p -> sa.shrink(p._1()).map(a -> p(a)));
+    return shrink(p -> sa.shrink(p._1()).map(P::p));
   }
 
   /**

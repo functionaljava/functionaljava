@@ -369,7 +369,7 @@ public final class Enumerator<A> {
    */
   public static final Enumerator<Natural> naturalEnumerator = enumerator(
       n -> some(n.succ()),
-      n -> n.pred(),
+      Natural::pred,
       Option.<Natural>none(), some(Natural.ZERO), naturalOrd,
       curry((n, l) ->
         some(n).apply(

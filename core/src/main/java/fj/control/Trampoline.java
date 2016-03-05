@@ -57,7 +57,7 @@ public abstract class Trampoline<A> {
           // WARNING: In JDK 8, update 25 (current version) the following code is a
           // workaround for an internal JDK compiler error, likely due to
           // https:bugs.openjdk.java.net/browse/JDK-8062253.
-          F<Normal<Object>, Trampoline<A>> f = o -> o.foldNormal(o1 -> cont.f(o1), t -> t._1().bind(cont));
+          F<Normal<Object>, Trampoline<A>> f = o -> o.foldNormal(cont::f, t -> t._1().bind(cont));
           F<Codense<Object>, Trampoline<A>> g = c -> codense(c.sub, o -> c.cont.f(o).bind(cont));
           return ot.fold(f, g);
         });
@@ -117,7 +117,7 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `pure`.
    */
   public static <A> F<A, Trampoline<A>> pure() {
-    return a -> pure(a);
+    return Trampoline::pure;
   }
 
   /**
@@ -144,7 +144,7 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `suspend`.
    */
   public static <A> F<P1<Trampoline<A>>, Trampoline<A>> suspend_() {
-    return trampolineP1 -> suspend(trampolineP1);
+    return Trampoline::suspend;
   }
 
   protected abstract <R> R fold(final F<Normal<A>, R> n, final F<Codense<A>, R> gs);
@@ -185,7 +185,7 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `resume`.
    */
   public static <A> F<Trampoline<A>, Either<P1<Trampoline<A>>, A>> resume_() {
-    return aTrampoline -> aTrampoline.resume();
+    return Trampoline::resume;
   }
 
   /**
@@ -221,7 +221,7 @@ public abstract class Trampoline<A> {
    * @return A new Trampoline after applying the given function through this Trampoline.
    */
   public final <B> Trampoline<B> apply(final Trampoline<F<A, B>> lf) {
-    return lf.bind(f -> map(f));
+    return lf.bind(this::map);
   }
 
   /**

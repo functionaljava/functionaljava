@@ -55,7 +55,7 @@ public final class Result<I, A> implements Iterable<A> {
    * @return A first-class function mapping across the remainder of the parse input.
    */
   public <J> F<F<I, J>, Result<J, A>> mapRest() {
-    return f -> mapRest(f);
+    return this::mapRest;
   }
 
   /**
@@ -74,7 +74,7 @@ public final class Result<I, A> implements Iterable<A> {
    * @return A first-class function mapping across the parse value.
    */
   public <B> F<F<A, B>, Result<I, B>> mapValue() {
-    return f -> mapValue(f);
+    return this::mapValue;
   }
 
   /**
@@ -94,7 +94,7 @@ public final class Result<I, A> implements Iterable<A> {
    * @return A first-class bifunctor map.
    */
   public <B, J> F<F<I, J>, F<F<A, B>, Result<J, B>>> bimap() {
-    return curry((f, g) -> bimap(f, g));
+    return curry(this::bimap);
   }
 
   /**
@@ -142,7 +142,7 @@ public final class Result<I, A> implements Iterable<A> {
    * @return A first-class function for construction of a result.
    */
   public static <A, I> F<I, F<A, Result<I, A>>> result() {
-    return curry((i, a) -> result(i, a));
+    return curry(Result::result);
   }
 
 }

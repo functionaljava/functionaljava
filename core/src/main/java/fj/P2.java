@@ -42,7 +42,7 @@ public abstract class P2<A, B> {
    * @return A new product-2 with the elements swapped.
    */
   public final P2<B, A> swap() {
-      return P.lazy(() -> P2.this._2(), () -> P2.this._1());
+      return P.lazy(P2.this::_2, P2.this::_1);
   }
 
   /**
@@ -53,7 +53,7 @@ public abstract class P2<A, B> {
    */
   public final <X> P2<X, B> map1(final F<A, X> f) {
       P2<A, B> self = this;
-      return P.lazy(() -> f.f(self._1()), () -> self._2());
+      return P.lazy(() -> f.f(self._1()), self::_2);
   }
 
   /**
@@ -63,7 +63,7 @@ public abstract class P2<A, B> {
    * @return A product with the given function applied.
    */
   public final <X> P2<A, X> map2(final F<B, X> f) {
-      return P.lazy(() -> P2.this._1(), () -> f.f(P2.this._2()));
+      return P.lazy(P2.this::_1, () -> f.f(P2.this._2()));
   }
 
 
@@ -90,7 +90,7 @@ public abstract class P2<A, B> {
    */
   public final <C> P2<C, B> cobind(final F<P2<A, B>, C> k) {
       P2<A, B> self = this;
-      return P.lazy(() -> k.f(self), () -> self._2());
+      return P.lazy(() -> k.f(self), self::_2);
   }
 
   /**
@@ -258,7 +258,7 @@ public abstract class P2<A, B> {
    * @return A curried form of {@link #swap()}.
    */
   public static <A, B> F<P2<A, B>, P2<B, A>> swap_() {
-    return p -> p.swap();
+    return P2::swap;
   }
 
   /**
@@ -267,7 +267,7 @@ public abstract class P2<A, B> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B> F<P2<A, B>, A> __1() {
-    return p -> p._1();
+    return P2::_1;
   }
 
   /**
@@ -276,7 +276,7 @@ public abstract class P2<A, B> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B> F<P2<A, B>, B> __2() {
-    return p -> p._2();
+    return P2::_2;
   }
 
   /**

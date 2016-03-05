@@ -38,7 +38,7 @@ public abstract class Digit<V, A> {
    */
     public final A reduceRight(final F<A, F<A, A>> f) {
         return match(
-            one -> one.value(),
+            One::value,
             two -> {
                 final V2<A> v = two.values();
                 return f.f(v._1()).f(v._2());
@@ -62,7 +62,7 @@ public abstract class Digit<V, A> {
    */
   public final A reduceLeft(final F<A, F<A, A>> f) {
     return match(
-        one -> one.value(),
+        One::value,
         two -> {
             final V2<A> v = two.values();
             return f.f(v._1()).f(v._2());

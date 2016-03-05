@@ -527,7 +527,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A new array after applying the given array of functions through this array.
    */
   public <B> Array<B> apply(final Array<F<A, B>> lf) {
-    return lf.bind(f -> map(a -> f.f(a)));
+    return lf.bind(f -> map(f::f));
   }
 
   /**
@@ -606,7 +606,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that wraps a given array.
    */
   public static <A> F<A[], Array<A>> wrap() {
-    return as -> array(as);
+    return Array::array;
   }
 
   /**
@@ -635,7 +635,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A function that joins a array of arrays using a bind operation.
    */
   public static <A> F<Array<Array<A>>, Array<A>> join() {
-    return as -> join(as);
+    return Array::join;
   }
 
   /**

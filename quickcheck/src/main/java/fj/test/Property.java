@@ -469,11 +469,7 @@ public final class Property {
 
                 if (results.isEmpty())
                   return none();
-                else return results.find(new F<Option<P2<A, Result>>, Boolean>() {
-                  public Boolean f(final Option<P2<A, Result>> o) {
-                    return failed(o);
-                  }
-                }).orSome(() -> results.head());
+                else return results.find(this::failed).orSome(results::head);
               }
 
               public boolean failed(final Option<P2<A, Result>> o) {

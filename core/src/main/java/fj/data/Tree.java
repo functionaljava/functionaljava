@@ -107,7 +107,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A transformation from a tree to its root.
    */
   public static <A> F<Tree<A>, A> root_() {
-    return a -> a.root();
+    return Tree::root;
   }
 
   /**
@@ -116,7 +116,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return A transformation from a tree to its subforest.
    */
   public static <A> F<Tree<A>, P1<Stream<Tree<A>>>> subForest_() {
-    return a -> a.subForest();
+    return Tree::subForest;
   }
 
   /**
@@ -142,7 +142,7 @@ public final class Tree<A> implements Iterable<A> {
    * @return The elements of the tree in pre-order.
    */
   public static <A> F<Tree<A>, Stream<A>> flatten_() {
-    return t -> t.flatten();
+    return Tree::flatten;
   }
 
   /**
@@ -335,7 +335,7 @@ public final class Tree<A> implements Iterable<A> {
     * @return a function getting the root of a Tree 
 	*/
    private static <A> F<Tree<A>, A> getRoot() {
-     return a -> a.root();
+     return Tree::root;
    }
 
     public boolean isLeaf() {
@@ -343,7 +343,7 @@ public final class Tree<A> implements Iterable<A> {
     }
 
     public int length() {
-        return 1 + subForest._1().map(t -> t.length()).foldLeft((acc, i) -> acc + i, 0);
+        return 1 + subForest._1().map(Tree::length).foldLeft((acc, i) -> acc + i, 0);
     }
 
 }

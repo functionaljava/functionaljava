@@ -150,12 +150,12 @@ public final class Ord<A> {
   /**
    * A function that returns the greater of its two arguments.
    */
-  public final F<A, F<A, A>> max = curry((a, a1) -> max(a, a1));
+  public final F<A, F<A, A>> max = curry(this::max);
 
   /**
    * A function that returns the lesser of its two arguments.
    */
-  public final F<A, F<A, A>> min = curry((a, a1) -> min(a, a1));
+  public final F<A, F<A, A>> min = curry(this::min);
 
   public Ord<A> reverse() { return ord(Function.flip(f)); }
 
@@ -428,7 +428,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Set} type.
    */
   public static <A> Ord<Set<A>> setOrd(final Ord<A> oa) {
-    return streamOrd(oa).contramap(as -> as.toStream());
+    return streamOrd(oa).contramap(Set::toStream);
   }
 
   /**

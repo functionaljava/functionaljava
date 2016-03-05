@@ -156,7 +156,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<List<A>, A> sumLeft() {
-    return as -> sumLeft(as);
+    return this::sumLeft;
   }
 
   /**
@@ -165,7 +165,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with right-fold.
    */
   public F<List<A>, A> sumRight() {
-    return as -> sumRight(as);
+    return this::sumRight;
   }
 
   /**
@@ -174,7 +174,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<Stream<A>, A> sumLeftS() {
-    return as -> sumLeft(as);
+    return this::sumLeft;
   }
 
   /**

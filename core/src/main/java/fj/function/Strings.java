@@ -61,7 +61,7 @@ public final class Strings {
   /**
    * A curried version of {@link String#length()}.
    */
-  public static final F<String, Integer> length = s -> s.length();
+  public static final F<String, Integer> length = String::length;
 
   /**
    * A curried version of {@link String#contains(CharSequence)}.
@@ -80,17 +80,17 @@ public final class Strings {
   }
 
   public static F<String, List<String>> lines() {
-    return s -> lines(s);
+    return Strings::lines;
   }
 
   public static String unlines(List<String> list) {
     StringBuilder sb = new StringBuilder();
-    list.intersperse(lineSeparator).foreachDoEffect(s -> sb.append(s));
+    list.intersperse(lineSeparator).foreachDoEffect(sb::append);
     return sb.toString();
   }
 
   public static F<List<String>, String> unlines() {
-    return l -> unlines(l);
+    return Strings::unlines;
   }
 
 }

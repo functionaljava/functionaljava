@@ -655,7 +655,7 @@ public abstract class List<A> implements Iterable<A> {
   public <C, B> F<C, List<B>> traverseF(F<A, F<C, B>> f) {
     return this.foldRight(
         (a, acc) -> Function.bind(acc,
-            (bs) -> Function.<C, B, List<B>> compose(b -> bs.cons(b), f.f(a))),
+            (bs) -> Function.<C, B, List<B>> compose(bs::cons, f.f(a))),
         constant(List.<B> nil())
         );
   }
@@ -697,7 +697,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list after applying the given list of functions through this list.
    */
   public final <B> List<B> apply(final List<F<A, B>> lf) {
-    return lf.bind(f -> map(f));
+    return lf.bind(this::map);
   }
 
   /**
@@ -1041,7 +1041,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that zips the given lists to produce a list of pairs.
    */
   public static <A, B> F<List<A>, F<List<B>, List<P2<A, B>>>> zip() {
-    return curry((as, bs) -> as.zip(bs));
+    return curry(List::zip);
   }
 
   /**
@@ -1164,7 +1164,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that gets the head of a given list.
    */
   public static <A> F<List<A>, A> head_() {
-    return list -> list.head();
+    return List::head;
   }
 
 
@@ -1182,7 +1182,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that gets the tail of a given list.
    */
   public static <A> F<List<A>, List<A>> tail_() {
-    return list -> list.tail();
+    return List::tail;
   }
 
   /**
@@ -1446,7 +1446,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that gets the length of a given list.
    */
   public static <A> F<List<A>, Integer> length_() {
-    return a -> a.length();
+    return List::length;
   }
 
   /**
@@ -1607,7 +1607,7 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   public static <A> F2<A, List<A>, List<A>> cons_() {
-      return (a, listA) -> cons(a, listA);
+      return List::cons;
   }
 
   /**
@@ -1617,7 +1617,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that prepends a value to the given list.
    */
   public static <A> F<A, List<A>> cons(final List<A> tail) {
-    return a -> tail.cons(a);
+    return tail::cons;
   }
 
   /**
@@ -1647,7 +1647,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that determines whether a given list is empty.
    */
   public static <A> F<List<A>, Boolean> isEmpty_() {
-    return as -> as.isEmpty();
+    return List::isEmpty;
   }
 
   /**
@@ -1656,7 +1656,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that determines whether a given list is not empty.
    */
   public static <A> F<List<A>, Boolean> isNotEmpty_() {
-    return as -> as.isNotEmpty();
+    return List::isNotEmpty;
   }
 
   /**
@@ -1676,7 +1676,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A function that joins a list of lists using a bind operation.
    */
   public static <A> F<List<List<A>>, List<A>> join() {
-    return as -> join(as);
+    return List::join;
   }
 
   /**
@@ -1762,7 +1762,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A first-class <code>fromString</code>.
    */
   public static F<String, List<Character>> fromString() {
-    return s -> fromString(s);
+    return List::fromString;
   }
 
   /**
@@ -1788,7 +1788,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A first-class <code>asString</code>.
    */
   public static F<List<Character>, String> asString() {
-    return cs -> asString(cs);
+    return List::asString;
   }
 
   /**

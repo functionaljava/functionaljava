@@ -1433,7 +1433,7 @@ public final class Java {
    * @return A function that converts array lists to lists.
    */
   public static <A> F<ArrayList<A>, List<A>> ArrayList_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1447,11 +1447,11 @@ public final class Java {
    * @return A function that converts Java lists to lists.
    */
   public static <A> F<java.util.List<A>, List<A>> JUList_List() {
-    return as -> JavaList_List(as);
+    return Java::JavaList_List;
   }
 
   public static <A> F<java.util.List<A>, List<A>> JavaList_List() {
-    return as -> JavaList_List(as);
+    return Java::JavaList_List;
   }
 
   public static <A> List<A> JavaList_List(java.util.List<A> list) {
@@ -1479,7 +1479,7 @@ public final class Java {
    * @return A function that converts enum sets to lists.
    */
   public static <A extends Enum<A>> F<EnumSet<A>, List<A>> EnumSet_List() {
-	  return as -> Collection_List(as);
+	  return Java::Collection_List;
   }
 
 	public static <A> List<A> Collection_List(Collection<A> c) {
@@ -1507,7 +1507,7 @@ public final class Java {
    * @return A function that converts hash sets to lists.
    */
   public static <A> F<HashSet<A>, List<A>> HashSet_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1522,7 +1522,7 @@ public final class Java {
    * @return A function that converts linked hash sets to lists.
    */
   public static <A> F<LinkedHashSet<A>, List<A>> LinkedHashSet_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1537,7 +1537,7 @@ public final class Java {
    * @return A function that converts linked lists to lists.
    */
   public static <A> F<LinkedList<A>, List<A>> LinkedList_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1552,7 +1552,7 @@ public final class Java {
    * @return A function that converts priority queues to lists.
    */
   public static <A> F<PriorityQueue<A>, List<A>> PriorityQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1567,7 +1567,7 @@ public final class Java {
    * @return A function that converts stacks to lists.
    */
   public static <A> F<Stack<A>, List<A>> Stack_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1582,7 +1582,7 @@ public final class Java {
    * @return A function that converts tree sets to lists.
    */
   public static <A> F<TreeSet<A>, List<A>> TreeSet_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1597,7 +1597,7 @@ public final class Java {
    * @return A function that converts vectors to lists.
    */
   public static <A> F<Vector<A>, List<A>> Vector_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1612,7 +1612,7 @@ public final class Java {
    * @return A function that converts array blocking queues to lists.
    */
   public static <A> F<ArrayBlockingQueue<A>, List<A>> ArrayBlockingQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1627,7 +1627,7 @@ public final class Java {
    * @return A function that converts concurrent linked queues to lists.
    */
   public static <A> F<ConcurrentLinkedQueue<A>, List<A>> ConcurrentLinkedQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1642,7 +1642,7 @@ public final class Java {
    * @return A function that converts copy on write array lists to lists.
    */
   public static <A> F<CopyOnWriteArrayList<A>, List<A>> CopyOnWriteArrayList_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1657,7 +1657,7 @@ public final class Java {
    * @return A function that converts copy on write array sets to lists.
    */
   public static <A> F<CopyOnWriteArraySet<A>, List<A>> CopyOnWriteArraySet_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1672,7 +1672,7 @@ public final class Java {
    * @return A function that converts delay queues to lists.
    */
   public static <A extends Delayed> F<DelayQueue<A>, List<A>> DelayQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1687,7 +1687,7 @@ public final class Java {
    * @return A function that converts linked blocking queues to lists.
    */
   public static <A> F<LinkedBlockingQueue<A>, List<A>> LinkedBlockingQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1702,7 +1702,7 @@ public final class Java {
    * @return A function that converts priority blocking queues to lists.
    */
   public static <A> F<PriorityBlockingQueue<A>, List<A>> PriorityBlockingQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1717,7 +1717,7 @@ public final class Java {
    * @return A function that converts synchronous queues to lists.
    */
   public static <A> F<SynchronousQueue<A>, List<A>> SynchronousQueue_List() {
-    return as -> Collection_List(as);
+    return Java::Collection_List;
   }
 
   // todo
@@ -1727,7 +1727,7 @@ public final class Java {
   // BEGIN Callable ->
 
   public static <A> F<P1<A>, Callable<A>> P1_Callable() {
-    return a -> () -> a._1();
+    return a -> a::_1;
   }
 
 // END Callable ->

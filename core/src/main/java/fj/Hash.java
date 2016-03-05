@@ -62,7 +62,7 @@ public final class Hash<A> {
    * @return A hash that uses {@link Object#hashCode()}.
    */
   public static <A> Hash<A> anyHash() {
-    return hash(a -> a.hashCode());
+    return hash(Object::hashCode);
   }
 
   /**

@@ -45,7 +45,7 @@ public final class Class<T> {
                     };
                 return some(p);
               }
-            }, c).map(c1 -> clas(c1));
+            }, c).map(Class::clas);
   }
 
   /**

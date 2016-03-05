@@ -95,7 +95,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that returns true if a given optional value has a value, otherwise false.
    */
   public static <A> F<Option<A>, Boolean> isSome_() {
-    return a -> a.isSome();
+    return Option::isSome;
   }
 
   /**
@@ -104,7 +104,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that returns false if a given optional value has a value, otherwise true.
    */
   public static <A> F<Option<A>, Boolean> isNone_() {
-    return a -> a.isNone();
+    return Option::isNone;
   }
 
   /**
@@ -412,15 +412,15 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   public <L, B> Either<L, Option<B>> traverseEither(F<A, Either<L, B>> f) {
-    return map(a -> f.f(a).right().map(b -> some(b))).orSome(Either.right(none()));
+    return map(a -> f.f(a).right().map(Option::some)).orSome(Either.right(none()));
   }
 
   public <B> IO<Option<B>> traverseIO(F<A, IO<B>> f) {
-    return map(a -> IOFunctions.map(f.f(a), b -> some(b))).orSome(IOFunctions.lazy(() -> none()));
+    return map(a -> IOFunctions.map(f.f(a), Option::some)).orSome(IOFunctions.lazy(Option::none));
   }
 
   public <B> List<Option<B>> traverseList(F<A, List<B>> f) {
-    return map(a -> f.f(a).map(b -> some(b))).orSome(List.list());
+    return map(a -> f.f(a).map(Option::some)).orSome(List.list());
   }
 
   public <B> Option<Option<B>> traverseOption(F<A, Option<B>> f) {
@@ -428,28 +428,28 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   public <B> Stream<Option<B>> traverseStream(F<A, Stream<B>> f) {
-    return map(a -> f.f(a).map(b -> some(b))).orSome(Stream.nil());
+    return map(a -> f.f(a).map(Option::some)).orSome(Stream.nil());
   }
 
   public <B> P1<Option<B>> traverseP1(F<A, P1<B>> f) {
-    return map(a -> f.f(a).map(b -> some(b))).orSome(p(none()));
+    return map(a -> f.f(a).map(Option::some)).orSome(p(none()));
   }
 
   public <B> Seq<Option<B>> traverseSeq(F<A, Seq<B>> f) {
-    return map(a -> f.f(a).map(b -> some(b))).orSome(Seq.empty());
+    return map(a -> f.f(a).map(Option::some)).orSome(Seq.empty());
   }
 
   public <B> Set<Option<B>> traverseSet(Ord<B> ord, F<A, Set<B>> f) {
     Ord<Option<B>> optOrd = Ord.optionOrd(ord);
-    return map(a -> f.f(a).map(optOrd, b -> some(b))).orSome(Set.empty(optOrd));
+    return map(a -> f.f(a).map(optOrd, Option::some)).orSome(Set.empty(optOrd));
   }
 
   public <B> F2<Ord<B>, F<A, Set<B>>, Set<Option<B>>> traverseSet() {
-    return (o, f) -> traverseSet(o, f);
+    return this::traverseSet;
   }
 
   public <E, B> Validation<E, Option<B>> traverseValidation(F<A, Validation<E, B>> f) {
-    return map(a -> f.f(a).map(b -> some(b))).orSome(Validation.success(none()));
+    return map(a -> f.f(a).map(Option::some)).orSome(Validation.success(none()));
   }
 
   /**
@@ -460,7 +460,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         optional value.
    */
   public final <B> Option<B> apply(final Option<F<A, B>> of) {
-    return of.bind(f -> map(a -> f.f(a)));
+    return of.bind(f -> map(f::f));
   }
 
   /**
@@ -516,7 +516,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         return in left.
    */
   public static <A, X> F<Option<A>, F<X, Either<X, A>>> toEither() {
-    return curry((a, x) -> a.toEither(x));
+    return curry(Option::toEither);
   }
 
   /**
@@ -641,7 +641,7 @@ public abstract class Option<A> implements Iterable<A> {
 
 
   public static <T> F<T, Option<T>> some_() {
-    return t -> some(t);
+    return Option::some;
   }
 
   /**
@@ -685,7 +685,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return If <code>t == null</code> then return none, otherwise, return it in some.
    */
   public static <T> F<T, Option<T>> fromNull() {
-    return t -> fromNull(t);
+    return Option::fromNull;
   }
 
   /**
@@ -758,7 +758,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         holds on that argument, or no value otherwise.
    */
   public static <A> F2<F<A, Boolean>, A, Option<A>> iif() {
-    return (p, a) -> iif(p, a);
+    return Option::iif;
   }
 
   /**
@@ -808,7 +808,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         or no value if the string is empty.
    */
   public static F<String, Option<String>> fromString() {
-    return s -> fromString(s);
+    return Option::fromString;
   }
 
   /**
@@ -855,7 +855,7 @@ public abstract class Option<A> implements Iterable<A> {
    * @return A function that joins an Option of an Option to make a single Option.
    */
   public static <A> F<Option<Option<A>>, Option<A>> join() {
-    return option -> join(option);
+    return Option::join;
   }
 
   /**

@@ -45,7 +45,7 @@ public final class Doubles {
   /**
    * Absolute value.
    */
-  public static final F<Double, Double> abs = x -> abs(x);
+  public static final F<Double, Double> abs = Math::abs;
 
   /**
    * Remainder.
@@ -55,7 +55,7 @@ public final class Doubles {
   /**
    * Power.
    */
-  public static final F<Double, F<Double, Double>> power = curry((a, b) -> StrictMath.pow(a, b));
+  public static final F<Double, F<Double, Double>> power = curry(StrictMath::pow);
 
   /**
    * Evenness.

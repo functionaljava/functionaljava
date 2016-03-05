@@ -190,7 +190,7 @@ public final class Promise<A> {
    * @return A new promise after applying the given promised function to this promise.
    */
   public <B> Promise<B> apply(final Promise<F<A, B>> pf) {
-    return pf.bind(f -> fmap(f));
+    return pf.bind(this::fmap);
   }
 
   /**

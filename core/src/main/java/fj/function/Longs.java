@@ -41,7 +41,7 @@ public final class Longs {
   /**
    * Absolute value.
    */
-  public static final F<Long, Long> abs = x -> abs(x);
+  public static final F<Long, Long> abs = Math::abs;
 
   /**
    * Remainder.

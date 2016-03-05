@@ -13,6 +13,8 @@ import fj.Bottom;
 
 import static fj.Function.compose;
 import static fj.P.p;
+
+import fj.P;
 import fj.P1;
 import fj.P2;
 import fj.P3;
@@ -32,6 +34,9 @@ import static fj.data.List.asString;
 import static fj.data.List.list;
 import static fj.data.Option.some;
 
+import fj.data.List;
+import fj.data.Set;
+import fj.data.TreeMap;
 import fj.function.Effect1;
 
 import static fj.data.Stream.range;
@@ -50,29 +55,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.GregorianCalendar;
+import java.util.*;
+
+import static java.util.Locale.getAvailableLocales;
+import static java.util.EnumSet.copyOf;
+
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Locale;
-import static java.util.Locale.getAvailableLocales;
-import java.util.PriorityQueue;
-import java.util.Properties;
-import java.util.Stack;
-import java.util.TreeSet;
-import java.util.Vector;
-import java.util.WeakHashMap;
-import static java.util.EnumSet.copyOf;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -127,21 +116,21 @@ public final class Arbitrary<A> {
   }
 
     public static <A, B> Arbitrary<Reader<A, B>> arbReader(Coarbitrary<A> aa, Arbitrary<B> ab) {
-        return arbitrary(arbF(aa, ab).gen.map(f -> Reader.unit(f)));
+        return arbitrary(arbF(aa, ab).gen.map(Reader::unit));
     }
 
     /**
      * An arbitrary for state.
      */
     public static <S, A> Arbitrary<State<S, A>> arbState(Arbitrary<S> as, Coarbitrary<S> cs, Arbitrary<A> aa) {
-        return arbitrary(arbF(cs, arbP2(as, aa)).gen.map(f -> State.unit(f)));
+        return arbitrary(arbF(cs, arbP2(as, aa)).gen.map(State::unit));
     }
 
     /**
      * An arbitrary for the LcgRng.
      */
     public static <A> Arbitrary<LcgRng> arbLcgRng() {
-        return arbitrary(Arbitrary.arbLong.gen.map(l -> new LcgRng(l)));
+        return arbitrary(Arbitrary.arbLong.gen.map(LcgRng::new));
     }
 
   /**
@@ -611,11 +600,7 @@ public final class Arbitrary<A> {
    * An arbitrary implementation for string values.
    */
   public static final Arbitrary<String> arbString =
-      arbitrary(arbList(arbCharacter).gen.map(new F<List<Character>, String>() {
-        public String f(final List<Character> cs) {
-          return asString(cs);
-        }
-      }));
+      arbitrary(arbList(arbCharacter).gen.map(List::asString));
 
   /**
    * An arbitrary implementation for string values with characters in the US-ASCII range.
@@ -643,21 +628,13 @@ public final class Arbitrary<A> {
    * An arbitrary implementation for string buffer values.
    */
   public static final Arbitrary<StringBuffer> arbStringBuffer =
-      arbitrary(arbString.gen.map(new F<String, StringBuffer>() {
-        public StringBuffer f(final String s) {
-          return new StringBuffer(s);
-        }
-      }));
+      arbitrary(arbString.gen.map(StringBuffer::new));
 
   /**
    * An arbitrary implementation for string builder values.
    */
   public static final Arbitrary<StringBuilder> arbStringBuilder =
-      arbitrary(arbString.gen.map(new F<String, StringBuilder>() {
-        public StringBuilder f(final String s) {
-          return new StringBuilder(s);
-        }
-      }));
+      arbitrary(arbString.gen.map(StringBuilder::new));
 
   /**
    * Returns an arbitrary implementation for generators.
@@ -672,11 +649,7 @@ public final class Arbitrary<A> {
         if (i == 0)
           return fail();
         else
-          return aa.gen.map(new F<A, Gen<A>>() {
-            public Gen<A> f(final A a) {
-              return value(a);
-            }
-          }).resize(i - 1);
+          return aa.gen.map(Gen::value).resize(i - 1);
       }
     }));
   }
@@ -692,11 +665,7 @@ public final class Arbitrary<A> {
       public Gen<Option<A>> f(final Integer i) {
         return i == 0 ?
                value(Option.<A>none()) :
-               aa.gen.map(new F<A, Option<A>>() {
-                 public Option<A> f(final A a) {
-                   return some(a);
-                 }
-               }).resize(i - 1);
+               aa.gen.map(Option::some).resize(i - 1);
       }
     }));
   }
@@ -712,16 +681,8 @@ public final class Arbitrary<A> {
    */
   @SuppressWarnings("unchecked")
   public static <A, B> Arbitrary<Either<A, B>> arbEither(final Arbitrary<A> aa, final Arbitrary<B> ab) {
-    final Gen<Either<A, B>> left = aa.gen.map(new F<A, Either<A, B>>() {
-      public Either<A, B> f(final A a) {
-        return left(a);
-      }
-    });
-    final Gen<Either<A, B>> right = ab.gen.map(new F<B, Either<A, B>>() {
-      public Either<A, B> f(final B b) {
-        return right(b);
-      }
-    });
+    final Gen<Either<A, B>> left = aa.gen.map(Either::left);
+    final Gen<Either<A, B>> right = ab.gen.map(Either::right);
     return arbitrary(oneOf(list(left, right)));
   }
 
@@ -771,7 +732,7 @@ public final class Arbitrary<A> {
      * Returns an arbitrary Validation for the given arbitrary parameters.
      */
     public static <A, B> Arbitrary<Validation<A, B>> arbValidation(final Arbitrary<A> aa, final Arbitrary<B> ab) {
-        return arbitrary(arbBoolean.gen.bind(bool -> bool ? ab.gen.map(b -> Validation.<A, B>success(b)) : aa.gen.map(a -> Validation.<A, B>fail(a))));
+        return arbitrary(arbBoolean.gen.bind(bool -> bool ? ab.gen.map(Validation::<A, B>success) : aa.gen.map(Validation::<A, B>fail)));
     }
 
   /**
@@ -781,11 +742,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for streams.
    */
   public static <A> Arbitrary<Stream<A>> arbStream(final Arbitrary<A> aa) {
-    return arbitrary(arbList(aa).gen.map(new F<List<A>, Stream<A>>() {
-      public Stream<A> f(final List<A> as) {
-        return as.toStream();
-      }
-    }));
+    return arbitrary(arbList(aa).gen.map(List<A>::toStream));
   }
 
   /**
@@ -795,11 +752,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for arrays.
    */
   public static <A> Arbitrary<Array<A>> arbArray(final Arbitrary<A> aa) {
-    return arbitrary(arbList(aa).gen.map(new F<List<A>, Array<A>>() {
-      public Array<A> f(final List<A> as) {
-        return as.toArray();
-      }
-    }));
+    return arbitrary(arbList(aa).gen.map(List<A>::toArray));
   }
 
   /**
@@ -830,11 +783,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for throwables.
    */
   public static Arbitrary<Throwable> arbThrowable(final Arbitrary<String> as) {
-    return arbitrary(as.gen.map(new F<String, Throwable>() {
-      public Throwable f(final String msg) {
-        return new Throwable(msg);
-      }
-    }));
+    return arbitrary(as.gen.map(Throwable::new));
   }
 
   /**
@@ -888,11 +837,7 @@ public final class Arbitrary<A> {
   /**
    * An arbitrary implementation for dates.
    */
-  public static final Arbitrary<Date> arbDate = arbitrary(arbLong.gen.map(new F<Long, Date>() {
-    public Date f(final Long i) {
-      return new Date(i);
-    }
-  }));
+  public static final Arbitrary<Date> arbDate = arbitrary(arbLong.gen.map(Date::new));
 
   /**
    * Returns an arbitrary implementation for a Java enumeration.
@@ -914,12 +859,7 @@ public final class Arbitrary<A> {
    */
   public static <K extends Enum<K>, V> Arbitrary<EnumMap<K, V>> arbEnumMap(final Arbitrary<K> ak,
                                                                            final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, EnumMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public EnumMap<K, V> f(final Hashtable<K, V> ht) {
-        return new EnumMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(EnumMap::new));
   }
 
   /**
@@ -957,12 +897,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for hash maps.
    */
   public static <K, V> Arbitrary<HashMap<K, V>> arbHashMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, HashMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public HashMap<K, V> f(final Hashtable<K, V> ht) {
-        return new HashMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(HashMap::new));
   }
 
   /**
@@ -1020,12 +955,7 @@ public final class Arbitrary<A> {
    */
   public static <K, V> Arbitrary<IdentityHashMap<K, V>> arbIdentityHashMap(final Arbitrary<K> ak,
                                                                            final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, IdentityHashMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public IdentityHashMap<K, V> f(final Hashtable<K, V> ht) {
-        return new IdentityHashMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(IdentityHashMap::new));
   }
 
   /**
@@ -1038,12 +968,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for linked hash maps.
    */
   public static <K, V> Arbitrary<LinkedHashMap<K, V>> arbLinkedHashMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, LinkedHashMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public LinkedHashMap<K, V> f(final Hashtable<K, V> ht) {
-        return new LinkedHashMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(LinkedHashMap::new));
   }
 
   /**
@@ -1130,12 +1055,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for tree maps.
    */
   public static <K, V> Arbitrary<java.util.TreeMap<K, V>> arbJavaTreeMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, java.util.TreeMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public java.util.TreeMap<K, V> f(final Hashtable<K, V> ht) {
-        return new java.util.TreeMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(java.util.TreeMap::new));
   }
 
     /**
@@ -1215,12 +1135,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for weak hash maps.
    */
   public static <K, V> Arbitrary<WeakHashMap<K, V>> arbWeakHashMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, WeakHashMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public WeakHashMap<K, V> f(final Hashtable<K, V> ht) {
-        return new WeakHashMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(WeakHashMap::new));
   }
 
   // END java.util
@@ -1263,12 +1178,7 @@ public final class Arbitrary<A> {
    */
   public static <K, V> Arbitrary<ConcurrentHashMap<K, V>> arbConcurrentHashMap(final Arbitrary<K> ak,
                                                                                final Arbitrary<V> av) {
-    return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, ConcurrentHashMap<K, V>>() {
-      @SuppressWarnings("UseOfObsoleteCollectionType")
-      public ConcurrentHashMap<K, V> f(final Hashtable<K, V> ht) {
-        return new ConcurrentHashMap<K, V>(ht);
-      }
-    }));
+    return arbitrary(arbHashtable(ak, av).gen.map(ConcurrentHashMap::new));
   }
 
   /**
@@ -1388,29 +1298,17 @@ public final class Arbitrary<A> {
   /**
    * An arbitrary implementation for SQL dates.
    */
-  public static final Arbitrary<java.sql.Date> arbSQLDate = arbitrary(arbLong.gen.map(new F<Long, java.sql.Date>() {
-    public java.sql.Date f(final Long i) {
-      return new java.sql.Date(i);
-    }
-  }));
+  public static final Arbitrary<java.sql.Date> arbSQLDate = arbitrary(arbLong.gen.map(java.sql.Date::new));
 
   /**
    * An arbitrary implementation for SQL times.
    */
-  public static final Arbitrary<Time> arbTime = arbitrary(arbLong.gen.map(new F<Long, Time>() {
-    public Time f(final Long i) {
-      return new Time(i);
-    }
-  }));
+  public static final Arbitrary<Time> arbTime = arbitrary(arbLong.gen.map(Time::new));
 
   /**
    * An arbitrary implementation for SQL time stamps.
    */
-  public static final Arbitrary<Timestamp> arbTimestamp = arbitrary(arbLong.gen.map(new F<Long, Timestamp>() {
-    public Timestamp f(final Long i) {
-      return new Timestamp(i);
-    }
-  }));
+  public static final Arbitrary<Timestamp> arbTimestamp = arbitrary(arbLong.gen.map(Timestamp::new));
 
   // END java.sql
 
@@ -1442,11 +1340,7 @@ public final class Arbitrary<A> {
    * An arbitrary implementation for big decimals.
    */
   public static final Arbitrary<BigDecimal> arbBigDecimal =
-      arbitrary(arbBigInteger.gen.map(new F<BigInteger, BigDecimal>() {
-        public BigDecimal f(final BigInteger i) {
-          return new BigDecimal(i);
-        }
-      }));
+      arbitrary(arbBigInteger.gen.map(BigDecimal::new));
 
   // END java.math
 
@@ -1462,11 +1356,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for product-1 values.
    */
   public static <A> Arbitrary<P1<A>> arbP1(final Arbitrary<A> aa) {
-    return arbitrary(aa.gen.map(new F<A, P1<A>>() {
-      public P1<A> f(final A a) {
-        return p(a);
-      }
-    }));
+    return arbitrary(aa.gen.map(P::p));
   }
 
   /**

@@ -298,7 +298,7 @@ public class WordCount {
   public static Map<String, Integer> getWordsAndCountsFromFilesWithIteratee(final List<String> fileNames,
       final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithIteratee) {
     final List<Map<String, Integer>> maps = fileNames.map(fileNameToWordsAndCountsWithIteratee);
-    return maps.foldLeft((Map<String, Integer> a, Map<String, Integer> b) -> plus(a, b), new HashMap<String, Integer>());
+    return maps.foldLeft(WordCount::plus, new HashMap<String, Integer>());
   }
   
   public static Map<String, Integer> getWordsAndCountsFromFilesInParallel(

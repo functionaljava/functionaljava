@@ -18,6 +18,7 @@ import fj.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
 import fj.function.Try0;
+import fj.function.Try1;
 
 /**
  * IO monad for processing files, with main methods {@link #enumFileLines },
@@ -35,7 +36,7 @@ public final class IOFunctions {
     }
 
     public static <A> Try0<A, IOException> toTry(IO<A> io) {
-        return () -> io.run();
+        return io::run;
     }
 
     public static <A> P1<Validation<IOException, A>> p(IO<A> io) {
@@ -47,10 +48,10 @@ public final class IOFunctions {
     }
 
     public static <A> IO<A> fromTry(Try0<A, ? extends IOException> t) {
-        return () -> t.f();
+        return t::f;
     }
 
-    public static final F<Reader, IO<Unit>> closeReader = r -> closeReader(r);
+    public static final F<Reader, IO<Unit>> closeReader = IOFunctions::closeReader;
 
     /**
      * Convert io to a SafeIO, throwing any IOException wrapped inside a RuntimeException
@@ -127,7 +128,7 @@ public final class IOFunctions {
     }
 
     public static IO<BufferedReader> bufferedReader(final File f, final Option<Charset> encoding) {
-        return map(fileReader(f, encoding), a -> new BufferedReader(a));
+        return map(fileReader(f, encoding), BufferedReader::new);
     }
 
     public static IO<Reader> fileReader(final File f, final Option<Charset> encoding) {
@@ -386,7 +387,7 @@ public final class IOFunctions {
     }
 
     public static <A> SafeIO<Validation<IOException, A>> toSafeValidation(IO<A> io) {
-        return () -> Try.f(() -> io.run())._1();
+        return () -> Try.f(io::run)._1();
     }
 
     public static <A, B> IO<B> append(final IO<A> io1, final IO<B> io2) {
@@ -458,8 +459,8 @@ public final class IOFunctions {
                         return Stream.nil();
                     } else {
                         IO<Stream<A>> io2 = sequenceWhile(stream.tail()._1(), f);
-                        SafeIO<Stream<A>> s3 = toSafe(() -> io2.run());
-                        return Stream.cons(a, () -> s3.run());
+                        SafeIO<Stream<A>> s3 = toSafe(io2::run);
+                        return Stream.cons(a, s3::run);
                     }
                 }
             }
@@ -467,7 +468,7 @@ public final class IOFunctions {
     }
 
     public static <A, B> IO<B> apply(IO<A> io, IO<F<A, B>> iof) {
-        return bind(iof, f -> map(io, a -> f.f(a)));
+        return bind(iof, f -> map(io, f::f));
     }
 
     public static <A, B, C> IO<C> liftM2(IO<A> ioa, IO<B> iob, F2<A, B, C> f) {
@@ -479,13 +480,13 @@ public final class IOFunctions {
     }
 
     public static <A> IO<State<BufferedReader, Validation<IOException, String>>> readerState() {
-        return () -> State.unit((BufferedReader r) -> P.p(r, Try.f((BufferedReader r2) -> r2.readLine()).f(r)));
+        return () -> State.unit((BufferedReader r) -> P.p(r, Try.f((Try1<BufferedReader, String, IOException>) BufferedReader::readLine).f(r)));
     }
 
     public static final BufferedReader stdinBufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     public static IO<String> stdinReadLine() {
-        return () -> stdinBufferedReader.readLine();
+        return stdinBufferedReader::readLine;
     }
 
     public static IO<Unit> stdoutPrintln(final String s) {

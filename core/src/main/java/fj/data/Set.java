@@ -173,7 +173,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @return A function that returns true if the given element if a member of the given set.
    */
   public static <A> F<Set<A>, F<A, Boolean>> member() {
-    return curry((s, a) -> s.member(a));
+    return curry(Set::member);
   }
 
   /**
@@ -394,7 +394,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @see #union(Set)
    */
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> union() {
-    return curry((s1, s2) -> s1.union(s2));
+    return curry(Set::union);
   }
 
   /**
@@ -444,7 +444,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @see #intersect(Set)
    */
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> intersect() {
-    return curry((s1, s2) -> s1.intersect(s2));
+    return curry(Set::intersect);
   }
 
   /**
@@ -464,7 +464,7 @@ public abstract class Set<A> implements Iterable<A> {
    * @see #minus(Set)
    */
   public static <A> F<Set<A>, F<Set<A>, Set<A>>> minus() {
-    return curry((s1, s2) -> s1.minus(s2));
+    return curry(Set::minus);
   }
 
     public Option<A> min() {

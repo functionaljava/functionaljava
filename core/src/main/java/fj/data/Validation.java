@@ -205,8 +205,8 @@ public class Validation<E, T> implements Iterable<T> {
    * all the failures using the semigroup, otherwise returns the successful list.
    */
   public static <E, A> Validation<E, List<A>> sequence(final Semigroup<E> s, final List<Validation<E, A>> list) {
-    if (list.exists(v -> v.isFail())) {
-      return Validation.<E, List<A>>fail(list.filter(v -> v.isFail()).map(v -> v.fail()).foldLeft1((e1, e2) -> s.sum(e1, e2)));
+    if (list.exists(Validation::isFail)) {
+      return Validation.<E, List<A>>fail(list.filter(Validation::isFail).map(v -> v.fail()).foldLeft1((F2<E, E, E>) s::sum));
     } else {
       return success(list.foldLeft((List<A> acc, Validation<E, A> v) -> acc.cons(v.success()), List.nil()).reverse());
     }
@@ -816,12 +816,12 @@ public class Validation<E, T> implements Iterable<T> {
    * single failure using a semigroup.
    */
     public static <A, E> Validation<List<E>, List<A>> sequenceNonCumulative(List<Validation<E, A>> list) {
-      if (list.exists(v -> v.isFail())) {
+      if (list.exists(Validation::isFail)) {
         F2<List<E>, Validation<E, A>, List<E>> f = (acc, v) -> acc.cons(v.fail());
-        return fail(list.filter(v -> v.isFail()).foldLeft(f, List.nil()).reverse());
+        return fail(list.filter(Validation::isFail).foldLeft(f, List.nil()).reverse());
       } else {
         F2<List<A>, Validation<E, A>, List<A>> f = (acc, v) -> acc.cons(v.success());
-        return success(list.filter(v -> v.isSuccess()).foldLeft(f, List.nil()).reverse());
+        return success(list.filter(Validation::isSuccess).foldLeft(f, List.nil()).reverse());
       }
     }
 
@@ -857,11 +857,11 @@ public class Validation<E, T> implements Iterable<T> {
 
 
     public static <A, E> List<E> fails(List<Validation<E, ?>> list) {
-        return list.filter(v -> v.isFail()).map(v -> v.fail());
+        return list.filter(Validation::isFail).map(v -> v.fail());
     }
 
     public static <A, E> List<A> successes(List<Validation<?, A>> list) {
-        return list.filter(v -> v.isSuccess()).map(v -> v.success());
+        return list.filter(Validation::isSuccess).map(v -> v.success());
     }
 
   /**
@@ -1002,7 +1002,7 @@ public class Validation<E, T> implements Iterable<T> {
      * @return The result of function application in validation.
      */
     public <A> Validation<A, T> apply(final Validation<F<E, A>, T> v) {
-      return v.f().bind(f -> map(f));
+      return v.f().bind(this::map);
     }
 
     /**
@@ -1103,7 +1103,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A function that constructs a validation with an either.
    */
   public static <E, T> F<Either<E, T>, Validation<E, T>> validation() {
-    return e1 -> validation(e1);
+    return Validation::validation;
   }
 
   /**
@@ -1112,7 +1112,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A function that constructs an either with a validation.
    */
   public static <E, T> F<Validation<E, T>, Either<E, T>> either() {
-    return v -> v.toEither();
+    return Validation::toEither;
   }
 
   /**
@@ -1175,7 +1175,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a byte.
    */
-  public static final F<String, Validation<NumberFormatException, Byte>> parseByte = s -> parseByte(s);
+  public static final F<String, Validation<NumberFormatException, Byte>> parseByte = Validation::parseByte;
 
   /**
    * Parses the given string into a double.
@@ -1194,7 +1194,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a double.
    */
-  public static final F<String, Validation<NumberFormatException, Double>> parseDouble = s -> parseDouble(s);
+  public static final F<String, Validation<NumberFormatException, Double>> parseDouble = Validation::parseDouble;
 
   /**
    * Parses the given string into a float.
@@ -1213,7 +1213,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a float.
    */
-  public static final F<String, Validation<NumberFormatException, Float>> parseFloat = s -> parseFloat(s);
+  public static final F<String, Validation<NumberFormatException, Float>> parseFloat = Validation::parseFloat;
 
   /**
    * Parses the given string into a integer.
@@ -1232,7 +1232,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into an integer.
    */
-  public static final F<String, Validation<NumberFormatException, Integer>> parseInt = s -> parseInt(s);
+  public static final F<String, Validation<NumberFormatException, Integer>> parseInt = Validation::parseInt;
 
   /**
    * Parses the given string into a long.
@@ -1251,7 +1251,7 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a long.
    */
-  public static final F<String, Validation<NumberFormatException, Long>> parseLong = s -> parseLong(s);
+  public static final F<String, Validation<NumberFormatException, Long>> parseLong = Validation::parseLong;
 
   /**
    * Parses the given string into a short.
@@ -1270,15 +1270,15 @@ public class Validation<E, T> implements Iterable<T> {
   /**
    * A function that parses a string into a short. 
    */
-  public static final F<String, Validation<NumberFormatException, Short>> parseShort = s -> parseShort(s);
+  public static final F<String, Validation<NumberFormatException, Short>> parseShort = Validation::parseShort;
 
   /**
    * Partitions the list into the list of fails and the list of successes
    */
   public static <A, B> P2<List<A>, List<B>> partition(List<Validation<A, B>> list) {
     return p(
-            list.filter(v -> v.isFail()).map(v -> v.fail()),
-            list.filter(v -> v.isSuccess()).map(v -> v.success())
+            list.filter(Validation::isFail).map(v -> v.fail()),
+            list.filter(Validation::isSuccess).map(v -> v.success())
     );
   }
 

@@ -127,7 +127,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public NonEmptyList<NonEmptyList<A>> sublists() {
     return fromList(
         somes(toList().toStream().substreams()
-            .map(F1Functions.o(list -> fromList(list), Conversions.<A>Stream_List())).toList())).some();
+            .map(F1Functions.o(NonEmptyList::fromList, Conversions.<A>Stream_List())).toList())).some();
   }
 
   /**
@@ -137,7 +137,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A NonEmptyList of the tails of this list.
    */
   public NonEmptyList<NonEmptyList<A>> tails() {
-    return fromList(somes(toList().tails().map(list -> fromList(list)))).some();
+    return fromList(somes(toList().tails().map(NonEmptyList::fromList))).some();
   }
 
   /**
@@ -268,7 +268,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @return A function that takes a non-empty list to a list.
    */
   public static <A> F<NonEmptyList<A>, List<A>> toList_() {
-    return as -> as.toList();
+    return NonEmptyList::toList;
   }
 
   /**

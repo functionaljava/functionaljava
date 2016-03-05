@@ -168,7 +168,7 @@ public final class Strategy<A> {
    * @return A function that promotes another function to a parallel function on lists.
    */
   public <B> F<F<B, A>, F<List<B>, P1<List<A>>>> parMapList() {
-    return f1 -> parMapList(f1);
+    return this::parMapList;
   }
 
   /**
@@ -196,7 +196,7 @@ public final class Strategy<A> {
    * @return A function that promotes another function to a parallel function on arrays.
    */
   public <B> F<F<B, A>, F<Array<B>, P1<Array<A>>>> parMapArray() {
-    return f1 -> parMapArray(f1);
+    return this::parMapArray;
   }
 
   /**
@@ -311,7 +311,7 @@ public final class Strategy<A> {
    * @return A function which, given a Future, yields a product-1 that waits for it.
    */
   public static <A> F<Future<A>, P1<A>> obtain() {
-    return t -> obtain(t);
+    return Strategy::obtain;
   }
 
   /**
