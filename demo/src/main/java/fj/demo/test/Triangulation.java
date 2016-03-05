@@ -1,6 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
 import static fj.test.Arbitrary.arbInteger;
 import static fj.test.CheckResult.summary;
 import fj.test.Property;

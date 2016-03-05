@@ -1,6 +1,5 @@
 package fj.test.reflect;
 
-import static fj.Bottom.error;
 import fj.Class;
 import static fj.Class.clas;
 import fj.F;

@@ -1,7 +1,7 @@
 package fj.test;
 
 import fj.F0;
-import fj.P1;
+
 import static fj.test.Property.prop;
 
 /**

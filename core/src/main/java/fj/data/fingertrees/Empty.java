@@ -1,7 +1,6 @@
 package fj.data.fingertrees;
 
 import fj.F;
-import fj.P;
 import fj.P2;
 import fj.P3;
 

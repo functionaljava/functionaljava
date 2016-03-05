@@ -1,7 +1,7 @@
 package fj.demo.concurrent;
 
 import static fj.Bottom.error;
-import fj.Effect;
+
 import fj.F;
 import fj.P;
 import fj.P2;

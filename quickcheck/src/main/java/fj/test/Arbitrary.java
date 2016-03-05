@@ -69,7 +69,6 @@ import static java.util.Locale.getAvailableLocales;
 import java.util.PriorityQueue;
 import java.util.Properties;
 import java.util.Stack;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.WeakHashMap;

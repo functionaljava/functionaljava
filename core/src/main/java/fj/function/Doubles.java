@@ -1,7 +1,6 @@
 package fj.function;
 
 import fj.F;
-import fj.F2;
 import fj.Monoid;
 import fj.data.List;
 import fj.data.Option;

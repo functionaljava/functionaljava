@@ -1,6 +1,5 @@
 package fj.demo;
 
-import fj.F;
 import fj.data.Array;
 import static fj.data.Array.array;
 import static fj.Show.arrayShow;

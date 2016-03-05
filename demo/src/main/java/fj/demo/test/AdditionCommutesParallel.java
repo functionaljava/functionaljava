@@ -1,8 +1,6 @@
 package fj.demo.test;
 
-import fj.F2;
 import fj.P;
-import fj.P1;
 import fj.control.parallel.Strategy;
 import static fj.test.Arbitrary.arbInteger;
 import static fj.test.CheckResult.summary;

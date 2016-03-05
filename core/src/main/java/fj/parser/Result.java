@@ -1,7 +1,7 @@
 package fj.parser;
 
 import fj.F;
-import fj.F2;
+
 import static fj.Function.curry;
 
 import java.util.Iterator;

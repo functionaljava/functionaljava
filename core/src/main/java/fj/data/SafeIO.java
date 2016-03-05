@@ -1,7 +1,5 @@
 package fj.data;
 
-import java.io.IOException;
-
 /**
  * Created by MarkPerry on 3/07/2014.
  */

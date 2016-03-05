@@ -1,7 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
-import fj.F3;
 import fj.Function;
 import static fj.Function.compose;
 import fj.P2;

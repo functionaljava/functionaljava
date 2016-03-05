@@ -2,8 +2,6 @@ package fj.demo.test;
 
 import static fj.Bottom.error;
 
-import fj.F;
-import fj.F2;
 import fj.P2;
 import fj.data.List;
 import static fj.data.List.list;

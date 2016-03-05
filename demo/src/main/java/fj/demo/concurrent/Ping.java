@@ -1,6 +1,5 @@
 package fj.demo.concurrent;
 
-import fj.Effect;
 import fj.Unit;
 import fj.P1;
 import fj.control.parallel.Actor;

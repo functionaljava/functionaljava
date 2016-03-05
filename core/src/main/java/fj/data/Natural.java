@@ -2,7 +2,7 @@ package fj.data;
 
 import static fj.Bottom.error;
 import fj.F;
-import fj.F2;
+
 import static fj.Monoid.naturalAdditionMonoid;
 import static fj.Monoid.naturalMultiplicationMonoid;
 import static fj.Function.curry;

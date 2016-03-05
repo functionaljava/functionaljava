@@ -2,8 +2,6 @@ package fj.data;
 
 import fj.*;
 
-import java.util.*;
-
 import static fj.P.p;
 
 /**

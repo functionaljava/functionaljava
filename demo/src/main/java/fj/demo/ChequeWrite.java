@@ -1,7 +1,6 @@
 package fj.demo;
 
 import fj.F;
-import fj.F2;
 import fj.P2;
 import fj.data.List;
 import fj.data.Option;

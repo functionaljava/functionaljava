@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import fj.F;
-import fj.F2;
 import fj.Monoid;
 import fj.P;
 import fj.P1;

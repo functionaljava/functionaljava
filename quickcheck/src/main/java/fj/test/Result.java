@@ -1,7 +1,6 @@
 package fj.test;
 
 import fj.F;
-import fj.P1;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.none;

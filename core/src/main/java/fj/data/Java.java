@@ -4,9 +4,6 @@ import fj.*;
 
 import static fj.P.p;
 
-import fj.function.Effect1;
-
-import static fj.data.List.list;
 import static fj.data.Option.some;
 
 import java.util.Arrays;

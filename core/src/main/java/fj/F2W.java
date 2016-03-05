@@ -3,13 +3,6 @@ package fj;
 import fj.control.parallel.Promise;
 import fj.data.*;
 
-import static fj.P.p;
-import static fj.data.IterableW.wrap;
-import static fj.data.Set.iterableSet;
-import static fj.data.Tree.node;
-import static fj.data.TreeZipper.treeZipper;
-import static fj.data.Zipper.zipper;
-
 /**
  * Created by MarkPerry on 22/01/2015.
  */

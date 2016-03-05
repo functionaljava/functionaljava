@@ -2,7 +2,6 @@ package fj;
 
 import fj.data.List;
 import static fj.data.List.unfold;
-import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.Tree;

@@ -5,8 +5,6 @@ import static fj.data.Stream.iterableStream;
 import fj.Equal;
 import fj.F;
 import fj.F2;
-import fj.F3;
-import fj.P1;
 import fj.P2;
 import static fj.Function.curry;
 import static fj.Function.identity;

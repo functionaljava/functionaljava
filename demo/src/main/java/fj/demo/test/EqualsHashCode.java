@@ -1,8 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
-import fj.F2;
-import fj.F3;
 import static fj.Function.curry;
 import fj.test.Arbitrary;
 import static fj.test.Arbitrary.arbByte;

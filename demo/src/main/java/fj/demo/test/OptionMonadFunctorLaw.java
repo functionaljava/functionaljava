@@ -1,7 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
-import fj.F2;
 import static fj.Function.andThen;
 import fj.data.Option;
 import static fj.Equal.optionEqual;

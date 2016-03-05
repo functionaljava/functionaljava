@@ -3,7 +3,6 @@ package fj.function;
 import fj.Equal;
 import fj.F;
 import fj.F0;
-import fj.F2;
 import fj.Function;
 import fj.Monoid;
 import fj.P1;

@@ -2,7 +2,6 @@ package fj.demo.concurrent;
 
 import static fj.Bottom.error;
 import fj.Unit;
-import fj.Effect;
 import fj.control.parallel.Strategy;
 import fj.control.parallel.Actor;
 import fj.function.Effect1;

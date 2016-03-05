@@ -1,7 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
-import fj.F2;
 import static fj.data.List.list;
 import static fj.Equal.stringBuilderEqual;
 import static fj.test.Arbitrary.arbCharacter;

@@ -1,6 +1,5 @@
 package fj.demo;
 
-import fj.F2;
 import fj.data.List;
 import fj.data.State;
 

@@ -1,6 +1,5 @@
 package fj.demo.test;
 
-import fj.F2;
 import static fj.test.Arbitrary.arbInteger;
 import static fj.test.Arbitrary.arbLinkedList;
 import static fj.test.CheckResult.summary;

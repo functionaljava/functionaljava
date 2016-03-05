@@ -1,6 +1,5 @@
 package fj.demo;
 
-import fj.F;
 import fj.F1Functions;
 import fj.P;
 import static fj.data.List.asString;

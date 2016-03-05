@@ -1,11 +1,7 @@
 package fj;
 
-import fj.data.IO;
-import fj.data.IOFunctions;
 import fj.data.Validation;
 import fj.function.*;
-
-import java.io.IOException;
 
 /**
  * Created by mperry on 29/08/2014.

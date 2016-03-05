@@ -1,11 +1,5 @@
 package fj;
 
-import fj.data.Validation;
-import fj.function.Try3;
-
-import static fj.data.Validation.fail;
-import static fj.data.Validation.success;
-
 /**
  * Created by MarkPerry on 6/04/2014.
  */

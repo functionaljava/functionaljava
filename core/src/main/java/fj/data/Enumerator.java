@@ -1,7 +1,7 @@
 package fj.data;
 
 import fj.F;
-import fj.F2;
+
 import static fj.Function.*;
 import static fj.data.Option.none;
 import static fj.data.Option.some;

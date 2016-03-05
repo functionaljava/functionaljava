@@ -7,7 +7,6 @@ import fj.F4;
 import fj.F5;
 import fj.P;
 import fj.P1;
-import fj.P2;
 
 /**
  * Functions across vectors.

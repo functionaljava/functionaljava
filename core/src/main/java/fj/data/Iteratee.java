@@ -5,7 +5,6 @@ import fj.F0;
 import fj.F1Functions;
 import fj.Function;
 import fj.P;
-import fj.P1;
 import fj.P2;
 import fj.Unit;
 
