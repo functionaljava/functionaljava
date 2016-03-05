@@ -17,7 +17,7 @@ import static fj.Unit.unit;
  *
  * @version %build.number%
  */
-public class Effect {
+public final class Effect {
 
 	private Effect() {}
 

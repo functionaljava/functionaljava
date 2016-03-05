@@ -13,7 +13,7 @@ import static fj.data.List.iterableList;
  *
  * @version %build.number%
  */
-public class DList<A> {
+public final class DList<A> {
     private final F<List<A>,Trampoline<List<A>>> appendFn;
     
     private DList(final F<List<A>,Trampoline<List<A>>> appendFn) {

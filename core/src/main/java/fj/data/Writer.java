@@ -5,7 +5,7 @@ import fj.*;
 /**
  * Created by MarkPerry on 7/07/2014.
  */
-public class Writer<W, A> {
+public final class Writer<W, A> {
 
 	private A val;
 	private W logValue;

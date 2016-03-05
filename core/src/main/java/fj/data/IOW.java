@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by MarkPerry on 9/06/2015.
  */
-public class IOW<A> implements IO<A> {
+public final class IOW<A> implements IO<A> {
 
     private IO<A> io;
 

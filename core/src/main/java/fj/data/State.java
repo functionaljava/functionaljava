@@ -9,7 +9,7 @@ import static fj.P.p;
 /**
  * Created by MarkPerry on 7/07/2014.
  */
-public class State<S, A> {
+public final class State<S, A> {
 
 	private F<S, P2<S, A>> run;
 
