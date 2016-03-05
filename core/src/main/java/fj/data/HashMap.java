@@ -272,11 +272,11 @@ public final class HashMap<K, V> implements Iterable<K> {
   }
 
   public <A, B> HashMap<A, B> map(F<P2<K, V>, P2<A, B>> function, Equal<A> equal, Hash<A> hash) {
-    return from(toStream().map(function), equal, hash);
+    return iterableHashMap(equal, hash, toStream().map(function));
   }
 
   public <A, B> HashMap<A, B> map(F<P2<K, V>, P2<A, B>> function) {
-    return from(toStream().map(function));
+    return iterableHashMap(toStream().map(function));
   }
 
   public <A> HashMap<A, V> mapKeys(F<K, A> keyFunction, Equal<A> equal, Hash<A> hash) {
@@ -339,7 +339,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    */
   @Deprecated
   public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries) {
-    return iterableHashMap(Equal.<K>anyEqual(), Hash.<K>anyHash(), entries);
+    return iterableHashMap(entries);
   }
 
   public static <K, V> HashMap<K, V> fromMap(java.util.Map<K, V> map) {

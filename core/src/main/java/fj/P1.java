@@ -86,7 +86,7 @@ public abstract class P1<A> implements F0<A> {
      */
     public <B> P1<B> apply(final P1<F<A, B>> cf) {
         P1<A> self = this;
-        return cf.bind(f -> fmap(f).f(self));
+        return cf.bind(f -> map_(f).f(self));
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A new P1 after performing the map, then final join.
      */
     public <B, C> P1<C> bind(final P1<B> cb, final F<A, F<B, C>> f) {
-        return cb.apply(fmap(f).f(this));
+        return cb.apply(map_(f).f(this));
     }
 
 	/**

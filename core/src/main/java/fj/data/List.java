@@ -2188,15 +2188,15 @@ public abstract class List<A> implements Iterable<A> {
      * Optional targeted on Cons head.
      */
     public static <A> Optional<List<A>, A> head() {
-      return optional(l -> l.toOption(), a -> l -> l.<List<A>>list(l, constant(cons_(a))));
+      return optional(List::headOption, a -> l -> l.uncons((__, as) -> as.cons(a), l));
     }
 
     /**
      * Optional targeted on Cons tail.
      */
     public static <A> Optional<List<A>, List<A>> tail() {
-      return optional(l -> l.<Option<List<A>>> list(none(), h -> tail -> some(tail)),
-              tail -> l -> l.list(l, h -> constant(List.cons(h, tail))));
+      return optional(l -> l.uncons((__, tail) -> some(tail), none()),
+              tail -> l -> l.uncons((h, __) -> List.cons(h, tail), l));
     }
 
     /**
@@ -2210,7 +2210,7 @@ public abstract class List<A> implements Iterable<A> {
      * Cons prism
      */
     public static <A> Prism<List<A>, P2<A, List<A>>> cons() {
-      return prism(l -> l.<Option<P2<A, List<A>>>> list(none(), h -> tail -> some(p(h, tail))), c -> List.cons(c._1(), c._2()));
+      return prism(l -> l.<Option<P2<A, List<A>>>> uncons((h, tail) -> some(p(h, tail)), none()), c -> List.cons(c._1(), c._2()));
     }
 
   }
