@@ -48,7 +48,7 @@ public class StateDemo_VendingMachine {
 		 */
 		@Override
 		public int hashCode() {
-			int result = (locked ? 1 : 0);
+			int result = locked ? 1 : 0;
 			result = 31 * result + items;
 			result = 31 * result + coins;
 			return result;

@@ -374,7 +374,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after performing the map, then final join.
    */
   public final <B> Stream<B> bind(final F<A, Stream<B>> f) {
-    return foldRight(h -> (t -> f.f(h).append(t)), nil());
+    return foldRight(h -> t -> f.f(h).append(t), nil());
   }
 
   /**

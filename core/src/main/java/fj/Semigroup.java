@@ -92,7 +92,7 @@ public final class Semigroup<A> {
         }
       }
       xTmp = sum.f(xTmp).f(xTmp);
-      yTmp = (yTmp) >>> 1;
+      yTmp = yTmp >>> 1;
     }
   }
 
