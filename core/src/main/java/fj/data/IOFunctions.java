@@ -5,6 +5,7 @@ import static fj.Function.constant;
 import static fj.Function.partialApply2;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -141,12 +142,8 @@ public final class IOFunctions {
             @Override
             public C run() throws IOException {
                 final A a = init.run();
-                try {
+                try(Closeable finAsCloseable = fin.f(a)::run) {
                     return body.f(a).run();
-                } catch (final IOException e) {
-                    throw e;
-                } finally {
-                    fin.f(a);
                 }
             }
         };
