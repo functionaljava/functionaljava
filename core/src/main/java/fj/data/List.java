@@ -848,11 +848,9 @@ public abstract class List<A> implements Iterable<A> {
    * @return A list with a length the same, or less than, this list.
    */
   public final List<A> drop(final int i) {
-    int c = 0;
-
     List<A> xs = this;
 
-    for (; xs.isNotEmpty() && c < i; xs = xs.tail())
+    for (int c = 0; xs.isNotEmpty() && c < i; xs = xs.tail())
       c++;
 
     return xs;

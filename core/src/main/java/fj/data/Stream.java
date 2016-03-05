@@ -1072,11 +1072,9 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A stream with a length the same, or less than, this stream.
    */
   public final Stream<A> drop(final int i) {
-    int c = 0;
-
     Stream<A> xs = this;
 
-    for (; xs.isNotEmpty() && c < i; xs = xs.tail()._1())
+    for (int c = 0; xs.isNotEmpty() && c < i; xs = xs.tail()._1())
       c++;
 
     return xs;
