@@ -15,7 +15,7 @@ import fj.Unit;
 public final class Iteratee {
 
   /** The input to an iteratee. */
-  public static abstract class Input<E> {
+  public abstract static class Input<E> {
 
     Input() {} // sealed
 
@@ -53,7 +53,7 @@ public final class Iteratee {
   }
 
   /** A pure iteratee computation which is either done or needs more input */
-  public static abstract class IterV<E, A> {
+  public abstract static class IterV<E, A> {
 
     IterV() {} // sealed
 

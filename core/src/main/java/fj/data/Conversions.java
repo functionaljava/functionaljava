@@ -616,7 +616,7 @@ public final class Conversions {
 
     // BEGIN TryEffect
 
-    static public <E extends Exception> P1<Validation<E, Unit>> TryEffect_P(final TryEffect0<E> t) {
+    public static <E extends Exception> P1<Validation<E, Unit>> TryEffect_P(final TryEffect0<E> t) {
         return TryEffect.f(t);
     }
 

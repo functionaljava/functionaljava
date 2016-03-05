@@ -15,7 +15,7 @@ public abstract class Trampoline<A> {
 
   // A Normal Trampoline is either done or suspended, and is allowed to be a subcomputation of a Codense.
   // This is the pointed functor part of the Trampoline monad.
-  private static abstract class Normal<A> extends Trampoline<A> {
+  private abstract static class Normal<A> extends Trampoline<A> {
     public abstract <R> R foldNormal(final F<A, R> pure, final F<P1<Trampoline<A>>, R> k);
 
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
