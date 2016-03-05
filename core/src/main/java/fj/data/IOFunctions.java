@@ -76,12 +76,9 @@ public final class IOFunctions {
     }
 
     public static IO<Unit> closeReader(final Reader r) {
-        return new IO<Unit>() {
-            @Override
-            public Unit run() throws IOException {
-                r.close();
-                return Unit.unit();
-            }
+        return () -> {
+            r.close();
+            return Unit.unit();
         };
     }
 
@@ -139,24 +136,16 @@ public final class IOFunctions {
     }
 
     public static <A, B, C> IO<C> bracket(final IO<A> init, final F<A, IO<B>> fin, final F<A, IO<C>> body) {
-        return new IO<C>() {
-            @Override
-            public C run() throws IOException {
-                final A a = init.run();
-                try(Closeable finAsCloseable = fin.f(a)::run) {
-                    return body.f(a).run();
-                }
+        return () -> {
+            final A a = init.run();
+            try(Closeable finAsCloseable = fin.f(a)::run) {
+                return body.f(a).run();
             }
         };
     }
 
     public static <A> IO<A> unit(final A a) {
-        return new IO<A>() {
-            @Override
-            public A run() throws IOException {
-                return a;
-            }
-        };
+        return () -> a;
     }
 
     public static final IO<Unit> ioUnit = unit(Unit.unit());
@@ -192,32 +181,24 @@ public final class IOFunctions {
                     }
                 };
 
-        return new F<BufferedReader, F<IterV<String, A>, IO<IterV<String, A>>>>() {
-            @Override
-            public F<IterV<String, A>, IO<IterV<String, A>>> f(final BufferedReader r) {
-                return new F<IterV<String, A>, IO<IterV<String, A>>>() {
-                    final F<P2<A, Input<String>>, P1<IterV<String, A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
+        return r -> new F<IterV<String, A>, IO<IterV<String, A>>>() {
+            final F<P2<A, Input<String>>, P1<IterV<String, A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
 
-                    @Override
-                    public IO<IterV<String, A>> f(final IterV<String, A> it) {
-                        // use loop instead of recursion because of missing TCO
-                        return new IO<Iteratee.IterV<String, A>>() {
-                            @Override
-                            public IterV<String, A> run() throws IOException {
-                                IterV<String, A> i = it;
-                                while (!isDone.f(i)) {
-                                    final String s = r.readLine();
-                                    if (s == null) {
-                                        return i;
-                                    }
-                                    final Input<String> input = Input.<String>el(s);
-                                    final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.<Input<String>, IterV<String, A>>apply(input));
-                                    i = i.fold(done, cont)._1();
-                                }
-                                return i;
-                            }
-                        };
+            @Override
+            public IO<IterV<String, A>> f(final IterV<String, A> it) {
+                // use loop instead of recursion because of missing TCO
+                return () -> {
+                    IterV<String, A> i = it;
+                    while (!isDone.f(i)) {
+                        final String s = r.readLine();
+                        if (s == null) {
+                            return i;
+                        }
+                        final Input<String> input = Input.<String>el(s);
+                        final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.<Input<String>, IterV<String, A>>apply(input));
+                        i = i.fold(done, cont)._1();
                     }
+                    return i;
                 };
             }
         };
@@ -239,38 +220,30 @@ public final class IOFunctions {
                     }
                 };
 
-        return new F<Reader, F<IterV<char[], A>, IO<IterV<char[], A>>>>() {
+        return r -> new F<IterV<char[], A>, IO<IterV<char[], A>>>() {
+            final F<P2<A, Input<char[]>>, P1<IterV<char[], A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
+
             @Override
-            public F<IterV<char[], A>, IO<IterV<char[], A>>> f(final Reader r) {
-                return new F<IterV<char[], A>, IO<IterV<char[], A>>>() {
-                    final F<P2<A, Input<char[]>>, P1<IterV<char[], A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
+            public IO<IterV<char[], A>> f(final IterV<char[], A> it) {
+                // use loop instead of recursion because of missing TCO
+                return () -> {
 
-                    @Override
-                    public IO<IterV<char[], A>> f(final IterV<char[], A> it) {
-                        // use loop instead of recursion because of missing TCO
-                        return new IO<Iteratee.IterV<char[], A>>() {
-                            @Override
-                            public IterV<char[], A> run() throws IOException {
-
-                                IterV<char[], A> i = it;
-                                while (!isDone.f(i)) {
-                                    char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-                                    final int numRead = r.read(buffer);
-                                    if (numRead == -1) {
-                                        return i;
-                                    }
-                                    if (numRead < buffer.length) {
-                                        buffer = Arrays.copyOfRange(buffer, 0, numRead);
-                                    }
-                                    final Input<char[]> input = Input.<char[]>el(buffer);
-                                    final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
-                                            F1Functions.lazy(Function.<Input<char[]>, IterV<char[], A>>apply(input));
-                                    i = i.fold(done, cont)._1();
-                                }
-                                return i;
-                            }
-                        };
+                    IterV<char[], A> i = it;
+                    while (!isDone.f(i)) {
+                        char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+                        final int numRead = r.read(buffer);
+                        if (numRead == -1) {
+                            return i;
+                        }
+                        if (numRead < buffer.length) {
+                            buffer = Arrays.copyOfRange(buffer, 0, numRead);
+                        }
+                        final Input<char[]> input = Input.<char[]>el(buffer);
+                        final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
+                                F1Functions.lazy(Function.<Input<char[]>, IterV<char[], A>>apply(input));
+                        i = i.fold(done, cont)._1();
                     }
+                    return i;
                 };
             }
         };
@@ -292,52 +265,39 @@ public final class IOFunctions {
                     }
                 };
 
-        return new F<Reader, F<IterV<Character, A>, IO<IterV<Character, A>>>>() {
+        return r -> new F<IterV<Character, A>, IO<IterV<Character, A>>>() {
+            final F<P2<A, Input<Character>>, IterV<Character, A>> done = errorF("iteratee is done"); //$NON-NLS-1$
+
             @Override
-            public F<IterV<Character, A>, IO<IterV<Character, A>>> f(final Reader r) {
-                return new F<IterV<Character, A>, IO<IterV<Character, A>>>() {
-                    final F<P2<A, Input<Character>>, IterV<Character, A>> done = errorF("iteratee is done"); //$NON-NLS-1$
+            public IO<IterV<Character, A>> f(final IterV<Character, A> it) {
+                // use loop instead of recursion because of missing TCO
+                return () -> {
 
-                    @Override
-                    public IO<IterV<Character, A>> f(final IterV<Character, A> it) {
-                        // use loop instead of recursion because of missing TCO
-                        return new IO<Iteratee.IterV<Character, A>>() {
-                            @Override
-                            public IterV<Character, A> run() throws IOException {
-
-                                IterV<Character, A> i = it;
-                                while (!isDone.f(i)) {
-                                    char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-                                    final int numRead = r.read(buffer);
-                                    if (numRead == -1) {
-                                        return i;
-                                    }
-                                    if (numRead < buffer.length) {
-                                        buffer = Arrays.copyOfRange(buffer, 0, numRead);
-                                    }
-                                    for (int c = 0; c < buffer.length; c++) {
-                                        final Input<Character> input = Input.el(buffer[c]);
-                                        final F<F<Input<Character>, IterV<Character, A>>, IterV<Character, A>> cont =
-                                                Function.<Input<Character>, IterV<Character, A>>apply(input);
-                                        i = i.fold(done, cont);
-                                    }
-                                }
-                                return i;
-                            }
-                        };
+                    IterV<Character, A> i = it;
+                    while (!isDone.f(i)) {
+                        char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+                        final int numRead = r.read(buffer);
+                        if (numRead == -1) {
+                            return i;
+                        }
+                        if (numRead < buffer.length) {
+                            buffer = Arrays.copyOfRange(buffer, 0, numRead);
+                        }
+                        for (int c = 0; c < buffer.length; c++) {
+                            final Input<Character> input = Input.el(buffer[c]);
+                            final F<F<Input<Character>, IterV<Character, A>>, IterV<Character, A>> cont =
+                                    Function.<Input<Character>, IterV<Character, A>>apply(input);
+                            i = i.fold(done, cont);
+                        }
                     }
+                    return i;
                 };
             }
         };
     }
 
     public static <A, B> IO<B> map(final IO<A> io, final F<A, B> f) {
-        return new IO<B>() {
-            @Override
-            public B run() throws IOException {
-                return f.f(io.run());
-            }
-        };
+        return () -> f.f(io.run());
     }
 
     public static <A, B> IO<B> as(final IO<A> io, final B b) {
@@ -349,12 +309,7 @@ public final class IOFunctions {
     }
 
     public static <A, B> IO<B> bind(final IO<A> io, final F<A, IO<B>> f) {
-        return new IO<B>() {
-            @Override
-            public B run() throws IOException {
-                return f.f(io.run()).run();
-            }
-        };
+        return () -> f.f(io.run()).run();
     }
 
     public static IO<Unit> when(final Boolean b, final IO<Unit> io) {
@@ -422,46 +377,40 @@ public final class IOFunctions {
     }
 
     public static <A> IO<Stream<A>> sequenceWhileEager(final Stream<IO<A>> stream, final F<A, Boolean> f) {
-        return new IO<Stream<A>>() {
-            @Override
-            public Stream<A> run() throws IOException {
-                boolean loop = true;
-                Stream<IO<A>> input = stream;
-                Stream<A> result = Stream.<A>nil();
-                while (loop) {
-                    if (input.isEmpty()) {
+        return () -> {
+            boolean loop = true;
+            Stream<IO<A>> input = stream;
+            Stream<A> result = Stream.<A>nil();
+            while (loop) {
+                if (input.isEmpty()) {
+                    loop = false;
+                } else {
+                    A a = input.head().run();
+                    if (!f.f(a)) {
                         loop = false;
                     } else {
-                        A a = input.head().run();
-                        if (!f.f(a)) {
-                            loop = false;
-                        } else {
-                            input = input.tail()._1();
-                            result = result.cons(a);
-                        }
+                        input = input.tail()._1();
+                        result = result.cons(a);
                     }
                 }
-                return result.reverse();
             }
+            return result.reverse();
         };
     }
 
     public static <A> IO<Stream<A>> sequenceWhile(final Stream<IO<A>> stream, final F<A, Boolean> f) {
-        return new IO<Stream<A>>() {
-            @Override
-            public Stream<A> run() throws IOException {
-                if (stream.isEmpty()) {
+        return () -> {
+            if (stream.isEmpty()) {
+                return Stream.nil();
+            } else {
+                IO<A> io = stream.head();
+                A a = io.run();
+                if (!f.f(a)) {
                     return Stream.nil();
                 } else {
-                    IO<A> io = stream.head();
-                    A a = io.run();
-                    if (!f.f(a)) {
-                        return Stream.nil();
-                    } else {
-                        IO<Stream<A>> io2 = sequenceWhile(stream.tail()._1(), f);
-                        SafeIO<Stream<A>> s3 = toSafe(io2::run);
-                        return Stream.cons(a, s3::run);
-                    }
+                    IO<Stream<A>> io2 = sequenceWhile(stream.tail()._1(), f);
+                    SafeIO<Stream<A>> s3 = toSafe(io2::run);
+                    return Stream.cons(a, s3::run);
                 }
             }
         };
@@ -505,9 +454,7 @@ public final class IOFunctions {
 
     public static IO<LazyString> getContents() {
         Stream<IO<Integer>> s = Stream.<IO<Integer>>repeat(() -> (int) stdinBufferedReader.read());
-        return map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.<Character>map(i -> {
-            return (char) i.intValue();
-        })));
+        return map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.<Character>map(i -> (char) i.intValue())));
     }
 
     public static IO<Unit> interact(F<LazyString, LazyString> f) {

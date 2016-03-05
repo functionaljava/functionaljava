@@ -30,15 +30,13 @@ public class PingPong {
 
     // This actor gives feedback to the user that work is being done
     // and also terminates the program when all work has been completed.
-    callback = Actor.queueActor(s, new Effect1<Integer>() {
-      public void f(final Integer i) {
-        done++;
-        if (done >= actors) {
-          System.out.println("All done.");
-          pool.shutdown();
-        } else if (actors < 10 || done % (actors / 10) == 0)
-          System.out.println(MessageFormat.format("{0} actors done ({1} total pongs).", done, pings * done));
-      }
+    callback = Actor.queueActor(s, i -> {
+      done++;
+      if (done >= actors) {
+        System.out.println("All done.");
+        pool.shutdown();
+      } else if (actors < 10 || done % (actors / 10) == 0)
+        System.out.println(MessageFormat.format("{0} actors done ({1} total pongs).", done, pings * done));
     });
   }
 

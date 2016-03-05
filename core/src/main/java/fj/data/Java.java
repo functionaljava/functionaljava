@@ -59,9 +59,7 @@ public final class Java {
    */
   public static final F<List<Boolean>, BitSet> List_BitSet = bs -> {
     final BitSet s = new BitSet(bs.length());
-    bs.zipIndex().foreachDoEffect(bi -> {
-        s.set(bi._2(), bi._1());
-    });
+    bs.zipIndex().foreachDoEffect(bi -> s.set(bi._2(), bi._1()));
     return s;
   };
 
@@ -238,9 +236,7 @@ public final class Java {
   public static final F<Array<Boolean>, BitSet> Array_BitSet = bs -> {
     final BitSet s = new BitSet(bs.length());
 
-    bs.zipIndex().foreachDoEffect(bi -> {
-      s.set(bi._2(), bi._1());
-    });
+    bs.zipIndex().foreachDoEffect(bi -> s.set(bi._2(), bi._1()));
     return s;
   };
 
@@ -445,9 +441,7 @@ public final class Java {
    */
   public static final F<Stream<Boolean>, BitSet> Stream_BitSet = bs -> {
     final BitSet s = new BitSet(bs.length());
-    bs.zipIndex().foreachDoEffect(bi -> {
-      s.set(bi._2(), bi._1());
-    });
+    bs.zipIndex().foreachDoEffect(bi -> s.set(bi._2(), bi._1()));
     return s;
   };
 

@@ -585,21 +585,14 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
     final Stream<Tree<TreeZipper<A>>> l = uf(TreeZipper.<A>left_());
     final Stream<Tree<TreeZipper<A>>> r = uf(TreeZipper.<A>right_());
     final Stream<P3<Stream<Tree<TreeZipper<A>>>, TreeZipper<A>, Stream<Tree<TreeZipper<A>>>>> p = unfold(
-        new F<Option<TreeZipper<A>>,
-            Option<P2<
-                P3<Stream<Tree<TreeZipper<A>>>, TreeZipper<A>, Stream<Tree<TreeZipper<A>>>>,
-                Option<TreeZipper<A>>>>>() {
-          public Option<P2<
+        o -> {
+          Option<P2<
               P3<Stream<Tree<TreeZipper<A>>>, TreeZipper<A>, Stream<Tree<TreeZipper<A>>>>,
-              Option<TreeZipper<A>>>> f(final Option<TreeZipper<A>> o) {
-            Option<P2<
-                P3<Stream<Tree<TreeZipper<A>>>, TreeZipper<A>, Stream<Tree<TreeZipper<A>>>>,
-                Option<TreeZipper<A>>>> r = none();
-            for (final TreeZipper<A> z : o) {
-              r = some(P.p(P.p(z.uf(TreeZipper.<A>left_()), z, z.uf(TreeZipper.<A>right_())), z.parent()));
-            }
-            return r;
+              Option<TreeZipper<A>>>> r1 = none();
+          for (final TreeZipper<A> z : o) {
+            r1 = some(P.p(P.p(z.uf(TreeZipper.<A>left_()), z, z.uf(TreeZipper.<A>right_())), z.parent()));
           }
+          return r1;
         }, parent());
     return treeZipper(t, l, r, p);
   }

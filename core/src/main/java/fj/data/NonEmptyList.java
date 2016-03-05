@@ -108,12 +108,10 @@ public final class NonEmptyList<A> implements Iterable<A> {
     final NonEmptyList<B> p = f.f(head);
     b.snoc(p.head);
     b.append(p.tail);
-    tail.foreachDoEffect(new Effect1<A>() {
-        public void f(final A a) {
-            final NonEmptyList<B> p = f.f(a);
-            b.snoc(p.head);
-            b.append(p.tail);
-        }
+    tail.foreachDoEffect(a -> {
+        final NonEmptyList<B> p1 = f.f(a);
+        b.snoc(p1.head);
+        b.append(p1.tail);
     });
     final List<B> bb = b.toList();
     return nel(bb.head(), bb.tail());

@@ -119,11 +119,9 @@ public final class Reflect {
   }
 
   private static void printResults(final List<P2<String,CheckResult>> results) {
-    results.foreachDoEffect(new Effect1<P2<String, CheckResult>>() {
-        public void f(final P2<String, CheckResult> result) {
-            summary.print(result._2());
-            out.println(" (" + result._1() + ')');
-        }
+    results.foreachDoEffect(result -> {
+        summary.print(result._2());
+        out.println(" (" + result._1() + ')');
     });
     out.println("--------------------------------------------------------------------------------");
   }

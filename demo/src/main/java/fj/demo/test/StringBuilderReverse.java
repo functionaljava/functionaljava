@@ -34,10 +34,6 @@ public final class StringBuilderReverse {
     //OK, passed 100 tests.
     //OK, passed 100 tests.
     //OK, passed 100 tests.
-    list(p1, p2, p3).foreachDoEffect(new Effect1<Property>() {
-        public void f(final Property p) {
-            summary.println(p.check());
-        }
-    });
+    list(p1, p2, p3).foreachDoEffect(p -> summary.println(p.check()));
   }
 }

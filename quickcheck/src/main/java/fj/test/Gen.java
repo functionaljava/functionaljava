@@ -110,15 +110,7 @@ public final class Gen<A> {
    * @return A new generator after applying the mapping function.
    */
   public <B> Gen<B> map(final F<A, B> f) {
-    return new Gen<B>(new F<Integer, F<Rand, B>>() {
-      public F<Rand, B> f(final Integer i) {
-        return new F<Rand, B>() {
-          public B f(final Rand r) {
-            return f.f(gen(i, r));
-          }
-        };
-      }
-    });
+    return new Gen<B>(i -> r -> f.f(gen(i, r)));
   }
 
   /**
@@ -169,15 +161,7 @@ public final class Gen<A> {
    * @return A new generator after binding the given function.
    */
   public <B> Gen<B> bind(final F<A, Gen<B>> f) {
-    return new Gen<B>(new F<Integer, F<Rand, B>>() {
-      public F<Rand, B> f(final Integer i) {
-        return new F<Rand, B>() {
-          public B f(final Rand r) {
-            return f.f(gen(i, r)).f.f(i).f(r);
-          }
-        };
-      }
-    });
+    return new Gen<B>(i -> r -> f.f(gen(i, r)).f.f(i).f(r));
   }
 
   /**
@@ -292,11 +276,7 @@ public final class Gen<A> {
    * @return A new generator after function application.
    */
   public <B> Gen<B> apply(final Gen<F<A, B>> gf) {
-    return gf.bind(new F<F<A, B>, Gen<B>>() {
-      public Gen<B> f(final F<A, B> f) {
-        return map(f::f);
-      }
-    });
+    return gf.bind(f1 -> map(f1::f));
   }
 
   /**
@@ -306,15 +286,7 @@ public final class Gen<A> {
    * @return A new generator that uses the given size.
    */
   public Gen<A> resize(final int s) {
-    return new Gen<A>(new F<Integer, F<Rand, A>>() {
-      public F<Rand, A> f(final Integer i) {
-        return new F<Rand, A>() {
-          public A f(final Rand r) {
-            return f.f(s).f(r);
-          }
-        };
-      }
-    });
+    return new Gen<A>(i -> r -> f.f(s).f(r));
   }
 
   /**
@@ -376,15 +348,7 @@ public final class Gen<A> {
    * @return A generator that always produces the given value.
    */
   public static <A> Gen<A> value(final A a) {
-    return new Gen<A>(new F<Integer, F<Rand, A>>() {
-      public F<Rand, A> f(final Integer i) {
-        return new F<Rand, A>() {
-          public A f(final Rand r) {
-            return a;
-          }
-        };
-      }
-    });
+    return new Gen<A>(i -> r -> a);
   }
 
   /**
@@ -410,15 +374,7 @@ public final class Gen<A> {
   public static Gen<Double> choose(final double from, final double to) {
     final double f = min(from, to);
     final double t = max(from, to);
-    return parameterised(new F<Integer, F<Rand, Gen<Double>>>() {
-      public F<Rand, Gen<Double>> f(final Integer i) {
-        return new F<Rand, Gen<Double>>() {
-          public Gen<Double> f(final Rand r) {
-            return value(r.choose(f, t));
-          }
-        };
-      }
-    });
+    return parameterised(i -> r -> value(r.choose(f, t)));
   }
 
   /**
@@ -427,14 +383,8 @@ public final class Gen<A> {
    * @return A generator that never returns a value.
    */
   public static <A> Gen<A> fail() {
-    return new Gen<A>(new F<Integer, F<Rand, A>>() {
-      public F<Rand, A> f(final Integer i) {
-        return new F<Rand, A>() {
-          public A f(final Rand r) {
-            throw error("Failing generator");
-          }
-        };
-      }
+    return new Gen<A>(i -> r -> {
+      throw error("Failing generator");
     });
   }
 
@@ -471,11 +421,7 @@ public final class Gen<A> {
 
     final F<P2<Integer, Gen<A>>, Integer> f = __1();
 
-    return choose(1, intAdditionMonoid.sumLeft(gs.map(f))).bind(new F<Integer, Gen<A>>() {
-      public Gen<A> f(final Integer i) {
-        return new Pick().pick(i, gs);
-      }
-    });
+    return choose(1, intAdditionMonoid.sumLeft(gs.map(f))).bind(i -> new Pick().pick(i, gs));
   }
 
   /**
@@ -486,11 +432,7 @@ public final class Gen<A> {
    * @return A new generator that uses the given pairs of frequency and value.
    */
   public static <A> Gen<A> elemFrequency(final List<P2<Integer, A>> as) {
-    return frequency(as.map(new F<P2<Integer, A>, P2<Integer, Gen<A>>>() {
-      public P2<Integer, Gen<A>> f(final P2<Integer, A> p) {
-        return p.map2(Gen::value);
-      }
-    }));
+    return frequency(as.map(p -> p.map2(Gen::value)));
   }
 
   /**
@@ -501,11 +443,7 @@ public final class Gen<A> {
    */
   @SafeVarargs
   public static <A> Gen<A> elements(final A... as) {
-    return array(as).isEmpty() ? Gen.<A>fail() : choose(0, as.length - 1).map(new F<Integer, A>() {
-      public A f(final Integer i) {
-        return as[i];
-      }
-    });
+    return array(as).isEmpty() ? Gen.<A>fail() : choose(0, as.length - 1).map(i -> as[i]);
   }
 
   /**
@@ -785,18 +723,6 @@ public final class Gen<A> {
    * @return A generator for functions.
    */
   public static <A, B> Gen<F<A, B>> promote(final F<A, Gen<B>> f) {
-    return new Gen<F<A, B>>(new F<Integer, F<Rand, F<A, B>>>() {
-      public F<Rand, F<A, B>> f(final Integer i) {
-        return new F<Rand, F<A, B>>() {
-          public F<A, B> f(final Rand r) {
-            return new F<A, B>() {
-              public B f(final A a) {
-                return f.f(a).f.f(i).f(r);
-              }
-            };
-          }
-        };
-      }
-    });
+    return new Gen<F<A, B>>(i -> r -> a -> f.f(a).f.f(i).f(r));
   }
 }

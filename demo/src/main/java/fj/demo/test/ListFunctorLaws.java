@@ -52,11 +52,9 @@ public final class ListFunctorLaws {
   // composition: OK, passed 1000 tests.
   @SuppressWarnings("unchecked")
   public static void main(final String[] args) {
-    check(ListFunctorLaws.class).foreachDoEffect(new Effect1<P2<String, CheckResult>>() {
-        public void f(final P2<String, CheckResult> r) {
-            System.out.print(r._1() + ": ");
-            summary.println(r._2());
-        }
+    check(ListFunctorLaws.class).foreachDoEffect(r -> {
+        System.out.print(r._1() + ": ");
+        summary.println(r._2());
     });
   }
 }

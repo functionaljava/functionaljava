@@ -216,14 +216,12 @@ public final class Callables {
    * @return A Callable equivalent to the given Either value.
    */
   public static <A> Callable<A> fromEither(final F0<Either<Exception, A>> e) {
-    return new Callable<A>() {
-      public A call() throws Exception {
-        final Either<Exception, A> e1 = e.f();
-        if (e1.isLeft())
-          throw e1.left().value();
-        else
-          return e1.right().value();
-      }
+    return () -> {
+      final Either<Exception, A> e1 = e.f();
+      if (e1.isLeft())
+        throw e1.left().value();
+      else
+        return e1.right().value();
     };
   }
 
@@ -243,14 +241,12 @@ public final class Callables {
    * @return A Callable that yields some value or throws an exception in the case of no value.
    */
   public static <A> Callable<A> fromOption(final F0<Option<A>> o) {
-    return new Callable<A>() {
-      public A call() throws Exception {
-        final Option<A> o1 = o.f();
-        if (o1.isSome())
-          return o1.some();
-        else
-          throw new Exception("No value.");
-      }
+    return () -> {
+      final Option<A> o1 = o.f();
+      if (o1.isSome())
+        return o1.some();
+      else
+        throw new Exception("No value.");
     };
   }
 

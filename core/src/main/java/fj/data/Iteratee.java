@@ -99,11 +99,9 @@ public final class Iteratee {
     /** TODO more documentation */
     public final <B> IterV<E, B> bind(final F<A, IterV<E, B>> f) {
       final F<P2<A, Input<E>>, IterV<E, B>> done =
-        new F<P2<A, Input<E>>, IterV<E, B>>() {
-          @Override
-          public IterV<E, B> f(final P2<A, Input<E>> xe) {
+          xe -> {
             final Input<E> e = xe._2();
-            final F<P2<B, Input<E>>, IterV<E, B>> done =
+            final F<P2<B, Input<E>>, IterV<E, B>> done1 =
                     y_ -> {
                       final B y = y_._1();
                       return done(y, e);
@@ -111,9 +109,8 @@ public final class Iteratee {
             final F<F<Input<E>, IterV<E, B>>, IterV<E, B>> cont =
                     k -> k.f(e);
             final A x = xe._1();
-            return f.f(x).fold(done, cont);
-          }
-        };
+            return f.f(x).fold(done1, cont);
+          };
       final F<F<Input<E>, IterV<E, A>>, IterV<E, B>> cont =
               k -> cont(e -> k.f(e).bind(f));
       return this.fold(done, cont);

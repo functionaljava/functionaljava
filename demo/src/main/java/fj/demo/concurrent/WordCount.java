@@ -92,24 +92,21 @@ public class WordCount {
             new P1<F<char[], IterV<char[], Map<String, Integer>>>>() {
               @Override
               public F<char[], IterV<char[], Map<String, Integer>>> _1() {
-                return new F<char[], Iteratee.IterV<char[], Map<String, Integer>>>() {
-                  @Override
-                  public IterV<char[], Map<String, Integer>> f(final char[] e) {
-                    StringBuilder sb = acc._1();
-                    Map<String, Integer> map = acc._2();
-                    for(char c : e) {
-                      if(Character.isWhitespace(c)) {
-                        if(sb.length() > 0) {
-                          map = update(map, sb.toString(), addOne, Integer.valueOf(0));
-                          sb = new StringBuilder();
-                        }
-                      }
-                      else {
-                        sb.append(c);
+                return e -> {
+                  StringBuilder sb = acc._1();
+                  Map<String, Integer> map = acc._2();
+                  for(char c : e) {
+                    if(Character.isWhitespace(c)) {
+                      if(sb.length() > 0) {
+                        map = update(map, sb.toString(), addOne, Integer.valueOf(0));
+                        sb = new StringBuilder();
                       }
                     }
-                    return IterV.cont(step.f(P.p(sb, map)));
+                    else {
+                      sb.append(c);
+                    }
                   }
+                  return IterV.cont(step.f(P.p(sb, map)));
                 };
               }
             };
@@ -139,25 +136,23 @@ public class WordCount {
         public F<Input<Character>, IterV<Character, Map<String, Integer>>> f(final P2<StringBuilder,Map<String, Integer>> acc) {
           final P1<IterV<Character, Map<String, Integer>>> empty = P.lazy(() -> IterV.cont(step.f(acc)));
           final P1<F<Character, IterV<Character, Map<String, Integer>>>> el =
-            P.lazy(() -> {
-                return e -> {
-                    if(Character.isWhitespace(e.charValue())) {
-                      final StringBuilder sb = acc._1();
-                      if(sb.length() > 0) {
-                        final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
-                        return IterV.cont(step.f(P.p(new StringBuilder(), map)));
-                      }
-                      else {
-                        // another whitespace char, no word to push to the map
-                        return IterV.cont(step.f(acc));
-                      }
-                    }
-                    else {
-                      acc._1().append(e);
-                      return IterV.cont(step.f(acc));
-                    }
-                };
-              });
+            P.lazy(() -> e -> {
+                if(Character.isWhitespace(e.charValue())) {
+                  final StringBuilder sb = acc._1();
+                  if(sb.length() > 0) {
+                    final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
+                    return IterV.cont(step.f(P.p(new StringBuilder(), map)));
+                  }
+                  else {
+                    // another whitespace char, no word to push to the map
+                    return IterV.cont(step.f(acc));
+                  }
+                }
+                else {
+                  acc._1().append(e);
+                  return IterV.cont(step.f(acc));
+                }
+            });
           final P1<IterV<Character, Map<String, Integer>>> eof = P.lazy(() -> {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
@@ -261,12 +256,7 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
     
     // we have tmpfiles, but still want to be sure not to leave rubbish
-    fileNames.foreachDoEffect(new Effect1<String>() {
-        @Override
-        public void f(final String a) {
-            new File(a).delete();
-        }
-    });
+    fileNames.foreachDoEffect(a -> new File(a).delete());
   }
 
   @SuppressWarnings("unused")
