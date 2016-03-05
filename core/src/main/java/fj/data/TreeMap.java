@@ -358,7 +358,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @param f A function to apply to the values of this TreeMap.
    * @return A new TreeMap with the values transformed by the given function.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <W> TreeMap<K, W> map(final F<V, W> f) {
     final F<P2<K, Option<V>>, P2<K, Option<W>>> g = P2.map2_(F1Functions.mapOption(f));
     final F<K, P2<K, Option<V>>> coord = flip(P.<K, Option<V>>p2()).f(Option.<V>none());

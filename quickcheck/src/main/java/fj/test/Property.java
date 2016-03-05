@@ -133,7 +133,7 @@ public final class Property {
    * @param maxSize       The maximum size to use for checking.
    * @return A result after checking this property.
    */
-  @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+  @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
   public CheckResult check(final Rand r,
                            final int minSuccessful,
                            final int maxDiscarded,
@@ -453,7 +453,7 @@ public final class Property {
         return new F<Rand, Result>() {
           public Result f(final Rand r) {
             final class Util {
-              @SuppressWarnings({"IfMayBeConditional"})
+              @SuppressWarnings("IfMayBeConditional")
               Option<P2<A, Result>> first(final Stream<A> as, final int shrinks) {
                 final Stream<Option<P2<A, Result>>> results = as.map(new F<A, Option<P2<A, Result>>>() {
                   public Option<P2<A, Result>> f(final A a) {

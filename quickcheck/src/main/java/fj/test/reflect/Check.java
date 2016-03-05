@@ -260,14 +260,14 @@ public final class Check {
     AnnotatedElement element();
     String name();
     int modifiers();
-    @SuppressWarnings({"ProhibitedExceptionDeclared"})
+    @SuppressWarnings("ProhibitedExceptionDeclared")
     <X> Property invoke(X x) throws Exception;
     boolean isProperty();
   }
 
   private static <T> Array<P3<Property, String, Option<CheckParams>>> properties(final Array<PropertyMember> ms, final java.lang.Class<T> declaringClass, final String... categories) {
     final Option<T> t = emptyCtor(declaringClass).map(new F<Constructor<T>, T>() {
-      @SuppressWarnings({"OverlyBroadCatchBlock"})
+      @SuppressWarnings("OverlyBroadCatchBlock")
       public T f(final Constructor<T> ctor) {
         try {
           ctor.setAccessible(true);

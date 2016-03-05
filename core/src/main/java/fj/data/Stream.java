@@ -957,7 +957,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *
    * @return A array projection of this stream.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public final Array<A> toArray() {
     final int l = length();
     final Object[] a = new Object[l];

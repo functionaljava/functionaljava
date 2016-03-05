@@ -172,7 +172,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param f The function to map.
    * @return A new validation with the function mapped.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <A> Validation<E, A> map(final F<T, A> f) {
     return isFail() ?
         Validation.<E, A>fail(fail()) :
@@ -185,7 +185,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param f The function to bind across this validation.
    * @return A new validation value after binding.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <A> Validation<E, A> bind(final F<T, Validation<E, A>> f) {
     return isSuccess() ? f.f(success()) : Validation.<E, A>fail(fail());
   }
@@ -313,7 +313,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A failing validation if this or the given validation failed (with errors accumulated if both) or a
    *         succeeding validation if both succeeded.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <A> Validation<E, A> accumapply(final Semigroup<E> s, final Validation<E, F<T, A>> v) {
     return isFail() ?
         Validation.<E, A>fail(v.isFail() ?
@@ -1080,7 +1080,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return A validation with its failing value in a non-empty list if there is one.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public Validation<NonEmptyList<E>, T> nel() {
     return isSuccess() ?
         Validation.<NonEmptyList<E>, T>success(success()) :

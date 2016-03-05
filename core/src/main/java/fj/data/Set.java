@@ -31,7 +31,7 @@ public abstract class Set<A> implements Iterable<A> {
     return this instanceof Empty;
   }
 
-  @SuppressWarnings({"ClassEscapesDefinedScope"})
+  @SuppressWarnings("ClassEscapesDefinedScope")
   abstract Color color();
 
   abstract Set<A> l();
@@ -209,7 +209,7 @@ public abstract class Set<A> implements Iterable<A> {
     return new Tree<A>(ord, Color.B, l(), head(), r());
   }
 
-  @SuppressWarnings({"SuspiciousNameCombination"})
+  @SuppressWarnings("SuspiciousNameCombination")
   private static <A> Tree<A> tr(final Ord<A> o,
                                 final Set<A> a, final A x, final Set<A> b,
                                 final A y,

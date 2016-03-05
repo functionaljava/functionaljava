@@ -39,7 +39,7 @@ forall f. forall g. forall x. map (f . g) x == map f (map g x)
 
 Note that to test this second law requires the generation of arbitrary functions.
 */
-@SuppressWarnings({"PackageVisibleField"})
+@SuppressWarnings("PackageVisibleField")
 @CheckParams(minSuccessful = 1000)
 public final class ListFunctorLaws {
   final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.<String>identity()))));

@@ -5,7 +5,7 @@ package fj;
  *
  * @version %build.number%
  */
-@SuppressWarnings({"UnnecessaryFullyQualifiedName"})
+@SuppressWarnings("UnnecessaryFullyQualifiedName")
 public abstract class P6<A, B, C, D, E, F> {
   /**
    * Access the first element of the product.

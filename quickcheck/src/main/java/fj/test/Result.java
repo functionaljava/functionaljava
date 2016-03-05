@@ -142,7 +142,7 @@ public final class Result {
    *
    * @return A potential result for this result.
    */
-  @SuppressWarnings({"IfMayBeConditional"})
+  @SuppressWarnings("IfMayBeConditional")
   public Option<Result> toOption() {
     if(isNoResult())
       return none();

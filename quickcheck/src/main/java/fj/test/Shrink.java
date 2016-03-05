@@ -241,7 +241,7 @@ public final class Shrink<A> {
         }
       }
 
-      @SuppressWarnings({"IfMayBeConditional"})
+      @SuppressWarnings("IfMayBeConditional")
       Stream<List<A>> shrinkOne(final List<A> as) {
         if (as.isEmpty())
           return nil();
@@ -402,7 +402,7 @@ public final class Shrink<A> {
    * @param sv The shrink stratgey for values.
    * @return A shrink strategy for hash tables.
    */
-  @SuppressWarnings({"UseOfObsoleteCollectionType"})
+  @SuppressWarnings("UseOfObsoleteCollectionType")
   public static <K, V> Shrink<Hashtable<K, V>> shrinkHashtable(final Shrink<K> sk, final Shrink<V> sv) {
     return shrinkList(shrinkP2(sk, sv)).map(kvs -> {
       final Hashtable<K, V> h = new Hashtable<K, V>();

@@ -49,7 +49,7 @@ public final class F1Functions {
      * @param g A function with which to compose this one.
      * @return The composed function such that this function is applied first.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B, C> F<A, C> andThen(final F<A, B> f, final F<B, C> g) {
         return o(g, f);
     }
@@ -259,7 +259,7 @@ public final class F1Functions {
      *
      * @return This function promoted to return its result on the left side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B, C> F<A, Either<B, C>> eitherLeftK(final F<A, B> f) {
         return o(Either.<B, C>left_(), f);
     }
@@ -270,7 +270,7 @@ public final class F1Functions {
      *
      * @return This function promoted to return its result on the right side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B, C> F<A, Either<C, B>> eitherRightK(final F<A, B> f) {
         return o(Either.<C, B>right_(), f);
     }
@@ -280,7 +280,7 @@ public final class F1Functions {
      *
      * @return This function promoted to map over the left side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B, X> F<Either<A, X>, Either<B, X>> mapLeft(final F<A, B> f) {
         return Either.<A, X, B>leftMap_().f(f);
     }
@@ -290,7 +290,7 @@ public final class F1Functions {
      *
      * @return This function promoted to map over the right side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B, X> F<Either<X, A>, Either<X, B>> mapRight(final F<A, B> f) {
         return Either.<X, A, B>rightMap_().f(f);
     }
@@ -318,7 +318,7 @@ public final class F1Functions {
      *
      * @return This function promoted to return its value in an Iterable.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B> F<A, IterableW<B>> iterableK(final F<A, B> f) {
         return IterableW.<A, B>arrow().f(f);
     }
@@ -328,7 +328,7 @@ public final class F1Functions {
      *
      * @return This function promoted to map over Iterables.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B> F<Iterable<A>, IterableW<B>> mapIterable(final F<A, B> f) {
         return F1Functions.o(IterableW.<A, B>map().f(f), IterableW.<A, Iterable<A>>wrap());
     }
@@ -338,7 +338,7 @@ public final class F1Functions {
      *
      * @return This function promoted to return its value in a NonEmptyList.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B> F<A, NonEmptyList<B>> nelK(final F<A, B> f) {
         return o(NonEmptyList.<B>nel(), f);
     }
@@ -387,7 +387,7 @@ public final class F1Functions {
      *
      * @return This function promoted to map over a Tree.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public static <A, B> F<Tree<A>, Tree<B>> mapTree(final F<A, B> f) {
         return Tree.<A, B>fmap_().f(f);
     }

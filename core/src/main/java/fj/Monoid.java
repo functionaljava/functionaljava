@@ -381,7 +381,7 @@ public final class Monoid<A> {
    *
    * @return A monoid for arrays.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public static <A> Monoid<Array<A>> arrayMonoid() {
     return monoid(Semigroup.<A>arraySemigroup(), Array.<A>empty());
   }

@@ -32,7 +32,7 @@ public final class HashMap<K, V> implements Iterable<K> {
       return k;
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public boolean equals(final Object o) {
       return o instanceof Key && e.eq(k, (K) ((Key<?>) o).k());
     }

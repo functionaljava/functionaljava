@@ -324,7 +324,7 @@ public final class IterableW<A> implements Iterable<A> {
         return iterableStream(IterableW.this).isEmpty();
       }
 
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public boolean contains(final Object o) {
         return iterableStream(IterableW.this).exists(Equal.<A>anyEqual().eq((A) o));
       }
@@ -337,7 +337,7 @@ public final class IterableW<A> implements Iterable<A> {
         return Array.iterableArray(iterableStream(IterableW.this)).array();
       }
 
-      @SuppressWarnings({"SuspiciousToArrayCall"})
+      @SuppressWarnings("SuspiciousToArrayCall")
       public <T> T[] toArray(final T[] a) {
         return iterableStream(IterableW.this).toCollection().toArray(a);
       }

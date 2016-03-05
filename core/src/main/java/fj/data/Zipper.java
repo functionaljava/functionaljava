@@ -169,7 +169,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @param a The stream from which to create a zipper.
    * @return a new zipper if the provided stream has at least one element, otherwise None.
    */
-  @SuppressWarnings({"IfMayBeConditional"})
+  @SuppressWarnings("IfMayBeConditional")
   public static <A> Option<Zipper<A>> fromStream(final Stream<A> a) {
     if (a.isEmpty())
       return none();

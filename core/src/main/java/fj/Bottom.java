@@ -72,7 +72,7 @@ public final class Bottom {
    * @param c The type being deconstructed.
    * @return A deconstruction failure that was non-exhaustive.
    */
-  @SuppressWarnings({"UnnecessaryFullyQualifiedName"})
+  @SuppressWarnings("UnnecessaryFullyQualifiedName")
   public static <A> Error decons(final java.lang.Class<A> c) {
     return error("Deconstruction failure on type " + c);
   }

@@ -530,7 +530,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<ArrayList<A>> coarbArrayList(final Coarbitrary<A> ca) {
     return new Coarbitrary<ArrayList<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final ArrayList<A> as, final Gen<B> g) {
         return coarbArray(ca).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -580,7 +580,7 @@ public abstract class Coarbitrary<A> {
   public static <K extends Enum<K>, V> Coarbitrary<EnumMap<K, V>> coarbEnumMap(final Coarbitrary<K> ck,
                                                                                final Coarbitrary<V> cv) {
     return new Coarbitrary<EnumMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final EnumMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -595,7 +595,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A extends Enum<A>> Coarbitrary<EnumSet<A>> coarbEnumSet(final Coarbitrary<A> c) {
     return new Coarbitrary<EnumSet<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final EnumSet<A> as, final Gen<B> g) {
         return coarbHashSet(c).coarbitrary(new HashSet<A>(as), g);
       }
@@ -620,7 +620,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <K, V> Coarbitrary<HashMap<K, V>> coarbHashMap(final Coarbitrary<K> ck, final Coarbitrary<V> cv) {
     return new Coarbitrary<HashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final HashMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -635,7 +635,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<HashSet<A>> coarbHashSet(final Coarbitrary<A> c) {
     return new Coarbitrary<HashSet<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final HashSet<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -651,7 +651,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <K, V> Coarbitrary<Hashtable<K, V>> coarbHashtable(final Coarbitrary<K> ck, final Coarbitrary<V> cv) {
     return new Coarbitrary<Hashtable<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final Hashtable<K, V> h, final Gen<B> g) {
         List<P2<K, V>> x = nil();
 
@@ -674,7 +674,7 @@ public abstract class Coarbitrary<A> {
   public static <K, V> Coarbitrary<IdentityHashMap<K, V>> coarbIdentityHashMap(final Coarbitrary<K> ck,
                                                                                final Coarbitrary<V> cv) {
     return new Coarbitrary<IdentityHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final IdentityHashMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -691,7 +691,7 @@ public abstract class Coarbitrary<A> {
   public static <K, V> Coarbitrary<LinkedHashMap<K, V>> coarbLinkedHashMap(final Coarbitrary<K> ck,
                                                                            final Coarbitrary<V> cv) {
     return new Coarbitrary<LinkedHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final LinkedHashMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -706,7 +706,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<LinkedHashSet<A>> coarbLinkedHashSet(final Coarbitrary<A> c) {
     return new Coarbitrary<LinkedHashSet<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final LinkedHashSet<A> as, final Gen<B> g) {
         return coarbHashSet(c).coarbitrary(new HashSet<A>(as), g);
       }
@@ -721,7 +721,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<LinkedList<A>> coarbLinkedList(final Coarbitrary<A> c) {
     return new Coarbitrary<LinkedList<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final LinkedList<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -736,7 +736,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<PriorityQueue<A>> coarbPriorityQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<PriorityQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final PriorityQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -747,7 +747,7 @@ public abstract class Coarbitrary<A> {
    * A coarbitrary for properties.
    */
   public static final Coarbitrary<Properties> coarbProperties = new Coarbitrary<Properties>() {
-    @SuppressWarnings({"UseOfObsoleteCollectionType"})
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public <B> Gen<B> coarbitrary(final Properties p, final Gen<B> g) {
       final Hashtable<String, String> t = new Hashtable<String, String>();
 
@@ -767,7 +767,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<Stack<A>> coarbStack(final Coarbitrary<A> c) {
     return new Coarbitrary<Stack<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final Stack<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -783,7 +783,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <K, V> Coarbitrary<TreeMap<K, V>> coarbTreeMap(final Coarbitrary<K> ck, final Coarbitrary<V> cv) {
     return new Coarbitrary<TreeMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final TreeMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -798,7 +798,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<TreeSet<A>> coarbTreeSet(final Coarbitrary<A> c) {
     return new Coarbitrary<TreeSet<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final TreeSet<A> as, final Gen<B> g) {
         return coarbHashSet(c).coarbitrary(new HashSet<A>(as), g);
       }
@@ -830,7 +830,7 @@ public abstract class Coarbitrary<A> {
   public static <K, V> Coarbitrary<WeakHashMap<K, V>> coarbWeakHashMap(final Coarbitrary<K> ck,
                                                                        final Coarbitrary<V> cv) {
     return new Coarbitrary<WeakHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final WeakHashMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -849,7 +849,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<ArrayBlockingQueue<A>> coarbArrayBlockingQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<ArrayBlockingQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final ArrayBlockingQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -866,7 +866,7 @@ public abstract class Coarbitrary<A> {
   public static <K, V> Coarbitrary<ConcurrentHashMap<K, V>> coarbConcurrentHashMap(final Coarbitrary<K> ck,
                                                                                    final Coarbitrary<V> cv) {
     return new Coarbitrary<ConcurrentHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public <B> Gen<B> coarbitrary(final ConcurrentHashMap<K, V> m, final Gen<B> g) {
         return coarbHashtable(ck, cv).coarbitrary(new Hashtable<K, V>(m), g);
       }
@@ -881,7 +881,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<ConcurrentLinkedQueue<A>> coarbConcurrentLinkedQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<ConcurrentLinkedQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final ConcurrentLinkedQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -896,7 +896,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<CopyOnWriteArrayList<A>> coarbCopyOnWriteArrayList(final Coarbitrary<A> c) {
     return new Coarbitrary<CopyOnWriteArrayList<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final CopyOnWriteArrayList<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -911,7 +911,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<CopyOnWriteArraySet<A>> coarbCopyOnWriteArraySet(final Coarbitrary<A> c) {
     return new Coarbitrary<CopyOnWriteArraySet<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final CopyOnWriteArraySet<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -926,7 +926,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A extends Delayed> Coarbitrary<DelayQueue<A>> coarbDelayQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<DelayQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final DelayQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -941,7 +941,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<LinkedBlockingQueue<A>> coarbLinkedBlockingQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<LinkedBlockingQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final LinkedBlockingQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -956,7 +956,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<PriorityBlockingQueue<A>> coarbPriorityBlockingQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<PriorityBlockingQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final PriorityBlockingQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }
@@ -971,7 +971,7 @@ public abstract class Coarbitrary<A> {
    */
   public static <A> Coarbitrary<SynchronousQueue<A>> coarbSynchronousQueue(final Coarbitrary<A> c) {
     return new Coarbitrary<SynchronousQueue<A>>() {
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final SynchronousQueue<A> as, final Gen<B> g) {
         return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
       }

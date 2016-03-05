@@ -41,7 +41,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param g A function with which to compose this one.
      * @return The composed function such that this function is applied first.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public <C> F1W<A, C> andThen(final F<B, C> g) {
         return lift(F1Functions.andThen(this, g));
     }
@@ -254,7 +254,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result on the left side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public <C> F1W<A, Either<B, C>> eitherLeftK() {
         return lift(F1Functions.eitherLeftK(this));
     }
@@ -265,7 +265,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result on the right side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public <C> F1W<A, Either<C, B>> eitherRightK() {
         return lift(F1Functions.eitherRightK(this));
     }
@@ -275,7 +275,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the left side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public <X> F1W<Either<A, X>, Either<B, X>> mapLeft() {
         return lift(F1Functions.mapLeft(this));
     }
@@ -285,7 +285,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the right side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public <X> F1W<Either<X, A>, Either<X, B>> mapRight() {
         return lift(F1Functions.mapRight(this));
     }
@@ -313,7 +313,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in an Iterable.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public F1W<A, IterableW<B>> iterableK() {
         return lift( F1Functions.iterableK(this));
     }
@@ -323,7 +323,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over Iterables.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public F1W<Iterable<A>, IterableW<B>> mapIterable() {
         return lift( F1Functions.mapIterable(this));
     }
@@ -333,7 +333,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in a NonEmptyList.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public F1W<A, NonEmptyList<B>> nelK() {
         return lift(F1Functions.nelK(this));
     }
@@ -381,7 +381,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Tree.
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public F1W<Tree<A>, Tree<B>> mapTree() {
         return lift(F1Functions.mapTree(this));
     }

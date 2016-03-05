@@ -195,7 +195,7 @@ public abstract class List<A> implements Iterable<A> {
    *
    * @return A array projection of this list.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public final Array<A> toArray() {
     return mkArray(toArrayObject());
   }
@@ -1124,7 +1124,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param as The list to intersperse through.
    * @return This list through the given list then joins the results.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public final List<A> intercalate(final List<List<A>> as) {
     return join(as.intersperse(this));
   }
@@ -1154,7 +1154,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param o An ordering for the elements.
    * @return A list without duplicates.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public final List<A> nub(final Ord<A> o) {
     return sort(o).group(o.equal()).map(List.<A>head_());
   }
@@ -2044,7 +2044,7 @@ public abstract class List<A> implements Iterable<A> {
       return b;
     }
 
-    @SuppressWarnings({"ObjectEquality"})
+    @SuppressWarnings("ObjectEquality")
     private void copy() {
       List<A> s = start;
       final Cons<A> t = tail;

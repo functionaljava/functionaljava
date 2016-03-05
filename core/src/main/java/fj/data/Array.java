@@ -202,7 +202,7 @@ public final class Array<A> implements Iterable<A> {
    * @param f The function to map across this array.
    * @return A new array after the given function has been applied to each element.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <B> Array<B> map(final F<A, B> f) {
     final Object[] bs = new Object[a.length];
 
@@ -323,7 +323,7 @@ public final class Array<A> implements Iterable<A> {
    * @param b The beginning value to start the application from.
    * @return The array containing all intermediate results of the left-fold reduction.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <B> Array<B> scanLeft(final F<B, F<A, B>> f, final B b) {
     final Object[] bs = new Object[a.length];
     B x = b;
@@ -357,7 +357,7 @@ public final class Array<A> implements Iterable<A> {
    * @param f The function to apply on each argument pair (next array element and first array element/previous result)
    * @return The array containing all intermediate results of the left-fold reduction.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public Array<A> scanLeft1(final F<A, F<A, A>> f) {
     final Object[] bs = new Object[a.length];
     A x = get(0);
@@ -392,7 +392,7 @@ public final class Array<A> implements Iterable<A> {
    * @param b The beginning value to start the application from.
    * @return The array containing all intermediate results of the right-fold reduction.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <B> Array<B> scanRight(final F<A, F<B, B>>f, final B b) {
     final Object[] bs = new Object[a.length];
     B x = b;
@@ -426,7 +426,7 @@ public final class Array<A> implements Iterable<A> {
    * @param f The function to apply on each argument pair (previous array element and last array element/previous result)
    * @return The array containing all intermediate results of the right-fold reduction.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public Array<A> scanRight1(final F<A, F<A, A>>f) {
     final Object[] bs = new Object[a.length];
     A x = get(length() - 1);
@@ -459,7 +459,7 @@ public final class Array<A> implements Iterable<A> {
    * @param f The function to apply to each element of this array.
    * @return A new array after performing the map, then final join.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public <B> Array<B> bind(final F<A, Array<B>> f) {
     List<Array<B>> x = List.nil();
     int len = 0;
@@ -849,7 +849,7 @@ public final class Array<A> implements Iterable<A> {
    * @param xs The array of pairs to transform.
    * @return An array of first components and an array of second components.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public static <A, B> P2<Array<A>, Array<B>> unzip(final Array<P2<A, B>> xs) {
     final int len = xs.length();
     final Array<A> aa = new Array<A>(new Object[len]);
@@ -1079,7 +1079,7 @@ public final class Array<A> implements Iterable<A> {
     return copy;
   }
 
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public static <T> T[] copyOf(final T[] a, final int len) {
       return (T[]) copyOf(a, len, a.getClass());
   }

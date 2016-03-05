@@ -39,7 +39,7 @@ public final class Class<T> {
                         return c2;
                       }
 
-                      @SuppressWarnings({"unchecked"})
+                      @SuppressWarnings("unchecked")
                       public java.lang.Class<? super T> _2() {
                         return c2.getSuperclass();
                       }

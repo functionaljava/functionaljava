@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
  * Example of parallel synchronous messaging using Actors in Functional Java.
  * Author: Runar
  */
-@SuppressWarnings({"ArithmeticOnVolatileField"})
+@SuppressWarnings("ArithmeticOnVolatileField")
 public class PingPong {
   private final int actors;
   private final int pings;

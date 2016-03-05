@@ -95,7 +95,7 @@ public final class Arbitrary<A> {
   /**
    * The generator associated with this arbitrary.
    */
-  @SuppressWarnings({"PublicField"})
+  @SuppressWarnings("PublicField")
   public final Gen<A> gen;
 
   private Arbitrary(final Gen<A> gen) {
@@ -668,7 +668,7 @@ public final class Arbitrary<A> {
    */
   public static <A> Arbitrary<Gen<A>> arbGen(final Arbitrary<A> aa) {
     return arbitrary(sized(new F<Integer, Gen<Gen<A>>>() {
-      @SuppressWarnings({"IfMayBeConditional"})
+      @SuppressWarnings("IfMayBeConditional")
       public Gen<Gen<A>> f(final Integer i) {
         if (i == 0)
           return fail();
@@ -711,7 +711,7 @@ public final class Arbitrary<A> {
    *           defined.
    * @return An arbitrary implementation for the disjoint union.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public static <A, B> Arbitrary<Either<A, B>> arbEither(final Arbitrary<A> aa, final Arbitrary<B> ab) {
     final Gen<Either<A, B>> left = aa.gen.map(new F<A, Either<A, B>>() {
       public Either<A, B> f(final A a) {
@@ -916,7 +916,7 @@ public final class Arbitrary<A> {
   public static <K extends Enum<K>, V> Arbitrary<EnumMap<K, V>> arbEnumMap(final Arbitrary<K> ak,
                                                                            final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, EnumMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public EnumMap<K, V> f(final Hashtable<K, V> ht) {
         return new EnumMap<K, V>(ht);
       }
@@ -959,7 +959,7 @@ public final class Arbitrary<A> {
    */
   public static <K, V> Arbitrary<HashMap<K, V>> arbHashMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, HashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public HashMap<K, V> f(final Hashtable<K, V> ht) {
         return new HashMap<K, V>(ht);
       }
@@ -993,7 +993,7 @@ public final class Arbitrary<A> {
     return arbitrary(arbList(ak).gen.bind(arbList(av).gen, new F<List<K>, F<List<V>, Hashtable<K, V>>>() {
       public F<List<V>, Hashtable<K, V>> f(final List<K> ks) {
         return new F<List<V>, Hashtable<K, V>>() {
-          @SuppressWarnings({"UseOfObsoleteCollectionType"})
+          @SuppressWarnings("UseOfObsoleteCollectionType")
           public Hashtable<K, V> f(final List<V> vs) {
             final Hashtable<K, V> t = new Hashtable<K, V>();
 
@@ -1022,7 +1022,7 @@ public final class Arbitrary<A> {
   public static <K, V> Arbitrary<IdentityHashMap<K, V>> arbIdentityHashMap(final Arbitrary<K> ak,
                                                                            final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, IdentityHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public IdentityHashMap<K, V> f(final Hashtable<K, V> ht) {
         return new IdentityHashMap<K, V>(ht);
       }
@@ -1040,7 +1040,7 @@ public final class Arbitrary<A> {
    */
   public static <K, V> Arbitrary<LinkedHashMap<K, V>> arbLinkedHashMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, LinkedHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public LinkedHashMap<K, V> f(final Hashtable<K, V> ht) {
         return new LinkedHashMap<K, V>(ht);
       }
@@ -1094,7 +1094,7 @@ public final class Arbitrary<A> {
    */
   public static final Arbitrary<Properties> arbProperties =
       arbitrary(arbHashtable(arbString, arbString).gen.map(new F<Hashtable<String, String>, Properties>() {
-        @SuppressWarnings({"UseOfObsoleteCollectionType"})
+        @SuppressWarnings("UseOfObsoleteCollectionType")
         public Properties f(final Hashtable<String, String> ht) {
           final Properties p = new Properties();
 
@@ -1132,7 +1132,7 @@ public final class Arbitrary<A> {
    */
   public static <K, V> Arbitrary<java.util.TreeMap<K, V>> arbJavaTreeMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, java.util.TreeMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public java.util.TreeMap<K, V> f(final Hashtable<K, V> ht) {
         return new java.util.TreeMap<K, V>(ht);
       }
@@ -1196,10 +1196,10 @@ public final class Arbitrary<A> {
    * @param aa An arbitrary implementation for the type over which the vector is defined.
    * @return An arbitrary implementation for vectors.
    */
-  @SuppressWarnings({"UseOfObsoleteCollectionType"})
+  @SuppressWarnings("UseOfObsoleteCollectionType")
   public static <A> Arbitrary<Vector<A>> arbVector(final Arbitrary<A> aa) {
     return arbitrary(arbArray(aa).gen.map(new F<Array<A>, Vector<A>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public Vector<A> f(final Array<A> a) {
         return new Vector<A>(a.toCollection());
       }
@@ -1217,7 +1217,7 @@ public final class Arbitrary<A> {
    */
   public static <K, V> Arbitrary<WeakHashMap<K, V>> arbWeakHashMap(final Arbitrary<K> ak, final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, WeakHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public WeakHashMap<K, V> f(final Hashtable<K, V> ht) {
         return new WeakHashMap<K, V>(ht);
       }
@@ -1265,7 +1265,7 @@ public final class Arbitrary<A> {
   public static <K, V> Arbitrary<ConcurrentHashMap<K, V>> arbConcurrentHashMap(final Arbitrary<K> ak,
                                                                                final Arbitrary<V> av) {
     return arbitrary(arbHashtable(ak, av).gen.map(new F<Hashtable<K, V>, ConcurrentHashMap<K, V>>() {
-      @SuppressWarnings({"UseOfObsoleteCollectionType"})
+      @SuppressWarnings("UseOfObsoleteCollectionType")
       public ConcurrentHashMap<K, V> f(final Hashtable<K, V> ht) {
         return new ConcurrentHashMap<K, V>(ht);
       }
