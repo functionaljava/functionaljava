@@ -240,7 +240,7 @@ public final class Semigroup<A> {
   /**
    * A semigroup that XORs booleans.
    */
-  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p, q) -> p && !q || !p && q);
+  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p, q) -> p ? !q : q);
 
   /**
    * A semigroup that ANDs booleans.
