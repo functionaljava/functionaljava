@@ -35,11 +35,11 @@ public final class IOW<A> implements IO<A> {
 
     public <B> IOW<B> append(IO<B> iob) { return lift(IOFunctions.append(io, iob)); }
 
-    public IOW<LazyString> getContents() {
+    public static IOW<LazyString> getContents() {
         return lift(() -> IOFunctions.getContents().run());
     }
 
-    public IOW<Unit> interact(F<LazyString, LazyString> f) {
+    public static IOW<Unit> interact(F<LazyString, LazyString> f) {
         return lift(() -> IOFunctions.interact(f).run());
     }
 }
