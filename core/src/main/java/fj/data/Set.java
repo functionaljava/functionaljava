@@ -323,7 +323,7 @@ public abstract class Set<A> implements Iterable<A> {
    *
    * @return a java.util.List representation of this set.
    */
-  public final java.util.List toJavaList() {
+  public final java.util.List<A> toJavaList() {
     return new java.util.ArrayList<>(toStream().toCollection());
   }
 

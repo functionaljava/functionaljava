@@ -75,7 +75,7 @@ public final class DList<A> {
     /**
      * Converts the DList to a standard java.util.List.
      */
-    public java.util.List toJavaList() {
+    public java.util.List<A> toJavaList() {
         return run().toJavaList();
     }
     
