@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static fj.P.p;
+import static fj.data.List.iterableList;
 import static fj.data.Option.fromNull;
 
 /**
@@ -17,24 +18,16 @@ import static fj.data.Option.fromNull;
  * @see java.util.HashMap
  */
 public final class HashMap<K, V> implements Iterable<K> {
-  private final class Key<K> {
-    private final K k;
-    private final Equal<K> e;
-    private final Hash<K> h;
+  private final class Key {
+    final K k;
 
-    Key(final K k, final Equal<K> e, final Hash<K> h) {
+    Key(final K k) {
       this.k = k;
-      this.e = e;
-      this.h = h;
-    }
-
-    K k() {
-      return k;
     }
 
     @SuppressWarnings("unchecked")
     public boolean equals(final Object o) {
-      return o instanceof Key && e.eq(k, (K) ((Key<?>) o).k());
+      return o instanceof HashMap.Key && e.eq(k, ((Key) o).k);
     }
 
     public int hashCode() {
@@ -51,7 +44,7 @@ public final class HashMap<K, V> implements Iterable<K> {
     return keys().iterator();
   }
 
-  private final java.util.HashMap<Key<K>, V> m;
+  private final java.util.HashMap<Key, V> m;
 
   private final Equal<K> e;
   private final Hash<K> h;
@@ -152,7 +145,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A potential value for the given key.
    */
   public Option<V> get(final K k) {
-    return fromNull(m.get(new Key<>(k, e, h)));
+    return fromNull(m.get(new Key(k)));
   }
 
   /**
@@ -178,7 +171,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return <code>true</code> if this hash map contains the given key, <code>false</code> otherwise.
    */
   public boolean contains(final K k) {
-    return m.containsKey(new Key<>(k, e, h));
+    return m.containsKey(new Key(k));
   }
 
   /**
@@ -189,8 +182,8 @@ public final class HashMap<K, V> implements Iterable<K> {
   public List<K> keys() {
     final List.Buffer<K> b = new List.Buffer<>();
 
-    for (final Key<K> k : m.keySet()) {
-      b.snoc(k.k());
+    for (final Key k : m.keySet()) {
+      b.snoc(k.k);
     }
 
     return b.toList();
@@ -202,7 +195,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return All values in this hash map.
    */
   public List<V> values() {
-    return keys().map(k -> m.get(new Key<>(k, e, h)));
+    return iterableList(m.values());
   }
 
   /**
@@ -231,7 +224,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    */
   public void set(final K k, final V v) {
     if (v != null) {
-        m.put(new Key<>(k, e, h), v);
+        m.put(new Key(k), v);
     }
   }
 
@@ -241,7 +234,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @param k The key to delete from this hash map.
    */
   public void delete(final K k) {
-    m.remove(new Key<>(k, e, h));
+    m.remove(new Key(k));
   }
 
   /**
@@ -251,7 +244,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return The value that was associated with the given key, if there was one.
    */
   public Option<V> getDelete(final K k) {
-    return fromNull(m.remove(new Key<>(k, e, h)));
+    return fromNull(m.remove(new Key(k)));
   }
 
   public <A, B> HashMap<A, B> map(F<K, A> keyFunction,
