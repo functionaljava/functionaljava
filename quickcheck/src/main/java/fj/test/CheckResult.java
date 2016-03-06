@@ -5,6 +5,8 @@ import fj.F;
 import fj.Show;
 import fj.data.List;
 import fj.data.Option;
+import fj.function.Strings;
+
 import static fj.data.Option.some;
 import static fj.Show.listShow;
 import static fj.Show.showS;
@@ -252,12 +254,12 @@ public final class CheckResult {
           final StringWriter sw = new StringWriter();
           final PrintWriter pw = new PrintWriter(sw);
           r.exception().some().printStackTrace(pw);
-          return "Exception on property evaluation with " + arguments(r) + System.getProperty("line.separator") + sw;
+          return "Exception on property evaluation with " + arguments(r) + Strings.lineSeparator + sw;
         } else if (r.isGenException()) {
           final StringWriter sw = new StringWriter();
           final PrintWriter pw = new PrintWriter(sw);
           r.exception().some().printStackTrace(pw);
-          return "Exception on argument generation " + System.getProperty("line.separator") + sw;
+          return "Exception on argument generation " + Strings.lineSeparator + sw;
         } else
           throw decons(r.getClass());
       }
