@@ -28,15 +28,13 @@ public abstract class HList<A extends HList<A>> {
 
   public abstract <E> Apply<Unit, P2<E, A>, HCons<E, A>> extender();
 
-  private static final HNil nil = new HNil();
-
   /**
    * Returns the empty list.
    *
    * @return the empty list.
    */
   public static HNil nil() {
-    return nil;
+    return HNil.nil;
   }
 
   /**
@@ -285,7 +283,10 @@ public abstract class HList<A extends HList<A>> {
    * The empty list
    */
   public static final class HNil extends HList<HNil> {
-    HNil() {
+
+    private static final HNil nil = new HNil();
+
+    private HNil() {
     }
 
     public <E> HCons<E, HNil> extend(final E e) {
