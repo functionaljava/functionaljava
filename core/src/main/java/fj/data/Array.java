@@ -529,7 +529,7 @@ public final class Array<A> implements Iterable<A> {
    * @return A new array after applying the given array of functions through this array.
    */
   public <B> Array<B> apply(final Array<F<A, B>> lf) {
-    return lf.bind(f -> map(f::f));
+    return lf.bind(f -> map(f));
   }
 
   /**

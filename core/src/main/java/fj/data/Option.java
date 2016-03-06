@@ -460,7 +460,7 @@ public abstract class Option<A> implements Iterable<A> {
    *         optional value.
    */
   public final <B> Option<B> apply(final Option<F<A, B>> of) {
-    return of.bind(f -> map(f::f));
+    return of.bind(f -> map(f));
   }
 
   /**

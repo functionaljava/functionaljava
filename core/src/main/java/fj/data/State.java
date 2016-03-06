@@ -93,7 +93,7 @@ public final class State<S, A> {
 	}
 
 	public static <S, A> State<S, A> gets(F<S, A> f) {
-		return State.<S>init().map(f::f);
+		return State.<S>init().map(f);
 	}
 
 	/**

@@ -417,7 +417,7 @@ public final class IOFunctions {
     }
 
     public static <A, B> IO<B> apply(IO<A> io, IO<F<A, B>> iof) {
-        return bind(iof, f -> map(io, f::f));
+        return bind(iof, f -> map(io, f));
     }
 
     public static <A, B, C> IO<C> liftM2(IO<A> ioa, IO<B> iob, F2<A, B, C> f) {

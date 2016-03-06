@@ -56,7 +56,7 @@ public abstract class Trampoline<A> {
         // WARNING: In JDK 8, update 25 (current version) the following code is a
         // workaround for an internal JDK compiler error, likely due to
         // https:bugs.openjdk.java.net/browse/JDK-8062253.
-        F<Normal<Object>, Trampoline<A>> f = o -> o.foldNormal(cont::f, t -> t._1().bind(cont));
+        F<Normal<Object>, Trampoline<A>> f = o -> o.foldNormal(cont, t -> t._1().bind(cont));
         F<Codense<Object>, Trampoline<A>> g = c -> codense(c.sub, o -> c.cont.f(o).bind(cont));
         return ot.fold(f, g);
       }), o -> P.lazy(() -> cont.f(o))));
