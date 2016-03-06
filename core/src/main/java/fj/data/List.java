@@ -943,7 +943,7 @@ public abstract class List<A> implements Iterable<A> {
     else if (tail().isEmpty())
       return this;
     else {
-      final class Merge<A> {
+      final class Merge {
         List<A> merge(List<A> xs, List<A> ys, final Ord<A> o) {
           final Buffer<A> buf = empty();
 
@@ -975,7 +975,7 @@ public abstract class List<A> implements Iterable<A> {
       }
 
       final P2<List<A>, List<A>> s = splitAt(length() / 2);
-      return new Merge<A>().merge(s._1().sort(o), s._2().sort(o), o);
+      return new Merge().merge(s._1().sort(o), s._2().sort(o), o);
     }
   }
 

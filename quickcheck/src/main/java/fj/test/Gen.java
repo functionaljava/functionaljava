@@ -409,7 +409,7 @@ public final class Gen<A> {
    */
   public static <A> Gen<A> frequency(final List<P2<Integer, Gen<A>>> gs) {
     final class Pick {
-      <A> Gen<A> pick(final int n, final List<P2<Integer, Gen<A>>> gs) {
+      Gen<A> pick(final int n, final List<P2<Integer, Gen<A>>> gs) {
         if(gs.isEmpty())
           return fail();
         else {
@@ -421,7 +421,7 @@ public final class Gen<A> {
 
     final F<P2<Integer, Gen<A>>, Integer> f = __1();
 
-    return choose(1, intAdditionMonoid.sumLeft(gs.map(f))).bind(i -> new Pick().pick(i, gs));
+    return choose(1, intAdditionMonoid.sumLeft(gs.map(f))).bind(i ->  new Pick().pick(i, gs));
   }
 
   /**
