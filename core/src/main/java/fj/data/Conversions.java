@@ -125,7 +125,7 @@ public final class Conversions {
    * A function that converts arrays to strings.
    */
   public static final F<Array<Character>, String> Array_String = cs -> {
-      final StringBuilder sb = new StringBuilder();
+      final StringBuilder sb = new StringBuilder(cs.length());
       cs.foreachDoEffect(sb::append);
       return sb.toString();
   };
@@ -134,7 +134,7 @@ public final class Conversions {
    * A function that converts arrays to string buffers.
    */
   public static final F<Array<Character>, StringBuffer> Array_StringBuffer = cs -> {
-      final StringBuffer sb = new StringBuffer();
+      final StringBuffer sb = new StringBuffer(cs.length());
       cs.foreachDoEffect(sb::append);
       return sb;
   };
@@ -143,7 +143,7 @@ public final class Conversions {
    * A function that converts arrays to string builders.
    */
   public static final F<Array<Character>, StringBuilder> Array_StringBuilder = cs -> {
-      final StringBuilder sb = new StringBuilder();
+      final StringBuilder sb = new StringBuilder(cs.length());
       cs.foreachDoEffect(sb::append);
       return sb;
   };
