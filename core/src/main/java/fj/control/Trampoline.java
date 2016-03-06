@@ -107,7 +107,7 @@ public abstract class Trampoline<A> {
   }
 
   @SuppressWarnings("unchecked")
-  protected static <A, B> Codense<B> codense(final Normal<A> a, final F<A, Trampoline<B>> k) {
+  private static <A, B> Codense<B> codense(final Normal<A> a, final F<A, Trampoline<B>> k) {
     return new Codense<>((Normal<Object>) a, (F<Object, Trampoline<B>>) k);
   }
 
