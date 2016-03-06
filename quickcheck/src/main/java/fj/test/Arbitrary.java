@@ -928,8 +928,8 @@ public final class Arbitrary<A> {
       arbitrary(arbHashtable(arbString, arbString).gen.map(ht -> {
         final Properties p = new Properties();
 
-        for (final String k : ht.keySet()) {
-          p.setProperty(k, ht.get(k));
+        for (final Map.Entry<String, String> entry : ht.entrySet()) {
+          p.setProperty(entry.getKey(), entry.getValue());
         }
 
         return p;

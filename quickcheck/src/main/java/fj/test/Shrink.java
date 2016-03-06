@@ -56,6 +56,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Properties;
 import java.util.Stack;
@@ -411,8 +412,8 @@ public final class Shrink<A> {
     }, h -> {
       List<P2<K, V>> x = List.nil();
 
-      for (final K k : h.keySet()) {
-        x = x.snoc(p(k, h.get(k)));
+      for (final Map.Entry<K, V> entry : h.entrySet()) {
+        x = x.snoc(p(entry.getKey(), entry.getValue()));
       }
 
       return x;
@@ -478,8 +479,8 @@ public final class Shrink<A> {
       .map(h -> {
         final Properties p = new Properties();
 
-        for (final String k : h.keySet()) {
-          p.setProperty(k, h.get(k));
+        for (final Map.Entry<String, String> entry : h.entrySet()) {
+          p.setProperty(entry.getKey(), entry.getValue());
         }
 
         return p;

@@ -63,8 +63,8 @@ public final class HashMap<K, V> implements Iterable<K> {
 
   public HashMap(java.util.Map<K, V> map, final Equal<K> e, final Hash<K> h) {
     this(e, h);
-    for (K key : map.keySet()) {
-      set(key, map.get(key));
+    for (Map.Entry<K, V> entry : map.entrySet()) {
+      set(entry.getKey(), entry.getValue());
     }
   }
 

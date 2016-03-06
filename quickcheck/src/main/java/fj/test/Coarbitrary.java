@@ -33,6 +33,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Properties;
 import java.util.Stack;
@@ -647,8 +648,8 @@ public abstract class Coarbitrary<A> {
       public <B> Gen<B> coarbitrary(final Hashtable<K, V> h, final Gen<B> g) {
         List<P2<K, V>> x = nil();
 
-        for (final K k : h.keySet()) {
-          x = x.snoc(p(k, h.get(k)));
+        for (final Map.Entry<K, V> entry : h.entrySet()) {
+          x = x.snoc(p(entry.getKey(), entry.getValue()));
         }
 
         return coarbList(coarbP2(ck, cv)).coarbitrary(x, g);
