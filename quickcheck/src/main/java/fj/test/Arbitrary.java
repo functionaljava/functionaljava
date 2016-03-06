@@ -716,7 +716,7 @@ public final class Arbitrary<A> {
    */
   @SuppressWarnings("unchecked")
   public static <A> Arbitrary<Seq<A>> arbSeq(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(array -> Seq.seq((A[]) array.array())));
+    return arbitrary(arbArray(aa).gen.map(Seq::iterableSeq));
   }
 
 	public static <A> Arbitrary<Set<A>> arbSet(Ord<A> ord, final Arbitrary<A> aa) {

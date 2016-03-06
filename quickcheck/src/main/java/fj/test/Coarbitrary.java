@@ -8,6 +8,7 @@ import static fj.P.p;
 import fj.data.*;
 
 import static fj.data.Array.array;
+import static fj.data.Array.iterableArray;
 import static fj.data.List.fromString;
 import static fj.data.List.nil;
 
@@ -525,7 +526,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<ArrayList<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final ArrayList<A> as, final Gen<B> g) {
-        return coarbArray(ca).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(ca).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -630,7 +631,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<HashSet<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final HashSet<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -716,7 +717,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<LinkedList<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final LinkedList<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -731,7 +732,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<PriorityQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final PriorityQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -762,7 +763,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<Stack<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final Stack<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -808,7 +809,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<Vector<A>>() {
       @SuppressWarnings({"unchecked", "UseOfObsoleteCollectionType"})
       public <B> Gen<B> coarbitrary(final Vector<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -844,7 +845,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<ArrayBlockingQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final ArrayBlockingQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -876,7 +877,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<ConcurrentLinkedQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final ConcurrentLinkedQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -891,7 +892,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<CopyOnWriteArrayList<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final CopyOnWriteArrayList<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -906,7 +907,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<CopyOnWriteArraySet<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final CopyOnWriteArraySet<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -921,7 +922,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<DelayQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final DelayQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -936,7 +937,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<LinkedBlockingQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final LinkedBlockingQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -951,7 +952,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<PriorityBlockingQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final PriorityBlockingQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
@@ -966,7 +967,7 @@ public abstract class Coarbitrary<A> {
     return new Coarbitrary<SynchronousQueue<A>>() {
       @SuppressWarnings("unchecked")
       public <B> Gen<B> coarbitrary(final SynchronousQueue<A> as, final Gen<B> g) {
-        return coarbArray(c).coarbitrary(array(as.toArray((A[]) new Object[as.size()])), g);
+        return coarbArray(c).coarbitrary(iterableArray(as), g);
       }
     };
   }
