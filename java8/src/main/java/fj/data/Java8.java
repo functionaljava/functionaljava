@@ -108,7 +108,7 @@ public final class Java8 {
     }
 
     public static <A> F<Optional<A>, Option<A>> Optional_Option() {
-        return o -> o.isPresent() ? Option.fromNull(o.get()) : Option.none();
+        return o -> o.isPresent() ? Option.some(o.get()) : Option.none();
     }
 
     public static <A> Optional<A> Option_Optional(final Option<A> o) {
