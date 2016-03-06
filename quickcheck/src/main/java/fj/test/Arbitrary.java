@@ -753,7 +753,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for array lists.
    */
   public static <A> Arbitrary<ArrayList<A>> arbArrayList(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new ArrayList<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(Array::toJavaList));
   }
 
   /**
@@ -810,7 +810,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for enum sets.
    */
   public static <A extends Enum<A>> Arbitrary<EnumSet<A>> arbEnumSet(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> copyOf(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> copyOf(a.asJavaList())));
   }
 
   /**
@@ -842,7 +842,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for hash sets.
    */
   public static <A> Arbitrary<HashSet<A>> arbHashSet(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new HashSet<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new HashSet<>(a.asJavaList())));
   }
 
   /**
@@ -898,7 +898,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for hash sets.
    */
   public static <A> Arbitrary<LinkedHashSet<A>> arbLinkedHashSet(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new LinkedHashSet<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new LinkedHashSet<>(a.asJavaList())));
   }
 
   /**
@@ -908,7 +908,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for linked lists.
    */
   public static <A> Arbitrary<LinkedList<A>> arbLinkedList(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new LinkedList<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new LinkedList<>(a.asJavaList())));
   }
 
   /**
@@ -918,7 +918,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for priority queues.
    */
   public static <A> Arbitrary<PriorityQueue<A>> arbPriorityQueue(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new PriorityQueue<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new PriorityQueue<>(a.asJavaList())));
   }
 
   /**
@@ -944,7 +944,7 @@ public final class Arbitrary<A> {
   public static <A> Arbitrary<Stack<A>> arbStack(final Arbitrary<A> aa) {
     return arbitrary(arbArray(aa).gen.map(a -> {
       final Stack<A> s = new Stack<>();
-      s.addAll(a.toCollection());
+      s.addAll(a.asJavaList());
       return s;
     }));
   }
@@ -1005,7 +1005,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for tree sets.
    */
   public static <A> Arbitrary<TreeSet<A>> arbTreeSet(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new TreeSet<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new TreeSet<>(a.asJavaList())));
   }
 
   /**
@@ -1016,7 +1016,7 @@ public final class Arbitrary<A> {
    */
   @SuppressWarnings("UseOfObsoleteCollectionType")
   public static <A> Arbitrary<Vector<A>> arbVector(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new Vector<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new Vector<>(a.asJavaList())));
   }
 
   /**
@@ -1046,7 +1046,7 @@ public final class Arbitrary<A> {
   public static <A> Arbitrary<ArrayBlockingQueue<A>> arbArrayBlockingQueue(final Arbitrary<A> aa) {
     return arbitrary(arbArray(aa).gen.bind(arbInteger.gen, arbBoolean.gen,
         a -> capacity -> fair -> new ArrayBlockingQueue<A>(a.length() + abs(capacity),
-                                         fair, a.toCollection())));
+                                         fair, a.asJavaList())));
   }
 
   /**
@@ -1071,7 +1071,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for concurrent linked queues.
    */
   public static <A> Arbitrary<ConcurrentLinkedQueue<A>> arbConcurrentLinkedQueue(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new ConcurrentLinkedQueue<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new ConcurrentLinkedQueue<>(a.asJavaList())));
   }
 
   /**
@@ -1082,7 +1082,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for copy-on-write array lists.
    */
   public static <A> Arbitrary<CopyOnWriteArrayList<A>> arbCopyOnWriteArrayList(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new CopyOnWriteArrayList<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new CopyOnWriteArrayList<>(a.asJavaList())));
   }
 
   /**
@@ -1093,7 +1093,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for copy-on-write array sets.
    */
   public static <A> Arbitrary<CopyOnWriteArraySet<A>> arbCopyOnWriteArraySet(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new CopyOnWriteArraySet<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new CopyOnWriteArraySet<>(a.asJavaList())));
   }
 
   /**
@@ -1103,7 +1103,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for delay queues.
    */
   public static <A extends Delayed> Arbitrary<DelayQueue<A>> arbDelayQueue(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new DelayQueue<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new DelayQueue<>(a.asJavaList())));
   }
 
   /**
@@ -1114,7 +1114,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for linked blocking queues.
    */
   public static <A> Arbitrary<LinkedBlockingQueue<A>> arbLinkedBlockingQueue(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new LinkedBlockingQueue<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new LinkedBlockingQueue<>(a.asJavaList())));
   }
 
   /**
@@ -1125,7 +1125,7 @@ public final class Arbitrary<A> {
    * @return An arbitrary implementation for priority blocking queues.
    */
   public static <A> Arbitrary<PriorityBlockingQueue<A>> arbPriorityBlockingQueue(final Arbitrary<A> aa) {
-    return arbitrary(arbArray(aa).gen.map(a -> new PriorityBlockingQueue<>(a.toCollection())));
+    return arbitrary(arbArray(aa).gen.map(a -> new PriorityBlockingQueue<>(a.asJavaList())));
   }
 
   /**
@@ -1138,7 +1138,7 @@ public final class Arbitrary<A> {
   public static <A> Arbitrary<SynchronousQueue<A>> arbSynchronousQueue(final Arbitrary<A> aa) {
     return arbitrary(arbArray(aa).gen.bind(arbBoolean.gen, a -> fair -> {
       final SynchronousQueue<A> q = new SynchronousQueue<>(fair);
-      q.addAll(a.toCollection());
+      q.addAll(a.asJavaList());
       return q;
     }));
   }

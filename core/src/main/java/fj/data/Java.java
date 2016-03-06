@@ -227,7 +227,7 @@ public final class Java {
    * @return A function that converts arrays to array lists.
    */
   public static <A> F<Array<A>, ArrayList<A>> Array_ArrayList() {
-    return as -> new ArrayList<>(as.toCollection());
+    return Array::toJavaList;
   }
 
   /**
@@ -246,7 +246,7 @@ public final class Java {
    * @return A function that converts arrays to enum sets.
    */
   public static <A extends Enum<A>> F<Array<A>, EnumSet<A>> Array_EnumSet() {
-    return as -> copyOf(as.toCollection());
+    return as -> copyOf(as.asJavaList());
   }
 
   /**
@@ -255,7 +255,7 @@ public final class Java {
    * @return A function that converts arrays to hash sets.
    */
   public static <A> F<Array<A>, HashSet<A>> Array_HashSet() {
-    return as -> new HashSet<>(as.toCollection());
+    return as -> new HashSet<>(as.asJavaList());
   }
 
   /**
@@ -264,7 +264,7 @@ public final class Java {
    * @return A function that converts arrays to linked hash sets.
    */
   public static <A> F<Array<A>, LinkedHashSet<A>> Array_LinkedHashSet() {
-    return as -> new LinkedHashSet<>(as.toCollection());
+    return as -> new LinkedHashSet<>(as.asJavaList());
   }
 
   /**
@@ -273,7 +273,7 @@ public final class Java {
    * @return A function that converts arrays to linked lists.
    */
   public static <A> F<Array<A>, LinkedList<A>> Array_LinkedList() {
-    return as -> new LinkedList<>(as.toCollection());
+    return as -> new LinkedList<>(as.asJavaList());
   }
 
   /**
@@ -282,7 +282,7 @@ public final class Java {
    * @return A function that converts arrays to priority queues.
    */
   public static <A> F<Array<A>, PriorityQueue<A>> Array_PriorityQueue() {
-    return as -> new PriorityQueue<>(as.toCollection());
+    return as -> new PriorityQueue<>(as.asJavaList());
   }
 
   /**
@@ -293,7 +293,7 @@ public final class Java {
   public static <A> F<Array<A>, Stack<A>> Array_Stack() {
     return as -> {
       final Stack<A> s = new Stack<>();
-      s.addAll(as.toCollection());
+      s.addAll(as.asJavaList());
       return s;
     };
   }
@@ -304,7 +304,7 @@ public final class Java {
    * @return A function that converts arrays to tree sets.
    */
   public static <A> F<Array<A>, TreeSet<A>> Array_TreeSet() {
-    return as -> new TreeSet<>(as.toCollection());
+    return as -> new TreeSet<>(as.asJavaList());
   }
 
   /**
@@ -313,7 +313,7 @@ public final class Java {
    * @return A function that converts arrays to vectors.
    */
   public static <A> F<Array<A>, Vector<A>> Array_Vector() {
-    return as -> new Vector<>(as.toCollection());
+    return as -> new Vector<>(as.asJavaList());
   }
 
   /**
@@ -323,7 +323,7 @@ public final class Java {
    * @return A function that converts arrays to array blocking queues.
    */
   public static <A> F<Array<A>, ArrayBlockingQueue<A>> Array_ArrayBlockingQueue(final boolean fair) {
-    return as -> new ArrayBlockingQueue<>(as.length(), fair, as.toCollection());
+    return as -> new ArrayBlockingQueue<>(as.length(), fair, as.asJavaList());
   }
 
   /**
@@ -332,7 +332,7 @@ public final class Java {
    * @return A function that converts arrays to concurrent linked queues.
    */
   public static <A> F<Array<A>, ConcurrentLinkedQueue<A>> Array_ConcurrentLinkedQueue() {
-    return as -> new ConcurrentLinkedQueue<>(as.toCollection());
+    return as -> new ConcurrentLinkedQueue<>(as.asJavaList());
   }
 
   /**
@@ -341,7 +341,7 @@ public final class Java {
    * @return A function that converts arrays to copy on write array lists.
    */
   public static <A> F<Array<A>, CopyOnWriteArrayList<A>> Array_CopyOnWriteArrayList() {
-    return as -> new CopyOnWriteArrayList<>(as.toCollection());
+    return as -> new CopyOnWriteArrayList<>(as.asJavaList());
   }
 
   /**
@@ -350,7 +350,7 @@ public final class Java {
    * @return A function that converts arrays to copy on write array sets.
    */
   public static <A> F<Array<A>, CopyOnWriteArraySet<A>> Array_CopyOnWriteArraySet() {
-    return as -> new CopyOnWriteArraySet<>(as.toCollection());
+    return as -> new CopyOnWriteArraySet<>(as.asJavaList());
   }
 
   /**
@@ -359,7 +359,7 @@ public final class Java {
    * @return A function that converts arrays to delay queues.
    */
   public static <A extends Delayed> F<Array<A>, DelayQueue<A>> Array_DelayQueue() {
-    return as -> new DelayQueue<>(as.toCollection());
+    return as -> new DelayQueue<>(as.asJavaList());
   }
 
   /**
@@ -368,7 +368,7 @@ public final class Java {
    * @return A function that converts arrays to linked blocking queues.
    */
   public static <A> F<Array<A>, LinkedBlockingQueue<A>> Array_LinkedBlockingQueue() {
-    return as -> new LinkedBlockingQueue<>(as.toCollection());
+    return as -> new LinkedBlockingQueue<>(as.asJavaList());
   }
 
   /**
@@ -377,7 +377,7 @@ public final class Java {
    * @return A function that converts arrays to priority blocking queues.
    */
   public static <A> F<Array<A>, PriorityBlockingQueue<A>> Array_PriorityBlockingQueue() {
-    return as -> new PriorityBlockingQueue<>(as.toCollection());
+    return as -> new PriorityBlockingQueue<>(as.asJavaList());
   }
 
   /**
@@ -389,7 +389,7 @@ public final class Java {
   public static <A> F<Array<A>, SynchronousQueue<A>> Array_SynchronousQueue(final boolean fair) {
     return as -> {
       final SynchronousQueue<A> q = new SynchronousQueue<>(fair);
-      q.addAll(as.toCollection());
+      q.addAll(as.asJavaList());
       return q;
     };
   }

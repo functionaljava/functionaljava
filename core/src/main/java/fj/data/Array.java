@@ -13,7 +13,9 @@ import fj.function.Effect1;
 
 import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -775,44 +777,25 @@ public final class Array<A> implements Iterable<A> {
    *
    * @return An immutable collection of this array.
    */
-  @SuppressWarnings("unchecked")
   public Collection<A> toCollection() {
-    return new AbstractCollection<A>() {
-      public Iterator<A> iterator() {
-        return new Iterator<A>() {
-          private int i;
-
-          public boolean hasNext() {
-            return i < a.length;
-          }
-
-          public A next() {
-            if (i >= a.length)
-              throw new NoSuchElementException();
-            else {
-              final A aa = (A) a[i];
-              i++;
-              return aa;
-            }
-          }
-
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
-      }
-
-      public int size() {
-        return a.length;
-      }
-    };
+    return asJavaList();
   }
 
   /**
-   * Returns a standard java.util.List projection of this array.
+   * Projects an unmodifiable list view of this array.
+   *
+   * @return An unmodifiable list view of this array.
    */
-  java.util.List<A> toJavaList() {
-    return new ArrayList<>(toCollection());
+  @SuppressWarnings("unchecked")
+  public java.util.List<A> asJavaList() {
+    return Collections.unmodifiableList(Arrays.asList((A[]) a));
+  }
+
+  /**
+   * Returns a java.util.ArrayList projection of this array.
+   */
+  public ArrayList<A> toJavaList() {
+    return new ArrayList<>(asJavaList());
   }
 
   /**
