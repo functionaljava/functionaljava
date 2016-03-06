@@ -23,7 +23,7 @@ public class Pong {
   }
 
   // Receive a ping
-  public P1<Unit> act(final Ping ping) {
+  public final P1<Unit> act(final Ping ping) {
     return p.act(ping);
   }
 }

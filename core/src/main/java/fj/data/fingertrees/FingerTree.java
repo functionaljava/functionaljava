@@ -33,7 +33,7 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> B foldRight(final F<A, F<B, B>> f, final B z);
 
-    public <B> B foldRight(final F2<A, B, B> f, final B z) {
+    public final <B> B foldRight(final F2<A, B, B> f, final B z) {
         return foldRight(F2Functions.curry(f), z);
     }
 
@@ -54,7 +54,7 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> B foldLeft(final F<B, F<A, B>> f, final B z);
 
-    public <B> B foldLeft(final F2<B, A, B> f, final B z) {
+    public final <B> B foldLeft(final F2<B, A, B> f, final B z) {
         return foldLeft(F2Functions.curry(f), z);
     }
 
@@ -76,7 +76,7 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> FingerTree<V, B> map(final F<A, B> f, final Measured<V, B> m);
 
-    public <B> FingerTree<V, A> filter(final F<A, Boolean> f) {
+    public final <B> FingerTree<V, A> filter(final F<A, Boolean> f) {
         FingerTree<V, A> tree = new Empty<>(m);
         return foldLeft((acc, a) -> f.f(a) ? acc.snoc(a) : acc, tree);
     }
@@ -97,7 +97,7 @@ public abstract class FingerTree<V, A> {
     return this instanceof Empty;
   }
 
-  Measured<V, A> measured() {
+  final Measured<V, A> measured() {
     return m;
   }
 
@@ -160,7 +160,7 @@ public abstract class FingerTree<V, A> {
    */
   public abstract A head();
 
-  public Option<A> headOption() {
+  public final Option<A> headOption() {
       return isEmpty() ? Option.none() : Option.some(head());
   }
 

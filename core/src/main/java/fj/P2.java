@@ -27,12 +27,12 @@ public abstract class P2<A, B> {
   public abstract B _2();
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(P2.class, this, other, () -> Equal.p2Equal(Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.p2Hash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
   }
 
@@ -311,7 +311,7 @@ public abstract class P2<A, B> {
 
 
     @Override
-	public String toString() {
+	public final String toString() {
 		return Show.p2Show(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
 	}
 

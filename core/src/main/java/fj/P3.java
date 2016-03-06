@@ -174,18 +174,18 @@ public abstract class P3<A, B, C> {
   }
 
     @Override
-	public String toString() {
+	public final String toString() {
 		return Show.p3Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow()).showS(this);
 	}
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(P3.class, this, other, 
         () -> Equal.p3Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.p3Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash()).hash(this);
   }
 

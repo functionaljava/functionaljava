@@ -527,7 +527,7 @@ public final class Ord<A> {
 
   class OrdComparator implements Comparator<A> {
 	@Override
-    public int compare(A o1, A o2) {
+    public final int compare(A o1, A o2) {
 	    return Ord.this.compare(o1, o2).toInt();
     }
   }

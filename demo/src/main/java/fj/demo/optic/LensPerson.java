@@ -48,14 +48,14 @@ public class LensPerson {
     static final Person oldPerson = new Person(oldName, oldAddress);
 
     @Test
-    public void get() {
+    public final void get() {
         assertTrue(personNameLens.get(oldPerson).equals(oldName));
         assertTrue(personNumberLens.get(oldPerson) == oldNumber);
         assertTrue(personStreetLens.get(oldPerson) == oldStreet);
     }
 
     @Test
-    public void setName() {
+    public final void setName() {
         String newName = "Bill";
         Person p = personNameLens.set(newName).f(oldPerson);
         assertTrue(p.name.equals(newName));
@@ -63,7 +63,7 @@ public class LensPerson {
     }
 
     @Test
-    public void setNumber() {
+    public final void setNumber() {
         int newNumber = 20;
         Person p = personNumberLens.set(newNumber).f(oldPerson);
         assertTrue(p.name.equals(oldName));
@@ -72,7 +72,7 @@ public class LensPerson {
     }
 
     @Test
-    public void setStreet() {
+    public final void setStreet() {
         String newStreet = "First St";
         Person p = personStreetLens.set(newStreet).f(oldPerson);
         assertTrue(p.name.equals(oldName));

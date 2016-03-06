@@ -63,7 +63,7 @@ public abstract class P1<A> implements F0<A> {
      * @param f A function to apply to the value in a product-1.
      * @return The result of applying the given function to the value of given product-1.
      */
-    public <B> P1<B> bind(final F<A, P1<B>> f) {
+    public final <B> P1<B> bind(final F<A, P1<B>> f) {
         P1<A> self = this;
         return P.lazy(() -> f.f(self._1())._1());
     }
@@ -84,7 +84,7 @@ public abstract class P1<A> implements F0<A> {
      * @param cf The P1 function to apply.
      * @return A new P1 after applying the given P1 function to the first argument.
      */
-    public <B> P1<B> apply(final P1<F<A, B>> cf) {
+    public final <B> P1<B> apply(final P1<F<A, B>> cf) {
         P1<A> self = this;
         return cf.bind(f -> map_(f).f(self));
     }
@@ -96,14 +96,14 @@ public abstract class P1<A> implements F0<A> {
      * @param f  The function to apply to the values in the given P1s.
      * @return A new P1 after performing the map, then final join.
      */
-    public <B, C> P1<C> bind(final P1<B> cb, final F<A, F<B, C>> f) {
+    public final <B, C> P1<C> bind(final P1<B> cb, final F<A, F<B, C>> f) {
         return cb.apply(map_(f).f(this));
     }
 
 	/**
 	 * Binds the given function to the values in the given P1s with a final join.
 	 */
-	public <B, C> P1<C> bind(final P1<B> cb, final F2<A, B, C> f) {
+	public final <B, C> P1<C> bind(final P1<B> cb, final F2<A, B, C> f) {
 		return bind(cb, F2W.lift(f).curry());
 	}
 
@@ -127,7 +127,7 @@ public abstract class P1<A> implements F0<A> {
         return Function.curry((pa, pb) -> pa.bind(pb, f));
     }
 
-	public <B, C> P1<C> liftM2(P1<B> pb, F2<A, B, C> f) {
+	public final <B, C> P1<C> liftM2(P1<B> pb, F2<A, B, C> f) {
 		return P.lazy(() -> f.f(_1(), pb._1()));
 	}
 
@@ -183,7 +183,7 @@ public abstract class P1<A> implements F0<A> {
      * @param f The function that takes A and produces a List<B> (non-deterministic result)
      * @return A List of P1<B>
      */
-    public <B> List<P1<B>> traverseList(final F<A, List<B>>  f){
+    public final <B> List<P1<B>> traverseList(final F<A, List<B>> f){
         return f.f(_1()).map(P::p);
     }
 
@@ -193,7 +193,7 @@ public abstract class P1<A> implements F0<A> {
      * @param f The function produces Either
      * @return An Either of  P1<B>
      */
-    public <B, X> Either<X, P1<B>> traverseEither(final F<A, Either<X, B>>  f){
+    public final <B, X> Either<X, P1<B>> traverseEither(final F<A, Either<X, B>> f){
         return f.f(_1()).right().map(P::p);
     }
 
@@ -203,7 +203,7 @@ public abstract class P1<A> implements F0<A> {
      * @param f The function that produces Option
      * @return An Option of  P1<B>
      */
-    public <B> Option<P1<B>> traverseOption(final F<A, Option<B>>  f){
+    public final <B> Option<P1<B>> traverseOption(final F<A, Option<B>> f){
         return f.f(_1()).map(P::p);
     }
 
@@ -213,7 +213,7 @@ public abstract class P1<A> implements F0<A> {
      * @param f The function might produces Validation
      * @return An Validation  of P1<B>
      */
-    public <B, E> Validation<E, P1<B>> traverseValidation(final F<A, Validation<E, B>> f){
+    public final <B, E> Validation<E, P1<B>> traverseValidation(final F<A, Validation<E, B>> f){
         return f.f(_1()).map(P::p);
     }
 
@@ -223,7 +223,7 @@ public abstract class P1<A> implements F0<A> {
      * @param f The function that produces Stream
      * @return An Stream of  P1<B>
      */
-    public <B> Stream<P1<B>> traverseStream(final F<A, Stream<B>>  f){
+    public final <B> Stream<P1<B>> traverseStream(final F<A, Stream<B>> f){
         return f.f(_1()).map(P::p);
     }
 
@@ -233,7 +233,7 @@ public abstract class P1<A> implements F0<A> {
        * @param f The function to map with.
        * @return A product with the given function applied.
        */
-      public <B> P1<B> map(final F<A, B> f) {
+      public final <B> P1<B> map(final F<A, B> f) {
           final P1<A> self = this;
         return P.lazy(() -> f.f(self._1()));
       }
@@ -247,7 +247,7 @@ public abstract class P1<A> implements F0<A> {
      *
      * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
      */
-    public P1<A> hardMemo() { return new Memo<>(this); }
+    public final P1<A> hardMemo() { return new Memo<>(this); }
 
     /**
      * Like <code>memo</code>, but the memoized value is wrapped into a <code>WeakReference</code>
@@ -274,7 +274,7 @@ public abstract class P1<A> implements F0<A> {
 
       Memo(P1<A> self) { this.self = self; }
 
-      @Override public A _1() {
+      @Override public final A _1() {
         if (!initialized) {
           synchronized (this) {
             if (!initialized) {
@@ -288,7 +288,7 @@ public abstract class P1<A> implements F0<A> {
         return value;
       }
 
-      @Override public P1<A> memo() { return this; }
+      @Override public final P1<A> memo() { return this; }
     }
 
     abstract static class ReferenceMemo<A> extends P1<A> {
@@ -298,7 +298,7 @@ public abstract class P1<A> implements F0<A> {
 
       ReferenceMemo(final P1<A> self) { this.self = self; }
 
-      @Override public A _1() {
+      @Override public final A _1() {
         Option<A> o = v != null ? v.get() : null;
         if (o == null) {
           synchronized (latch) {
@@ -317,14 +317,16 @@ public abstract class P1<A> implements F0<A> {
 
     static class WeakReferenceMemo<A> extends ReferenceMemo<A> {
       WeakReferenceMemo(P1<A> self) { super(self); }
-      @Override Reference<Option<A>> newReference(final Option<A> o) { return new WeakReference<>(o); }
-      @Override public P1<A> weakMemo() { return this; }
+      @Override
+      final Reference<Option<A>> newReference(final Option<A> o) { return new WeakReference<>(o); }
+      @Override public final P1<A> weakMemo() { return this; }
     }
 
     static class SoftReferenceMemo<A> extends ReferenceMemo<A> {
       SoftReferenceMemo(P1<A> self) { super(self); }
-      @Override Reference<Option<A>> newReference(final Option<A> o) { return new SoftReference<>(o); }
-      @Override public P1<A> softMemo() { return this; }
+      @Override
+      final Reference<Option<A>> newReference(final Option<A> o) { return new SoftReference<>(o); }
+      @Override public final P1<A> softMemo() { return this; }
     }
 
     /**
@@ -332,20 +334,20 @@ public abstract class P1<A> implements F0<A> {
      *
      * @return A constant function that always uses this value.
      */
-    public <B> F<B, A> constant() { return Function.constant(_1()); }
+    public final <B> F<B, A> constant() { return Function.constant(_1()); }
 
     @Override
-    public String toString() {
+    public final String toString() {
 		return Show.p1Show(Show.<A>anyShow()).showS(this);
 	}
 
     @Override
-    public boolean equals(Object other) {
+    public final boolean equals(Object other) {
         return Equal.equals0(P1.class, this, other, () -> Equal.p1Equal(Equal.anyEqual()));
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Hash.p1Hash(Hash.<A>anyHash()).hash(this);
     }
 

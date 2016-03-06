@@ -142,17 +142,17 @@ public abstract class Set<A> implements Iterable<A> {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(Set.class, this, other, () -> Equal.setEqual(Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.setHash(Hash.<A>anyHash()).hash(this);
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return Show.setShow(Show.<A>anyShow()).showS(this);
   }
 
@@ -467,11 +467,11 @@ public abstract class Set<A> implements Iterable<A> {
     return curry(Set::minus);
   }
 
-    public Option<A> min() {
+    public final Option<A> min() {
         return isEmpty() ? none() : l().min().orElse(some(head()));
     }
 
-    public Option<A> max() {
+    public final Option<A> max() {
         return isEmpty() ? none() : r().max().orElse(some(head()));
     }
 

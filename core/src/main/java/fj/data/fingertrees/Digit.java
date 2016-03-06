@@ -138,7 +138,7 @@ public abstract class Digit<V, A> {
         );
     }
 
-  Option<Digit<V, A>> tail() {
+  final Option<Digit<V, A>> tail() {
     return match(
       one -> Option.none(),
       two -> Option.some(mkTree(m).one(two.values()._2())),
@@ -147,7 +147,7 @@ public abstract class Digit<V, A> {
     );
   }
 
-  Option<Digit<V, A>> init() {
+  final Option<Digit<V, A>> init() {
     return match(
       one -> Option.none(),
       two -> Option.some(mkTree(m).one(two.values()._1())),

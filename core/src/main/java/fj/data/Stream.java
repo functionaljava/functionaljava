@@ -1258,25 +1258,25 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(Stream.class, this, other, () -> Equal.streamEqual(Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.streamHash(Hash.<A>anyHash()).hash(this);
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return toStringLazy();
   }
 
-  public String toStringLazy() {
+  public final String toStringLazy() {
     return isEmpty() ? "Nil()" : "Cons(" + Show.<A>anyShow().showS(head()) + ", ?)";
   }
 
-  public String toStringEager() {
+  public final String toStringEager() {
     return Show.streamShow(Show.<A>anyShow()).showS(this);
   }
 

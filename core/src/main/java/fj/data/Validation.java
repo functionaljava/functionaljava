@@ -31,7 +31,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return <code>true</code> if this is a failure, <code>false</code> otherwise.
    */
-  public boolean isFail() {
+  public final boolean isFail() {
     return e.isLeft();
   }
 
@@ -40,7 +40,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return <code>true</code> if this is a success, <code>false</code> otherwise.
    */
-  public boolean isSuccess() {
+  public final boolean isSuccess() {
     return e.isRight();
   }
 
@@ -49,7 +49,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return the failing value, or throws an error if there is no failing value.
    */
-  public E fail() {
+  public final E fail() {
     if (isFail())
       return e.left().value();
     else
@@ -61,7 +61,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return the success value, or throws an error if there is no success value.
    */
-  public T success() {
+  public final T success() {
     if (isSuccess())
       return e.right().value();
     else
@@ -75,7 +75,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param success The function to call if this succeeded.
    * @return The reduced value.
    */
-  public <X> X validation(final F<E, X> fail, final F<T, X> success) {
+  public final <X> X validation(final F<E, X> fail, final F<T, X> success) {
     return e.either(fail, success);
   }
 
@@ -84,7 +84,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return a failing projection of this validation.
    */
-  public FailProjection<E, T> f() {
+  public final FailProjection<E, T> f() {
     return new FailProjection<>(this);
   }
 
@@ -93,7 +93,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return An either projection of this validation.
    */
-  public Either<E, T> toEither() {
+  public final Either<E, T> toEither() {
     return e;
   }
 
@@ -103,7 +103,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param err The error message to fail with.
    * @return The success value.
    */
-  public T successE(final F0<String> err) {
+  public final T successE(final F0<String> err) {
     return e.right().valueE(err);
   }
 
@@ -113,7 +113,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param err The error message to fail with.
    * @return The success value.
    */
-  public T successE(final String err) {
+  public final T successE(final String err) {
     return e.right().valueE(p(err));
   }
 
@@ -123,7 +123,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param t The value to return if this is failure.
    * @return The success value or the given value.
    */
-  public T orSuccess(final F0<T> t) {
+  public final T orSuccess(final F0<T> t) {
     return e.right().orValue(t);
   }
 
@@ -133,7 +133,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param t The value to return if this is failure.
    * @return The success value or the given value.
    */
-  public T orSuccess(final T t) {
+  public final T orSuccess(final T t) {
     return e.right().orValue(p(t));
   }
 
@@ -143,7 +143,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param f The function to execute on the failing value.
    * @return The success value or the application of the given function to the failing value.
    */
-  public T on(final F<E, T> f) {
+  public final T on(final F<E, T> f) {
     return e.right().on(f);
   }
 
@@ -153,7 +153,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param f The side-effect to execute.
    * @return The unit value.
    */
-  public Unit foreach(final F<T, Unit> f) {
+  public final Unit foreach(final F<T, Unit> f) {
     return e.right().foreach(f);
   }
 
@@ -162,7 +162,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @param f The side-effect to execute.
    */
-  public void foreachDoEffect(final Effect1<T> f) {
+  public final void foreachDoEffect(final Effect1<T> f) {
     e.right().foreachDoEffect(f);
   }
 
@@ -173,7 +173,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A new validation with the function mapped.
    */
   @SuppressWarnings("unchecked")
-  public <A> Validation<E, A> map(final F<T, A> f) {
+  public final <A> Validation<E, A> map(final F<T, A> f) {
     return isFail() ?
         Validation.fail(fail()) :
         Validation.success(f.f(success()));
@@ -186,7 +186,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A new validation value after binding.
    */
   @SuppressWarnings("unchecked")
-  public <A> Validation<E, A> bind(final F<T, Validation<E, A>> f) {
+  public final <A> Validation<E, A> bind(final F<T, Validation<E, A>> f) {
     return isSuccess() ? f.f(success()) : Validation.fail(fail());
   }
 
@@ -196,7 +196,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param v The value to bind with.
    * @return A validation after binding.
    */
-  public <A> Validation<E, A> sequence(final Validation<E, A> v) {
+  public final <A> Validation<E, A> sequence(final Validation<E, A> v) {
     return bind(Function.constant(v));
   }
 
@@ -220,7 +220,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return <code>None</code> if this is a failure or if the given predicate <code>p</code> does not hold for the
    *         success value, otherwise, returns a success in <code>Some</code>.
    */
-  public <A> Option<Validation<A, T>> filter(final F<T, Boolean> f) {
+  public final <A> Option<Validation<A, T>> filter(final F<T, Boolean> f) {
     return e.right().<A>filter(f).map(Validation.validation());
   }
 
@@ -230,7 +230,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @param v The validation of the function to apply on the success value.
    * @return The result of function application in validation.
    */
-  public <A> Validation<E, A> apply(final Validation<E, F<T, A>> v) {
+  public final <A> Validation<E, A> apply(final Validation<E, F<T, A>> v) {
     return v.bind(this::map);
   }
 
@@ -242,7 +242,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return <code>true</code> if this is a failure or returns the result of the application of the given
    *         function to the success value.
    */
-  public boolean forall(final F<T, Boolean> f) {
+  public final boolean forall(final F<T, Boolean> f) {
     return e.right().forall(f);
   }
 
@@ -254,17 +254,17 @@ public class Validation<E, T> implements Iterable<T> {
    * @return <code>false</code> if this is a failure or returns the result of the application of the given
    *         function to the success value.
    */
-  public boolean exists(final F<T, Boolean> f) {
+  public final boolean exists(final F<T, Boolean> f) {
     return e.right().exists(f);
   }
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(Validation.class, this, other, () -> Equal.validationEqual(Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.validationHash(Hash.<E>anyHash(), Hash.<T>anyHash()).hash(this);
   }
 
@@ -273,7 +273,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return A single element list if this is a success value, otherwise an empty list.
    */
-  public List<T> toList() {
+  public final List<T> toList() {
     return e.right().toList();
   }
 
@@ -282,7 +282,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return The success value in <code>Some</code> if there is one, otherwise <code>None</code>.
    */
-  public Option<T> toOption() {
+  public final Option<T> toOption() {
     return e.right().toOption();
   }
 
@@ -291,7 +291,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return A single element array if this is a success value, otherwise an empty list.
    */
-  public Array<T> toArray() {
+  public final Array<T> toArray() {
     return e.right().toArray();
   }
 
@@ -300,7 +300,7 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return A single element stream if this is a success value, otherwise an empty list.
    */
-  public Stream<T> toStream() {
+  public final Stream<T> toStream() {
     return e.right().toStream();
   }
 
@@ -314,7 +314,7 @@ public class Validation<E, T> implements Iterable<T> {
    *         succeeding validation if both succeeded.
    */
   @SuppressWarnings("unchecked")
-  public <A> Validation<E, A> accumapply(final Semigroup<E> s, final Validation<E, F<T, A>> v) {
+  public final <A> Validation<E, A> accumapply(final Semigroup<E> s, final Validation<E, F<T, A>> v) {
     return isFail() ?
         Validation.fail(v.isFail() ?
             s.sum(v.fail(), fail()) :
@@ -334,7 +334,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B> Validation<E, B> accumulate(final Semigroup<E> s, final Validation<E, A> va, final F<T, F<A, B>> f) {
+  public final <A, B> Validation<E, B> accumulate(final Semigroup<E> s, final Validation<E, A> va, final F<T, F<A, B>> f) {
     return va.accumapply(s, map(f));
   }
 
@@ -348,7 +348,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B> Validation<E, B> accumulate(final Semigroup<E> s, final Validation<E, A> va, final F2<T, A, B> f) {
+  public final <A, B> Validation<E, B> accumulate(final Semigroup<E> s, final Validation<E, A> va, final F2<T, A, B> f) {
     return va.accumapply(s, map(curry(f)));
   }
 
@@ -360,7 +360,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va) {
+  public final <A> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va) {
     return accumulate(s, va, (t, a) -> unit()).f().toOption();
   }
 
@@ -375,8 +375,8 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C> Validation<E, C> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                               final Validation<E, B> vb, final F<T, F<A, F<B, C>>> f) {
+  public final <A, B, C> Validation<E, C> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                     final Validation<E, B> vb, final F<T, F<A, F<B, C>>> f) {
     return vb.accumapply(s, accumulate(s, va, f));
   }
 
@@ -391,8 +391,8 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C> Validation<E, C> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                               final Validation<E, B> vb, final F3<T, A, B, C> f) {
+  public final <A, B, C> Validation<E, C> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                     final Validation<E, B> vb, final F3<T, A, B, C> f) {
     return vb.accumapply(s, accumulate(s, va, curry(f)));
   }
 
@@ -405,7 +405,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A, B> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb) {
+  public final <A, B> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb) {
     return accumulate(s, va, vb, (t, a, b) -> unit()).f().toOption();
   }
 
@@ -421,9 +421,9 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D> Validation<E, D> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                  final Validation<E, B> vb, final Validation<E, C> vc,
-                                                  final F<T, F<A, F<B, F<C, D>>>> f) {
+  public final <A, B, C, D> Validation<E, D> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                        final Validation<E, B> vb, final Validation<E, C> vc,
+                                                        final F<T, F<A, F<B, F<C, D>>>> f) {
     return vc.accumapply(s, accumulate(s, va, vb, f));
   }
 
@@ -439,9 +439,9 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D> Validation<E, D> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                  final Validation<E, B> vb, final Validation<E, C> vc,
-                                                  final F4<T, A, B, C, D> f) {
+  public final <A, B, C, D> Validation<E, D> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                        final Validation<E, B> vb, final Validation<E, C> vc,
+                                                        final F4<T, A, B, C, D> f) {
     return vc.accumapply(s, accumulate(s, va, vb, curry(f)));
   }
 
@@ -455,8 +455,8 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A, B, C> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb,
-                                        final Validation<E, C> vc) {
+  public final <A, B, C> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb,
+                                              final Validation<E, C> vc) {
     return accumulate(s, va, vb, vc, (t, a, b, c) -> unit()).f().toOption();
   }
 
@@ -473,10 +473,10 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$> Validation<E, E$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                       final Validation<E, B> vb, final Validation<E, C> vc,
-                                                       final Validation<E, D> vd,
-                                                       final F<T, F<A, F<B, F<C, F<D, E$>>>>> f) {
+  public final <A, B, C, D, E$> Validation<E, E$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                             final Validation<E, B> vb, final Validation<E, C> vc,
+                                                             final Validation<E, D> vd,
+                                                             final F<T, F<A, F<B, F<C, F<D, E$>>>>> f) {
     return vd.accumapply(s, accumulate(s, va, vb, vc, f));
   }
 
@@ -493,9 +493,9 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$> Validation<E, E$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                       final Validation<E, B> vb, final Validation<E, C> vc,
-                                                       final Validation<E, D> vd, final F5<T, A, B, C, D, E$> f) {
+  public final <A, B, C, D, E$> Validation<E, E$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                             final Validation<E, B> vb, final Validation<E, C> vc,
+                                                             final Validation<E, D> vd, final F5<T, A, B, C, D, E$> f) {
     return vd.accumapply(s, accumulate(s, va, vb, vc, curry(f)));
   }
 
@@ -510,8 +510,8 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A, B, C, D> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb,
-                                           final Validation<E, C> vc, final Validation<E, D> vd) {
+  public final <A, B, C, D> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va, final Validation<E, B> vb,
+                                                 final Validation<E, C> vc, final Validation<E, D> vd) {
     return accumulate(s, va, vb, vc, vd, (t, a, b, c, d) -> unit()).f().toOption();
   }
 
@@ -529,10 +529,10 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$, F$> Validation<E, F$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                           final Validation<E, B> vb, final Validation<E, C> vc,
-                                                           final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                           final F<T, F<A, F<B, F<C, F<D, F<E$, F$>>>>>> f) {
+  public final <A, B, C, D, E$, F$> Validation<E, F$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                                 final Validation<E, B> vb, final Validation<E, C> vc,
+                                                                 final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                                 final F<T, F<A, F<B, F<C, F<D, F<E$, F$>>>>>> f) {
     return ve.accumapply(s, accumulate(s, va, vb, vc, vd, f));
   }
 
@@ -550,10 +550,10 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$, F$> Validation<E, F$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                           final Validation<E, B> vb, final Validation<E, C> vc,
-                                                           final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                           final F6<T, A, B, C, D, E$, F$> f) {
+  public final <A, B, C, D, E$, F$> Validation<E, F$> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                                 final Validation<E, B> vb, final Validation<E, C> vc,
+                                                                 final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                                 final F6<T, A, B, C, D, E$, F$> f) {
     return ve.accumapply(s, accumulate(s, va, vb, vc, vd, curry(f)));
   }
 
@@ -569,9 +569,9 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A, B, C, D, E$> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                               final Validation<E, B> vb, final Validation<E, C> vc,
-                                               final Validation<E, D> vd, final Validation<E, E$> ve) {
+  public final <A, B, C, D, E$> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                     final Validation<E, B> vb, final Validation<E, C> vc,
+                                                     final Validation<E, D> vd, final Validation<E, E$> ve) {
     return accumulate(s, va, vb, vc, vd, ve, (t, a, b, c, d, e1) -> unit()).f().toOption();
   }
 
@@ -590,11 +590,11 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$, F$, G> Validation<E, G> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                             final Validation<E, B> vb, final Validation<E, C> vc,
-                                                             final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                             final Validation<E, F$> vf,
-                                                             final F<T, F<A, F<B, F<C, F<D, F<E$, F<F$, G>>>>>>> f) {
+  public final <A, B, C, D, E$, F$, G> Validation<E, G> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                                   final Validation<E, B> vb, final Validation<E, C> vc,
+                                                                   final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                                   final Validation<E, F$> vf,
+                                                                   final F<T, F<A, F<B, F<C, F<D, F<E$, F<F$, G>>>>>>> f) {
     return vf.accumapply(s, accumulate(s, va, vb, vc, vd, ve, f));
   }
 
@@ -613,11 +613,11 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$, F$, G> Validation<E, G> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                             final Validation<E, B> vb, final Validation<E, C> vc,
-                                                             final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                             final Validation<E, F$> vf,
-                                                             final F7<T, A, B, C, D, E$, F$, G> f) {
+  public final <A, B, C, D, E$, F$, G> Validation<E, G> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                                   final Validation<E, B> vb, final Validation<E, C> vc,
+                                                                   final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                                   final Validation<E, F$> vf,
+                                                                   final F7<T, A, B, C, D, E$, F$, G> f) {
     return vf.accumapply(s, accumulate(s, va, vb, vc, vd, ve, curry(f)));
   }
 
@@ -634,10 +634,10 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A, B, C, D, E$, F$> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                   final Validation<E, B> vb, final Validation<E, C> vc,
-                                                   final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                   final Validation<E, F$> vf) {
+  public final <A, B, C, D, E$, F$> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                         final Validation<E, B> vb, final Validation<E, C> vc,
+                                                         final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                         final Validation<E, F$> vf) {
     return accumulate(s, va, vb, vc, vd, ve, vf, (t, a, b, c, d, e1, f) -> unit()).f().toOption();
   }
 
@@ -657,11 +657,11 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$, F$, G, H> Validation<E, H> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                                final Validation<E, B> vb, final Validation<E, C> vc,
-                                                                final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                                final Validation<E, F$> vf, final Validation<E, G> vg,
-                                                                final F<T, F<A, F<B, F<C, F<D, F<E$, F<F$, F<G, H>>>>>>>> f) {
+  public final <A, B, C, D, E$, F$, G, H> Validation<E, H> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                                      final Validation<E, B> vb, final Validation<E, C> vc,
+                                                                      final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                                      final Validation<E, F$> vf, final Validation<E, G> vg,
+                                                                      final F<T, F<A, F<B, F<C, F<D, F<E$, F<F$, F<G, H>>>>>>>> f) {
     return vg.accumapply(s, accumulate(s, va, vb, vc, vd, ve, vf, f));
   }
 
@@ -681,11 +681,11 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A succeeding validation if all validations succeeded, or a failing validation with errors accumulated if
    *         one or more failed.
    */
-  public <A, B, C, D, E$, F$, G, H> Validation<E, H> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                                final Validation<E, B> vb, final Validation<E, C> vc,
-                                                                final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                                final Validation<E, F$> vf, final Validation<E, G> vg,
-                                                                final F8<T, A, B, C, D, E$, F$, G, H> f) {
+  public final <A, B, C, D, E$, F$, G, H> Validation<E, H> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                                      final Validation<E, B> vb, final Validation<E, C> vc,
+                                                                      final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                                      final Validation<E, F$> vf, final Validation<E, G> vg,
+                                                                      final F8<T, A, B, C, D, E$, F$, G, H> f) {
     return vg.accumapply(s, accumulate(s, va, vb, vc, vd, ve, vf, curry(f)));
   }
 
@@ -703,10 +703,10 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A <code>Some</code> if one or more validations failed (accumulated with the semigroup), otherwise,
    *         <code>None</code>.
    */
-  public <A, B, C, D, E$, F$, G> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
-                                                      final Validation<E, B> vb, final Validation<E, C> vc,
-                                                      final Validation<E, D> vd, final Validation<E, E$> ve,
-                                                      final Validation<E, F$> vf, final Validation<E, G> vg) {
+  public final <A, B, C, D, E$, F$, G> Option<E> accumulate(final Semigroup<E> s, final Validation<E, A> va,
+                                                            final Validation<E, B> vb, final Validation<E, C> vc,
+                                                            final Validation<E, D> vd, final Validation<E, E$> ve,
+                                                            final Validation<E, F$> vf, final Validation<E, G> vg) {
     return accumulate(s, va, vb, vc, vd, ve, vf, vg, (t, a, b, c, d, e1, f, g) -> unit()).f().toOption();
   }
 
@@ -715,12 +715,12 @@ public class Validation<E, T> implements Iterable<T> {
    *
    * @return A iterator for this validation.
    */
-  public Iterator<T> iterator() {
+  public final Iterator<T> iterator() {
     return toEither().right().iterator();
   }
 
 
-    public Validation<List<E>, T> accumulate() {
+    public final Validation<List<E>, T> accumulate() {
         if (isFail()) {
             return fail(List.single(fail()));
         } else {
@@ -728,7 +728,7 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B> Validation<List<E>, B> accumulate(F<T, B> f) {
+    public final <B> Validation<List<E>, B> accumulate(F<T, B> f) {
         if (isFail()) {
             return fail(List.single(fail()));
         } else {
@@ -737,7 +737,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
 
-    public <B, C> Validation<List<E>, C> accumulate(Validation<E, B> v2, F2<T, B, C> f) {
+    public final <B, C> Validation<List<E>, C> accumulate(Validation<E, B> v2, F2<T, B, C> f) {
         List<E> list = List.nil();
         if (isFail()) {
             list = list.cons(fail());
@@ -754,7 +754,7 @@ public class Validation<E, T> implements Iterable<T> {
 
 
 
-    public <B, C, D> Validation<List<E>, D> accumulate(Validation<E, B> v2, Validation<E, C> v3, F3<T, B, C, D> f) {
+    public final <B, C, D> Validation<List<E>, D> accumulate(Validation<E, B> v2, Validation<E, C> v3, F3<T, B, C, D> f) {
         List<E> list = fails(list(this, v2, v3));
         if (!list.isEmpty()) {
             return fail(list);
@@ -763,7 +763,7 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B, C, D, $E> Validation<List<E>, $E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, $E> f) {
+    public final <B, C, D, $E> Validation<List<E>, $E> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, F4<T, B, C, D, $E> f) {
         List<E> list = fails(list(this, v2, v3, v4));
         if (!list.isEmpty()) {
             return fail(list);
@@ -772,7 +772,7 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B, C, D, $E, $F> Validation<List<E>, $F> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, F5<T, B, C, D, $E, $F> f) {
+    public final <B, C, D, $E, $F> Validation<List<E>, $F> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, F5<T, B, C, D, $E, $F> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return fail(list);
@@ -782,7 +782,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
 
-    public <B, C, D, $E, $F, G> Validation<List<E>, G> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, F6<T, B, C, D, $E, $F, G> f) {
+    public final <B, C, D, $E, $F, G> Validation<List<E>, G> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, F6<T, B, C, D, $E, $F, G> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return fail(list);
@@ -791,7 +791,7 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B, C, D, $E, $F, G, H> Validation<List<E>, H> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, F7<T, B, C, D, $E, $F, G, H> f) {
+    public final <B, C, D, $E, $F, G, H> Validation<List<E>, H> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, F7<T, B, C, D, $E, $F, G, H> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return fail(list);
@@ -800,7 +800,7 @@ public class Validation<E, T> implements Iterable<T> {
         }
     }
 
-    public <B, C, D, $E, $F, G, H, I> Validation<List<E>, I> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, Validation<E, H> v8, F8<T, B, C, D, $E, $F, G, H, I> f) {
+    public final <B, C, D, $E, $F, G, H, I> Validation<List<E>, I> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, Validation<E, H> v8, F8<T, B, C, D, $E, $F, G, H, I> f) {
         List<E> list = fails(list(this, v2, v3, v4, v5));
         if (!list.isEmpty()) {
             return fail(list);
@@ -825,31 +825,31 @@ public class Validation<E, T> implements Iterable<T> {
       }
     }
 
-    public <C> List<Validation<E, C>> traverseList(F<T, List<C>> f){
+    public final <C> List<Validation<E, C>> traverseList(F<T, List<C>> f){
         return isSuccess() ?
             f.f(success()).map(Validation::success) :
             List.iterableList(fail(e.left().value()));
     }
 
-    public <C> Stream<Validation<E, C>> traverseStream(F<T, Stream<C>> f){
+    public final <C> Stream<Validation<E, C>> traverseStream(F<T, Stream<C>> f){
         return isSuccess() ?
             f.f(success()).map(Validation::success) :
             Stream.iterableStream(fail(e.left().value()));
     }
 
-    public <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f){
+    public final <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f){
         return isSuccess() ?
             f.f(success()).map(Validation::success) :
             Option.some(fail(e.left().value()));
     }
 
-    public <C> IO<Validation<E, C>> traverseIO(F<T, IO<C>> f){
+    public final <C> IO<Validation<E, C>> traverseIO(F<T, IO<C>> f){
         return isSuccess() ?
             IOFunctions.map(f.f(success()), Validation::success) :
             IOFunctions.unit(fail(e.left().value()));
     }
 
-    public <C> P1<Validation<E, C>> traverseP1(F<T, P1<C>> f){
+    public final <C> P1<Validation<E, C>> traverseP1(F<T, P1<C>> f){
         return isSuccess() ?
                 f.f(success()).map(Validation::success) :
                 p(fail(e.left().value()));
@@ -1081,7 +1081,7 @@ public class Validation<E, T> implements Iterable<T> {
    * @return A validation with its failing value in a non-empty list if there is one.
    */
   @SuppressWarnings("unchecked")
-  public Validation<NonEmptyList<E>, T> nel() {
+  public final Validation<NonEmptyList<E>, T> nel() {
     return isSuccess() ?
         Validation.success(success()) :
         Validation.fail(NonEmptyList.nel(fail()));
@@ -1283,7 +1283,7 @@ public class Validation<E, T> implements Iterable<T> {
   }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return Show.validationShow(Show.<E>anyShow(), Show.<T>anyShow()).showS(this);
     }
 

@@ -92,12 +92,12 @@ public abstract class Either<A, B> {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(Either.class, this, other, () -> Equal.eitherEqual(Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.eitherHash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
   }
 
@@ -802,7 +802,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> List<Either<A, C>> traverseListRight(final F<B, List<C>> f) {
+  public final <C> List<Either<A, C>> traverseListRight(final F<B, List<C>> f) {
     return right().traverseList(f);
   }
 
@@ -811,7 +811,7 @@ public abstract class Either<A, B> {
      *
      * @return traversed value
   */
-    public <C> List<Either<C, B>> traverseListLeft(final F<A, List<C>> f) {
+    public final <C> List<Either<C, B>> traverseListLeft(final F<A, List<C>> f) {
         return left().traverseList(f);
     }
 
@@ -820,7 +820,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> IO<Either<A, C>> traverseIORight(final F<B, IO<C>> f) {
+  public final <C> IO<Either<A, C>> traverseIORight(final F<B, IO<C>> f) {
     return right().traverseIO(f);
   }
 
@@ -829,7 +829,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> IO<Either<C, B>> traverseIOLeft(final F<A, IO<C>> f) {
+  public final <C> IO<Either<C, B>> traverseIOLeft(final F<A, IO<C>> f) {
     return left().traverseIO(f);
   }
 
@@ -838,7 +838,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Option<Either<A, C>> traverseOptionRight(final F<B, Option<C>> f) {
+  public final <C> Option<Either<A, C>> traverseOptionRight(final F<B, Option<C>> f) {
     return right().traverseOption(f);
   }
 
@@ -847,7 +847,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Option<Either<C, B>> traverseOptionLeft(final F<A, Option<C>> f) {
+  public final <C> Option<Either<C, B>> traverseOptionLeft(final F<A, Option<C>> f) {
     return left().traverseOption(f);
   }
 
@@ -856,7 +856,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Stream<Either<A, C>> traverseStreamRight(final F<B, Stream<C>> f) {
+  public final <C> Stream<Either<A, C>> traverseStreamRight(final F<B, Stream<C>> f) {
     return right().traverseStream(f);
   }
 
@@ -865,7 +865,7 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Stream<Either<C, B>> traverseStreamLeft(final F<A, Stream<C>> f) {
+  public final <C> Stream<Either<C, B>> traverseStreamLeft(final F<A, Stream<C>> f) {
     return left().traverseStream(f);
   }
 
@@ -913,7 +913,7 @@ public abstract class Either<A, B> {
     return es.foldRight(e -> bs -> e.isRight() ? bs.cons(e.right().value()) : bs, List.nil());
   }
 
-    public String toString() {
+    public final String toString() {
         return Show.eitherShow(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
     }
 

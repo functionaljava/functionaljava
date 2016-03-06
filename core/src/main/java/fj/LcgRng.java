@@ -17,18 +17,18 @@ public class LcgRng extends Rng {
 		seed = s;
 	}
 
-    public long getSeed() {
+    public final long getSeed() {
         return seed;
     }
 
-	public P2<Rng, Integer> nextInt() {
+	public final P2<Rng, Integer> nextInt() {
         P2<Rng, Long> p = nextLong();
         int i = (int) p._2().longValue();
         return P.p(p._1(), i);
 	}
 
 
-	public P2<Rng, Long> nextLong() {
+	public final P2<Rng, Long> nextLong() {
         P2<Long, Long> p = nextLong(seed);
         return P.p(new LcgRng(p._1()), p._2());
     }

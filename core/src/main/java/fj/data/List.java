@@ -166,7 +166,7 @@ public abstract class List<A> implements Iterable<A> {
    *
    * @return The optional head of the list.
    */
-  public Option<A> headOption() {
+  public final Option<A> headOption() {
     return isEmpty() ? Option.none() : some(head());
   }
 
@@ -611,7 +611,7 @@ public abstract class List<A> implements Iterable<A> {
      * @param f The function that produces Option value
      * @return  none if applying f returns none to any element of the list or f mapped list in some .
      */
-    public <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
+    public final <B> Option<List<B>> traverseOption(final F<A, Option<B>> f) {
         return foldRight(
                 (a, obs) -> f.f(a).bind(o -> obs.map(os -> os.cons(o))),
                 some(List.nil())
@@ -624,35 +624,35 @@ public abstract class List<A> implements Iterable<A> {
      * @param f The function that produces Either value.
      * @return  error in left or f mapped list in right.
      */
-    public <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
+    public final <B, E> Either<E, List<B>> traverseEither(final F<A, Either<E, B>> f) {
         return foldRight(
                 (a, acc) -> f.f(a).right().bind(e -> acc.right().map(es -> es.cons(e))),
                 Either.right(List.nil())
         );
     }
 
-    public <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
+    public final <B> Stream<List<B>> traverseStream(final F<A, Stream<B>> f) {
         return foldRight(
                 (a, acc) -> f.f(a).bind(s -> acc.map(ss -> ss.cons(s))),
                 Stream.nil()
         );
     }
 
-    public <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
+    public final <B> P1<List<B>> traverseP1(final F<A, P1<B>> f){
         return foldRight(
                 (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
                 p(List.nil())
         );
     }
 
-    public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
+    public final <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
         return this.foldRight(
                 (a, acc) -> IOFunctions.bind(f.f(a), b -> IOFunctions.map(acc, bs -> bs.cons(b))),
                 IOFunctions.unit(List.nil())
         );
     }
 
-  public <C, B> F<C, List<B>> traverseF(F<A, F<C, B>> f) {
+  public final <C, B> F<C, List<B>> traverseF(F<A, F<C, B>> f) {
     return this.foldRight(
         (a, acc) -> Function.bind(acc,
             (bs) -> Function.compose(bs::cons, f.f(a))),
@@ -660,31 +660,31 @@ public abstract class List<A> implements Iterable<A> {
         );
   }
 
-  public <B> Trampoline<List<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
+  public final <B> Trampoline<List<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
         Trampoline.pure(List.nil()));
   }
 
-  public <B> Promise<List<B>> traversePromise(final F<A, Promise<B>> f) {
+  public final <B> Promise<List<B>> traversePromise(final F<A, Promise<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.fmap(bs -> bs.cons(b))),
         Promise.promise(Strategy.idStrategy(), p(List.nil())));
   }
 
-  public <B> List<List<B>> traverseList(final F<A, List<B>> f) {
+  public final <B> List<List<B>> traverseList(final F<A, List<B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
         single(List.nil()));
   }
 
-  public <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
+  public final <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
     return foldRight(
         (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
         Validation.success(List.nil()));
   }
 
-  public <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
+  public final <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
     return foldRight(
         (a, acc) -> acc.apply(f.f(a).<F<List<B>, List<B>>> map(e -> es -> es.cons(e))),
         v(List.nil(), List.nil()));
@@ -902,7 +902,7 @@ public abstract class List<A> implements Iterable<A> {
    *
    * @param f Predicate function.
    */
-  public P2<List<A>, List<A>> partition(F<A, Boolean> f) {
+  public final P2<List<A>, List<A>> partition(F<A, Boolean> f) {
     P2<List<A>, List<A>> p2 = foldLeft(acc -> a ->
       f.f(a) ? p(acc._1().cons(a), acc._2()) : p(acc._1(), acc._2().cons(a)),
       p(nil(), nil())
@@ -1172,7 +1172,7 @@ public abstract class List<A> implements Iterable<A> {
 	 * Reutrns the tail of the list, if any.
 	 * @return The optional tail of the list.
 	 */
-	public Option<List<A>> tailOption() {
+	public final Option<List<A>> tailOption() {
 		return isEmpty() ? none() : some(tail());
 	}
 
@@ -1410,7 +1410,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param eq The equality test.
    * @return Whether or not all elements in the list are equal according to the given equality test.
    */
-  public boolean allEqual(final Equal<A> eq) {
+  public final boolean allEqual(final Equal<A> eq) {
     return isEmpty() || tail().isEmpty() || eq.eq(head(), tail().head()) && tail().allEqual(eq);
   }
 
@@ -2066,7 +2066,7 @@ public abstract class List<A> implements Iterable<A> {
      * @param obj the other object to check for equality against.
      * @return true if this list is equal to the provided argument
      */
-    @Override public boolean equals( final Object obj ) {
+    @Override public final boolean equals(final Object obj) {
         return Equal.equals0(List.class, this, obj, () -> Equal.listEqual(Equal.anyEqual()));
     }
 
@@ -2077,7 +2077,7 @@ public abstract class List<A> implements Iterable<A> {
      * @return the hash code for this list.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Hash.listHash(Hash.<A>anyHash()).hash(this);
     }
 
@@ -2087,14 +2087,14 @@ public abstract class List<A> implements Iterable<A> {
      *
      * @return a String representation of the list
      */
-    @Override public String toString() {
+    @Override public final String toString() {
         return Show.listShow(Show.<A>anyShow()).showS(this);
     }
 
     /**
      * True if and only if the list has one element. Runs in constant time.
      */
-    public boolean isSingle() {
+    public final boolean isSingle() {
         return isNotEmpty() && tail().isEmpty();
     }
 

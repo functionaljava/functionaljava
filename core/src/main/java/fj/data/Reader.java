@@ -15,7 +15,7 @@ public class Reader<A, B> {
 		function = f;
 	}
 
-	public F<A, B> getFunction() {
+	public final F<A, B> getFunction() {
 		return function;
 	}
 
@@ -27,23 +27,23 @@ public class Reader<A, B> {
 		return unit(a -> b);
 	}
 
-	public B f(A a) {
+	public final B f(A a) {
 		return function.f(a);
 	}
 
-	public <C> Reader<A, C> map(F<B, C> f) {
+	public final <C> Reader<A, C> map(F<B, C> f) {
 		return unit(F1Functions.andThen(function, f));
 	}
 
-	public <C> Reader<A, C> andThen(F<B, C> f) {
+	public final <C> Reader<A, C> andThen(F<B, C> f) {
 		return map(f);
 	}
 
-	public <C> Reader<A, C> flatMap(F<B, Reader<A, C>> f) {
+	public final <C> Reader<A, C> flatMap(F<B, Reader<A, C>> f) {
 		return unit(a -> f.f(function.f(a)).f(a));
 	}
 
-	public <C> Reader<A, C> bind(F<B, Reader<A, C>> f) {
+	public final <C> Reader<A, C> bind(F<B, Reader<A, C>> f) {
 		return flatMap(f);
 	}
 

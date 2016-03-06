@@ -48,7 +48,7 @@ public abstract class Node<V, A> {
     return measure;
   }
 
-  Measured<V, A> measured() {
+  final Measured<V, A> measured() {
     return m;
   }
 

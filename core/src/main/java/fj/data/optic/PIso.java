@@ -130,7 +130,7 @@ public abstract class PIso<S, T, A, B> {
   }
 
   /** pair two disjoint {@link PIso} */
-  public <S1, T1, A1, B1> PIso<P2<S, S1>, P2<T, T1>, P2<A, A1>, P2<B, B1>> product(final PIso<S1, T1, A1, B1> other) {
+  public final <S1, T1, A1, B1> PIso<P2<S, S1>, P2<T, T1>, P2<A, A1>, P2<B, B1>> product(final PIso<S1, T1, A1, B1> other) {
     return pIso(
         ss1 -> P.p(get(ss1._1()), other.get(ss1._2())),
         bb1 -> P.p(reverseGet(bb1._1()), other.reverseGet(bb1._2())));

@@ -51,7 +51,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return optionShow(Show.<A>anyShow()).showS(this);
   }
 
@@ -411,44 +411,44 @@ public abstract class Option<A> implements Iterable<A> {
     return bind(c);
   }
 
-  public <L, B> Either<L, Option<B>> traverseEither(F<A, Either<L, B>> f) {
+  public final <L, B> Either<L, Option<B>> traverseEither(F<A, Either<L, B>> f) {
     return map(a -> f.f(a).right().map(Option::some)).orSome(Either.right(none()));
   }
 
-  public <B> IO<Option<B>> traverseIO(F<A, IO<B>> f) {
+  public final <B> IO<Option<B>> traverseIO(F<A, IO<B>> f) {
     return map(a -> IOFunctions.map(f.f(a), Option::some)).orSome(IOFunctions.lazy(Option::none));
   }
 
-  public <B> List<Option<B>> traverseList(F<A, List<B>> f) {
+  public final <B> List<Option<B>> traverseList(F<A, List<B>> f) {
     return map(a -> f.f(a).map(Option::some)).orSome(List.list());
   }
 
-  public <B> Option<Option<B>> traverseOption(F<A, Option<B>> f) {
+  public final <B> Option<Option<B>> traverseOption(F<A, Option<B>> f) {
     return map(f);
   }
 
-  public <B> Stream<Option<B>> traverseStream(F<A, Stream<B>> f) {
+  public final <B> Stream<Option<B>> traverseStream(F<A, Stream<B>> f) {
     return map(a -> f.f(a).map(Option::some)).orSome(Stream.nil());
   }
 
-  public <B> P1<Option<B>> traverseP1(F<A, P1<B>> f) {
+  public final <B> P1<Option<B>> traverseP1(F<A, P1<B>> f) {
     return map(a -> f.f(a).map(Option::some)).orSome(p(none()));
   }
 
-  public <B> Seq<Option<B>> traverseSeq(F<A, Seq<B>> f) {
+  public final <B> Seq<Option<B>> traverseSeq(F<A, Seq<B>> f) {
     return map(a -> f.f(a).map(Option::some)).orSome(Seq.empty());
   }
 
-  public <B> Set<Option<B>> traverseSet(Ord<B> ord, F<A, Set<B>> f) {
+  public final <B> Set<Option<B>> traverseSet(Ord<B> ord, F<A, Set<B>> f) {
     Ord<Option<B>> optOrd = Ord.optionOrd(ord);
     return map(a -> f.f(a).map(optOrd, Option::some)).orSome(Set.empty(optOrd));
   }
 
-  public <B> F2<Ord<B>, F<A, Set<B>>, Set<Option<B>>> traverseSet() {
+  public final <B> F2<Ord<B>, F<A, Set<B>>, Set<Option<B>>> traverseSet() {
     return this::traverseSet;
   }
 
-  public <E, B> Validation<E, Option<B>> traverseValidation(F<A, Validation<E, B>> f) {
+  public final <E, B> Validation<E, Option<B>> traverseValidation(F<A, Validation<E, B>> f) {
     return map(a -> f.f(a).map(Option::some)).orSome(Validation.success(none()));
   }
 
@@ -608,7 +608,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(Option.class, this, other, () -> Equal.optionEqual(Equal.anyEqual()));
   }
 
@@ -796,7 +796,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.optionHash(Hash.<A>anyHash()).hash(this);
   }
 
@@ -836,7 +836,7 @@ public abstract class Option<A> implements Iterable<A> {
 	 * @param f A function to lift.
 	 * @return An optional result.
 	 */
-	public <B, C> Option<C> liftM2(final Option<B> ob, final F2<A, B, C> f) {
+	public final <B, C> Option<C> liftM2(final Option<B> ob, final F2<A, B, C> f) {
 		return bind(a -> ob.map(b -> f.f(a, b)));
 	}
 

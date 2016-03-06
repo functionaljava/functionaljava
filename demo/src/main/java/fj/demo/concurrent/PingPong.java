@@ -51,7 +51,7 @@ public class PingPong {
     new PingPong(Executors.newFixedThreadPool(threads), actors, pings).start();
   }
 
-  public void start() {
+  public final void start() {
     // We will use one Pong actor...
     final Pong pong = new Pong(s);
 

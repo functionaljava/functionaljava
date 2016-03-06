@@ -18,7 +18,7 @@ public abstract class Trampoline<A> {
   private abstract static class Normal<A> extends Trampoline<A> {
     public abstract <R> R foldNormal(final F<A, R> pure, final F<P1<Trampoline<A>>, R> k);
 
-    public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
+    public final <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
       return codense(this, f);
     }
   }
@@ -199,7 +199,7 @@ public abstract class Trampoline<A> {
    * @return The end result of this computation.
    */
   @SuppressWarnings("LoopStatementThatDoesntLoop")
-  public A run() {
+  public final A run() {
     Trampoline<A> current = this;
     while (true) {
       final Either<P1<Trampoline<A>>, A> x = current.resume();
@@ -252,7 +252,7 @@ public abstract class Trampoline<A> {
    * @return A new trampoline that runs this trampoline and the given trampoline simultaneously.
    */
   @SuppressWarnings("LoopStatementThatDoesntLoop")
-  public <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
+  public final <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
     final Either<P1<Trampoline<A>>, A> ea = resume();
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
