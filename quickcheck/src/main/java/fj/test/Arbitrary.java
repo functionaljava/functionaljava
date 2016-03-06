@@ -981,7 +981,7 @@ public final class Arbitrary<A> {
     public static <K, V> Arbitrary<fj.data.TreeMap<K, V>> arbTreeMap(Ord<K> ord, Arbitrary<K> ak, Arbitrary<V> av, Arbitrary<Integer> ai) {
         Gen<List<P2<K, V>>> gl2 = ai.gen.bind(i -> {
             if (i < 0) {
-                Bottom.error("Undefined: arbitrary natural is negative (" + i + ")");
+                throw Bottom.error("Undefined: arbitrary natural is negative (" + i + ")");
             }
             return Gen.sequenceN(Math.max(i, 0), arbP2(ak, av).gen);
         });
@@ -993,7 +993,7 @@ public final class Arbitrary<A> {
      */
     public static <K, V> Arbitrary<fj.data.TreeMap<K, V>> arbTreeMap(Ord<K> ord, Arbitrary<K> ak, Arbitrary<V> av, int maxSize) {
         if (maxSize < 0) {
-            Bottom.error("Undefined: arbitrary natural is negative (" + maxSize + ")");
+          throw Bottom.error("Undefined: arbitrary natural is negative (" + maxSize + ")");
         }
         return arbTreeMap(ord, ak, av, arbitrary(choose(0, maxSize)));
     }
