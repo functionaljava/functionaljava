@@ -283,10 +283,10 @@ public final class IOFunctions {
                         if (numRead < buffer.length) {
                             buffer = Arrays.copyOfRange(buffer, 0, numRead);
                         }
-                        for (int c = 0; c < buffer.length; c++) {
-                            final Input<Character> input = Input.el(buffer[c]);
+                        for (char c : buffer) {
+                            final Input<Character> input = Input.el(c);
                             final F<F<Input<Character>, IterV<Character, A>>, IterV<Character, A>> cont =
-                                    Function.apply(input);
+                                Function.apply(input);
                             i = i.fold(done, cont);
                         }
                     }
