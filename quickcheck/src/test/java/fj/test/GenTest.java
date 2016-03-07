@@ -7,29 +7,29 @@ import org.junit.Test;
 import static fj.Ord.charOrd;
 import static fj.data.List.list;
 import static fj.data.List.range;
-import static fj.test.Gen.pickCombinationWithReplacement;
-import static fj.test.Gen.pickCombinationWithoutReplacement;
-import static fj.test.Gen.pickPermutationWithReplacement;
-import static fj.test.Gen.pickPermutationWithoutReplacement;
+import static fj.test.Gen.selectionOf;
+import static fj.test.Gen.combinationOf;
+import static fj.test.Gen.wordOf;
+import static fj.test.Gen.permutationOf;
 import static fj.test.Rand.standard;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class TestGen {
+public final class GenTest {
 
   private static final List<Character> AS = list('A', 'B', 'C');
 
   @Test
-  public void testPickCombinationWithoutReplacement_none() {
-    Gen<List<Character>> instance = pickCombinationWithoutReplacement(0, AS);
+  public void testCombinationOf_none() {
+    Gen<List<Character>> instance = combinationOf(0, AS);
     testPick(100, instance, actual -> {
       assertTrue(actual.isEmpty());
     });
   }
 
   @Test
-  public void testPickCombinationWithoutReplacement_one() {
-    Gen<List<Character>> instance = pickCombinationWithoutReplacement(1, AS);
+  public void testCombinationOf_one() {
+    Gen<List<Character>> instance = combinationOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
       assertTrue(AS.exists(a -> a.equals(actual.head())));
@@ -37,8 +37,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickCombinationWithoutReplacement_two() {
-    Gen<List<Character>> instance = pickCombinationWithoutReplacement(2, AS);
+  public void testCombinationOf_two() {
+    Gen<List<Character>> instance = combinationOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -47,8 +47,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickCombinationWithoutReplacement_three() {
-    Gen<List<Character>> instance = pickCombinationWithoutReplacement(3, AS);
+  public void testCombinationOf_three() {
+    Gen<List<Character>> instance = combinationOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -57,16 +57,16 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickCombinationWithReplacement_none() {
-    Gen<List<Character>> instance = pickCombinationWithReplacement(0, AS);
+  public void testSelectionOf_none() {
+    Gen<List<Character>> instance = selectionOf(0, AS);
     testPick(100, instance, actual -> {
       assertTrue(actual.isEmpty());
     });
   }
 
   @Test
-  public void testPickCombinationWithReplacement_one() {
-    Gen<List<Character>> instance = pickCombinationWithReplacement(1, AS);
+  public void testSelectionOf_one() {
+    Gen<List<Character>> instance = selectionOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
       assertTrue(AS.exists(a -> a.equals(actual.head())));
@@ -74,8 +74,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickCombinationWithReplacement_two() {
-    Gen<List<Character>> instance = pickCombinationWithReplacement(2, AS);
+  public void testSelectionOf_two() {
+    Gen<List<Character>> instance = selectionOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -84,8 +84,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickCombinationWithReplacement_three() {
-    Gen<List<Character>> instance = pickCombinationWithReplacement(3, AS);
+  public void testSelectionOf_three() {
+    Gen<List<Character>> instance = selectionOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -94,8 +94,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickCombinationWithReplacement_four() {
-    Gen<List<Character>> instance = pickCombinationWithReplacement(4, AS);
+  public void testSelectionOf_four() {
+    Gen<List<Character>> instance = selectionOf(4, AS);
     testPick(100, instance, actual -> {
       assertEquals(4, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -104,16 +104,16 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithoutReplacement_none() {
-    Gen<List<Character>> instance = pickPermutationWithoutReplacement(0, AS);
+  public void testPermutationOf_none() {
+    Gen<List<Character>> instance = permutationOf(0, AS);
     testPick(100, instance, actual -> {
       assertTrue(actual.isEmpty());
     });
   }
 
   @Test
-  public void testPickPermutationWithoutReplacement_one() {
-    Gen<List<Character>> instance = pickPermutationWithoutReplacement(1, AS);
+  public void testPermutationOf_one() {
+    Gen<List<Character>> instance = permutationOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
       assertTrue(AS.exists(a -> a.equals(actual.head())));
@@ -121,8 +121,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithoutReplacement_two() {
-    Gen<List<Character>> instance = pickCombinationWithoutReplacement(2, AS);
+  public void testPermutationOf_two() {
+    Gen<List<Character>> instance = combinationOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
       assertTrue(actual.tails().forall(l -> l.isEmpty() || l.tail().forall(a -> !a.equals(l.head()))));
@@ -130,8 +130,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithoutReplacement_three() {
-    Gen<List<Character>> instance = pickPermutationWithoutReplacement(3, AS);
+  public void testPermutationOf_three() {
+    Gen<List<Character>> instance = permutationOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -140,16 +140,16 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithReplacement_none() {
-    Gen<List<Character>> instance = pickPermutationWithReplacement(0, AS);
+  public void testWordOf_none() {
+    Gen<List<Character>> instance = wordOf(0, AS);
     testPick(100, instance, actual -> {
       assertTrue(actual.isEmpty());
     });
   }
 
   @Test
-  public void testPickPermutationWithReplacement_one() {
-    Gen<List<Character>> instance = pickPermutationWithReplacement(1, AS);
+  public void testWordOf_one() {
+    Gen<List<Character>> instance = wordOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
       assertTrue(AS.exists(a -> a.equals(actual.head())));
@@ -157,8 +157,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithReplacement_two() {
-    Gen<List<Character>> instance = pickPermutationWithReplacement(2, AS);
+  public void testWordOf_two() {
+    Gen<List<Character>> instance = wordOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -166,8 +166,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithReplacement_three() {
-    Gen<List<Character>> instance = pickPermutationWithReplacement(3, AS);
+  public void testWordOf_three() {
+    Gen<List<Character>> instance = wordOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -175,8 +175,8 @@ public final class TestGen {
   }
 
   @Test
-  public void testPickPermutationWithReplacement_four() {
-    Gen<List<Character>> instance = pickPermutationWithReplacement(4, AS);
+  public void testWordOf_four() {
+    Gen<List<Character>> instance = wordOf(4, AS);
     testPick(100, instance, actual -> {
       assertEquals(4, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
@@ -184,7 +184,7 @@ public final class TestGen {
   }
 
   private static <A> void testPick(int n, Gen<List<A>> instance, Effect1<List<A>> test) {
-    range(0, n).map(i -> instance.gen(0, standard)).foreachDoEffect(test::f);
+    range(0, n).map(ignore -> instance.gen(0, standard)).foreachDoEffect(test::f);
   }
 
 }

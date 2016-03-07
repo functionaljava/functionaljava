@@ -564,11 +564,23 @@ public final class Gen<A> {
   }
 
   /**
+   * Returns a generator that picks one element from the given list. If the given list is empty, then the
+   * returned generator will never produce a value.
+   *
+   * @param as The list from which to pick an element.
+   * @return A generator that picks an element from the given list.
+   */
+  public static <A> Gen<A> pickOne(List<A> as) {
+    // This is the fastest of the four; functionally, any of them would do
+    return wordOf(1, as).map(List::head);
+  }
+
+  /**
    * Returns a generator of lists that picks the given number of elements from the given list. If
    * the given number is less than zero or greater than the length of the given list, then the
    * returned generator will never produce a value.
    * <p>
-   * Note: pick is synonymous with pickCombinationWithoutReplacement
+   * Note: pick is synonymous with combinationOf
    *
    * @param n  The number of elements to pick from the given list.
    * @param as The list from which to pick elements.
@@ -576,7 +588,7 @@ public final class Gen<A> {
    */
   @Deprecated
   public static <A> Gen<List<A>> pick(int n, List<A> as) {
-    return pickCombinationWithoutReplacement(n, as);
+    return combinationOf(n, as);
   }
 
   /**
@@ -594,7 +606,7 @@ public final class Gen<A> {
    * @param as The list from which to pick elements.
    * @return A generator of lists that picks the given number of elements from the given list.
    */
-  public static <A> Gen<List<A>> pickCombinationWithoutReplacement(int n, List<A> as) {
+  public static <A> Gen<List<A>> combinationOf(int n, List<A> as) {
     int aLength = as.length();
     return ((n >= 0) && (n <= aLength)) ?
         parameterised(s -> r -> {
@@ -634,10 +646,10 @@ public final class Gen<A> {
    * @param as The list from which to pick elements.
    * @return A generator of lists that picks the given number of elements from the given list.
    */
-  public static <A> Gen<List<A>> pickCombinationWithReplacement(int n, List<A> as) {
+  public static <A> Gen<List<A>> selectionOf(int n, List<A> as) {
     Array<A> aArr = as.toArray();
     return (n >= 0) ?
-        pick(indexPermutation(n, aArr.length()).map(indexes -> indexes.sort(intOrd)), aArr) :
+        pick(indexWord(n, aArr.length()).map(indexes -> indexes.sort(intOrd)), aArr) :
         fail();
   }
 
@@ -656,9 +668,9 @@ public final class Gen<A> {
    * @param as The list from which to pick elements.
    * @return A generator of lists that picks the given number of elements from the given list.
    */
-  public static <A> Gen<List<A>> pickPermutationWithoutReplacement(int n, List<A> as) {
+  public static <A> Gen<List<A>> permutationOf(int n, List<A> as) {
     return parameterised(s -> r ->
-        pickCombinationWithoutReplacement(n, as).map(combination -> {
+        combinationOf(n, as).map(combination -> {
           // Shuffle combination using the Fisher-Yates algorithm
           Array<A> aArr = combination.toArray();
           int length = aArr.length();
@@ -687,14 +699,14 @@ public final class Gen<A> {
    * @param as The list from which to pick elements.
    * @return A generator of lists that picks the given number of elements from the given list.
    */
-  public static <A> Gen<List<A>> pickPermutationWithReplacement(int n, List<A> as) {
+  public static <A> Gen<List<A>> wordOf(int n, List<A> as) {
     Array<A> aArr = as.toArray();
     return (n >= 0) ?
-        pick(indexPermutation(n, aArr.length()), aArr) :
+        pick(indexWord(n, aArr.length()), aArr) :
         fail();
   }
 
-  private static Gen<List<Integer>> indexPermutation(int n, int m) {
+  private static Gen<List<Integer>> indexWord(int n, int m) {
     return sequenceN(n, choose(0, m - 1));
   }
 
@@ -706,14 +718,14 @@ public final class Gen<A> {
   /**
    * Returns a generator of lists that produces some of the values of the given list.
    * <p>
-   * Note: someOf is synonymous with someCombinationWithoutReplacementOf
+   * Note: someOf is synonymous with someCombinationOf
    *
    * @param as The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.
    */
   @Deprecated
   public static <A> Gen<List<A>> someOf(List<A> as) {
-    return someCombinationWithoutReplacementOf(as);
+    return someCombinationOf(as);
   }
 
   /**
@@ -727,8 +739,8 @@ public final class Gen<A> {
    * @param as The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.
    */
-  public static <A> Gen<List<A>> someCombinationWithoutReplacementOf(List<A> as) {
-    return choose(0, as.length()).bind(n -> pickCombinationWithoutReplacement(n, as));
+  public static <A> Gen<List<A>> someCombinationOf(List<A> as) {
+    return choose(0, as.length()).bind(n -> combinationOf(n, as));
   }
 
   /**
@@ -743,8 +755,8 @@ public final class Gen<A> {
    * @param as        The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.
    */
-  public static <A> Gen<List<A>> someCombinationWithReplacementOf(int maxLength, List<A> as) {
-    return choose(0, maxLength).bind(n -> pickCombinationWithReplacement(n, as));
+  public static <A> Gen<List<A>> someSelectionOf(int maxLength, List<A> as) {
+    return choose(0, maxLength).bind(n -> selectionOf(n, as));
   }
 
   /**
@@ -758,8 +770,8 @@ public final class Gen<A> {
    * @param as The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.
    */
-  public static <A> Gen<List<A>> somePermutationWithoutReplacementOf(List<A> as) {
-    return choose(0, as.length()).bind(n -> pickPermutationWithoutReplacement(n, as));
+  public static <A> Gen<List<A>> somePermutationOf(List<A> as) {
+    return choose(0, as.length()).bind(n -> permutationOf(n, as));
   }
 
   /**
@@ -774,8 +786,8 @@ public final class Gen<A> {
    * @param as        The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.
    */
-  public static <A> Gen<List<A>> somePermutationWithReplacementOf(int maxLength, List<A> as) {
-    return choose(0, maxLength).bind(n -> pickPermutationWithReplacement(n, as));
+  public static <A> Gen<List<A>> someWordOf(int maxLength, List<A> as) {
+    return choose(0, maxLength).bind(n -> wordOf(n, as));
   }
 
   /**
