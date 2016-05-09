@@ -184,7 +184,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator} and the given
+   * Checks this property using a {@link Rand#standard standard random generator} and the given
    * arguments to produce a result.
    *
    * @param minSuccessful The minimum number of successful tests before a result is reached.
@@ -226,7 +226,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests and the given arguments to produce a result.
    *
    * @param minSize The minimum size to use for checking.
@@ -239,7 +239,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @return A result after checking this property.
@@ -249,7 +249,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, the given minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, the given minimum
    * successful checks, 500 maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @param minSuccessful The minimum number of successful tests before a result is reached.
@@ -272,7 +272,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, the given maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @param maxDiscarded The maximum number of tests discarded because they did not satisfy
@@ -297,7 +297,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests, the given minimum size, maximum size of 100.
    *
    * @param minSize The minimum size to use for checking.
@@ -320,7 +320,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests, minimum size of 0, the given maximum size.
    *
    * @param maxSize The maximum size to use for checking.

@@ -1,25 +1,28 @@
 package fj.test;
 
-import static fj.Bottom.error;
-import fj.Effect;
 import fj.F;
 import fj.Function;
-import static fj.Function.flip;
-import static fj.Function.curry;
 import fj.P2;
-import static fj.P2.__1;
 import fj.Unit;
-import fj.F2;
-import static fj.data.Array.array;
+import fj.control.Trampoline;
+import fj.data.Array;
 import fj.data.List;
-import static fj.data.List.nil;
-import static fj.data.List.replicate;
 import fj.data.Option;
 import fj.function.Effect1;
 
+import static fj.Bottom.error;
+import static fj.Function.curry;
+import static fj.Function.flip;
 import static fj.Monoid.intAdditionMonoid;
 import static fj.Ord.intOrd;
-
+import static fj.P.lazy;
+import static fj.P2.__1;
+import static fj.control.Trampoline.pure;
+import static fj.control.Trampoline.suspend;
+import static fj.data.Array.array;
+import static fj.data.List.cons;
+import static fj.data.List.nil;
+import static fj.data.List.replicate;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -561,46 +564,230 @@ public final class Gen<A> {
   }
 
   /**
+   * Returns a generator that picks one element from the given list. If the given list is empty, then the
+   * returned generator will never produce a value.
+   *
+   * @param as The list from which to pick an element.
+   * @return A generator that picks an element from the given list.
+   */
+  public static <A> Gen<A> pickOne(List<A> as) {
+    // This is the fastest of the four; functionally, any of them would do
+    return wordOf(1, as).map(List::head);
+  }
+
+  /**
    * Returns a generator of lists that picks the given number of elements from the given list. If
    * the given number is less than zero or greater than the length of the given list, then the
+   * returned generator will never produce a value.
+   * <p>
+   * Note: pick is synonymous with combinationOf
+   *
+   * @param n  The number of elements to pick from the given list.
+   * @param as The list from which to pick elements.
+   * @return A generator of lists that picks the given number of elements from the given list.
+   */
+  @Deprecated
+  public static <A> Gen<List<A>> pick(int n, List<A> as) {
+    return combinationOf(n, as);
+  }
+
+  /**
+   * Returns a generator of lists that picks the given number of elements from the given list. The selection is
+   * a combination without replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list will always contain its elements in the same order</li>
+   * <li>An element will never be picked more than once</li>
+   * </ul>
+   * <p>
+   * If the given number is less than zero or greater than the length of the given list, then the
    * returned generator will never produce a value.
    *
    * @param n  The number of elements to pick from the given list.
    * @param as The list from which to pick elements.
    * @return A generator of lists that picks the given number of elements from the given list.
    */
-  public static <A> Gen<List<A>> pick(final int n, final List<A> as) {
-    return n < 0 || n > as.length() ? Gen.<List<A>>fail() : sequenceN(n, choose(0, as.length() - 1)).map(new F<List<Integer>, List<A>>() {
-      public List<A> f(final List<Integer> is) {
-        List<A> r = nil();
+  public static <A> Gen<List<A>> combinationOf(int n, List<A> as) {
+    int aLength = as.length();
+    return ((n >= 0) && (n <= aLength)) ?
+        parameterised(s -> r -> {
+          final class Tramp {
 
-        List<Integer> iis = is.sort(intOrd);
-        List<P2<A, Integer>> aas = as.zipIndex();
+            // Picks elements in constant stack space
+            private Trampoline<List<A>> tramp(List<A> remainAs, int remainN, int remainALength) {
+              return suspend(lazy(() ->
+                  (remainN == 0) ?
+                      // We have picked N elements; stop
+                      pure(nil()) :
+                      // For M remaining elements of which N will be picked, pick remainAs.head() with probability N/M
+                      (r.choose(0, remainALength - 1) < remainN) ?
+                          tramp(remainAs.tail(), remainN - 1, remainALength - 1)
+                              .map(pickedTail -> cons(remainAs.head(), pickedTail)) :
+                          tramp(remainAs.tail(), remainN, remainALength - 1)));
+            }
 
-        //noinspection ForLoopWithMissingComponent
-        for(; iis.isNotEmpty() && aas.isNotEmpty(); aas = aas.tail())
-          if(iis.head().equals(aas.head()._2()))
-            iis = iis.tail();
-          else
-            r = r.snoc(aas.head()._1());
+          }
+          return value(new Tramp().tramp(as, n, aLength).run());
+        }) :
+        fail();
+  }
 
-        return r;
-      }
-    });
+  /**
+   * Returns a generator of lists that picks the given number of elements from the given list. The selection is
+   * a combination with replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list will always contain its elements in the same order</li>
+   * <li>Each element may be picked more than once</li>
+   * </ul>
+   * <p>
+   * If the given number is less than zero, then the returned generator will never produce a value. Note that,
+   * with replacement, the given number may be larger than the length of the given list.
+   *
+   * @param n  The number of elements to pick from the given list.
+   * @param as The list from which to pick elements.
+   * @return A generator of lists that picks the given number of elements from the given list.
+   */
+  public static <A> Gen<List<A>> selectionOf(int n, List<A> as) {
+    Array<A> aArr = as.toArray();
+    return (n >= 0) ?
+        pick(indexWord(n, aArr.length()).map(indexes -> indexes.sort(intOrd)), aArr) :
+        fail();
+  }
+
+  /**
+   * Returns a generator of lists that picks the given number of elements from the given list. The selection is
+   * a permutation without replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list may contain its elements in any order</li>
+   * <li>An element will never be picked more than once</li>
+   * </ul>
+   * <p>
+   * If the given number is less than zero or greater than the length of the given list, then the
+   * returned generator will never produce a value.
+   *
+   * @param n  The number of elements to pick from the given list.
+   * @param as The list from which to pick elements.
+   * @return A generator of lists that picks the given number of elements from the given list.
+   */
+  public static <A> Gen<List<A>> permutationOf(int n, List<A> as) {
+    return parameterised(s -> r ->
+        combinationOf(n, as).map(combination -> {
+          // Shuffle combination using the Fisher-Yates algorithm
+          Array<A> aArr = combination.toArray();
+          int length = aArr.length();
+          for (int i = length - 1; i > 0; --i) {
+            int j = r.choose(0, i);
+            A tmp = aArr.get(i);
+            aArr.set(i, aArr.get(j));
+            aArr.set(j, tmp);
+          }
+          return aArr.toList();
+        }));
+  }
+
+  /**
+   * Returns a generator of lists that picks the given number of elements from the given list. The selection is
+   * a permutation with replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list may contain its elements in any order</li>
+   * <li>Each element may be picked more than once</li>
+   * </ul>
+   * <p>
+   * If the given number is less than zero, then the returned generator will never produce a value. Note that,
+   * with replacement, the given number may be larger than the length of the given list.
+   *
+   * @param n  The number of elements to pick from the given list.
+   * @param as The list from which to pick elements.
+   * @return A generator of lists that picks the given number of elements from the given list.
+   */
+  public static <A> Gen<List<A>> wordOf(int n, List<A> as) {
+    Array<A> aArr = as.toArray();
+    return (n >= 0) ?
+        pick(indexWord(n, aArr.length()), aArr) :
+        fail();
+  }
+
+  private static Gen<List<Integer>> indexWord(int n, int m) {
+    return sequenceN(n, choose(0, m - 1));
+  }
+
+  private static <A> Gen<List<A>> pick(Gen<List<Integer>> indexesGen, Array<A> as) {
+    return indexesGen.map(indexes ->
+        indexes.foldLeft((acc, index) -> cons(as.get(index), acc), List.<A>nil()).reverse());
   }
 
   /**
    * Returns a generator of lists that produces some of the values of the given list.
+   * <p>
+   * Note: someOf is synonymous with someCombinationOf
    *
    * @param as The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.
    */
-  public static <A> Gen<List<A>> someOf(final List<A> as) {
-    return choose(0, as.length()).bind(new F<Integer, Gen<List<A>>>() {
-      public Gen<List<A>> f(final Integer i) {
-        return pick(i, as);
-      }
-    });
+  @Deprecated
+  public static <A> Gen<List<A>> someOf(List<A> as) {
+    return someCombinationOf(as);
+  }
+
+  /**
+   * Returns a generator of lists that produces some of the values of the given list. The selection is
+   * a combination without replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list will always contain its elements in the same order</li>
+   * <li>An element will never be picked more than once</li>
+   * </ul>
+   *
+   * @param as The list from which to pick values.
+   * @return A generator of lists that produces some of the values of the given list.
+   */
+  public static <A> Gen<List<A>> someCombinationOf(List<A> as) {
+    return choose(0, as.length()).bind(n -> combinationOf(n, as));
+  }
+
+  /**
+   * Returns a generator of lists that produces some of the values of the given list. The selection is
+   * a combination with replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list will always contain its elements in the same order</li>
+   * <li>Each element may be picked more than once</li>
+   * </ul>
+   *
+   * @param maxLength The maximum length of a generated list
+   * @param as        The list from which to pick values.
+   * @return A generator of lists that produces some of the values of the given list.
+   */
+  public static <A> Gen<List<A>> someSelectionOf(int maxLength, List<A> as) {
+    return choose(0, maxLength).bind(n -> selectionOf(n, as));
+  }
+
+  /**
+   * Returns a generator of lists that produces some of the values of the given list. The selection is
+   * a permutation without replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list may contain its elements in any order</li>
+   * <li>An element will never be picked more than once</li>
+   * </ul>
+   *
+   * @param as The list from which to pick values.
+   * @return A generator of lists that produces some of the values of the given list.
+   */
+  public static <A> Gen<List<A>> somePermutationOf(List<A> as) {
+    return choose(0, as.length()).bind(n -> permutationOf(n, as));
+  }
+
+  /**
+   * Returns a generator of lists that produces some of the values of the given list. The selection is
+   * a permutation with replacement of elements from the given list, i.e.
+   * <ul>
+   * <li>For any given selection, a generated list may contain its elements in any order</li>
+   * <li>Each element may be picked more than once</li>
+   * </ul>
+   *
+   * @param maxLength The maximum length of a generated list
+   * @param as        The list from which to pick values.
+   * @return A generator of lists that produces some of the values of the given list.
+   */
+  public static <A> Gen<List<A>> someWordOf(int maxLength, List<A> as) {
+    return choose(0, maxLength).bind(n -> wordOf(n, as));
   }
 
   /**
