@@ -19,6 +19,8 @@ import fj.function.Effect1;
 import fj.Equal;
 import fj.Ord;
 import fj.Hash;
+import fj.data.optic.Prism;
+import fj.data.optic.PPrism;
 import static fj.Function.*;
 import static fj.P.p;
 import static fj.Unit.unit;
@@ -30,6 +32,8 @@ import static fj.data.Validation.parseFloat;
 import static fj.data.Validation.parseInt;
 import static fj.data.Validation.parseLong;
 import static fj.data.Validation.parseShort;
+import static fj.data.optic.Prism.prism;
+import static fj.data.optic.PPrism.pPrism;
 import static fj.Show.optionShow;
 
 import java.util.Collection;
@@ -883,4 +887,34 @@ public abstract class Option<A> implements Iterable<A> {
    * A function that parses a string to a short.
    */
   public static final F<String, Option<Short>> parseShort = s -> parseShort(s).toOption();
+
+  public static final class Optic {
+
+    private Optic() {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * None prism
+     */
+    public static <A> Prism<Option<A>, Unit> none() {
+      return prism(o -> o.option(Option.some(Unit.unit()), a -> Option.none()), u -> Option.none());
+    }
+
+    /**
+     * Polymorphic Some prism
+     */
+    public static <A, B> PPrism<Option<A>, Option<B>, A, B> pSome() {
+      return pPrism(o -> o.<Either<Option<B>, A>>map(Either::right).orSome(Either.left(Option.none())), Option::some);
+    }
+
+    /**
+     * Monomorphic Some prism
+     */
+    public static <A> Prism<Option<A>, A> some() {
+      return new Prism<>(pSome());
+    }
+
+  }
+
 }
