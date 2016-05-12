@@ -356,6 +356,14 @@ public class IOFunctions {
         };
     }
 
+    public static final IO<Unit> when(final IO<Unit> io, final Boolean b) {
+        return b ? io : ioUnit;
+    }
+
+    public static final IO<Unit> unless(final IO<Unit> io, final Boolean b) {
+        return when(io, !b);
+    }
+
     /**
      * Evaluate each action in the sequence from left to right, and collect the results.
      */
