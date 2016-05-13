@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static fj.Function.curry;
+import static fj.Function.flip;
 
 /**
  * Implementations must satisfy the law of associativity:
@@ -97,6 +98,13 @@ public final class Semigroup<A> {
   }
 
   /**
+  /**
+   * Swaps the arguments when summing.
+   */
+  public Semigroup<A> dual() {
+    return semigroup(flip(sum));
+  }
+
    * Constructs a semigroup from the given function.
    *
    * @param sum The function to construct this semigroup with.

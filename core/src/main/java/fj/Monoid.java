@@ -11,6 +11,7 @@ import fj.data.Option;
 import fj.data.Set;
 import fj.data.Stream;
 
+import static fj.Function.flip;
 import static fj.Semigroup.multiply1p;
 import static fj.data.Stream.iterableStream;
 
@@ -189,6 +190,13 @@ public final class Monoid<A> {
     return s.isEmpty() ?
            zero :
            s.foldLeft1(Function.compose(sum, flip(sum).f(a)));
+  }
+
+  /**
+   * Swaps the arguments when summing.
+   */
+  public Monoid<A> dual() {
+    return monoid(flip(sum), zero);
   }
 
   /**
