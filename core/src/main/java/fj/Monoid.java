@@ -4,6 +4,8 @@ import static fj.Function.curry;
 import static fj.Function.flip;
 import fj.data.Array;
 import fj.data.List;
+import fj.data.IO;
+import fj.data.IOFunctions;
 import fj.data.Natural;
 import fj.data.Option;
 import fj.data.Set;
@@ -383,6 +385,18 @@ public final class Monoid<A> {
   public static <A> Monoid<Array<A>> arrayMonoid() {
     return monoid(Semigroup.<A>arraySemigroup(), Array.<A>empty());
   }
+
+  /**
+   * A monoid for IO values.
+   */
+  public static <A> Monoid<IO<A>> ioMonoid(final Monoid <A> ma) {
+    return monoid(Semigroup.ioSemigroup(ma.semigroup()), IOFunctions.unit(ma.zero()));
+  }
+
+  /**
+   * A monoid for the Unit value.
+   */
+  public static final Monoid<Unit> unitMonoid = monoid(Semigroup.unitSemigroup, Unit.unit());
 
   /**
    * A monoid for sets.
