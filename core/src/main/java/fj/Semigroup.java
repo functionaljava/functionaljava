@@ -265,6 +265,20 @@ public final class Semigroup<A> {
       semigroup((s1, s2) -> new StringBuilder(s1).append(s2));
 
   /**
+   * A semigroup which always uses the "first" (left-hand side) value.
+   */
+  public static <A> Semigroup<A> firstSemigroup() {
+      return semigroup((a1, a2) -> a1);
+  }
+
+  /**
+   * A semigroup which always uses the "last" (right-hand side) value.
+   */
+  public static <A> Semigroup<A> lastSemigroup() {
+    return semigroup((a1, a2) -> a2);
+  }
+
+  /**
    * A semigroup for functions.
    *
    * @param sb The smeigroup for the codomain.
