@@ -2,6 +2,8 @@ package fj;
 
 import fj.data.Array;
 import fj.data.List;
+import fj.data.IO;
+import fj.data.IOFunctions;
 import fj.data.Natural;
 import fj.data.NonEmptyList;
 import fj.data.Option;
@@ -353,6 +355,13 @@ public final class Semigroup<A> {
    */
   public static <A, B> Semigroup<P2<A, B>> p2Semigroup(final Semigroup<A> sa, final Semigroup<B> sb) {
     return semigroup((a1, a2) -> P.lazy(() -> sa.sum(a1._1(), a2._1()), () -> sb.sum(a1._2(), a2._2())));
+  }
+
+  /**
+   * A semigroup for IO values.
+   */
+  public static <A> Semigroup<IO<A>> ioSemigroup(final Semigroup <A> sa) {
+      return semigroup((a1, a2) -> IOFunctions.liftM2(a1, a2, sa::sum));
   }
 
   /**
