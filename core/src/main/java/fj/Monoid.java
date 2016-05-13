@@ -385,6 +385,11 @@ public final class Monoid<A> {
   }
 
   /**
+   * A monoid for the Unit value.
+   */
+  public static final Monoid<Unit> unitMonoid = monoid(Semigroup.unitSemigroup, Unit.unit());
+
+  /**
    * A monoid for sets.
    *
    * @param o An order for set elements.
