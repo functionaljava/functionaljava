@@ -356,12 +356,12 @@ public class IOFunctions {
         };
     }
 
-    public static final IO<Unit> when(final IO<Unit> io, final Boolean b) {
+    public static final IO<Unit> when(final Boolean b, final IO<Unit> io) {
         return b ? io : ioUnit;
     }
 
-    public static final IO<Unit> unless(final IO<Unit> io, final Boolean b) {
-        return when(io, !b);
+    public static final IO<Unit> unless(final Boolean b, final IO<Unit> io) {
+        return when(!b, io);
     }
 
     /**
