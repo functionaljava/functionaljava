@@ -339,6 +339,14 @@ public class IOFunctions {
         };
     }
 
+    public static final <A, B> IO<B> as(final IO<A> io, final B b) {
+        return map(io, ignored -> b);
+    }
+
+    public static final <A> IO<Unit> voided(final IO <A> io) {
+        return as(io, Unit.unit());
+    }
+
     public static final <A, B> IO<B> bind(final IO<A> io, final F<A, IO<B>> f) {
         return new IO<B>() {
             @Override
@@ -346,6 +354,14 @@ public class IOFunctions {
                 return f.f(io.run()).run();
             }
         };
+    }
+
+    public static final IO<Unit> when(final Boolean b, final IO<Unit> io) {
+        return b ? io : ioUnit;
+    }
+
+    public static final IO<Unit> unless(final Boolean b, final IO<Unit> io) {
+        return when(!b, io);
     }
 
     /**
