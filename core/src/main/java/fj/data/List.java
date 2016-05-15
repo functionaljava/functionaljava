@@ -640,7 +640,7 @@ public abstract class List<A> implements Iterable<A> {
 
     public <B> IO<List<B>> traverseIO(F<A, IO<B>> f) {
         return this.foldRight(
-                (a, acc) -> IOFunctions.bind(acc, (bs) -> IOFunctions.map(f.f(a), b -> bs.cons(b))),
+                (a, acc) -> IOFunctions.bind(f.f(a), b -> IOFunctions.map(acc, bs -> bs.cons(b))),
                 IOFunctions.unit(List.<B>nil())
         );
     }
