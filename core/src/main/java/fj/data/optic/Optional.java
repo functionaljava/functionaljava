@@ -171,6 +171,10 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
     return new Optional<>(POptional.pId());
   }
 
+  public static <S, A> Optional<S, A> ignored() {
+    return optional(s -> Option.none(), a -> s -> s);
+  }
+
   public static final <S, A> Optional<S, A> optional(final F<S, Option<A>> getOption, final F<A, F<S, S>> set) {
     return new Optional<>(new POptional<S, S, A, A>() {
 
