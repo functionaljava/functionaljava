@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.Comparator;
 
 import static fj.Function.curry;
+import static fj.Semigroup.semigroup;
 
 /**
  * Tests for ordering between two objects.
@@ -157,7 +158,15 @@ public final class Ord<A> {
    */
   public final F<A, F<A, A>> min = curry(this::min);
 
-  public Ord<A> reverse() { return ord(Function.flip(f)); }
+  public final Semigroup<A> minSemigroup() {
+      return semigroup(this::min);
+  }
+
+  public final Semigroup<A> maxSemigroup() {
+      return semigroup(this::max);
+  }
+
+  public final Ord<A> reverse() { return ord(Function.flip(f)); }
 
   /**
    * Returns an order instance that uses the given equality test and ordering function.
