@@ -105,6 +105,14 @@ public final class Semigroup<A> {
     return semigroup(flip(sum));
   }
 
+  /**
+   * Lifts the semigroup to obtain a trivial monoid.
+   */
+  public Monoid<Option<A>> lift() {
+    return Monoid.monoid(a -> b -> Option.liftM2(sum).f(a).f(b).orElse(a).orElse(b), Option.none());
+  }
+
+  /**
    * Constructs a semigroup from the given function.
    *
    * @param sum The function to construct this semigroup with.
