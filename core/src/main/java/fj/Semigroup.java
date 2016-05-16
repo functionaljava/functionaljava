@@ -98,6 +98,12 @@ public final class Semigroup<A> {
   }
 
   /**
+   * Sums the given values with left-fold.
+   */
+  public A sumNel(final NonEmptyList<A> as) {
+    return as.foldLeft1(sum);
+  }
+
   /**
    * Swaps the arguments when summing.
    */
