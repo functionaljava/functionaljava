@@ -90,6 +90,9 @@ void configureRetroLambda(boolean useRetroLambda, String newJdkEnvVar, String ol
             oldJdk System.getenv(oldJdkEnvVar)
             javaVersion retroLambdaTarget
         }
+        dependencies {
+            retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:$retrolambdaVersion"
+        }
     }
 }
 
