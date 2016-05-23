@@ -25,20 +25,11 @@ public class IOW<A> implements IO<A> {
         return io.run();
     }
 
-    public <B> IOW<B> map(F<A, B> f) {
-        return lift(() -> f.f(io.run()));
-    }
+    public <B> IOW<B> map(F<A, B> f) { return lift(IOFunctions.map(io, f)); }
 
-    public <B> IOW<B> bind(F<A, IO<B>> f) throws IOException {
-        return lift(f.f(io.run()));
-    }
+    public <B> IOW<B> bind(F<A, IO<B>> f) { return lift(IOFunctions.bind(io, f)); }
 
-    public <B> IOW<B> append(IO<B> iob) {
-        return lift(() -> {
-            io.run();
-            return iob.run();
-        });
-    }
+    public <B> IOW<B> append(IO<B> iob) { return lift(IOFunctions.append(io, iob)); }
 
     public IOW<LazyString> getContents() {
         return lift(() -> IOFunctions.getContents().run());
