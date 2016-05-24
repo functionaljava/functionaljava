@@ -25,6 +25,10 @@ public class IOW<A> implements IO<A> {
         return io.run();
     }
 
+    public SafeIO<Validation<IOException, A>> safe() {
+        return IOFunctions.toSafeValidation(io);
+    }
+
     public <B> IOW<B> map(F<A, B> f) { return lift(IOFunctions.map(io, f)); }
 
     public <B> IOW<B> bind(F<A, IO<B>> f) { return lift(IOFunctions.bind(io, f)); }

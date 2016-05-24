@@ -495,6 +495,13 @@ public class IOFunctions {
         };
     }
 
+    public static IO<Unit> stdoutPrint(final String s) {
+        return () -> {
+            System.out.print(s);
+            return Unit.unit();
+        };
+    }
+
     public static IO<LazyString> getContents() {
         Stream<IO<Integer>> s = Stream.<IO<Integer>>repeat(() -> (int) stdinBufferedReader.read());
         return IOFunctions.map(sequenceWhile(s, i -> i != -1), s2 -> LazyString.fromStream(s2.<Character>map(i -> {
