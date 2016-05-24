@@ -49,7 +49,7 @@ public class IOWalkthrough {
 
         // now we create a function which takes a string, upper cases it and creates an IO value that would print the upper cased string if executed
 
-        final F<String, IO<Unit>> upperCaseAndPrint = F1Functions.<String, IO<Unit>, String>o(IOFunctions::stdoutPrintln).f(s -> s.toUpperCase());
+        final F<String, IO<Unit>> upperCaseAndPrint = F1Functions.<String, IO<Unit>, String>o(IOFunctions::stdoutPrintln).f(String::toUpperCase);
 
         // we now want to compose reading the name with printing it, for that we need to have access to the runtime value that is returned when the
         // IO value for read is executed, hence we use fj.data.IOFunctions.bind instead of fj.data.IOFunctions.append
