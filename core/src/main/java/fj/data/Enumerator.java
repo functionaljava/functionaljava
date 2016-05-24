@@ -1,7 +1,7 @@
 package fj.data;
 
 import fj.F;
-import fj.F2;
+
 import static fj.Function.*;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
@@ -220,7 +220,7 @@ public final class Enumerator<A> {
   public static <A> Enumerator<A> enumerator(final F<A, Option<A>> successor, final F<A, Option<A>> predecessor,
                                              final Option<A> max, final Option<A> min, final Ord<A> order,
                                              final F<A, F<Long, Option<A>>> plus) {
-    return new Enumerator<A>(successor, predecessor, max, min, order, plus);
+    return new Enumerator<>(successor, predecessor, max, min, order, plus);
   }
 
   /**
@@ -236,30 +236,30 @@ public final class Enumerator<A> {
    */
   public static <A> Enumerator<A> enumerator(final F<A, Option<A>> successor, final F<A, Option<A>> predecessor,
                                              final Option<A> max, final Option<A> min, final Ord<A> order) {
-    return new Enumerator<A>(successor, predecessor, max, min, order, curry((a, l) -> {
-        if (l == 0L)
-          return some(a);
-        else if (l < 0L) {
-          A aa = a;
-          for (long x = l; x < 0; x++) {
-            final Option<A> s = predecessor.f(aa);
-            if (s.isNone())
-              return none();
-            else
-              aa = s.some();
-          }
-          return some(aa);
-        } else {
-          A aa = a;
-          for (long x = l; x > 0; x--) {
-            final Option<A> s = successor.f(aa);
-            if (s.isNone())
-              return none();
-            else
-              aa = s.some();
-          }
-          return some(aa);
+    return new Enumerator<>(successor, predecessor, max, min, order, curry((a, l) -> {
+      if (l == 0L)
+        return some(a);
+      else if (l < 0L) {
+        A aa = a;
+        for (long x = l; x < 0; x++) {
+          final Option<A> s = predecessor.f(aa);
+          if (s.isNone())
+            return none();
+          else
+            aa = s.some();
         }
+        return some(aa);
+      } else {
+        A aa = a;
+        for (long x = l; x > 0; x--) {
+          final Option<A> s = successor.f(aa);
+          if (s.isNone())
+            return none();
+          else
+            aa = s.some();
+        }
+        return some(aa);
+      }
     }));
   }
 
@@ -267,8 +267,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>boolean</code>.
    */
   public static final Enumerator<Boolean> booleanEnumerator = enumerator(
-      b -> b ? Option.<Boolean>none() : some(true),
-      b -> b ? some(false) : Option.<Boolean>none(),
+      b -> b ? Option.none() : some(true),
+      b -> b ? some(false) : Option.none(),
       some(true), some(false), booleanOrd
   );
 
@@ -276,8 +276,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>byte</code>.
    */
   public static final Enumerator<Byte> byteEnumerator = enumerator(
-      b -> b == Byte.MAX_VALUE ? Option.<Byte>none() : some((byte) (b + 1)),
-      b -> b == Byte.MIN_VALUE ? Option.<Byte>none() : some((byte) (b - 1)),
+      b -> b == Byte.MAX_VALUE ? Option.none() : some((byte) (b + 1)),
+      b -> b == Byte.MIN_VALUE ? Option.none() : some((byte) (b - 1)),
       some(Byte.MAX_VALUE), some(Byte.MIN_VALUE), byteOrd
   );
 
@@ -285,8 +285,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>char</code>.
    */
   public static final Enumerator<Character> charEnumerator = enumerator(
-      c -> c == Character.MAX_VALUE ? Option.<Character>none() : some((char) (c + 1)),
-      c -> c == Character.MIN_VALUE ? Option.<Character>none() : some((char) (c - 1)),
+      c -> c == Character.MAX_VALUE ? Option.none() : some((char) (c + 1)),
+      c -> c == Character.MIN_VALUE ? Option.none() : some((char) (c - 1)),
       some(Character.MAX_VALUE), some(Character.MIN_VALUE), charOrd
   );
 
@@ -294,8 +294,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>double</code>.
    */
   public static final Enumerator<Double> doubleEnumerator = enumerator(
-      d -> d == Double.MAX_VALUE ? Option.<Double>none() : some(d + 1D),
-      d -> d == Double.MIN_VALUE ? Option.<Double>none() : some(d - 1D),
+      d -> d == Double.MAX_VALUE ? Option.none() : some(d + 1D),
+      d -> d == Double.MIN_VALUE ? Option.none() : some(d - 1D),
       some(Double.MAX_VALUE), some(Double.MIN_VALUE), doubleOrd
   );
 
@@ -303,8 +303,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>float</code>.
    */
   public static final Enumerator<Float> floatEnumerator = enumerator(
-      f -> f == Float.MAX_VALUE ? Option.<Float>none() : some(f + 1F),
-      f -> f == Float.MIN_VALUE ? Option.<Float>none() : some(f - 1F),
+      f -> f == Float.MAX_VALUE ? Option.none() : some(f + 1F),
+      f -> f == Float.MIN_VALUE ? Option.none() : some(f - 1F),
       some(Float.MAX_VALUE), some(Float.MIN_VALUE), floatOrd
   );
 
@@ -312,8 +312,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>int</code>.
    */
   public static final Enumerator<Integer> intEnumerator = enumerator(
-      i -> i == Integer.MAX_VALUE ? Option.<Integer>none() : some(i + 1),
-      i -> i == Integer.MIN_VALUE ? Option.<Integer>none() : some(i - 1),
+      i -> i == Integer.MAX_VALUE ? Option.none() : some(i + 1),
+      i -> i == Integer.MIN_VALUE ? Option.none() : some(i - 1),
       some(Integer.MAX_VALUE), some(Integer.MIN_VALUE), intOrd
   );
 
@@ -323,7 +323,7 @@ public final class Enumerator<A> {
   public static final Enumerator<BigInteger> bigintEnumerator = enumerator(
       i -> some(i.add(BigInteger.ONE)),
       i -> some(i.subtract(BigInteger.ONE)),
-      Option.<BigInteger>none(), Option.<BigInteger>none(), bigintOrd,
+      Option.none(), Option.none(), bigintOrd,
       curry((i, l) -> some(i.add(BigInteger.valueOf(l))))
   );
 
@@ -333,7 +333,7 @@ public final class Enumerator<A> {
   public static final Enumerator<BigDecimal> bigdecimalEnumerator = enumerator(
       i -> some(i.add(BigDecimal.ONE)),
       i -> some(i.subtract(BigDecimal.ONE)),
-      Option.<BigDecimal>none(), Option.<BigDecimal>none(), bigdecimalOrd,
+      Option.none(), Option.none(), bigdecimalOrd,
       curry((d, l) -> some(d.add(BigDecimal.valueOf(l))))
   );
 
@@ -341,8 +341,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>long</code>.
    */
   public static final Enumerator<Long> longEnumerator = enumerator(
-      i -> i == Long.MAX_VALUE ? Option.<Long>none() : some(i + 1L),
-      i -> i == Long.MIN_VALUE ? Option.<Long>none() : some(i - 1L),
+      i -> i == Long.MAX_VALUE ? Option.none() : some(i + 1L),
+      i -> i == Long.MIN_VALUE ? Option.none() : some(i - 1L),
       some(Long.MAX_VALUE), some(Long.MIN_VALUE), longOrd
   );
 
@@ -350,8 +350,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>short</code>.
    */
   public static final Enumerator<Short> shortEnumerator = enumerator(
-      i -> i == Short.MAX_VALUE ? Option.<Short>none() : some((short) (i + 1)),
-      i -> i == Short.MIN_VALUE ? Option.<Short>none() : some((short) (i - 1)),
+      i -> i == Short.MAX_VALUE ? Option.none() : some((short) (i + 1)),
+      i -> i == Short.MIN_VALUE ? Option.none() : some((short) (i - 1)),
       some(Short.MAX_VALUE), some(Short.MIN_VALUE), shortOrd
   );
 
@@ -359,8 +359,8 @@ public final class Enumerator<A> {
    * An enumerator for <code>Ordering</code>.
    */
   public static final Enumerator<Ordering> orderingEnumerator = enumerator(
-      o -> o == LT ? some(EQ) : o == EQ ? some(GT) : Option.<Ordering>none(),
-      o -> o == GT ? some(EQ) : o == EQ ? some(LT) : Option.<Ordering>none(),
+      o -> o == LT ? some(EQ) : o == EQ ? some(GT) : Option.none(),
+      o -> o == GT ? some(EQ) : o == EQ ? some(LT) : Option.none(),
       some(GT), some(LT), orderingOrd
   );
 
@@ -368,12 +368,12 @@ public final class Enumerator<A> {
    * An enumerator for <code>Natural</code>
    */
   public static final Enumerator<Natural> naturalEnumerator = enumerator(
-      n -> Option.some(n.succ()),
-      n -> n.pred(),
-      Option.<Natural>none(), some(Natural.ZERO), naturalOrd,
+      n -> some(n.succ()),
+      Natural::pred,
+      Option.none(), some(Natural.ZERO), naturalOrd,
       curry((n, l) ->
         some(n).apply(
-          Natural.natural(l).map(Function.curry((n1, n2) -> n1.add(n2)))
+          Natural.natural(l).map(curry((n1, n2) -> n1.add(n2)))
         )
       )
   );

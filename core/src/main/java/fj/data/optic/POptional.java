@@ -366,7 +366,7 @@ public abstract class POptional<S, T, A, B> {
   }
 
   /** create a {@link POptional} using the canonical functions: getOrModify and set */
-  public static final <S, T, A, B> POptional<S, T, A, B> pOptional(final F<S, Either<T, A>> getOrModify, final F<B, F<S, T>> set) {
+  public static <S, T, A, B> POptional<S, T, A, B> pOptional(final F<S, Either<T, A>> getOrModify, final F<B, F<S, T>> set) {
     return new POptional<S, T, A, B>() {
       @Override
       public Either<T, A> getOrModify(final S s) {
@@ -403,7 +403,7 @@ public abstract class POptional<S, T, A, B> {
       public F<S, IO<T>> modifyIOF(final F<A, IO<B>> f) {
         return s -> getOrModify.f(s).either(
             IOFunctions::unit,
-            t -> IOFunctions.<B, T> map(f.f(t), b -> set.f(b).f(s))
+            t -> IOFunctions.map(f.f(t), b -> set.f(b).f(s))
             );
       }
 
@@ -458,7 +458,7 @@ public abstract class POptional<S, T, A, B> {
       @Override
       public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
         return s -> getOrModify.f(s).either(
-            t -> Validation.<E, T> success(t),
+            Validation::<E, T>success,
             t -> f.f(t).map(b -> set.f(b).f(s))
             );
       }

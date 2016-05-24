@@ -92,7 +92,7 @@ public final class Semigroup<A> {
         }
       }
       xTmp = sum.f(xTmp).f(xTmp);
-      yTmp = (yTmp) >>> 1;
+      yTmp = yTmp >>> 1;
     }
   }
 
@@ -103,7 +103,7 @@ public final class Semigroup<A> {
    * @return A semigroup from the given function.
    */
   public static <A> Semigroup<A> semigroup(final F<A, F<A, A>> sum) {
-    return new Semigroup<A>(sum);
+    return new Semigroup<>(sum);
   }
 
   /**
@@ -113,7 +113,7 @@ public final class Semigroup<A> {
    * @return A semigroup from the given function.
    */
   public static <A> Semigroup<A> semigroup(final F2<A, A, A> sum) {
-    return new Semigroup<A>(curry(sum));
+    return new Semigroup<>(curry(sum));
   }
 
   /**
@@ -150,13 +150,13 @@ public final class Semigroup<A> {
    * A semigroup that adds big integers.
    */
   public static final Semigroup<BigInteger> bigintAdditionSemigroup =
-      semigroup((i1, i2) -> i1.add(i2));
+      semigroup(BigInteger::add);
 
   /**
    * A semigroup that multiplies big integers.
    */
   public static final Semigroup<BigInteger> bigintMultiplicationSemigroup =
-      semigroup((i1, i2) -> i1.multiply(i2));
+      semigroup(BigInteger::multiply);
 
   /**
    * A semigroup that yields the maximum of big integers.
@@ -172,13 +172,13 @@ public final class Semigroup<A> {
    * A semigroup that adds big decimals.
    */
   public static final Semigroup<BigDecimal> bigdecimalAdditionSemigroup =
-      semigroup((i1, i2) -> i1.add(i2));
+      semigroup(BigDecimal::add);
 
   /**
    * A semigroup that multiplies big decimals.
    */
   public static final Semigroup<BigDecimal> bigdecimalMultiplicationSemigroup =
-      semigroup((i1, i2) -> i1.multiply(i2));
+      semigroup(BigDecimal::multiply);
 
   /**
    * A semigroup that yields the maximum of big decimals.
@@ -194,13 +194,13 @@ public final class Semigroup<A> {
    * A semigroup that multiplies natural numbers.
    */
   public static final Semigroup<Natural> naturalMultiplicationSemigroup =
-      semigroup((n1, n2) -> n1.multiply(n2));
+      semigroup(Natural::multiply);
 
   /**
    * A semigroup that multiplies natural numbers.
    */
   public static final Semigroup<Natural> naturalAdditionSemigroup =
-      semigroup((n1, n2) -> n1.add(n2));
+      semigroup(Natural::add);
 
   /**
    * A semigroup that yields the maximum of natural numbers.
@@ -240,7 +240,7 @@ public final class Semigroup<A> {
   /**
    * A semigroup that XORs booleans.
    */
-  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p, q) -> p && !q || !p && q);
+  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p, q) -> p ? !q : q);
 
   /**
    * A semigroup that ANDs booleans.
@@ -294,7 +294,7 @@ public final class Semigroup<A> {
    * @return A semigroup for lists.
    */
   public static <A> Semigroup<List<A>> listSemigroup() {
-    return semigroup((a1, a2) -> a1.append(a2));
+    return semigroup(List::append);
   }
 
   /**
@@ -303,7 +303,7 @@ public final class Semigroup<A> {
    * @return A semigroup for non-empty lists.
    */
   public static <A> Semigroup<NonEmptyList<A>> nonEmptyListSemigroup() {
-    return semigroup((a1, a2) -> a1.append(a2));
+    return semigroup(NonEmptyList::append);
   }
 
   /**
@@ -347,7 +347,7 @@ public final class Semigroup<A> {
    * @return A semigroup for arrays.
    */
   public static <A> Semigroup<Array<A>> arraySemigroup() {
-    return semigroup((a1, a2) -> a1.append(a2));
+    return semigroup(Array::append);
   }
 
   /**
@@ -389,7 +389,7 @@ public final class Semigroup<A> {
    * @return a semigroup for sets.
    */
   public static <A> Semigroup<Set<A>> setSemigroup() {
-    return semigroup((a, b) -> a.union(b));
+    return semigroup(Set::union);
   }
 
 }

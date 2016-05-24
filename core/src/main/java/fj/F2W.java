@@ -3,13 +3,6 @@ package fj;
 import fj.control.parallel.Promise;
 import fj.data.*;
 
-import static fj.P.p;
-import static fj.data.IterableW.wrap;
-import static fj.data.Set.iterableSet;
-import static fj.data.Tree.node;
-import static fj.data.TreeZipper.treeZipper;
-import static fj.data.Zipper.zipper;
-
 /**
  * Created by MarkPerry on 22/01/2015.
  */
@@ -21,7 +14,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      * @param a The <code>A</code> to which to apply this function.
      * @return The function partially applied to the given argument.
      */
-    public F1W<B, C> f(final A a) {
+    public final F1W<B, C> f(final A a) {
         return F1W.lift(F2Functions.f(this, a));
     }
 
@@ -30,7 +23,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return a wrapped function of arity-1 that returns another wrapped function.
      */
-    public F1W<A, F<B, C>> curry() {
+    public final F1W<A, F<B, C>> curry() {
         return F1W.lift(F2Functions.curry(this));
     }
 
@@ -39,7 +32,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A new function with the arguments of this function flipped.
      */
-    public F2W<B, A, C> flip() {
+    public final F2W<B, A, C> flip() {
         return lift(F2Functions.flip(this));
     }
 
@@ -48,7 +41,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A new function that calls this function with the elements of a given tuple.
      */
-    public F1W<P2<A, B>, C> tuple() {
+    public final F1W<P2<A, B>, C> tuple() {
         return F1W.lift(F2Functions.tuple(this));
     }
 
@@ -57,7 +50,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Arrays.
      */
-    public F2W<Array<A>, Array<B>, Array<C>> arrayM() {
+    public final F2W<Array<A>, Array<B>, Array<C>> arrayM() {
         return lift(F2Functions.arrayM(this));
     }
 
@@ -66,7 +59,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Promises.
      */
-    public F2W<Promise<A>, Promise<B>, Promise<C>> promiseM() {
+    public final F2W<Promise<A>, Promise<B>, Promise<C>> promiseM() {
         return lift(F2Functions.promiseM(this));
     }
 
@@ -75,7 +68,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Iterables.
      */
-    public F2W<Iterable<A>, Iterable<B>, IterableW<C>> iterableM() {
+    public final F2W<Iterable<A>, Iterable<B>, IterableW<C>> iterableM() {
         return lift(F2Functions.iterableM(this));
     }
 
@@ -84,7 +77,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Lists.
      */
-    public F2W<List<A>, List<B>, List<C>> listM() {
+    public final F2W<List<A>, List<B>, List<C>> listM() {
         return lift(F2Functions.listM(this));
     }
 
@@ -93,7 +86,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform non-empty lists.
      */
-    public F2W<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> nelM() {
+    public final F2W<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> nelM() {
         return lift(F2Functions.nelM(this));
     }
 
@@ -102,7 +95,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Options.
      */
-    public F2W<Option<A>, Option<B>, Option<C>> optionM() {
+    public final F2W<Option<A>, Option<B>, Option<C>> optionM() {
         return lift(F2Functions.optionM(this));
     }
 
@@ -112,7 +105,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      * @param o An ordering for the result of the promoted function.
      * @return This function promoted to transform Sets.
      */
-    public F2W<Set<A>, Set<B>, Set<C>> setM(final Ord<C> o) {
+    public final F2W<Set<A>, Set<B>, Set<C>> setM(final Ord<C> o) {
         return lift(F2Functions.setM(this, o));
     }
 
@@ -121,7 +114,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Streams.
      */
-    public F2W<Stream<A>, Stream<B>, Stream<C>> streamM() {
+    public final F2W<Stream<A>, Stream<B>, Stream<C>> streamM() {
         return lift(F2Functions.streamM(this));
     }
 
@@ -130,7 +123,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return This function promoted to transform Trees.
      */
-    public F2W<Tree<A>, Tree<B>, Tree<C>> treeM() {
+    public final F2W<Tree<A>, Tree<B>, Tree<C>> treeM() {
         return lift(F2Functions.treeM(this));
     }
 
@@ -139,7 +132,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two arrays with this function.
      */
-    public F2W<Array<A>, Array<B>, Array<C>> zipArrayM() {
+    public final F2W<Array<A>, Array<B>, Array<C>> zipArrayM() {
         return lift(F2Functions.zipArrayM(this));
     }
 
@@ -148,7 +141,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two iterables with this function.
      */
-    public F2W<Iterable<A>, Iterable<B>, Iterable<C>> zipIterableM() {
+    public final F2W<Iterable<A>, Iterable<B>, Iterable<C>> zipIterableM() {
         return lift(F2Functions.zipIterableM(this));
     }
 
@@ -157,7 +150,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two lists with this function.
      */
-    public F2W<List<A>, List<B>, List<C>> zipListM() {
+    public final F2W<List<A>, List<B>, List<C>> zipListM() {
         return lift(F2Functions.zipListM(this));
     }
 
@@ -167,7 +160,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two streams with this function.
      */
-    public F2W<Stream<A>, Stream<B>, Stream<C>> zipStreamM() {
+    public final F2W<Stream<A>, Stream<B>, Stream<C>> zipStreamM() {
         return lift(F2Functions.zipStreamM(this));
     }
 
@@ -176,7 +169,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two non-empty lists with this function.
      */
-    public F2W<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> zipNelM() {
+    public final F2W<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> zipNelM() {
         return lift(F2Functions.zipNelM(this));
     }
 
@@ -186,7 +179,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      * @param o An ordering for the resulting set.
      * @return A function that zips two sets with this function.
      */
-    public F2W<Set<A>, Set<B>, Set<C>> zipSetM(final Ord<C> o) {
+    public final F2W<Set<A>, Set<B>, Set<C>> zipSetM(final Ord<C> o) {
         return lift(F2Functions.zipSetM(this, o));
     }
 
@@ -196,7 +189,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two trees with this function.
      */
-    public F2W<Tree<A>, Tree<B>, Tree<C>> zipTreeM() {
+    public final F2W<Tree<A>, Tree<B>, Tree<C>> zipTreeM() {
         return lift(F2Functions.zipTreeM(this));
     }
 
@@ -206,7 +199,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two zippers with this function.
      */
-    public F2W<Zipper<A>, Zipper<B>, Zipper<C>> zipZipperM() {
+    public final F2W<Zipper<A>, Zipper<B>, Zipper<C>> zipZipperM() {
         return lift(F2Functions.zipZipperM(this));
     }
 
@@ -216,23 +209,23 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
      *
      * @return A function that zips two TreeZippers with this function.
      */
-    public F2W<TreeZipper<A>, TreeZipper<B>, TreeZipper<C>> zipTreeZipperM() {
+    public final F2W<TreeZipper<A>, TreeZipper<B>, TreeZipper<C>> zipTreeZipperM() {
         return lift(F2Functions.zipTreeZipperM(this));
     }
 
-    public <Z> F2W<Z, B, C> contramapFirst(F<Z, A> f) {
+    public final <Z> F2W<Z, B, C> contramapFirst(F<Z, A> f) {
         return lift(F2Functions.contramapFirst(this, f));
     }
 
-    public <Z> F2W<A, Z, C> contramapSecond(F<Z, B> f) {
+    public final <Z> F2W<A, Z, C> contramapSecond(F<Z, B> f) {
         return lift(F2Functions.contramapSecond(this, f));
     }
 
-    public <X, Y> F2W<X, Y, C> contramap(F<X, A> f, F<Y, B> g) {
+    public final <X, Y> F2W<X, Y, C> contramap(F<X, A> f, F<Y, B> g) {
         return lift(F2Functions.contramap(this, f, g));
     }
 
-    public <Z> F2W<A, B, Z> map(F<C, Z> f) {
+    public final <Z> F2W<A, B, Z> map(F<C, Z> f) {
         return lift(F2Functions.map(this, f));
     }
 
@@ -244,7 +237,7 @@ public abstract class F2W<A, B, C> implements F2<A, B, C> {
         }
 
         @Override
-        public C f(A a, B b) {
+        public final C f(A a, B b) {
             return func.f(a, b);
         }
     }

@@ -2,16 +2,14 @@ package fj.data;
 
 import fj.*;
 
-import java.util.*;
-
 import static fj.P.p;
 
 /**
  * Created by MarkPerry on 7/07/2014.
  */
-public class State<S, A> {
+public final class State<S, A> {
 
-	private F<S, P2<S, A>> run;
+	private final F<S, P2<S, A>> run;
 
 	private State(F<S, P2<S, A>> f) {
 		run = f;
@@ -22,7 +20,7 @@ public class State<S, A> {
 	}
 
 	public static <S, A> State<S, A> unit(F<S, P2<S, A>> f) {
-		return new State<S, A>(f);
+		return new State<>(f);
 	}
 
 	public static <S> State<S, S> units(F<S, S> f) {
@@ -79,7 +77,7 @@ public class State<S, A> {
 	}
 
 	public static <S> State<S, Unit> put(S s) {
-		return State.unit((S z) -> p(s, Unit.unit()));
+		return unit((S z) -> p(s, Unit.unit()));
 	}
 
 	public A eval(S s) {
@@ -95,7 +93,7 @@ public class State<S, A> {
 	}
 
 	public static <S, A> State<S, A> gets(F<S, A> f) {
-		return State.<S>init().map(s -> f.f(s));
+		return State.<S>init().map(f);
 	}
 
 	/**
@@ -103,8 +101,8 @@ public class State<S, A> {
 	 */
 	public static <S, A> State<S, List<A>> sequence(List<State<S, A>> list) {
 		return list.foldLeft((State<S, List<A>> acc, State<S, A> ma) ->
-			acc.flatMap((List<A> xs) -> ma.map((A x) -> xs.snoc(x))
-		), constant(List.<A>nil()));
+			acc.flatMap((List<A> xs) -> ma.map(xs::snoc)
+		), constant(List.nil()));
 	}
 
 	/**
@@ -113,8 +111,8 @@ public class State<S, A> {
 	 */
 	public static <S, A, B> State<S, List<B>> traverse(List<A> list, F<A, State<S, B>> f) {
 		return list.foldLeft((State<S, List<B>> acc, A a) ->
-			acc.flatMap(bs -> f.f(a).map(b -> bs.snoc(b))
-		), constant(List.<B>nil()));
+			acc.flatMap(bs -> f.f(a).map(bs::snoc)
+		), constant(List.nil()));
 	}
 
 }

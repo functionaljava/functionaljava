@@ -1,6 +1,5 @@
 package fj.demo.concurrent;
 
-import fj.Effect;
 import fj.Unit;
 import fj.P1;
 import fj.control.parallel.Actor;
@@ -24,7 +23,7 @@ public class Pong {
   }
 
   // Receive a ping
-  public P1<Unit> act(final Ping ping) {
+  public final P1<Unit> act(final Ping ping) {
     return p.act(ping);
   }
 }

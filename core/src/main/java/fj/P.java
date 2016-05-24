@@ -18,7 +18,7 @@ public final class P {
    * @return A function that puts an element in a product-1.
    */
   public static <A> F<A, P1<A>> p1() {
-    return a -> p(a);
+    return P::p;
   }
 
   /**
@@ -234,7 +234,7 @@ public final class P {
     }
 
     public static <A, B> P2<A, B> lazyProduct(F0<P2<A, B>> f) {
-        return P.lazy(() -> f.f()._1(), () -> f.f()._2());
+        return lazy(() -> f.f()._1(), () -> f.f()._2());
     }
 
     /**
@@ -552,7 +552,7 @@ public final class P {
     }
 
     public static <A, B> P2<A, B> lazy(F<Unit, A> fa, F<Unit, B> fb) {
-        return P.lazy(() -> fa.f(unit()), () -> fb.f(unit()));
+        return lazy(() -> fa.f(unit()), () -> fb.f(unit()));
     }
 
     public static <A, B, C> P3<A, B, C> lazy(F<Unit, A> fa, F<Unit, B> fb, F<Unit, C> fc) {

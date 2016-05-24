@@ -1,7 +1,7 @@
 package fj.demo;
 
 import fj.F1Functions;
-import fj.P1;
+
 import static fj.data.Enumerator.naturalEnumerator;
 
 import fj.Show;

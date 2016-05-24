@@ -28,7 +28,7 @@ public class IODemo {
      * Reads from standard input until the line length is less than three
      * and prints that last line.
      */
-    public void readFirstShortLine() {
+    public final void readFirstShortLine() {
         F<LazyString, LazyString> f = lift(lines_()).andThen(l -> l.filter(s -> s.length() < 3)).andThen(unlines_());
         runSafe(interact(f));
     }
@@ -36,8 +36,8 @@ public class IODemo {
     /**
      * Read a stream of input lazily using interact, in effect reading the first line
      */
-    public void readFirstLine() {
-        F<LazyString, LazyString> f = lift((LazyString s) -> s.lines()).andThen(unlines_());
+    public final void readFirstLine() {
+        F<LazyString, LazyString> f = lift(LazyString::lines).andThen(unlines_());
         runSafe(interact(f));
     }
 
@@ -45,14 +45,14 @@ public class IODemo {
      * Demonstrate use of interact, just echoing the lazy string.  Reading lines is done
      * lazily, so just the first line is read.
      */
-    public void simpleInteract() {
+    public final void simpleInteract() {
         runSafe(interact(s -> s));
     }
 
     /**
      * Demonstrate that getContents returns a lazy string.
      */
-    public void getContents() {
+    public final void getContents() {
         out.println(runSafe(IOFunctions.getContents()));
     }
 

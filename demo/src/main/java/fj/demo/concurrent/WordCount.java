@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import fj.F;
-import fj.F2;
 import fj.Monoid;
 import fj.P;
 import fj.P1;
@@ -57,7 +56,7 @@ public class WordCount {
   
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunkIteratee = fileName -> {
       try {
-        return IOFunctions.enumFileCharChunks(new File(fileName), Option.<Charset>none(), wordCountsFromCharChunks()).run().run();
+        return IOFunctions.enumFileCharChunks(new File(fileName), Option.none(), wordCountsFromCharChunks()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -65,7 +64,7 @@ public class WordCount {
   
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunk2Iteratee = fileName -> {
       try {
-        return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
+        return IOFunctions.enumFileChars(new File(fileName), Option.none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -73,7 +72,7 @@ public class WordCount {
   
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharIteratee = fileName -> {
       try {
-        return IOFunctions.enumFileChars(new File(fileName), Option.<Charset> none(), wordCountsFromChars()).run().run();
+        return IOFunctions.enumFileChars(new File(fileName), Option.none(), wordCountsFromChars()).run().run();
       } catch (final IOException e) {
         throw new RuntimeException(e);
       }
@@ -93,24 +92,21 @@ public class WordCount {
             new P1<F<char[], IterV<char[], Map<String, Integer>>>>() {
               @Override
               public F<char[], IterV<char[], Map<String, Integer>>> _1() {
-                return new F<char[], Iteratee.IterV<char[], Map<String, Integer>>>() {
-                  @Override
-                  public IterV<char[], Map<String, Integer>> f(final char[] e) {
-                    StringBuilder sb = acc._1();
-                    Map<String, Integer> map = acc._2();
-                    for(char c : e) {
-                      if(Character.isWhitespace(c)) {
-                        if(sb.length() > 0) {
-                          map = update(map, sb.toString(), addOne, Integer.valueOf(0));
-                          sb = new StringBuilder();
-                        }
-                      }
-                      else {
-                        sb.append(c);
+                return e -> {
+                  StringBuilder sb = acc._1();
+                  Map<String, Integer> map = acc._2();
+                  for(char c : e) {
+                    if(Character.isWhitespace(c)) {
+                      if(sb.length() > 0) {
+                        map = update(map, sb.toString(), addOne, Integer.valueOf(0));
+                        sb = new StringBuilder();
                       }
                     }
-                    return IterV.cont(step.f(P.p(sb, map)));
+                    else {
+                      sb.append(c);
+                    }
                   }
+                  return IterV.cont(step.f(P.p(sb, map)));
                 };
               }
             };
@@ -119,9 +115,9 @@ public class WordCount {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
-                  return IterV.done(map, Input.<char[]>eof());
+                  return IterV.done(map, Input.eof());
                 }
-                return IterV.done(acc._2(), Input.<char[]>eof());
+                return IterV.done(acc._2(), Input.eof());
               });
 
           return s -> s.apply(empty, el, eof);
@@ -140,32 +136,30 @@ public class WordCount {
         public F<Input<Character>, IterV<Character, Map<String, Integer>>> f(final P2<StringBuilder,Map<String, Integer>> acc) {
           final P1<IterV<Character, Map<String, Integer>>> empty = P.lazy(() -> IterV.cont(step.f(acc)));
           final P1<F<Character, IterV<Character, Map<String, Integer>>>> el =
-            P.lazy(() -> {
-                return e -> {
-                    if(Character.isWhitespace(e.charValue())) {
-                      final StringBuilder sb = acc._1();
-                      if(sb.length() > 0) {
-                        final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
-                        return IterV.cont(step.f(P.p(new StringBuilder(), map)));
-                      }
-                      else {
-                        // another whitespace char, no word to push to the map
-                        return IterV.cont(step.f(acc));
-                      }
-                    }
-                    else {
-                      acc._1().append(e);
-                      return IterV.cont(step.f(acc));
-                    }
-                };
-              });
+            P.lazy(() -> e -> {
+                if(Character.isWhitespace(e.charValue())) {
+                  final StringBuilder sb = acc._1();
+                  if(sb.length() > 0) {
+                    final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
+                    return IterV.cont(step.f(P.p(new StringBuilder(), map)));
+                  }
+                  else {
+                    // another whitespace char, no word to push to the map
+                    return IterV.cont(step.f(acc));
+                  }
+                }
+                else {
+                  acc._1().append(e);
+                  return IterV.cont(step.f(acc));
+                }
+            });
           final P1<IterV<Character, Map<String, Integer>>> eof = P.lazy(() -> {
                 final StringBuilder sb = acc._1();
                 if(sb.length() > 0) {
                   final Map<String, Integer> map = update(acc._2(), sb.toString(), addOne, Integer.valueOf(0));
-                  return IterV.done(map, Input.<Character>eof());
+                  return IterV.done(map, Input.eof());
                 }
-                return IterV.done(acc._2(), Input.<Character>eof());
+                return IterV.done(acc._2(), Input.eof());
               }
             );
           return s -> s.apply(empty, el, eof);
@@ -262,12 +256,7 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
     
     // we have tmpfiles, but still want to be sure not to leave rubbish
-    fileNames.foreachDoEffect(new Effect1<String>() {
-        @Override
-        public void f(final String a) {
-            new File(a).delete();
-        }
-    });
+    fileNames.foreachDoEffect(a -> new File(a).delete());
   }
 
   @SuppressWarnings("unused")
@@ -279,7 +268,7 @@ public class WordCount {
 
   private static P2<List<String>, Map<String, Integer>> writeSampleFiles(
       int numFiles, int numSharedWords) throws IOException {
-    final Map<String, Integer> expectedWordsAndCounts = new HashMap<String, Integer>();
+    final Map<String, Integer> expectedWordsAndCounts = new HashMap<>();
     List<String> fileNames = nil();
     for(int i = 0; i < numFiles; i++) {
       final File file = File.createTempFile("wordcount-"+ i + "-", ".txt");
@@ -299,13 +288,13 @@ public class WordCount {
   public static Map<String, Integer> getWordsAndCountsFromFilesWithIteratee(final List<String> fileNames,
       final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithIteratee) {
     final List<Map<String, Integer>> maps = fileNames.map(fileNameToWordsAndCountsWithIteratee);
-    return maps.foldLeft((Map<String, Integer> a, Map<String, Integer> b) -> plus(a, b), new HashMap<String, Integer>());
+    return maps.foldLeft(WordCount::plus, new HashMap<String, Integer>());
   }
   
   public static Map<String, Integer> getWordsAndCountsFromFilesInParallel(
       final List<String> fileNames, final F<String, Map<String, Integer>> fileNameToWordsAndCounts, int numThreads) {
     final ExecutorService pool = newFixedThreadPool(numThreads);
-    final ParModule m = parModule(Strategy.<Unit> executorStrategy(pool));
+    final ParModule m = parModule(Strategy.executorStrategy(pool));
 
     // Long wordCount = countWords(fileNames.map(readFile), m).claim();    
     final Map<String, Integer> result = getWordsAndCountsFromFiles(fileNames, fileNameToWordsAndCounts, m).claim();
@@ -326,7 +315,7 @@ public class WordCount {
   }
   
   private static Map<String, Integer> plus(Map<String, Integer> a, Map<String, Integer> b) {
-    final Map<String, Integer> result = new HashMap<String, Integer>(a);
+    final Map<String, Integer> result = new HashMap<>(a);
     for(Map.Entry<String, Integer> entry : b.entrySet()) {
       final Integer num = result.get(entry.getKey());
       result.put(entry.getKey(), num != null ? num.intValue() + entry.getValue() : entry.getValue());

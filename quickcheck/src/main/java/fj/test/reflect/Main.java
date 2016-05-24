@@ -36,14 +36,12 @@ public final class Main {
       exit(441);
     } else {
       try {
-        check(forName(args[0]), array(args).toList().tail()).foreachDoEffect(new Effect1<P2<String, CheckResult>>() {
-            public void f(final P2<String, CheckResult> r) {
-                summary.print(r._2());
-                out.println(" (" + r._1() + ')');
-            }
+        check(forName(args[0]), array(args).toList().tail()).foreachDoEffect(r -> {
+            summary.print(r._2());
+            out.println(" (" + r._1() + ')');
         });
       } catch(ClassNotFoundException e) {
-        System.err.println(e);
+        e.printStackTrace();
         //noinspection CallToSystemExit
         exit(144);
       }

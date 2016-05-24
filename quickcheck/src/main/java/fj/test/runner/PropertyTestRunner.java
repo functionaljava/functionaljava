@@ -29,14 +29,14 @@ public class PropertyTestRunner extends Runner implements Filterable {
   }
 
   @Override
-  public Description getDescription() {
+  public final Description getDescription() {
     Description suite = Description.createSuiteDescription(clas);
     filteredTests.foreachDoEffect(p -> suite.addChild(p._3()));
     return suite;
   }
 
   @Override
-  public void run(RunNotifier notifier) {
+  public final void run(RunNotifier notifier) {
     filteredTests.foreachDoEffect(p -> {
       Description desc = p._3();
       notifier.fireTestStarted(desc);
@@ -66,7 +66,7 @@ public class PropertyTestRunner extends Runner implements Filterable {
   }
 
   @Override
-  public void filter(Filter filter) throws NoTestsRemainException {
+  public final void filter(Filter filter) throws NoTestsRemainException {
     filteredTests = allTests.filter(p -> filter.shouldRun(p._3()));
     if (filteredTests.isEmpty()) { throw new NoTestsRemainException(); }
   }

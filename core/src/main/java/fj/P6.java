@@ -5,7 +5,7 @@ package fj;
  *
  * @version %build.number%
  */
-@SuppressWarnings({"UnnecessaryFullyQualifiedName"})
+@SuppressWarnings("UnnecessaryFullyQualifiedName")
 public abstract class P6<A, B, C, D, E, F> {
   /**
    * Access the first element of the product.
@@ -355,11 +355,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C, D, E, F$> fj.F<P6<A, B, C, D, E, F$>, A> __1() {
-    return new fj.F<P6<A, B, C, D, E, F$>, A>() {
-      public A f(final P6<A, B, C, D, E, F$> p) {
-        return p._1();
-      }
-    };
+    return P6::_1;
   }
 
   /**
@@ -368,11 +364,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C, D, E, F$> fj.F<P6<A, B, C, D, E, F$>, B> __2() {
-    return new fj.F<P6<A, B, C, D, E, F$>, B>() {
-      public B f(final P6<A, B, C, D, E, F$> p) {
-        return p._2();
-      }
-    };
+    return P6::_2;
   }
 
   /**
@@ -381,11 +373,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C, D, E, F$> fj.F<P6<A, B, C, D, E, F$>, C> __3() {
-    return new fj.F<P6<A, B, C, D, E, F$>, C>() {
-      public C f(final P6<A, B, C, D, E, F$> p) {
-        return p._3();
-      }
-    };
+    return P6::_3;
   }
 
   /**
@@ -394,11 +382,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return A function that returns the fourth element of a product.
    */
   public static <A, B, C, D, E, F$> fj.F<P6<A, B, C, D, E, F$>, D> __4() {
-    return new fj.F<P6<A, B, C, D, E, F$>, D>() {
-      public D f(final P6<A, B, C, D, E, F$> p) {
-        return p._4();
-      }
-    };
+    return P6::_4;
   }
 
   /**
@@ -407,11 +391,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return A function that returns the fifth element of a product.
    */
   public static <A, B, C, D, E, F$> fj.F<P6<A, B, C, D, E, F$>, E> __5() {
-    return new fj.F<P6<A, B, C, D, E, F$>, E>() {
-      public E f(final P6<A, B, C, D, E, F$> p) {
-        return p._5();
-      }
-    };
+    return P6::_5;
   }
 
   /**
@@ -420,27 +400,23 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return A function that returns the sixth element of a product.
    */
   public static <A, B, C, D, E, F$> fj.F<P6<A, B, C, D, E, F$>, F$> __6() {
-    return new fj.F<P6<A, B, C, D, E, F$>, F$>() {
-      public F$ f(final P6<A, B, C, D, E, F$> p) {
-        return p._6();
-      }
-    };
+    return P6::_6;
   }
 
     @Override
-	public String toString() {
+	public final String toString() {
 		return Show.p6Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow(), Show.<E>anyShow(), Show.<F>anyShow()).showS(this);
 	}
 
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(P6.class, this, other,
-        () -> Equal.p6Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual(), Equal.<E>anyEqual(), Equal.<F>anyEqual()));
+        () -> Equal.p6Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.p6Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash(), Hash.<D>anyHash(), Hash.<E>anyHash(), Hash.<F>anyHash()).hash(this);
   }
 

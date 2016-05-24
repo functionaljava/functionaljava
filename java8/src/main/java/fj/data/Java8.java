@@ -32,7 +32,7 @@ public final class Java8 {
     }
 
     public static <A> F<Supplier<A>, P1<A>> Supplier_P1() {
-        return s -> P.lazy(() -> s.get());
+        return s -> P.lazy(s::get);
     }
 
     public static <A> Supplier<A> P1_Supplier(final P1<A> p) {
@@ -40,7 +40,7 @@ public final class Java8 {
     }
 
     public static <A> F<P1<A>, Supplier<A>> P1_Supplier() {
-        return (p) -> () -> p._1();
+        return (p) -> p::_1;
     }
 
     public static <A, B> F<A, B> Function_F(final Function<A, B> f) {
@@ -48,7 +48,7 @@ public final class Java8 {
     }
 
     public static <A, B> F<Function<A, B>, F<A, B>> Function_F() {
-        return f -> a -> f.apply(a);
+        return f -> f::apply;
     }
 
     public static <A, B> Function<A, B> F_Function(final F<A, B> f) {
@@ -56,7 +56,7 @@ public final class Java8 {
     }
 
     public static <A, B> F<F<A, B>, Function<A, B>> F_Function() {
-        return f -> a -> f.f(a);
+        return f -> f::f;
     }
 
     public static <A, B, C> F2<A, B, C> BiFunction_F2(final BiFunction<A, B, C> f) {
@@ -64,7 +64,7 @@ public final class Java8 {
     }
 
     public static <A, B, C> F<BiFunction<A, B, C>, F2<A, B, C>> BiFunction_F2() {
-        return f -> (a, b) -> f.apply(a, b);
+        return f -> f::apply;
     }
 
     public static <A, B, C> BiFunction<A, B, C> F2_BiFunction(final F2<A, B, C> f) {
@@ -72,30 +72,30 @@ public final class Java8 {
     }
 
     public static <A, B, C> F<F2<A, B, C>, BiFunction<A, B, C>> F2_BiFunction() {
-        return f -> (a, b) -> f.f(a, b);
+        return f -> f::f;
     }
 
-    static public <A, E extends Exception> Supplier<Validation<E, A>> TryCatch0_Supplier(final Try0<A, E> t) {
+    public static <A, E extends Exception> Supplier<Validation<E, A>> TryCatch0_Supplier(final Try0<A, E> t) {
         return Java8.<A, E>TryCatch0_Supplier().f(t);
     }
 
-    static public <A, E extends Exception> F<Try0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
+    public static <A, E extends Exception> F<Try0<A, E>, Supplier<Validation<E, A>>> TryCatch0_Supplier() {
         return t -> () -> Try.f(t)._1();
     }
 
-    static public <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final Try1<A, B, E> t) {
+    public static <A, B, E extends Exception> Function<A, Validation<E, B>> TryCatch1_Function(final Try1<A, B, E> t) {
         return Java8.<A, B, E>TryCatch1_Function().f(t);
     }
 
-    static public <A, B, E extends Exception> F<Try1<A, B, E>, Function<A, Validation<E, B>>> TryCatch1_Function() {
+    public static <A, B, E extends Exception> F<Try1<A, B, E>, Function<A, Validation<E, B>>> TryCatch1_Function() {
         return t -> a -> Try.f(t).f(a);
     }
 
-    static public <A, B, C, E extends Exception> BiFunction<A, B, Validation<E, C>> TryCatch2_BiFunction(final Try2<A, B, C, E> t) {
+    public static <A, B, C, E extends Exception> BiFunction<A, B, Validation<E, C>> TryCatch2_BiFunction(final Try2<A, B, C, E> t) {
         return Java8.<A, B, C, E>TryCatch2_BiFunction().f(t);
     }
 
-    static public <A, B, C, E extends Exception> F<Try2<A, B, C, E>, BiFunction<A, B, Validation<E, C>>> TryCatch2_BiFunction() {
+    public static <A, B, C, E extends Exception> F<Try2<A, B, C, E>, BiFunction<A, B, Validation<E, C>>> TryCatch2_BiFunction() {
         return t -> (a, b) -> Try.f(t).f(a, b);
     }
 
@@ -103,24 +103,24 @@ public final class Java8 {
         return Iterable_JavaStream(list);
     }
 
-    static public <A> Option<A> Optional_Option(final Optional<A> o) {
+    public static <A> Option<A> Optional_Option(final Optional<A> o) {
         return Java8.<A>Optional_Option().f(o);
     }
 
-    static public <A> F<Optional<A>, Option<A>> Optional_Option() {
-        return o -> o.isPresent() ? Option.fromNull(o.get()) : Option.none();
+    public static <A> F<Optional<A>, Option<A>> Optional_Option() {
+        return o -> o.isPresent() ? Option.some(o.get()) : Option.none();
     }
 
-    static public <A> Optional<A> Option_Optional(final Option<A> o) {
+    public static <A> Optional<A> Option_Optional(final Option<A> o) {
         return Java8.<A>Option_Optional().f(o);
     }
 
-    static public <A> F<Option<A>, Optional<A>> Option_Optional() {
+    public static <A> F<Option<A>, Optional<A>> Option_Optional() {
         return o -> o.isSome() ? Optional.ofNullable(o.some()) : Optional.empty();
     }
 
-    static public <A> F<Consumer<A>, F<A, Unit>> Consumer_F() {
-        return c -> Consumer_F(c);
+    public static <A> F<Consumer<A>, F<A, Unit>> Consumer_F() {
+        return Java8::Consumer_F;
     }
 
     public static <A> F<A, Unit> Consumer_F(final Consumer<A> c) {
@@ -130,31 +130,31 @@ public final class Java8 {
         };
     }
 
-    static public <A> java.util.stream.Stream<A> Stream_JavaStream(final fj.data.Stream<A> s) {
+    public static <A> java.util.stream.Stream<A> Stream_JavaStream(final fj.data.Stream<A> s) {
         return Iterable_JavaStream(s);
     }
 
-    static public <A> java.util.stream.Stream<A> Iterable_JavaStream(final Iterable<A> it) {
+    public static <A> java.util.stream.Stream<A> Iterable_JavaStream(final Iterable<A> it) {
         return StreamSupport.stream(it.spliterator(), false);
     }
 
-    static public <A> java.util.stream.Stream<A> Iterator_JavaStream(final Iterator<A> it) {
+    public static <A> java.util.stream.Stream<A> Iterator_JavaStream(final Iterator<A> it) {
         return Iterable_JavaStream(() -> it);
     }
 
-    static public <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JavaStream() {
-        return s -> Stream_JavaStream(s);
+    public static <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JavaStream() {
+        return Java8::Stream_JavaStream;
     }
 
-    static public <A> Stream<A> JavaStream_Stream(final java.util.stream.Stream<A> s) {
+    public static <A> Stream<A> JavaStream_Stream(final java.util.stream.Stream<A> s) {
         return s.collect(Collectors.toStream());
     }
 
-    static public <A> List<A> JavaStream_List(final java.util.stream.Stream<A> s) {
+    public static <A> List<A> JavaStream_List(final java.util.stream.Stream<A> s) {
         return s.collect(Collectors.toList());
     }
 
-    static public <A> Array<A> JavaStream_Array(final java.util.stream.Stream<A> s) {
+    public static <A> Array<A> JavaStream_Array(final java.util.stream.Stream<A> s) {
         return s.collect(Collectors.toArray());
     }
 

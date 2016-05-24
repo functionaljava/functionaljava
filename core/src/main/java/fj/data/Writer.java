@@ -5,11 +5,11 @@ import fj.*;
 /**
  * Created by MarkPerry on 7/07/2014.
  */
-public class Writer<W, A> {
+public final class Writer<W, A> {
 
-	private A val;
-	private W logValue;
-    private Monoid<W> monoid;
+	private final A val;
+	private final W logValue;
+	private final Monoid<W> monoid;
 
 	private Writer(A a, W w, Monoid<W> m) {
 		val = a;
@@ -34,11 +34,11 @@ public class Writer<W, A> {
 	}
 
 	public static <W, A> Writer<W, A> unit(A a, W w, Monoid<W> m) {
-		return new Writer<W, A>(a, w, m);
+		return new Writer<>(a, w, m);
 	}
 
     public static <W, A> Writer<W, A> unit(A a, Monoid<W> m) {
-        return new Writer<W, A>(a, m.zero(), m);
+        return new Writer<>(a, m.zero(), m);
     }
 
     public Writer<W, A> tell(W w) {
@@ -59,7 +59,7 @@ public class Writer<W, A> {
 	}
 
 	public static <A> F<A, Writer<String, A>> stringLogger() {
-		return a -> Writer.unit(a, Monoid.stringMonoid);
+		return a -> unit(a, Monoid.stringMonoid);
 	}
 
 }

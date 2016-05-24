@@ -52,7 +52,7 @@ public final class Rand {
    * @return A random value in the given range.
    */
   public int choose(final int from, final int to) {
-    return f.f(Option.<Long>none()).f(from).f(to);
+    return f.f(Option.none()).f(from).f(to);
   }
 
   /**
@@ -75,7 +75,7 @@ public final class Rand {
    * @return A random value in the given range.
    */
   public double choose(final double from, final double to) {
-    return g.f(Option.<Long>none()).f(from).f(to);
+    return g.f(Option.none()).f(from).f(to);
   }
 
   /**

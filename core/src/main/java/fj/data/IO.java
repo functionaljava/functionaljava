@@ -15,6 +15,6 @@ import java.io.IOException;
  */
 public interface IO<A> {
 
-	public A run() throws IOException;
+	A run() throws IOException;
 
 }

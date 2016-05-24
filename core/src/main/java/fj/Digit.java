@@ -176,20 +176,20 @@ public enum Digit {
   /**
    * First-class conversion from digit to a long.
    */
-  public static final F<Digit, Long> toLong = d -> d.toLong();
+  public static final F<Digit, Long> toLong = Digit::toLong;
 
   /**
    * First-class conversion from a long to a digit.
    */
-  public static final F<Long, Digit> fromLong = i -> fromLong(i);
+  public static final F<Long, Digit> fromLong = Digit::fromLong;
 
   /**
    * First-class conversion from a digit to a character.
    */
-  public static final F<Digit, Character> toChar = d -> d.toChar();
+  public static final F<Digit, Character> toChar = Digit::toChar;
 
   /**
    * First-class conversion from a character to a digit.
    */
-  public static final F<Character, Option<Digit>> fromChar = c -> fromChar(c);
+  public static final F<Character, Option<Digit>> fromChar = Digit::fromChar;
 }

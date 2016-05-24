@@ -1,6 +1,5 @@
 package fj.demo.euler;
 
-import fj.F;
 import static fj.Function.flip;
 import fj.data.Stream;
 import static fj.data.Stream.iterate;

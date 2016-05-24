@@ -79,7 +79,7 @@ public final class Show<A> {
    * @return the transformation equivalent to this show.
    */
   public F<A, String> showS_() {
-    return a -> showS(a);
+    return this::showS;
   }
 
   /**
@@ -159,7 +159,7 @@ public final class Show<A> {
    * @return A show instance that uses {@link Object#toString()} to perform the display rendering.
    */
   public static <A> Show<A> anyShow() {
-    return show(a -> Stream.fromString((a == null) ? "null" : a.toString()));
+    return show(a -> fromString((a == null) ? "null" : a.toString()));
   }
 
   /**
@@ -282,7 +282,7 @@ public final class Show<A> {
    * @return A show instance for the {@link NonEmptyList} type.
    */
   public static <A> Show<NonEmptyList<A>> nonEmptyListShow(final Show<A> sa) {
-    return listShow(sa).contramap(NonEmptyList.<A>toList_());
+    return listShow(sa).contramap(NonEmptyList.toList_());
   }
 
   /**
@@ -325,7 +325,7 @@ public final class Show<A> {
   public static <K, V> Show<TreeMap<K, V>> treeMapShow(final Show<K> sk, final Show<V> sv) {
     return show(tm -> {
       Stream<P2<K, V>> stream = Stream.iteratorStream(tm.iterator());
-      return streamShow(Show.p2MapShow(sk, sv), "TreeMap(", ",", ")").show(stream);
+      return streamShow(p2MapShow(sk, sv), "TreeMap(", ",", ")").show(stream);
     });
   }
 
@@ -425,7 +425,7 @@ public final class Show<A> {
   }
 
   public static <A> Show<P1<A>> p1ShowLazy(final Show<A> sa) {
-    return show(p -> Stream.fromString("(?)"));
+    return show(p -> fromString("(?)"));
   }
 
   public static <A> Show<P1<A>> p1ShowEager(final Show<A> sa) {
@@ -557,7 +557,7 @@ public final class Show<A> {
    * @return A show instance for a vector-2.
    */
   public static <A> Show<V2<A>> v2Show(final Show<A> ea) {
-    return streamShow(ea, "V2(", ",", ")").contramap(V2.<A>toStream_());
+    return streamShow(ea, "V2(", ",", ")").contramap(V2.toStream_());
   }
 
   /**
@@ -567,7 +567,7 @@ public final class Show<A> {
    * @return A show instance for a vector-3.
    */
   public static <A> Show<V3<A>> v3Show(final Show<A> ea) {
-    return streamShow(ea, "V3(", ",", ")").contramap(V3.<A>toStream_());
+    return streamShow(ea, "V3(", ",", ")").contramap(V3.toStream_());
   }
 
   /**
@@ -577,7 +577,7 @@ public final class Show<A> {
    * @return A show instance for a vector-4.
    */
   public static <A> Show<V4<A>> v4Show(final Show<A> ea) {
-    return streamShow(ea, "V4(", ",", ")").contramap(V4.<A>toStream_());
+    return streamShow(ea, "V4(", ",", ")").contramap(V4.toStream_());
   }
 
   /**
@@ -587,7 +587,7 @@ public final class Show<A> {
    * @return A show instance for a vector-5.
    */
   public static <A> Show<V5<A>> v5Show(final Show<A> ea) {
-    return streamShow(ea, "V5(", ",", ")").contramap(V5.<A>toStream_());
+    return streamShow(ea, "V5(", ",", ")").contramap(V5.toStream_());
   }
 
   /**
@@ -597,7 +597,7 @@ public final class Show<A> {
    * @return A show instance for a vector-6.
    */
   public static <A> Show<V6<A>> v6Show(final Show<A> ea) {
-    return streamShow(ea, "V6(", ",", ")").contramap(V6.<A>toStream_());
+    return streamShow(ea, "V6(", ",", ")").contramap(V6.toStream_());
   }
 
   /**
@@ -607,7 +607,7 @@ public final class Show<A> {
    * @return A show instance for a vector-7.
    */
   public static <A> Show<V7<A>> v7Show(final Show<A> ea) {
-    return streamShow(ea, "V7(", ",", ")").contramap(V7.<A>toStream_());
+    return streamShow(ea, "V7(", ",", ")").contramap(V7.toStream_());
   }
 
   /**
@@ -617,7 +617,7 @@ public final class Show<A> {
    * @return A show instance for a vector-8.
    */
   public static <A> Show<V8<A>> v8Show(final Show<A> ea) {
-    return streamShow(ea, "V8(", ",", ")").contramap(V8.<A>toStream_());
+    return streamShow(ea, "V8(", ",", ")").contramap(V8.toStream_());
   }
 
   /**
@@ -643,7 +643,7 @@ public final class Show<A> {
   /**
    * A show instance for the empty heterogeneous Stream.
    */
-  public static final Show<HList.HNil> HListShow = showS(Function.<HList.HNil, String>constant("Nil"));
+  public static final Show<HList.HNil> HListShow = showS(Function.constant("Nil"));
 
   /**
    * A show instance for heterogeneous Streams.

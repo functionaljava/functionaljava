@@ -1,7 +1,6 @@
 package fj.data.fingertrees;
 
 import fj.F;
-import fj.F2;
 import fj.P2;
 import fj.P3;
 import fj.data.Option;
@@ -29,8 +28,8 @@ public abstract class Node<V, A> {
 
   public final <B> Node<V, B> map(final F<A, B> f, final Measured<V, B> m) {
     return match(
-        node2 -> new Node2<V, B>(m, node2.toVector().map(f)),
-        node3 -> new Node3<V, B>(m, node3.toVector().map(f))
+        node2 -> new Node2<>(m, node2.toVector().map(f)),
+        node3 -> new Node3<>(m, node3.toVector().map(f))
     );
   }
 
@@ -49,7 +48,7 @@ public abstract class Node<V, A> {
     return measure;
   }
 
-  Measured<V, A> measured() {
+  final Measured<V, A> measured() {
     return m;
   }
 

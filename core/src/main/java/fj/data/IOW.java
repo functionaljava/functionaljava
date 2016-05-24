@@ -8,9 +8,9 @@ import java.io.IOException;
 /**
  * Created by MarkPerry on 9/06/2015.
  */
-public class IOW<A> implements IO<A> {
+public final class IOW<A> implements IO<A> {
 
-    private IO<A> io;
+    private final IO<A> io;
 
     private IOW(IO<A> in) {
         io = in;
@@ -35,11 +35,11 @@ public class IOW<A> implements IO<A> {
 
     public <B> IOW<B> append(IO<B> iob) { return lift(IOFunctions.append(io, iob)); }
 
-    public IOW<LazyString> getContents() {
+    public static IOW<LazyString> getContents() {
         return lift(() -> IOFunctions.getContents().run());
     }
 
-    public IOW<Unit> interact(F<LazyString, LazyString> f) {
-        return IOW.lift(() -> IOFunctions.interact(f).run());
+    public static IOW<Unit> interact(F<LazyString, LazyString> f) {
+        return lift(() -> IOFunctions.interact(f).run());
     }
 }

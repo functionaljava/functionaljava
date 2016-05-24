@@ -28,7 +28,7 @@ public class Chapter7 {
     public static void toUpperLazy() {
         runSafe(interact(ls -> {
             Stream<String> stream = ls.lines().map((LazyString ls2) -> ls2.eval().toUpperCase());
-            return LazyString.unlines(stream.map(s -> LazyString.str(s)));
+            return LazyString.unlines(stream.map(LazyString::str));
         }));
     }
 
@@ -36,7 +36,7 @@ public class Chapter7 {
      * Read each line, convert to uppercase and print on stdout, until an empty line
      */
     public static void toUpperByLine() {
-        Stream<IO<String>> s1 = Stream.repeat(IOFunctions.stdinReadLine());
+        Stream<IO<String>> s1 = Stream.repeat(stdinReadLine());
         IO<Stream<String>> io = sequenceWhile(s1, s -> s.trim().length() > 0);
         runSafe(io).foreachDoEffect(s -> runSafe(stdoutPrintln(s.toUpperCase())));
     }
@@ -46,7 +46,7 @@ public class Chapter7 {
      * uppercase line to stdout
      */
     public static void toUpperInteract() {
-        runSafe(interactWhile(s -> s.trim().length() > 0, s -> s.toUpperCase()));
+        runSafe(interactWhile(s -> s.trim().length() > 0, String::toUpperCase));
     }
 
 }

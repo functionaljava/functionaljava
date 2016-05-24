@@ -5,8 +5,6 @@ import static fj.data.Stream.iterableStream;
 import fj.Equal;
 import fj.F;
 import fj.F2;
-import fj.F3;
-import fj.P1;
 import fj.P2;
 import static fj.Function.curry;
 import static fj.Function.identity;
@@ -35,7 +33,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return An iterable equipped with some useful functions.
    */
   public static <A> IterableW<A> wrap(final Iterable<A> a) {
-    return new IterableW<A>(a);
+    return new IterableW<>(a);
   }
 
   /**
@@ -44,7 +42,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A function that returns the given iterable, wrapped.
    */
   public static <A, T extends Iterable<A>> F<T, IterableW<A>> wrap() {
-    return a -> wrap(a);
+    return IterableW::wrap;
   }
 
   /**
@@ -75,7 +73,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A transformation from a function to the equivalent Iterable-valued function.
    */
   public static <A, B> F<F<A, B>, F<A, IterableW<B>>> arrow() {
-    return f -> iterable(f);
+    return IterableW::iterable;
   }
 
   /**
@@ -95,7 +93,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return A new iterable after applying the given iterable function to the wrapped iterable.
    */
   public <B> IterableW<B> apply(final Iterable<F<A, B>> f) {
-    return wrap(f).bind(f1 -> map(f1));
+    return wrap(f).bind(this::map);
   }
 
   /**
@@ -130,9 +128,9 @@ public final class IterableW<A> implements Iterable<A> {
   public static <A, T extends Iterable<A>> IterableW<IterableW<A>> sequence(final Iterable<T> as) {
     final Stream<T> ts = iterableStream(as);
     return ts.isEmpty() ?
-        iterable(wrap(Option.<A>none())) :
+        iterable(wrap(Option.none())) :
         wrap(ts.head()).bind(a ->
-            sequence(ts.tail().map(IterableW.<T, Stream<T>>wrap())._1()).bind(as2 ->
+            sequence(ts.tail().map(IterableW.wrap())._1()).bind(as2 ->
                 iterable(wrap(Stream.cons(a, () -> iterableStream(as2))))
             )
         );
@@ -145,7 +143,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that binds a given function across a given iterable.
    */
   public static <A, B, T extends Iterable<B>> F<IterableW<A>, F<F<A, T>, IterableW<B>>> bind() {
-    return a -> f -> a.bind(f);
+    return a -> a::bind;
   }
 
   /**
@@ -165,7 +163,7 @@ public final class IterableW<A> implements Iterable<A> {
    * @return a function that joins an Iterable of Iterables into a single Iterable.
    */
   public static <A, T extends Iterable<A>> F<Iterable<T>, IterableW<A>> join() {
-    return a -> join(a);
+    return IterableW::join;
   }
 
   /**
@@ -324,7 +322,7 @@ public final class IterableW<A> implements Iterable<A> {
         return iterableStream(IterableW.this).isEmpty();
       }
 
-      @SuppressWarnings({"unchecked"})
+      @SuppressWarnings("unchecked")
       public boolean contains(final Object o) {
         return iterableStream(IterableW.this).exists(Equal.<A>anyEqual().eq((A) o));
       }
@@ -337,7 +335,7 @@ public final class IterableW<A> implements Iterable<A> {
         return Array.iterableArray(iterableStream(IterableW.this)).array();
       }
 
-      @SuppressWarnings({"SuspiciousToArrayCall"})
+      @SuppressWarnings("SuspiciousToArrayCall")
       public <T> T[] toArray(final T[] a) {
         return iterableStream(IterableW.this).toCollection().toArray(a);
       }
@@ -420,7 +418,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public List<A> subList(final int fromIndex, final int toIndex) {
-        return wrap(Stream.iterableStream(IterableW.this).drop(fromIndex).take(toIndex - fromIndex)).toStandardList();
+        return wrap(iterableStream(IterableW.this).drop(fromIndex).take(toIndex - fromIndex)).toStandardList();
       }
 
       private ListIterator<A> toListIterator(final Option<Zipper<A>> z) {

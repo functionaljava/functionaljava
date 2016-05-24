@@ -212,7 +212,7 @@ public abstract class P4<A, B, C, D> {
    * @return A function that returns the first element of a product.
    */
   public static <A, B, C, D> F<P4<A, B, C, D>, A> __1() {
-    return p -> p._1();
+    return P4::_1;
   }
 
   /**
@@ -221,7 +221,7 @@ public abstract class P4<A, B, C, D> {
    * @return A function that returns the second element of a product.
    */
   public static <A, B, C, D> F<P4<A, B, C, D>, B> __2() {
-    return p -> p._2();
+    return P4::_2;
   }
 
   /**
@@ -230,7 +230,7 @@ public abstract class P4<A, B, C, D> {
    * @return A function that returns the third element of a product.
    */
   public static <A, B, C, D> F<P4<A, B, C, D>, C> __3() {
-    return p -> p._3();
+    return P4::_3;
   }
 
   /**
@@ -239,22 +239,22 @@ public abstract class P4<A, B, C, D> {
    * @return A function that returns the fourth element of a product.
    */
   public static <A, B, C, D> F<P4<A, B, C, D>, D> __4() {
-    return p -> p._4();
+    return P4::_4;
   }
 
   @Override
-	public String toString() {
+	public final String toString() {
 		return Show.p4Show(Show.<A>anyShow(), Show.<B>anyShow(), Show.<C>anyShow(), Show.<D>anyShow()).showS(this);
 	}
 
   @Override
-  public boolean equals(Object other) {
+  public final boolean equals(Object other) {
     return Equal.equals0(P4.class, this, other,
-        () -> Equal.p4Equal(Equal.<A>anyEqual(), Equal.<B>anyEqual(), Equal.<C>anyEqual(), Equal.<D>anyEqual()));
+        () -> Equal.p4Equal(Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.p4Hash(Hash.<A>anyHash(), Hash.<B>anyHash(), Hash.<C>anyHash(), Hash.<D>anyHash()).hash(this);
   }
 

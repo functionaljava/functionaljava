@@ -84,11 +84,11 @@ public abstract class PSetter<S, T, A, B> {
     return PIso.<S, T> pId().asSetter();
   }
 
-  public static final <S, T> PSetter<Either<S, S>, Either<T, T>, S, T> pCodiagonal() {
+  public static <S, T> PSetter<Either<S, S>, Either<T, T>, S, T> pCodiagonal() {
     return pSetter(f -> e -> e.bimap(f, f));
   }
 
-  public static final <S, T, A, B> PSetter<S, T, A, B> pSetter(final F<F<A, B>, F<S, T>> modify) {
+  public static <S, T, A, B> PSetter<S, T, A, B> pSetter(final F<F<A, B>, F<S, T>> modify) {
     return new PSetter<S, T, A, B>() {
       @Override
       public F<S, T> modify(final F<A, B> f) {

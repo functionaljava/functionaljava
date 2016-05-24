@@ -21,5 +21,5 @@ public interface F7<A, B, C, D, E, F$, G, H> {
    * @param g The <code>G</code> to transform.
    * @return The result of the transformation.
    */
-  public H f(A a, B b, C c, D d, E e, F$ f, G g);
+  H f(A a, B b, C c, D d, E e, F$ f, G g);
 }

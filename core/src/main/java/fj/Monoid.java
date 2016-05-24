@@ -156,7 +156,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<List<A>, A> sumLeft() {
-    return as -> sumLeft(as);
+    return this::sumLeft;
   }
 
   /**
@@ -165,7 +165,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with right-fold.
    */
   public F<List<A>, A> sumRight() {
-    return as -> sumRight(as);
+    return this::sumRight;
   }
 
   /**
@@ -174,7 +174,7 @@ public final class Monoid<A> {
    * @return a function that sums the given values with left-fold.
    */
   public F<Stream<A>, A> sumLeftS() {
-    return as -> sumLeft(as);
+    return this::sumLeft;
   }
 
   /**
@@ -200,7 +200,7 @@ public final class Monoid<A> {
    * @return A monoid instance that uses the given sun function and zero value.
    */
   public static <A> Monoid<A> monoid(final F<A, F<A, A>> sum, final A zero) {
-    return new Monoid<A>(sum, zero);
+    return new Monoid<>(sum, zero);
   }
 
   /**
@@ -212,7 +212,7 @@ public final class Monoid<A> {
    * @return A monoid instance that uses the given sun function and zero value.
    */
   public static <A> Monoid<A> monoid(final F2<A, A, A> sum, final A zero) {
-    return new Monoid<A>(curry(sum), zero);
+    return new Monoid<>(curry(sum), zero);
   }
 
   /**
@@ -223,7 +223,7 @@ public final class Monoid<A> {
    * @return A monoid instance that uses the given sun function and zero value.
    */
   public static <A> Monoid<A> monoid(final Semigroup<A> s, final A zero) {
-    return new Monoid<A>(s.sum(), zero);
+    return new Monoid<>(s.sum(), zero);
   }
 
   /**
@@ -328,7 +328,7 @@ public final class Monoid<A> {
    * @return A monoid for functions.
    */
   public static <A, B> Monoid<F<A, B>> functionMonoid(final Monoid<B> mb) {
-    return monoid(Semigroup.<A, B>functionSemigroup(mb.semigroup()), Function.<A, B>constant(mb.zero));
+    return monoid(Semigroup.functionSemigroup(mb.semigroup()), Function.constant(mb.zero));
   }
 
   /**
@@ -337,7 +337,7 @@ public final class Monoid<A> {
    * @return A monoid for lists.
    */
   public static <A> Monoid<List<A>> listMonoid() {
-    return monoid(Semigroup.<A>listSemigroup(), List.<A>nil());
+    return monoid(Semigroup.listSemigroup(), List.nil());
   }
 
   /**
@@ -346,7 +346,7 @@ public final class Monoid<A> {
    * @return A monoid for options.
    */
   public static <A> Monoid<Option<A>> optionMonoid() {
-    return monoid(Semigroup.<A>optionSemigroup(), Option.<A>none());
+    return monoid(Semigroup.optionSemigroup(), Option.none());
   }
 
   /**
@@ -355,7 +355,7 @@ public final class Monoid<A> {
    * @return A monoid for options that take the first available value.
    */
   public static <A> Monoid<Option<A>> firstOptionMonoid() {
-    return monoid(Semigroup.<A>firstOptionSemigroup(), Option.<A>none());
+    return monoid(Semigroup.firstOptionSemigroup(), Option.none());
   }
 
   /**
@@ -364,7 +364,7 @@ public final class Monoid<A> {
    * @return A monoid for options that take the last available value.
    */
   public static <A> Monoid<Option<A>> lastOptionMonoid() {
-    return monoid(Semigroup.<A>lastOptionSemigroup(), Option.<A>none());
+    return monoid(Semigroup.lastOptionSemigroup(), Option.none());
   }
 
   /**
@@ -373,7 +373,7 @@ public final class Monoid<A> {
    * @return A monoid for streams.
    */
   public static <A> Monoid<Stream<A>> streamMonoid() {
-    return monoid(Semigroup.<A>streamSemigroup(), Stream.<A>nil());
+    return monoid(Semigroup.streamSemigroup(), Stream.nil());
   }
 
   /**
@@ -381,9 +381,9 @@ public final class Monoid<A> {
    *
    * @return A monoid for arrays.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public static <A> Monoid<Array<A>> arrayMonoid() {
-    return monoid(Semigroup.<A>arraySemigroup(), Array.<A>empty());
+    return monoid(Semigroup.arraySemigroup(), Array.empty());
   }
 
   /**
@@ -405,7 +405,7 @@ public final class Monoid<A> {
    * @return A monoid for sets whose elements have the given order.
    */
   public static <A> Monoid<Set<A>> setMonoid(final Ord<A> o) {
-    return monoid(Semigroup.<A>setSemigroup(), Set.empty(o));
+    return monoid(Semigroup.setSemigroup(), Set.empty(o));
   }
 
 }

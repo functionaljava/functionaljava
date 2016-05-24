@@ -1,6 +1,5 @@
 package fj.test.reflect;
 
-import static fj.Bottom.error;
 import fj.Class;
 import static fj.Class.clas;
 import fj.F;
@@ -81,11 +80,7 @@ public final class Check {
    * @return The results and names of checking the properties on the given classes.
    */
   public static <T> List<P2<String, CheckResult>> check(final List<java.lang.Class<T>> c, final Rand r, final String... categories) {
-    return join(c.map(new F<java.lang.Class<T>, List<P2<String, CheckResult>>>() {
-      public List<P2<String, CheckResult>> f(final java.lang.Class<T> c) {
-        return check(c, r, categories);
-      }
-    }));
+    return join(c.map(c1 -> check(c1, r, categories)));
   }
 
   /**
@@ -143,18 +138,12 @@ public final class Check {
    * @return The results of checking the properties on the given class.
    */
   public static <T> List<P2<String, CheckResult>> check(final java.lang.Class<T> c, final Rand r, final String... categories) {
-    return join(clas(c).inheritance().map(new F<Class<? super T>, List<P3<Property, String, Option<CheckParams>>>>() {
-      public List<P3<Property, String, Option<CheckParams>>> f(final Class<? super T> c) {
-        return properties(c.clas(), categories);
-      }
-    })).map(new F<P3<Property, String, Option<CheckParams>>, P2<String, CheckResult>>() {
-      public P2<String, CheckResult> f(final P3<Property, String, Option<CheckParams>> p) {
-        if(p._3().isSome()) {
-          final CheckParams ps = p._3().some();
-          return p(p._2(), p._1().check(r, ps.minSuccessful(), ps.maxDiscarded(), ps.minSize(), ps.maxSize()));
-        } else
-          return p(p._2(), p._1().check(r));
-      }
+    return join(clas(c).inheritance().map(c1 -> properties(c1.clas(), categories))).map(p -> {
+      if(p._3().isSome()) {
+        final CheckParams ps = p._3().some();
+        return p(p._2(), p._1().check(r, ps.minSuccessful(), ps.maxDiscarded(), ps.minSize(), ps.maxSize()));
+      } else
+        return p(p._2(), p._1().check(r));
     });
   }
 
@@ -188,68 +177,62 @@ public final class Check {
    */
   public static <U, T extends U> List<P3<Property, String, Option<CheckParams>>> properties(final java.lang.Class<T> c, final String... categories) {
     //noinspection ClassEscapesDefinedScope
-    final Array<P3<Property, String, Option<CheckParams>>> propFields = properties(array(c.getDeclaredFields()).map(new F<Field, PropertyMember>() {
-      public PropertyMember f(final Field f) {
-        return new PropertyMember() {
-          public java.lang.Class<?> type() {
-            return f.getType();
-          }
+    final Array<P3<Property, String, Option<CheckParams>>> propFields = properties(array(c.getDeclaredFields()).map((F<Field, PropertyMember>) f -> new PropertyMember() {
+      public java.lang.Class<?> type() {
+        return f.getType();
+      }
 
-          public AnnotatedElement element() {
-            return f;
-          }
+      public AnnotatedElement element() {
+        return f;
+      }
 
-          public String name() {
-            return f.getName();
-          }
+      public String name() {
+        return f.getName();
+      }
 
-          public int modifiers() {
-            return f.getModifiers();
-          }
+      public int modifiers() {
+        return f.getModifiers();
+      }
 
-          public <X> Property invoke(final X x) throws IllegalAccessException {
-            f.setAccessible(true);
-            return (Property)f.get(x);
-          }
+      public <X> Property invoke(final X x) throws IllegalAccessException {
+        f.setAccessible(true);
+        return (Property)f.get(x);
+      }
 
-          public boolean isProperty() {
-            return true;
-          }
-        };
+      public boolean isProperty() {
+        return true;
       }
     }), c, categories);
 
     //noinspection ClassEscapesDefinedScope
-    final Array<P3<Property, String, Option<CheckParams>>> propMethods = properties(array(c.getDeclaredMethods()).map(new F<Method, PropertyMember>() {
-      public PropertyMember f(final Method m) {
-        //noinspection ProhibitedExceptionDeclared
-        return new PropertyMember() {
-          public java.lang.Class<?> type() {
-            return m.getReturnType();
-          }
+    final Array<P3<Property, String, Option<CheckParams>>> propMethods = properties(array(c.getDeclaredMethods()).map((F<Method, PropertyMember>) m -> {
+      //noinspection ProhibitedExceptionDeclared
+      return new PropertyMember() {
+        public java.lang.Class<?> type() {
+          return m.getReturnType();
+        }
 
-          public AnnotatedElement element() {
-            return m;
-          }
+        public AnnotatedElement element() {
+          return m;
+        }
 
-          public String name() {
-            return m.getName();
-          }
+        public String name() {
+          return m.getName();
+        }
 
-          public int modifiers() {
-            return m.getModifiers();
-          }
+        public int modifiers() {
+          return m.getModifiers();
+        }
 
-          public <X> Property invoke(final X x) throws Exception {
-            m.setAccessible(true);
-            return (Property)m.invoke(x);
-          }
+        public <X> Property invoke(final X x) throws Exception {
+          m.setAccessible(true);
+          return (Property)m.invoke(x);
+        }
 
-          public boolean isProperty() {
-            return m.getParameterTypes().length == 0;
-          }
-        };
-      }
+        public boolean isProperty() {
+          return m.getParameterTypes().length == 0;
+        }
+      };
     }), c, categories);
 
     return propFields.append(propMethods).toList();
@@ -260,72 +243,47 @@ public final class Check {
     AnnotatedElement element();
     String name();
     int modifiers();
-    @SuppressWarnings({"ProhibitedExceptionDeclared"})
+    @SuppressWarnings("ProhibitedExceptionDeclared")
     <X> Property invoke(X x) throws Exception;
     boolean isProperty();
   }
 
   private static <T> Array<P3<Property, String, Option<CheckParams>>> properties(final Array<PropertyMember> ms, final java.lang.Class<T> declaringClass, final String... categories) {
-    final Option<T> t = emptyCtor(declaringClass).map(new F<Constructor<T>, T>() {
-      @SuppressWarnings({"OverlyBroadCatchBlock"})
-      public T f(final Constructor<T> ctor) {
-        try {
-          ctor.setAccessible(true);
-          return ctor.newInstance();
-        } catch(Exception e) {
-          throw new Error(e.getMessage(), e);
-        }
+    final Option<T> t = emptyCtor(declaringClass).map(ctor -> {
+      try {
+        ctor.setAccessible(true);
+        return ctor.newInstance();
+      } catch(Exception e) {
+        throw new Error(e.getMessage(), e);
       }
     });
 
-    final F<AnnotatedElement, F<String, Boolean>> p = new F<AnnotatedElement, F<String, Boolean>>() {
-      public F<String, Boolean> f(final AnnotatedElement e) {
-        return new F<String, Boolean>() {
-          public Boolean f(final String s) {
-            final F<Category, Boolean> p = new F<Category, Boolean>() {
-              public Boolean f(final Category c) {
-                return array(c.value()).exists(new F<String, Boolean>() {
-                  public Boolean f(final String cs) {
-                    return cs.equals(s);
-                  }
-                });
-              }
-            };
+    final F<AnnotatedElement, F<String, Boolean>> p = e -> s -> {
+      final F<Category, Boolean> p1 = c -> array(c.value()).exists(cs -> cs.equals(s));
 
-            @SuppressWarnings("unchecked")
-            final List<Boolean> bss = somes(list(fromNull(e.getAnnotation(Category.class)).map(p),
-              fromNull(declaringClass.getAnnotation(Category.class)).map(p)));
-            return bss.exists(Function.<Boolean>identity());
-          }
-        };
-      }
+      @SuppressWarnings("unchecked")
+      final List<Boolean> bss = somes(list(fromNull(e.getAnnotation(Category.class)).map(p1),
+        fromNull(declaringClass.getAnnotation(Category.class)).map(p1)));
+      return bss.exists(Function.identity());
     };
 
-    final F<Name, String> nameS = new F<Name, String>() {
-      public String f(final Name name) {
-        return name.value();
-      }
-    };
+    final F<Name, String> nameS = Name::value;
 
-    return ms.filter(new F<PropertyMember, Boolean>() {
-      public Boolean f(final PropertyMember m) {
-        //noinspection ObjectEquality
-        return m.isProperty() &&
-            m.type() == Property.class &&
-            !m.element().isAnnotationPresent(NoCheck.class) &&
-            !declaringClass.isAnnotationPresent(NoCheck.class) &&
-            (categories.length == 0 || array(categories).exists(p.f(m.element()))) &&
-            (t.isSome() || isStatic(m.modifiers()));
-      }
-    }).map(new F<PropertyMember, P3<Property, String, Option<CheckParams>>>() {
-      public P3<Property, String, Option<CheckParams>> f(final PropertyMember m) {
-        try {
-          final Option<CheckParams> params = fromNull(m.element().getAnnotation(CheckParams.class)).orElse(fromNull(declaringClass.getAnnotation(CheckParams.class)));
-          final String name = fromNull(m.element().getAnnotation(Name.class)).map(nameS).orSome(m.name());
-          return p(m.invoke(t.orSome(P.<T>p(null))), name, params);
-        } catch(Exception e) {
-          throw new Error(e.getMessage(), e);
-        }
+    return ms.filter(m -> {
+      //noinspection ObjectEquality
+      return m.isProperty() &&
+          m.type() == Property.class &&
+          !m.element().isAnnotationPresent(NoCheck.class) &&
+          !declaringClass.isAnnotationPresent(NoCheck.class) &&
+          (categories.length == 0 || array(categories).exists(p.f(m.element()))) &&
+          (t.isSome() || isStatic(m.modifiers()));
+    }).map(m -> {
+      try {
+        final Option<CheckParams> params = fromNull(m.element().getAnnotation(CheckParams.class)).orElse(fromNull(declaringClass.getAnnotation(CheckParams.class)));
+        final String name = fromNull(m.element().getAnnotation(Name.class)).map(nameS).orSome(m.name());
+        return p(m.invoke(t.orSome(P.p(null))), name, params);
+      } catch(Exception e) {
+        throw new Error(e.getMessage(), e);
       }
     });
   }

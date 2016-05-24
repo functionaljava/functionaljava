@@ -7,7 +7,6 @@ import fj.F4;
 import fj.F5;
 import fj.P;
 import fj.P1;
-import fj.P2;
 
 /**
  * Functions across vectors.
@@ -36,7 +35,7 @@ public final class V {
    * @return The vector-2.
    */
   public static <A> V2<A> v(final F0<A> a1, final F0<A> a2) {
-      return V2.p(P.lazy(() -> a1.f(), () -> a2.f()));
+      return V2.p(P.lazy(a1, a2));
   }
 
   /**
@@ -45,7 +44,7 @@ public final class V {
    * @return A function that puts elements in a vector-2.
    */
   public static <A> F2<A, A, V2<A>> v2() {
-    return (a, a1) -> v(a, a1);
+    return V::v;
   }
 
   /**
@@ -78,7 +77,7 @@ public final class V {
    * @return A function that puts elements in a vector-3.
    */
   public static <A> F3<A, A, A, V3<A>> v3() {
-    return (a, a1, a2) -> v(a, a1, a2);
+    return V::v;
   }
 
   /**
@@ -113,7 +112,7 @@ public final class V {
    * @return A function that puts elements in a vector-4.
    */
   public static <A> F4<A, A, A, A, V4<A>> v4() {
-    return (a, a1, a2, a3) -> v(a, a1, a2, a3);
+    return V::v;
   }
 
 
@@ -151,7 +150,7 @@ public final class V {
    * @return A function that puts elements in a vector-5.
    */
   public static <A> F5<A, A, A, A, A, V5<A>> v5() {
-    return (a, a1, a2, a3, a4) -> v(a, a1, a2, a3, a4);
+    return V::v;
   }
 
 }

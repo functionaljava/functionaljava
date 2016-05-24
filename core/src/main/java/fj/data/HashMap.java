@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static fj.P.p;
+import static fj.data.List.iterableList;
 import static fj.data.Option.fromNull;
 
 /**
@@ -17,24 +18,16 @@ import static fj.data.Option.fromNull;
  * @see java.util.HashMap
  */
 public final class HashMap<K, V> implements Iterable<K> {
-  private final class Key<K> {
-    private final K k;
-    private final Equal<K> e;
-    private final Hash<K> h;
+  private final class Key {
+    final K k;
 
-    Key(final K k, final Equal<K> e, final Hash<K> h) {
+    Key(final K k) {
       this.k = k;
-      this.e = e;
-      this.h = h;
     }
 
-    K k() {
-      return k;
-    }
-
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings("unchecked")
     public boolean equals(final Object o) {
-      return o instanceof Key && e.eq(k, (K) ((Key<?>) o).k());
+      return o instanceof HashMap.Key && e.eq(k, ((Key) o).k);
     }
 
     public int hashCode() {
@@ -51,7 +44,7 @@ public final class HashMap<K, V> implements Iterable<K> {
     return keys().iterator();
   }
 
-  private final java.util.HashMap<Key<K>, V> m;
+  private final java.util.HashMap<Key, V> m;
 
   private final Equal<K> e;
   private final Hash<K> h;
@@ -63,15 +56,15 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @param h The hashing strategy.
    */
   public HashMap(final Equal<K> e, final Hash<K> h) {
-    m = new java.util.HashMap<Key<K>, V>();
+    m = new java.util.HashMap<>();
     this.e = e;
     this.h = h;
   }
 
   public HashMap(java.util.Map<K, V> map, final Equal<K> e, final Hash<K> h) {
     this(e, h);
-    for (K key : map.keySet()) {
-      set(key, map.get(key));
+    for (Map.Entry<K, V> entry : map.entrySet()) {
+      set(entry.getKey(), entry.getValue());
     }
   }
 
@@ -83,13 +76,13 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @param initialCapacity The initial capacity.
    */
   public HashMap(final Equal<K> e, final Hash<K> h, final int initialCapacity) {
-    m = new java.util.HashMap<Key<K>, V>(initialCapacity);
+    m = new java.util.HashMap<>(initialCapacity);
     this.e = e;
     this.h = h;
   }
 
     public HashMap(java.util.Map<K, V> map) {
-        this(map, Equal.<K>anyEqual(), Hash.<K>anyHash());
+        this(map, Equal.anyEqual(), Hash.anyHash());
     }
 
     /**
@@ -101,7 +94,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @param loadFactor      The load factor.
    */
   public HashMap(final Equal<K> e, final Hash<K> h, final int initialCapacity, final float loadFactor) {
-    m = new java.util.HashMap<Key<K>, V>(initialCapacity, loadFactor);
+    m = new java.util.HashMap<>(initialCapacity, loadFactor);
     this.e = e;
     this.h = h;
   }
@@ -121,7 +114,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A new hash map.
    */
   public static <K, V> HashMap<K, V> hashMap(final Equal<K> e, final Hash<K> h) {
-    return new HashMap<K, V>(e, h);
+    return new HashMap<>(e, h);
   }
 
   /**
@@ -152,7 +145,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A potential value for the given key.
    */
   public Option<V> get(final K k) {
-    return fromNull(m.get(new Key<K>(k, e, h)));
+    return fromNull(m.get(new Key(k)));
   }
 
   /**
@@ -161,7 +154,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return A curried version of {@link #get(Object)}.
    */
   public F<K, Option<V>> get() {
-    return k -> get(k);
+    return this::get;
   }
 
   /**
@@ -178,7 +171,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return <code>true</code> if this hash map contains the given key, <code>false</code> otherwise.
    */
   public boolean contains(final K k) {
-    return m.containsKey(new Key<K>(k, e, h));
+    return m.containsKey(new Key(k));
   }
 
   /**
@@ -187,10 +180,10 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return All key entries in this hash map.
    */
   public List<K> keys() {
-    final List.Buffer<K> b = new List.Buffer<K>();
+    final List.Buffer<K> b = new List.Buffer<>();
 
-    for (final Key<K> k : m.keySet()) {
-      b.snoc(k.k());
+    for (final Key k : m.keySet()) {
+      b.snoc(k.k);
     }
 
     return b.toList();
@@ -202,7 +195,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return All values in this hash map.
    */
   public List<V> values() {
-    return keys().map(k -> m.get(new Key<K>(k, e, h)));
+    return iterableList(m.values());
   }
 
   /**
@@ -231,7 +224,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    */
   public void set(final K k, final V v) {
     if (v != null) {
-        m.put(new Key<K>(k, e, h), v);
+        m.put(new Key(k), v);
     }
   }
 
@@ -241,7 +234,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @param k The key to delete from this hash map.
    */
   public void delete(final K k) {
-    m.remove(new Key<K>(k, e, h));
+    m.remove(new Key(k));
   }
 
   /**
@@ -251,13 +244,13 @@ public final class HashMap<K, V> implements Iterable<K> {
    * @return The value that was associated with the given key, if there was one.
    */
   public Option<V> getDelete(final K k) {
-    return fromNull(m.remove(new Key<K>(k, e, h)));
+    return fromNull(m.remove(new Key(k)));
   }
 
   public <A, B> HashMap<A, B> map(F<K, A> keyFunction,
                                   F<V, B> valueFunction,
                                   Equal<A> equal, Hash<A> hash) {
-    final HashMap<A, B> hashMap = new HashMap<A, B>(equal, hash);
+    final HashMap<A, B> hashMap = new HashMap<>(equal, hash);
     for (K key : keys()) {
       final A newKey = keyFunction.f(key);
       final B newValue = valueFunction.f(get(key).some());
@@ -268,27 +261,27 @@ public final class HashMap<K, V> implements Iterable<K> {
 
   public <A, B> HashMap<A, B> map(F<K, A> keyFunction,
                                   F<V, B> valueFunction) {
-    return map(keyFunction, valueFunction, Equal.<A>anyEqual(), Hash.<A>anyHash());
+    return map(keyFunction, valueFunction, Equal.anyEqual(), Hash.anyHash());
   }
 
   public <A, B> HashMap<A, B> map(F<P2<K, V>, P2<A, B>> function, Equal<A> equal, Hash<A> hash) {
-    return from(toStream().map(function), equal, hash);
+    return iterableHashMap(equal, hash, toStream().map(function));
   }
 
   public <A, B> HashMap<A, B> map(F<P2<K, V>, P2<A, B>> function) {
-    return from(toStream().map(function));
+    return iterableHashMap(toStream().map(function));
   }
 
   public <A> HashMap<A, V> mapKeys(F<K, A> keyFunction, Equal<A> equal, Hash<A> hash) {
-    return map(keyFunction, Function.<V>identity(), equal, hash);
+    return map(keyFunction, Function.identity(), equal, hash);
   }
 
   public <A> HashMap<A, V> mapKeys(F<K, A> function) {
-    return mapKeys(function, Equal.<A>anyEqual(), Hash.<A>anyHash());
+    return mapKeys(function, Equal.anyEqual(), Hash.anyHash());
   }
 
   public <B> HashMap<K, B> mapValues(F<V, B> function) {
-    return map(Function.<K>identity(), function, e, h);
+    return map(Function.identity(), function, e, h);
   }
 
   public void foreachDoEffect(Effect1<P2<K, V>> effect) {
@@ -325,7 +318,7 @@ public final class HashMap<K, V> implements Iterable<K> {
   }
 
   public java.util.Map<K, V> toMap() {
-    final java.util.HashMap<K,V> result = new java.util.HashMap<K, V>();
+    final java.util.HashMap<K,V> result = new java.util.HashMap<>();
     for (K key : keys()) {
       result.put(key, get(key).some());
     }
@@ -339,7 +332,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    */
   @Deprecated
   public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries) {
-    return iterableHashMap(Equal.<K>anyEqual(), Hash.<K>anyHash(), entries);
+    return iterableHashMap(entries);
   }
 
   public static <K, V> HashMap<K, V> fromMap(java.util.Map<K, V> map) {
@@ -347,7 +340,7 @@ public final class HashMap<K, V> implements Iterable<K> {
   }
 
   public static <K, V> HashMap<K, V> fromMap(Equal<K> eq, Hash<K> h, java.util.Map<K, V> map) {
-    HashMap<K, V> m = HashMap.hashMap(eq, h);
+    HashMap<K, V> m = hashMap(eq, h);
     for (Map.Entry<K, V> e: map.entrySet()) {
       m.set(e.getKey(), e.getValue());
     }
@@ -368,7 +361,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * Converts the Iterable to a HashMap
    */
   public static <K, V> HashMap<K, V> iterableHashMap(final Equal<K> equal, final Hash<K> hash, final Iterable<P2<K, V>> entries) {
-    final HashMap<K, V> map = new HashMap<K, V>(equal, hash);
+    final HashMap<K, V> map = new HashMap<>(equal, hash);
     for (P2<K, V> entry : entries) {
       map.set(entry._1(), entry._2());
     }
@@ -379,7 +372,7 @@ public final class HashMap<K, V> implements Iterable<K> {
    * Converts the Iterable to a HashMap
    */
   public static <K, V> HashMap<K, V> iterableHashMap(final Iterable<P2<K, V>> entries) {
-    return iterableHashMap(Equal.<K>anyEqual(), Hash.<K>anyHash(), entries);
+    return iterableHashMap(Equal.anyEqual(), Hash.anyHash(), entries);
   }
 
   /**

@@ -2,7 +2,6 @@ package fj;
 
 import fj.data.List;
 import static fj.data.List.unfold;
-import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.Tree;
@@ -39,14 +38,14 @@ public final class Class<T> {
                         return c2;
                       }
 
-                      @SuppressWarnings({"unchecked"})
+                      @SuppressWarnings("unchecked")
                       public java.lang.Class<? super T> _2() {
                         return c2.getSuperclass();
                       }
                     };
                 return some(p);
               }
-            }, c).map(c1 -> clas(c1));
+            }, c).map(Class::clas);
   }
 
   /**
@@ -102,7 +101,7 @@ public final class Class<T> {
       }
       types = Tree.node(pt.getRawType(), typeArgs);
     } else {
-      types = Tree.node(t, List.<Tree<Type>>nil());
+      types = Tree.node(t, List.nil());
     }
     return types;
   }
@@ -123,6 +122,6 @@ public final class Class<T> {
    * @return A class from the given argument.
    */
   public static <T> Class<T> clas(final java.lang.Class<T> c) {
-    return new Class<T>(c);
+    return new Class<>(c);
   }
 }

@@ -22,7 +22,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param g A function to compose with this one.
      * @return The composed function such that this function is applied last.
      */
-    public <C> F1W<C, B> o(final F<C, A> g) {
+    public final <C> F1W<C, B> o(final F<C, A> g) {
         return lift(F1Functions.o(this, g));
     }
 
@@ -31,7 +31,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return A function that composes this function with another.
      */
-    public <C> F1W<F<C, A>, F<C, B>> o() {
+    public final <C> F1W<F<C, A>, F<C, B>> o() {
         return lift(F1Functions.o(this));
     }
 
@@ -41,8 +41,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param g A function with which to compose this one.
      * @return The composed function such that this function is applied first.
      */
-    @SuppressWarnings({"unchecked"})
-    public <C> F1W<A, C> andThen(final F<B, C> g) {
+    @SuppressWarnings("unchecked")
+    public final <C> F1W<A, C> andThen(final F<B, C> g) {
         return lift(F1Functions.andThen(this, g));
     }
 
@@ -51,7 +51,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return A function that invokes this function and then a given function on the result.
      */
-    public <C> F1W<F<B, C>, F<A, C>> andThen() {
+    public final <C> F1W<F<B, C>, F<A, C>> andThen() {
         return lift( F1Functions.andThen(this));
     }
 
@@ -61,7 +61,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param g A function that takes the return value of this function as an argument, yielding a new function.
      * @return A function that invokes this function on its argument and then the given function on the result.
      */
-    public <C> F1W<A, C> bind(final F<B, F<A, C>> g) {
+    public final <C> F1W<A, C> bind(final F<B, F<A, C>> g) {
         return lift(F1Functions.bind(this, g));
     }
 
@@ -71,7 +71,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return A function that binds another function across this function.
      */
-    public <C> F1W<F<B, F<A, C>>, F<A, C>> bind() {
+    public final <C> F1W<F<B, F<A, C>>, F<A, C>> bind() {
         return lift(F1Functions.bind(this));
     }
 
@@ -83,7 +83,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @return A new function that invokes the given function on its argument, yielding a new function that is then
      *         applied to the result of applying this function to the argument.
      */
-    public <C> F1W<A, C> apply(final F<A, F<B, C>> g) {
+    public final <C> F1W<A, C> apply(final F<A, F<B, C>> g) {
         return lift(F1Functions.apply(this, g));
     }
 
@@ -93,7 +93,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return A function that applies a given function within the environment of this function.
      */
-    public <C> F1W<F<A, F<B, C>>, F<A, C>> apply() {
+    public final <C> F1W<F<A, F<B, C>>, F<A, C>> apply() {
         return lift(F1Functions.apply(this));
     }
 
@@ -103,7 +103,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param g The function over whose arguments to apply this function.
      * @return A new function that invokes this function on its arguments before invoking the given function.
      */
-    public <C> F1W<A, F<A, C>> on(final F<B, F<B, C>> g) {
+    public final <C> F1W<A, F<A, C>> on(final F<B, F<B, C>> g) {
         return lift(F1Functions.on(this, g));
     }
 
@@ -113,7 +113,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return A function that applies this function over the arguments of another function.
      */
-    public <C> F1W<F<B, F<B, C>>, F<A, F<A, C>>> on() {
+    public final <C> F1W<F<B, F<B, C>>, F<A, F<A, C>>> on() {
         return lift(F1Functions.on(this));
     }
 
@@ -122,7 +122,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result in a product-1.
      */
-    public F1W<A, P1<B>> lazy() {
+    public final F1W<A, P1<B>> lazy() {
         return lift(F1Functions.lazy(this));
     }
 
@@ -133,7 +133,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param a The <code>A</code> to which to apply this function.
      * @return The function partially applied to the given argument to return a lazy value.
      */
-    public P1<B> lazy(final A a) {
+    public final P1<B> lazy(final A a) {
         return F1Functions.f(this, a);
     }
 
@@ -142,7 +142,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a product-1.
      */
-    public F1W<P1<A>, P1<B>> mapP1() {
+    public final F1W<P1<A>, P1<B>> mapP1() {
         return lift(F1Functions.mapP1(this));
     }
 
@@ -151,7 +151,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result in an Option.
      */
-    public F1W<A, Option<B>> optionK() {
+    public final F1W<A, Option<B>> optionK() {
         return lift(F1Functions.optionK(this));
     }
 
@@ -161,7 +161,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over an optional value.
      */
-    public F1W<Option<A>, Option<B>> mapOption() {
+    public final F1W<Option<A>, Option<B>> mapOption() {
         return lift(F1Functions.mapOption(this));
     }
 
@@ -170,7 +170,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result in a List.
      */
-    public F1W<A, List<B>> listK() {
+    public final F1W<A, List<B>> listK() {
         return lift( F1Functions.listK(this));
     }
 
@@ -179,7 +179,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a List.
      */
-    public F1W<List<A>, List<B>> mapList() {
+    public final F1W<List<A>, List<B>> mapList() {
         return lift(F1Functions.mapList(this));
     }
 
@@ -188,7 +188,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result in a Stream.
      */
-    public F1W<A, Stream<B>> streamK() {
+    public final F1W<A, Stream<B>> streamK() {
         return lift(F1Functions.streamK(this));
     }
 
@@ -197,7 +197,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Stream.
      */
-    public F1W<Stream<A>, Stream<B>> mapStream() {
+    public final F1W<Stream<A>, Stream<B>> mapStream() {
         return lift(F1Functions.mapStream(this));
     }
 
@@ -206,7 +206,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result in a Array.
      */
-    public F1W<A, Array<B>> arrayK() {
+    public final F1W<A, Array<B>> arrayK() {
         return lift(F1Functions.arrayK(this));
 
     }
@@ -216,7 +216,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Array.
      */
-    public F1W<Array<A>, Array<B>> mapArray() {
+    public final F1W<Array<A>, Array<B>> mapArray() {
         return lift(F1Functions.mapArray(this));
     }
 
@@ -225,7 +225,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return A function that contramaps over a given actor.
      */
-    public F1W<Actor<B>, Actor<A>> contramapActor() {
+    public final F1W<Actor<B>, Actor<A>> contramapActor() {
         return lift(F1Functions.contramapActor(this));
     }
 
@@ -235,7 +235,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param s A parallel strategy for concurrent execution.
      * @return A concurrent function that returns a Promise of a value.
      */
-    public F1W<A, Promise<B>> promiseK(final Strategy<Unit> s) {
+    public final F1W<A, Promise<B>> promiseK(final Strategy<Unit> s) {
         return lift(F1Functions.promiseK(this, s));
     }
 
@@ -244,7 +244,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over Promises.
      */
-    public F1W<Promise<A>, Promise<B>> mapPromise() {
+    public final F1W<Promise<A>, Promise<B>> mapPromise() {
         return lift(F1Functions.mapPromise(this));
     }
 
@@ -254,8 +254,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result on the left side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
-    public <C> F1W<A, Either<B, C>> eitherLeftK() {
+    @SuppressWarnings("unchecked")
+    public final <C> F1W<A, Either<B, C>> eitherLeftK() {
         return lift(F1Functions.eitherLeftK(this));
     }
 
@@ -265,8 +265,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result on the right side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
-    public <C> F1W<A, Either<C, B>> eitherRightK() {
+    @SuppressWarnings("unchecked")
+    public final <C> F1W<A, Either<C, B>> eitherRightK() {
         return lift(F1Functions.eitherRightK(this));
     }
 
@@ -275,8 +275,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the left side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
-    public <X> F1W<Either<A, X>, Either<B, X>> mapLeft() {
+    @SuppressWarnings("unchecked")
+    public final <X> F1W<Either<A, X>, Either<B, X>> mapLeft() {
         return lift(F1Functions.mapLeft(this));
     }
 
@@ -285,8 +285,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the right side of an Either.
      */
-    @SuppressWarnings({"unchecked"})
-    public <X> F1W<Either<X, A>, Either<X, B>> mapRight() {
+    @SuppressWarnings("unchecked")
+    public final <X> F1W<Either<X, A>, Either<X, B>> mapRight() {
         return lift(F1Functions.mapRight(this));
     }
 
@@ -295,7 +295,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return a function that returns the left side of a given Either, or this function applied to the right side.
      */
-    public F1W<Either<B, A>, B> onLeft() {
+    public final F1W<Either<B, A>, B> onLeft() {
         return lift(F1Functions.onLeft(this));
     }
 
@@ -304,7 +304,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return a function that returns the right side of a given Either, or this function applied to the left side.
      */
-    public F1W<Either<A, B>, B> onRight() {
+    public final F1W<Either<A, B>, B> onRight() {
         return lift(F1Functions.onRight(this));
     }
 
@@ -313,8 +313,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in an Iterable.
      */
-    @SuppressWarnings({"unchecked"})
-    public F1W<A, IterableW<B>> iterableK() {
+    @SuppressWarnings("unchecked")
+    public final F1W<A, IterableW<B>> iterableK() {
         return lift( F1Functions.iterableK(this));
     }
 
@@ -323,8 +323,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over Iterables.
      */
-    @SuppressWarnings({"unchecked"})
-    public F1W<Iterable<A>, IterableW<B>> mapIterable() {
+    @SuppressWarnings("unchecked")
+    public final F1W<Iterable<A>, IterableW<B>> mapIterable() {
         return lift( F1Functions.mapIterable(this));
     }
 
@@ -333,8 +333,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in a NonEmptyList.
      */
-    @SuppressWarnings({"unchecked"})
-    public F1W<A, NonEmptyList<B>> nelK() {
+    @SuppressWarnings("unchecked")
+    public final F1W<A, NonEmptyList<B>> nelK() {
         return lift(F1Functions.nelK(this));
     }
 
@@ -343,7 +343,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a NonEmptyList.
      */
-    public F1W<NonEmptyList<A>, NonEmptyList<B>> mapNel() {
+    public final F1W<NonEmptyList<A>, NonEmptyList<B>> mapNel() {
         return lift(F1Functions.mapNel(this));
     }
 
@@ -353,7 +353,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param o An order for the set.
      * @return This function promoted to return its value in a Set.
      */
-    public F1W<A, Set<B>> setK(final Ord<B> o) {
+    public final F1W<A, Set<B>> setK(final Ord<B> o) {
         return lift(F1Functions.setK(this, o));
     }
 
@@ -363,7 +363,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param o An order for the resulting set.
      * @return This function promoted to map over a Set.
      */
-    public F1W<Set<A>, Set<B>> mapSet(final Ord<B> o) {
+    public final F1W<Set<A>, Set<B>> mapSet(final Ord<B> o) {
         return lift(F1Functions.mapSet(this, o));
     }
 
@@ -372,7 +372,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in a Tree.
      */
-    public F1W<A, Tree<B>> treeK() {
+    public final F1W<A, Tree<B>> treeK() {
         return lift(F1Functions.treeK(this));
     }
 
@@ -381,8 +381,8 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Tree.
      */
-    @SuppressWarnings({"unchecked"})
-    public F1W<Tree<A>, Tree<B>> mapTree() {
+    @SuppressWarnings("unchecked")
+    public final F1W<Tree<A>, Tree<B>> mapTree() {
         return lift(F1Functions.mapTree(this));
     }
 
@@ -392,7 +392,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param m The monoid with which to fold the mapped tree.
      * @return a function that maps this function over a tree and folds it with the given monoid.
      */
-    public F1W<Tree<A>, B> foldMapTree(final Monoid<B> m) {
+    public final F1W<Tree<A>, B> foldMapTree(final Monoid<B> m) {
         return lift(F1Functions.foldMapTree(this, m));
     }
 
@@ -401,7 +401,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in a TreeZipper.
      */
-    public F1W<A, TreeZipper<B>> treeZipperK() {
+    public final F1W<A, TreeZipper<B>> treeZipperK() {
         return lift(F1Functions.treeZipperK(this));
     }
 
@@ -410,7 +410,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a TreeZipper.
      */
-    public F1W<TreeZipper<A>, TreeZipper<B>> mapTreeZipper() {
+    public final F1W<TreeZipper<A>, TreeZipper<B>> mapTreeZipper() {
         return lift(F1Functions.mapTreeZipper(this));
     }
 
@@ -420,7 +420,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result on the failure side of a Validation.
      */
-    public <C> F1W<A, Validation<B, C>> failK() {
+    public final <C> F1W<A, Validation<B, C>> failK() {
         return lift(F1Functions.failK(this));
     }
 
@@ -430,7 +430,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its result on the success side of an Validation.
      */
-    public <C> F1W<A, Validation<C, B>> successK() {
+    public final <C> F1W<A, Validation<C, B>> successK() {
         return lift( F1Functions.successK(this));
     }
 
@@ -439,7 +439,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the failure side of a Validation.
      */
-    public <X> F1W<Validation<A, X>, Validation<B, X>> mapFail() {
+    public final <X> F1W<Validation<A, X>, Validation<B, X>> mapFail() {
         return lift(F1Functions.mapFail(this));
     }
 
@@ -448,7 +448,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the success side of a Validation.
      */
-    public <X> F1W<Validation<X, A>, Validation<X, B>> mapSuccess() {
+    public final <X> F1W<Validation<X, A>, Validation<X, B>> mapSuccess() {
         return lift(F1Functions.mapSuccess(this));
     }
 
@@ -459,7 +459,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @return a function that returns the failure side of a given Validation,
      *         or this function applied to the success side.
      */
-    public F1W<Validation<B, A>, B> onFail() {
+    public final F1W<Validation<B, A>, B> onFail() {
         return lift(F1Functions.onFail(this));
     }
 
@@ -470,7 +470,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @return a function that returns the success side of a given Validation,
      *         or this function applied to the failure side.
      */
-    public F1W<Validation<A, B>, B> onSuccess() {
+    public final F1W<Validation<A, B>, B> onSuccess() {
         return lift(F1Functions.onSuccess(this));
     }
 
@@ -479,7 +479,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to return its value in a Zipper.
      */
-    public F1W<A, Zipper<B>> zipperK() {
+    public final F1W<A, Zipper<B>> zipperK() {
         return lift(F1Functions.zipperK(this));
     }
 
@@ -488,7 +488,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Zipper.
      */
-    public F1W<Zipper<A>, Zipper<B>> mapZipper() {
+    public final F1W<Zipper<A>, Zipper<B>> mapZipper() {
         return lift(F1Functions.mapZipper(this));
     }
 
@@ -497,7 +497,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over an Equal as a contravariant functor.
      */
-    public F1W<Equal<B>, Equal<A>> contramapEqual() {
+    public final F1W<Equal<B>, Equal<A>> contramapEqual() {
         return lift(F1Functions.contramapEqual(this));
     }
 
@@ -506,7 +506,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Hash as a contravariant functor.
      */
-    public F1W<Hash<B>, Hash<A>> contramapHash() {
+    public final F1W<Hash<B>, Hash<A>> contramapHash() {
         return lift(F1Functions.contramapHash(this));
     }
 
@@ -515,7 +515,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over a Show as a contravariant functor.
      */
-    public F1W<Show<B>, Show<A>> contramapShow() {
+    public final F1W<Show<B>, Show<A>> contramapShow() {
         return lift(F1Functions.contramapShow(this));
     }
 
@@ -524,7 +524,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the first element of a pair.
      */
-    public <C> F1W<P2<A, C>, P2<B, C>> mapFst() {
+    public final <C> F1W<P2<A, C>, P2<B, C>> mapFst() {
         return lift(F1Functions.mapFst(this));
     }
 
@@ -533,7 +533,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over the second element of a pair.
      */
-    public <C> F1W<P2<C, A>, P2<C, B>> mapSnd() {
+    public final <C> F1W<P2<C, A>, P2<C, B>> mapSnd() {
         return lift(F1Functions.mapSnd(this));
     }
 
@@ -542,7 +542,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      *
      * @return This function promoted to map over both elements of a pair.
      */
-    public F1W<P2<A, A>, P2<B, B>> mapBoth() {
+    public final F1W<P2<A, A>, P2<B, B>> mapBoth() {
         return lift(F1Functions.mapBoth(this));
     }
 
@@ -552,7 +552,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A SynchronousQueue to map this function over.
      * @return A new SynchronousQueue with this function applied to each element.
      */
-    public SynchronousQueue<B> mapJ(final SynchronousQueue<A> as) {
+    public final SynchronousQueue<B> mapJ(final SynchronousQueue<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -563,7 +563,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A PriorityBlockingQueue to map this function over.
      * @return A new PriorityBlockingQueue with this function applied to each element.
      */
-    public PriorityBlockingQueue<B> mapJ(final PriorityBlockingQueue<A> as) {
+    public final PriorityBlockingQueue<B> mapJ(final PriorityBlockingQueue<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -573,7 +573,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A LinkedBlockingQueue to map this function over.
      * @return A new LinkedBlockingQueue with this function applied to each element.
      */
-    public LinkedBlockingQueue<B> mapJ(final LinkedBlockingQueue<A> as) {
+    public final LinkedBlockingQueue<B> mapJ(final LinkedBlockingQueue<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -583,7 +583,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A CopyOnWriteArraySet to map this function over.
      * @return A new CopyOnWriteArraySet with this function applied to each element.
      */
-    public CopyOnWriteArraySet<B> mapJ(final CopyOnWriteArraySet<A> as) {
+    public final CopyOnWriteArraySet<B> mapJ(final CopyOnWriteArraySet<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -593,7 +593,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A CopyOnWriteArrayList to map this function over.
      * @return A new CopyOnWriteArrayList with this function applied to each element.
      */
-    public CopyOnWriteArrayList<B> mapJ(final CopyOnWriteArrayList<A> as) {
+    public final CopyOnWriteArrayList<B> mapJ(final CopyOnWriteArrayList<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -603,7 +603,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A ConcurrentLinkedQueue to map this function over.
      * @return A new ConcurrentLinkedQueue with this function applied to each element.
      */
-    public ConcurrentLinkedQueue<B> mapJ(final ConcurrentLinkedQueue<A> as) {
+    public final ConcurrentLinkedQueue<B> mapJ(final ConcurrentLinkedQueue<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -613,7 +613,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as An ArrayBlockingQueue to map this function over.
      * @return A new ArrayBlockingQueue with this function applied to each element.
      */
-    public ArrayBlockingQueue<B> mapJ(final ArrayBlockingQueue<A> as) {
+    public final ArrayBlockingQueue<B> mapJ(final ArrayBlockingQueue<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -624,7 +624,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A TreeSet to map this function over.
      * @return A new TreeSet with this function applied to each element.
      */
-    public TreeSet<B> mapJ(final TreeSet<A> as) {
+    public final TreeSet<B> mapJ(final TreeSet<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -634,7 +634,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A PriorityQueue to map this function over.
      * @return A new PriorityQueue with this function applied to each element.
      */
-    public PriorityQueue<B> mapJ(final PriorityQueue<A> as) {
+    public final PriorityQueue<B> mapJ(final PriorityQueue<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -644,7 +644,7 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as A LinkedList to map this function over.
      * @return A new LinkedList with this function applied to each element.
      */
-    public LinkedList<B> mapJ(final LinkedList<A> as) {
+    public final LinkedList<B> mapJ(final LinkedList<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
@@ -654,15 +654,15 @@ public abstract class F1W<A, B> implements F<A, B> {
      * @param as An ArrayList to map this function over.
      * @return A new ArrayList with this function applied to each element.
      */
-    public ArrayList<B> mapJ(final ArrayList<A> as) {
+    public final ArrayList<B> mapJ(final ArrayList<A> as) {
         return F1Functions.mapJ(this, as);
     }
 
-    public <C> F1W<A, C> map(F<B, C> f) {
+    public final <C> F1W<A, C> map(F<B, C> f) {
         return lift(F1Functions.map(this, f));
     }
 
-    public <C> F1W<C, B> contramap(F<C, A> f) {
+    public final <C> F1W<C, B> contramap(F<C, A> f) {
         return lift(F1Functions.contramap(this, f));
     }
 
@@ -673,7 +673,7 @@ public abstract class F1W<A, B> implements F<A, B> {
         }
 
         @Override
-        public B f(A a) {
+        public final B f(A a) {
             return func.f(a);
         }
     }
@@ -682,6 +682,6 @@ public abstract class F1W<A, B> implements F<A, B> {
      * Lifts the function into the fully featured function wrapper
      */
     public static <A, B> F1W<A, B> lift(final F<A, B> f) {
-        return new F1WFunc<A, B>(f);
+        return new F1WFunc<>(f);
     }
 }

@@ -1,7 +1,7 @@
 package fj.function;
 
 import fj.F;
-import fj.F2;
+
 import static fj.Function.curry;
 import static fj.Semigroup.longAdditionSemigroup;
 import static fj.Semigroup.longMultiplicationSemigroup;
@@ -41,7 +41,7 @@ public final class Longs {
   /**
    * Absolute value.
    */
-  public static final F<Long, Long> abs = x -> abs(x);
+  public static final F<Long, Long> abs = Math::abs;
 
   /**
    * Remainder.

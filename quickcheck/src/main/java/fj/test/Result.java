@@ -1,7 +1,6 @@
 package fj.test;
 
 import fj.F;
-import fj.P1;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.none;
@@ -142,7 +141,7 @@ public final class Result {
    *
    * @return A potential result for this result.
    */
-  @SuppressWarnings({"IfMayBeConditional"})
+  @SuppressWarnings("IfMayBeConditional")
   public Option<Result> toOption() {
     if(isNoResult())
       return none();
@@ -157,7 +156,7 @@ public final class Result {
    * @return The result that may be {@link #noResult() noResult()}.
    */
   public static Result noResult(final Option<Result> r) {
-    return r.orSome(() -> noResult());
+    return r.orSome(Result::noResult);
   }
 
   /**
@@ -166,7 +165,7 @@ public final class Result {
    * @return A result representing no result.
    */
   public static Result noResult() {
-    return new Result(Option.<List<Arg<?>>>none(), R.NoResult, Option.<Throwable>none());
+    return new Result(Option.none(), R.NoResult, Option.none());
   }
 
   /**
@@ -176,7 +175,7 @@ public final class Result {
    * @return An unfalsified result.
    */
   public static Result unfalsified(final List<Arg<?>> args) {
-    return new Result(some(args), R.Unfalsified, Option.<Throwable>none());
+    return new Result(some(args), R.Unfalsified, Option.none());
   }
 
   /**
@@ -186,7 +185,7 @@ public final class Result {
    * @return A falsified result.
    */
   public static Result falsified(final List<Arg<?>> args) {
-    return new Result(some(args), R.Falsified, Option.<Throwable>none());
+    return new Result(some(args), R.Falsified, Option.none());
   }
 
   /**
@@ -196,7 +195,7 @@ public final class Result {
    * @return A proven result.
    */
   public static Result proven(final List<Arg<?>> args) {
-    return new Result(some(args), R.Proven, Option.<Throwable>none());
+    return new Result(some(args), R.Proven, Option.none());
   }
 
   /**

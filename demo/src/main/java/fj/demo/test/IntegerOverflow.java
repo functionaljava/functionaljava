@@ -1,6 +1,5 @@
 package fj.demo.test;
 
-import fj.F2;
 import static fj.test.Arbitrary.arbIntegerBoundaries;
 import static fj.test.Bool.bool;
 import static fj.test.CheckResult.summary;
