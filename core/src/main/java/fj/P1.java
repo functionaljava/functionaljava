@@ -268,19 +268,18 @@ public abstract class P1<A> implements F0<A> {
 	}
 
     static class Memo<A> extends P1<A> {
-      private final P1<A> self;
-      private volatile boolean initialized;
+      private volatile P1<A> self;
       private A value;
 
       Memo(P1<A> self) { this.self = self; }
 
       @Override public final A _1() {
-        if (!initialized) {
+        if (self != null) {
           synchronized (this) {
-            if (!initialized) {
+            if (self != null) {
               A a = self._1();
               value = a;
-              initialized = true;
+              self = null;
               return a;
             }
           }
