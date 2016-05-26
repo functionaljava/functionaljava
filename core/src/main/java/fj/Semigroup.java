@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static fj.Function.curry;
+import static fj.Function.flip;
 
 /**
  * Implementations must satisfy the law of associativity:
@@ -97,6 +98,27 @@ public final class Semigroup<A> {
   }
 
   /**
+   * Sums the given values with left-fold.
+   */
+  public A sumNel(final NonEmptyList<A> as) {
+    return as.foldLeft1(sum);
+  }
+
+  /**
+   * Swaps the arguments when summing.
+   */
+  public Semigroup<A> dual() {
+    return semigroup(flip(sum));
+  }
+
+  /**
+   * Lifts the semigroup to obtain a trivial monoid.
+   */
+  public Monoid<Option<A>> lift() {
+    return Monoid.monoid(a -> b -> Option.liftM2(sum).f(a).f(b).orElse(a).orElse(b), Option.none());
+  }
+
+  /**
    * Constructs a semigroup from the given function.
    *
    * @param sum The function to construct this semigroup with.
@@ -139,12 +161,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of integers.
    */
-  public static final Semigroup<Integer> intMaximumSemigroup = semigroup(Ord.intOrd.max);
+  public static final Semigroup<Integer> intMaximumSemigroup = Ord.intOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of integers.
    */
-  public static final Semigroup<Integer> intMinimumSemigroup = semigroup(Ord.intOrd.min);
+  public static final Semigroup<Integer> intMinimumSemigroup = Ord.intOrd.minSemigroup();
 
   /**
    * A semigroup that adds big integers.
@@ -161,12 +183,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of big integers.
    */
-  public static final Semigroup<BigInteger> bigintMaximumSemigroup = semigroup(Ord.bigintOrd.max);
+  public static final Semigroup<BigInteger> bigintMaximumSemigroup = Ord.bigintOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of big integers.
    */
-  public static final Semigroup<BigInteger> bigintMinimumSemigroup = semigroup(Ord.bigintOrd.min);
+  public static final Semigroup<BigInteger> bigintMinimumSemigroup = Ord.bigintOrd.minSemigroup();
 
   /**
    * A semigroup that adds big decimals.
@@ -183,12 +205,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of big decimals.
    */
-  public static final Semigroup<BigDecimal> bigDecimalMaximumSemigroup = semigroup(Ord.bigdecimalOrd.max);
+  public static final Semigroup<BigDecimal> bigDecimalMaximumSemigroup = Ord.bigdecimalOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of big decimals.
    */
-  public static final Semigroup<BigDecimal> bigDecimalMinimumSemigroup = semigroup(Ord.bigdecimalOrd.min);
+  public static final Semigroup<BigDecimal> bigDecimalMinimumSemigroup = Ord.bigdecimalOrd.minSemigroup();
 
   /**
    * A semigroup that multiplies natural numbers.
@@ -205,12 +227,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of natural numbers.
    */
-  public static final Semigroup<Natural> naturalMaximumSemigroup = semigroup(Ord.naturalOrd.max);
+  public static final Semigroup<Natural> naturalMaximumSemigroup = Ord.naturalOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of natural numbers.
    */
-  public static final Semigroup<Natural> naturalMinimumSemigroup = semigroup(Ord.naturalOrd.min);
+  public static final Semigroup<Natural> naturalMinimumSemigroup = Ord.naturalOrd.minSemigroup();
 
   /**
    * A semigroup that adds longs.
@@ -225,12 +247,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of longs.
    */
-  public static final Semigroup<Long> longMaximumSemigroup = semigroup(Ord.longOrd.max);
+  public static final Semigroup<Long> longMaximumSemigroup = Ord.longOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of longs.
    */
-  public static final Semigroup<Long> longMinimumSemigroup = semigroup(Ord.longOrd.min);
+  public static final Semigroup<Long> longMinimumSemigroup = Ord.longOrd.minSemigroup();
 
   /**
    * A semigroup that ORs booleans.

@@ -6,6 +6,7 @@ import fj.function.Effect1;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static fj.Function.flip;
 import static fj.Function.identity;
 import static fj.data.Option.some;
 import static fj.data.Option.somes;
@@ -85,6 +86,26 @@ public final class NonEmptyList<A> implements Iterable<A> {
     b.append(as.tail);
     final List<A> bb = b.toList();
     return nel(head, bb);
+  }
+
+  /**
+   * Performs a right-fold reduction across this list. This function uses O(length) stack space.
+   */
+  public final A foldRight1(final F<A, F<A, A>> f) {
+    return reverse().foldLeft1(flip(f));
+  }
+
+  /**
+   * Performs a left-fold reduction across this list. This function runs in constant space.
+   */
+  public final A foldLeft1(final F<A, F<A, A>> f) {
+    A x = head;
+
+    for (List<A> xs = tail; !xs.isEmpty(); xs = xs.tail()) {
+      x = f.f(x).f(xs.head());
+    }
+
+    return x;
   }
 
   /**
