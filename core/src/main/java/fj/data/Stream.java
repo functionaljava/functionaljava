@@ -2,6 +2,7 @@ package fj.data;
 
 import fj.Equal;
 import fj.F0;
+import fj.F3;
 import fj.Hash;
 import fj.Show;
 import fj.F;
@@ -144,7 +145,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight1(final F<A, F<B, B>> f, final B b) {
-    return foldRight(compose(Function.<P1<B>, B, B>andThen().f(P1.<B>__1()), f), b);
+    return foldRight(compose(Function.<P1<B>, B, B>andThen().f(P1.__1()), f), b);
   }
 
   /**
@@ -254,7 +255,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after the given function has been applied to each element.
    */
   public final <B> Stream<B> map(final F<A, B> f) {
-    return isEmpty() ? Stream.<B>nil() : cons(f.f(head()), () -> tail()._1().map(f));
+    return isEmpty() ? Stream.nil() : cons(f.f(head()), () -> tail()._1().map(f));
   }
 
   /**
@@ -351,8 +352,8 @@ public abstract class Stream<A> implements Iterable<A> {
    *         and returns a stream of the results.
    */
   public static <A, B> F<B, Stream<A>> sequence_(final Stream<F<B, A>> fs) {
-    return fs.foldRight((baf, p1) -> Function.bind(baf, p1._1(), Function.curry((a, stream) -> cons(a, p(stream)))), Function
-            .<B, Stream<A>>constant(Stream.<A>nil()));
+    return fs.foldRight((baf, p1) -> Function.bind(baf, p1._1(), curry((a, stream) -> cons(a, p(stream)))), Function
+            .constant(Stream.nil()));
   }
 
   /**
@@ -374,7 +375,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after performing the map, then final join.
    */
   public final <B> Stream<B> bind(final F<A, Stream<B>> f) {
-    return foldRight(h -> (t -> f.f(h).append(t)), nil());
+    return foldRight(h -> t -> f.f(h).append(t), nil());
   }
 
   /**
@@ -521,7 +522,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The stream of IOs after sequencing.
    */
   public static <A> Stream<IO<A>> sequence(final IO<Stream<A>> io) {
-    return IOFunctions.runSafe(io).map(a -> IOFunctions.unit(a));
+    return IOFunctions.runSafe(io).map(IOFunctions::unit);
   }
 
   /**
@@ -531,7 +532,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The stream of (pre-calculated) lazy values after sequencing.
    */
   public static <A> Stream<P1<A>> sequence(final F0<Stream<A>> p) {
-    return p.f().map(a -> P.p(a));
+    return p.f().map(P::p);
   }
 
   /**
@@ -541,7 +542,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The stream of options after sequencing.
    */
   public static <A> Stream<Option<A>> sequence(final Option<Stream<A>> o) {
-    return o.isNone() ? Stream.nil() : o.some().map(a -> Option.some(a));
+    return o.isNone() ? nil() : o.some().map(Option::some);
   }
 
   /**
@@ -551,7 +552,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream after applying the given stream of functions through this stream.
    */
   public final <B> Stream<B> apply(final Stream<F<A, B>> sf) {
-    return sf.bind(f -> map(f));
+    return sf.bind(this::map);
   }
 
   /**
@@ -566,9 +567,9 @@ public abstract class Stream<A> implements Iterable<A> {
 
   public static <A> Stream<A> enumerationStream(Enumeration<A> e) {
     if (e.hasMoreElements()) {
-      return Stream.cons(e.nextElement(), () -> enumerationStream(e));
+      return cons(e.nextElement(), () -> enumerationStream(e));
     } else {
-      return Stream.nil();
+      return nil();
     }
   }
 
@@ -579,7 +580,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream with the elements of this stream sorted according to the given ordering.
    */
   public final Stream<A> sort(final Ord<A> o) {
-    return mergesort(o, map(flip(Stream.<A>cons()).f(p(Stream.<A>nil()))));
+    return mergesort(o, map(flip(Stream.<A>cons()).f(p(Stream.nil()))));
   }
 
   // Merges a stream of individually sorted streams into a single sorted stream.
@@ -627,7 +628,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
   private Promise<Stream<A>> qs(final Ord<A> o, final Strategy<Unit> s) {
     if (isEmpty())
-      return promise(s, P.p(this));
+      return promise(s, p(this));
     else {
       final F<Boolean, Boolean> id = identity();
       final A x = head();
@@ -699,7 +700,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *         <code>to</code> value (exclusive).
    */
   public static Stream<Integer> range(final int from, final long to) {
-    return from >= to ? Stream.<Integer>nil() : cons(from, () -> range(from + 1, to));
+    return from >= to ? Stream.nil() : cons(from, () -> range(from + 1, to));
   }
 
   /**
@@ -767,7 +768,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *         given value and stepping at the given increment.
    */
   public static <A> Stream<A> forever(final Enumerator<A> e, final A from, final long step) {
-    return cons(from, () -> e.plus(from, step).map(a -> forever(e, a, step)).orSome(Stream.<A>nil()));
+    return cons(from, () -> e.plus(from, step).map(a -> forever(e, a, step)).orSome(Stream.nil()));
   }
 
   /**
@@ -797,7 +798,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static <A> Stream<A> range(final Enumerator<A> e, final A from, final A to, final long step) {
     final Ordering o = e.order().compare(from, to);
-    return o == EQ || step > 0L && o == GT || step < 0L && o == LT ? single(from) : cons(from, () -> Stream.join(e.plus(from, step).filter(a -> !(o == LT
+    return o == EQ || step > 0L && o == GT || step < 0L && o == LT ? single(from) : cons(from, () -> join(e.plus(from, step).filter(a -> !(o == LT
                 ? e.order().isLessThan(to, a)
                 : e.order().isGreaterThan(to, a))).map(a1 -> range(e, a1, to, step)).toStream()));
   }
@@ -829,7 +830,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream with a length the same as the shortest of this stream and the given stream.
    */
   public final <B> Stream<B> zapp(final Stream<F<A, B>> fs) {
-    return fs.isEmpty() || isEmpty() ? Stream.<B>nil() :
+    return fs.isEmpty() || isEmpty() ? Stream.nil() :
            cons(fs.head().f(head()), () -> tail()._1().zapp(fs.tail()._1()));
   }
 
@@ -892,7 +893,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream with the same length as this stream.
    */
   public final Stream<P2<A, Integer>> zipIndex() {
-    return zipWith(range(0), (a, i) -> p(a, i));
+    return zipWith(range(0), (F2<A, Integer, P2<A, Integer>>) P::p);
   }
 
   /**
@@ -903,7 +904,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return An either projection of this stream.
    */
   public final <X> Either<X, A> toEither(final F0<X> x) {
-    return isEmpty() ? Either.<X, A>left(x.f()) : Either.<X, A>right(head());
+    return isEmpty() ? Either.left(x.f()) : Either.right(head());
   }
 
   /**
@@ -913,10 +914,17 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return An option projection of this stream.
    */
   public final Option<A> toOption() {
-    return isEmpty() ? Option.<A>none() : some(head());
+    return isEmpty() ? Option.none() : some(head());
   }
 
-  @SuppressWarnings({"unchecked", "UnnecessaryFullyQualifiedName"})
+  /**
+   * To be removed in future release:
+   * affectation of the result of this method to a non generic array
+   * will result in runtime error (ClassCastException).
+   *
+   * @deprecated use {@link #array(Class)}
+   */
+  @Deprecated
   public final A[] toJavaArray() {
     final A[] array = (A[]) new Object[length()];
     int i = 0;
@@ -934,7 +942,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
     public final List<A> toList() {
         List.Buffer<A> buf = List.Buffer.empty();
-        foreachDoEffect(a -> buf.snoc(a));
+        foreachDoEffect(buf::snoc);
         return buf.toList();
     }
 
@@ -942,7 +950,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * Returns a java.util.List projection of this stream.
    */
   public final java.util.List<A> toJavaList() {
-    return new java.util.LinkedList<A>(toCollection());
+    return new java.util.LinkedList<>(toCollection());
   }
 
   /**
@@ -950,7 +958,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *
    * @return A array projection of this stream.
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   public final Array<A> toArray() {
     final int l = length();
     final Object[] a = new Object[l];
@@ -999,7 +1007,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream with the given element at the head.
    */
   public final Stream<A> cons(final A a) {
-    return new Cons<A>(a, () -> Stream.this);
+    return new Cons<>(a, () -> Stream.this);
   }
 
   /**
@@ -1011,7 +1019,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static String asString(final Stream<Character> cs) {
     StringBuilder sb = new StringBuilder();
-    cs.foreachDoEffect(c -> sb.append(c));
+    cs.foreachDoEffect(sb::append);
     return sb.toString();
   }
 
@@ -1054,8 +1062,8 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public final Stream<A> take(final int n) {
     return n <= 0 || isEmpty() ?
-           Stream.<A>nil() :
-           cons(head(), () -> n <= 1 ? Stream.<A>nil() : tail()._1().take(n - 1));
+           Stream.nil() :
+           cons(head(), () -> n <= 1 ? Stream.nil() : tail()._1().take(n - 1));
   }
 
   /**
@@ -1065,11 +1073,9 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A stream with a length the same, or less than, this stream.
    */
   public final Stream<A> drop(final int i) {
-    int c = 0;
-
     Stream<A> xs = this;
 
-    for (; xs.isNotEmpty() && c < i; xs = xs.tail()._1())
+    for (int c = 0; xs.isNotEmpty() && c < i; xs = xs.tail()._1())
       c++;
 
     return xs;
@@ -1087,7 +1093,7 @@ public abstract class Stream<A> implements Iterable<A> {
            this :
            f.f(head()) ?
            cons(head(), () -> tail()._1().takeWhile(f)) :
-           Stream.<A>nil();
+           Stream.nil();
   }
 
   /**
@@ -1098,8 +1104,7 @@ public abstract class Stream<A> implements Iterable<A> {
   public final <B> IO<Stream<B>> traverseIO(F<A, IO<B>> f) {
     return this.foldRight1((a, acc) ->
             IOFunctions.bind(acc, (Stream<B> bs) ->
-                    IOFunctions.map(f.f(a), b ->
-                            bs.cons(b))), IOFunctions.unit(Stream.<B>nil()));
+                    IOFunctions.map(f.f(a), bs::cons)), IOFunctions.unit(Stream.nil()));
 
   }
 
@@ -1109,7 +1114,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return traversed value
    */
   public final <B> Option<Stream<B>> traverseOption(F<A, Option<B>> f) {
-    return this.foldRight1((a, acc) -> acc.bind(bs -> f.f(a).map(b -> bs.cons(b))), some(Stream.<B>nil()));
+    return this.foldRight1((a, acc) -> acc.bind(bs -> f.f(a).map(bs::cons)), some(Stream.nil()));
   }
 
   /**
@@ -1141,11 +1146,11 @@ public abstract class Stream<A> implements Iterable<A> {
     else if (p.f(head())) {
       final P1<P2<Stream<A>, Stream<A>>> yszs = P.lazy(() -> tail()._1().span(p));
       return P.lazy(
-            () -> cons(head(), yszs.map(P2.<Stream<A>, Stream<A>>__1())),
+            () -> cons(head(), yszs.map(P2.__1())),
             () -> yszs._1()._2()
         );
     } else
-      return p(Stream.<A>nil(), this);
+      return p(Stream.nil(), this);
   }
 
   /**
@@ -1182,7 +1187,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream that is the reverse of this one.
    */
   public final Stream<A> reverse() {
-    return foldLeft(as -> a -> cons(a, () -> as), Stream.<A>nil());
+    return foldLeft(as -> a -> cons(a, () -> as), Stream.nil());
   }
 
   /**
@@ -1253,25 +1258,25 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   @Override
-  public boolean equals(Object other) {
-    return Equal.equals0(Stream.class, this, other, () -> Equal.streamEqual(Equal.<A>anyEqual()));
+  public final boolean equals(Object other) {
+    return Equal.equals0(Stream.class, this, other, () -> Equal.streamEqual(Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.streamHash(Hash.<A>anyHash()).hash(this);
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return toStringLazy();
   }
 
-  public String toStringLazy() {
+  public final String toStringLazy() {
     return isEmpty() ? "Nil()" : "Cons(" + Show.<A>anyShow().showS(head()) + ", ?)";
   }
 
-  public String toStringEager() {
+  public final String toStringEager() {
     return Show.streamShow(Show.<A>anyShow()).showS(this);
   }
 
@@ -1320,7 +1325,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a stream of the suffixes of this stream, starting with the stream itself.
    */
   public final Stream<Stream<A>> tails() {
-    return isEmpty() ? Stream.<Stream<A>>nil() : cons(this, () -> tail()._1().tails());
+    return isEmpty() ? Stream.nil() : cons(this, () -> tail()._1().tails());
   }
 
   /**
@@ -1329,7 +1334,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a stream of the prefixes of this stream, starting with the stream itself.
    */
   public final Stream<Stream<A>> inits() {
-    final Stream<Stream<A>> nil = Stream.cons(Stream.<A>nil(), () -> nil());
+    final Stream<Stream<A>> nil = cons(Stream.nil(), Stream::nil);
     return isEmpty() ? nil : nil.append(() -> tail()._1().inits().map(Stream.<A>cons_().f(head())));
   }
 
@@ -1339,7 +1344,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a stream of the infixes of this stream.
    */
   public final Stream<Stream<A>> substreams() {
-    return tails().bind(stream -> stream.inits());
+    return tails().bind(Stream::inits);
   }
 
   /**
@@ -1349,7 +1354,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return the position of the first element matching the given predicate, if any.
    */
   public final Option<Integer> indexOf(final F<A, Boolean> p) {
-    return zipIndex().find(p2 -> p.f(p2._1())).map(P2.<A, Integer>__2());
+    return zipIndex().find(p2 -> p.f(p2._1())).map(P2.__2());
   }
 
   /**
@@ -1360,7 +1365,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public final <B> Stream<B> sequenceW(final Stream<F<Stream<A>, B>> fs) {
     return fs.isEmpty()
-           ? Stream.<B>nil()
+           ? Stream.nil()
            : cons(fs.head().f(this), () -> sequenceW(fs.tail()._1()));
   }
 
@@ -1370,7 +1375,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A function from natural numbers to values with the corresponding position in this stream.
    */
   public final F<Integer, A> toFunction() {
-    return i -> index(i);
+    return this::index;
   }
 
   /**
@@ -1398,7 +1403,7 @@ public abstract class Stream<A> implements Iterable<A> {
         final Option<B> s = e.successor(i);
         return s.isSome()
                ? fromFunction(e, f, s.some())
-               : Stream.<A>nil();
+               : Stream.nil();
       });
   }
 
@@ -1411,8 +1416,8 @@ public abstract class Stream<A> implements Iterable<A> {
   public static <A, B> P2<Stream<A>, Stream<B>> unzip(final Stream<P2<A, B>> xs) {
     return xs.foldRight((p, ps) -> {
       final P2<Stream<A>, Stream<B>> pp = ps._1();
-      return P.p(cons(p._1(), P.p(pp._1())), cons(p._2(), P.p(pp._2())));
-    }, P.p(Stream.<A>nil(), Stream.<B>nil()));
+      return p(cons(p._1(), p(pp._1())), cons(p._2(), p(pp._2())));
+    }, p(Stream.nil(), Stream.nil()));
   }
 
   /**
@@ -1421,7 +1426,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a function that zips two given streams with a given function.
    */
   public static <A, B, C> F<Stream<A>, F<Stream<B>, F<F<A, F<B, C>>, Stream<C>>>> zipWith() {
-    return curry((as, bs, f) -> as.zipWith(bs, f));
+    return curry((F3<Stream<A>, Stream<B>, F<A, F<B, C>>, Stream<C>>) Stream::zipWith);
   }
 
   private static final class Nil<A> extends Stream<A> {
@@ -1477,7 +1482,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return An empty stream.
    */
   public static <A> Stream<A> nil() {
-    return new Nil<A>();
+    return new Nil<>();
   }
 
   /**
@@ -1486,7 +1491,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return An empty stream.
    */
   public static <A> P1<Stream<A>> nil_() {
-    return P.lazy(() -> new Nil<A>());
+    return P.lazy(Nil::new);
   }
 
   /**
@@ -1495,7 +1500,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A function that determines whether a given stream is empty.
    */
   public static <A> F<Stream<A>, Boolean> isEmpty_() {
-    return as -> as.isEmpty();
+    return Stream::isEmpty;
   }
 
   /**
@@ -1504,7 +1509,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A function that determines whether a given stream is not empty.
    */
   public static <A> F<Stream<A>, Boolean> isNotEmpty_() {
-    return as -> as.isNotEmpty();
+    return Stream::isNotEmpty;
   }
 
   /**
@@ -1514,7 +1519,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A stream of one element containing the given value.
    */
   public static <A> Stream<A> single(final A a) {
-    return cons(a, () -> nil());
+    return cons(a, Stream::nil);
   }
 
   /**
@@ -1523,7 +1528,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return a function that yields a stream containing its argument.
    */
   public static <A> F<A, Stream<A>> single() {
-    return a -> single(a);
+    return Stream::single;
   }
 
   /**
@@ -1534,7 +1539,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The stream with the given element prepended.
    */
   public static <A> Stream<A> cons(final A head, final F0<Stream<A>> tail) {
-    return new Cons<A>(head, tail);
+    return new Cons<>(head, tail);
   }
 
   /**
@@ -1551,7 +1556,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A function that joins a stream of streams using a bind operation.
    */
   public static <A> F<Stream<Stream<A>>, Stream<A>> join() {
-    return as -> join(as);
+    return Stream::join;
   }
 
   /**
@@ -1584,7 +1589,7 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static <A> Stream<A> iterateWhile(final F<A, A> f, final F<A, Boolean> p, final A a) {
     return unfold(
-            o -> Option.iif(p2 -> p.f(o), P.p(o, f.f(o)))
+            o -> Option.iif(p2 -> p.f(o), p(o, f.f(o)))
             , a);
   }
 
@@ -1600,9 +1605,9 @@ public abstract class Stream<A> implements Iterable<A> {
 
   @SafeVarargs
   public static <A> Stream<A> arrayStream(final A...as) {
-    return as.length == 0 ? Stream.<A>nil()
-            : unfold(P2.tuple((as1, i) -> i >= as.length ? Option.<P2<A, P2<A[], Integer>>>none()
-            : some(P.p(as[i], P.p(as, i + 1)))), P.p(as, 0));
+    return as.length == 0 ? Stream.nil()
+            : unfold(P2.tuple((as1, i) -> i >= as.length ? Option.none()
+            : some(p(as[i], p(as, i + 1)))), p(as, 0));
   }
 
   /**
@@ -1646,7 +1651,7 @@ public abstract class Stream<A> implements Iterable<A> {
    *         starting at a given value.
    */
   public static <A> F<F<A, A>, F<A, Stream<A>>> iterate() {
-    return curry((f, a) -> iterate(f, a));
+    return curry(Stream::iterate);
   }
 
   /**

@@ -17,7 +17,7 @@ import static fj.Unit.unit;
  *
  * @version %build.number%
  */
-public class Effect {
+public final class Effect {
 
 	private Effect() {}
 
@@ -33,7 +33,7 @@ public class Effect {
    *
    * @return The function using the given effect.
    */
-  public static final <A> F<A, Unit> f(Effect1<A> e1) {
+  public static <A> F<A, Unit> f(Effect1<A> e1) {
     return a -> {
         e1.f(a);
         return unit();
@@ -95,12 +95,12 @@ public class Effect {
    * @param f The function to map over the effect.
    * @return An effect after a contra-variant map.
    */
-  public static final <A, B> Effect1<B> contramap(Effect1<A> e1, final F<B, A> f) {
+  public static <A, B> Effect1<B> contramap(Effect1<A> e1, final F<B, A> f) {
     return b -> e1.f(f.f(b));
   }
   
   public static <A> Effect1<A> lazy(final F<A, Unit> f) {
-    return a -> f.f(a);
+    return f::f;
 
   }
 

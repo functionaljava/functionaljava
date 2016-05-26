@@ -7,7 +7,8 @@ ext {
 buildscript {
     ext {
 		uptodateVersion = "1.6.0"
-        retrolambdaVersion = "3.2.0"
+        retrolambdaPluginVersion = "3.2.5"
+        retrolambdaVersion = "2.3.0"
     }
 
     repositories {
@@ -18,11 +19,10 @@ buildscript {
 
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
-        classpath "me.tatarka:gradle-retrolambda:$retrolambdaVersion"
+        classpath "me.tatarka:gradle-retrolambda:$retrolambdaPluginVersion"
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
-
 
 apply plugin: "jacoco"
 apply plugin: 'com.github.kt3k.coveralls'
@@ -40,7 +40,9 @@ allprojects {
 
 
     jacoco {
-        toolVersion = "0.7.1.201405082137"
+//        toolVersion = "0.7.1.201405082137"
+        toolVersion = "0.7.6.201602180812"
+
     }
 
 	defaultTasks "build"

@@ -60,7 +60,7 @@ public final class Function {
    * @return A function that composes two functions to produce a new function.
    */
   public static <A, B, C> F<F<A, B>, F<F<B, C>, F<A, C>>> andThen() {
-    return g -> f -> Function.andThen(g, f);
+    return g -> f -> andThen(g, f);
   }
 
   /**
@@ -89,7 +89,7 @@ public final class Function {
    * @return A function that given an argument, returns a function that ignores its argument.
    */
   public static <A, B> F<B, F<A, B>> constant() {
-    return b -> constant(b);
+    return Function::constant;
   }
 
   /**
@@ -109,7 +109,7 @@ public final class Function {
    * @return A co- and contravariant function that invokes f on its argument.
    */
   public static <A, B> F<A, B> vary(final F<? super A, ? extends B> f) {
-    return a -> f.f(a);
+    return f::f;
   }
 
   /**
@@ -118,7 +118,7 @@ public final class Function {
    * @return A function that varies and covaries a function.
    */
   public static <C, A extends C, B, D extends B> F<F<C, D>, F<A, B>> vary() {
-    return f -> Function.<A, B>vary(f);
+    return Function::<A, B>vary;
   }
 
   /**
@@ -127,7 +127,7 @@ public final class Function {
    * @return A function that takes a function and flips its arguments.
    */
   public static <A, B, C> F<F<A, F<B, C>>, F<B, F<A, C>>> flip() {
-    return f -> flip(f);
+    return Function::flip;
   }
 
   /**
@@ -156,7 +156,7 @@ public final class Function {
    * @return A function that flips the arguments of a given function.
    */
   public static <A, B, C> F<F2<A, B, C>, F2<B, A, C>> flip2() {
-    return f -> flip(f);
+    return Function::flip;
   }
 
   /**
@@ -168,7 +168,7 @@ public final class Function {
    * not apply the value, instead returning an empty optional value.
    */
   public static <A, B> F<A, Option<B>> nullable(final F<A, B> f) {
-    return a -> a == null ? Option.<B>none() : Option.some(f.f(a));
+    return a -> a == null ? Option.none() : Option.some(f.f(a));
   }
 
   /**
@@ -198,7 +198,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C> F<F<A, F<B, C>>, F2<A, B, C>> uncurryF2() {
-    return f -> uncurryF2(f);
+    return Function::uncurryF2;
   }
 
   /**
@@ -250,7 +250,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D> F<F<A, F<B, F<C, D>>>, F3<A, B, C, D>> uncurryF3() {
-    return f -> uncurryF3(f);
+    return Function::uncurryF3;
   }
 
   /**
@@ -315,7 +315,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D, E> F<F<A, F<B, F<C, F<D, E>>>>, F4<A, B, C, D, E>> uncurryF4() {
-    return f -> uncurryF4(f);
+    return Function::uncurryF4;
   }
 
   /**
@@ -396,7 +396,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D, E, F$> F<F<A, F<B, F<C, F<D, F<E, F$>>>>>, F5<A, B, C, D, E, F$>> uncurryF5() {
-    return f -> uncurryF5(f);
+    return Function::uncurryF5;
   }
 
   /**
@@ -425,7 +425,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D, E, F$, G> F<F<A, F<B, F<C, F<D, F<E, F<F$, G>>>>>>, F6<A, B, C, D, E, F$, G>> uncurryF6() {
-    return f -> uncurryF6(f);
+    return Function::uncurryF6;
   }
 
   /**
@@ -543,7 +543,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D, E, F$, G, H> F<F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>>, F7<A, B, C, D, E, F$, G, H>> uncurryF7() {
-    return f -> uncurryF7(f);
+    return Function::uncurryF7;
   }
 
   /**
@@ -682,7 +682,7 @@ public final class Function {
    * @return An uncurried function.
    */
   public static <A, B, C, D, E, F$, G, H, I> F<F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>>, F8<A, B, C, D, E, F$, G, H, I>> uncurryF8() {
-    return f -> uncurryF8(f);
+    return Function::uncurryF8;
   }
 
   /**
@@ -761,7 +761,7 @@ public final class Function {
    * @return A function of arity-1 whose argument is substituted for both parameters of <em>f</em>.
    */
   public static <A, B> F<B, A> join(final F<B, F<B, A>> f) {
-    return bind(f, Function.<F<B, A>>identity());
+    return bind(f, Function.identity());
   }
 
 

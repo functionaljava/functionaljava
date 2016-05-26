@@ -8,7 +8,9 @@ import org.junit.Assert;
 /**
  * Created by MarkPerry on 18/12/2014.
  */
-public class PropertyAssert {
+public final class PropertyAssert {
+
+    private PropertyAssert(){}
 
     public static Unit assertResult(Property p) {
         CheckResult cr = p.check();

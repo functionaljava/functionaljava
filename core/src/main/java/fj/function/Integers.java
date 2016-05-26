@@ -1,7 +1,7 @@
 package fj.function;
 
 import fj.F;
-import fj.F2;
+
 import static fj.Function.curry;
 
 import fj.Monoid;
@@ -47,7 +47,7 @@ public final class Integers {
   /**
    * Absolute value.
    */
-  public static final F<Integer, Integer> abs = x -> abs(x);
+  public static final F<Integer, Integer> abs = Math::abs;
 
   /**
    * Remainder.

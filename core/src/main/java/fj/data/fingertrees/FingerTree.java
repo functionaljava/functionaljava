@@ -33,7 +33,7 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> B foldRight(final F<A, F<B, B>> f, final B z);
 
-    public <B> B foldRight(final F2<A, B, B> f, final B z) {
+    public final <B> B foldRight(final F2<A, B, B> f, final B z) {
         return foldRight(F2Functions.curry(f), z);
     }
 
@@ -54,7 +54,7 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> B foldLeft(final F<B, F<A, B>> f, final B z);
 
-    public <B> B foldLeft(final F2<B, A, B> f, final B z) {
+    public final <B> B foldLeft(final F2<B, A, B> f, final B z) {
         return foldLeft(F2Functions.curry(f), z);
     }
 
@@ -76,8 +76,8 @@ public abstract class FingerTree<V, A> {
    */
   public abstract <B> FingerTree<V, B> map(final F<A, B> f, final Measured<V, B> m);
 
-    public <B> FingerTree<V, A> filter(final F<A, Boolean> f) {
-        FingerTree<V, A> tree = new Empty<V, A>(m);
+    public final <B> FingerTree<V, A> filter(final F<A, Boolean> f) {
+        FingerTree<V, A> tree = new Empty<>(m);
         return foldLeft((acc, a) -> f.f(a) ? acc.snoc(a) : acc, tree);
     }
 
@@ -97,7 +97,7 @@ public abstract class FingerTree<V, A> {
     return this instanceof Empty;
   }
 
-  Measured<V, A> measured() {
+  final Measured<V, A> measured() {
     return m;
   }
 
@@ -134,7 +134,7 @@ public abstract class FingerTree<V, A> {
    * @return A builder of trees and tree components that annotates them using the given Measured instance.
    */
   public static <V, A> MakeTree<V, A> mkTree(final Measured<V, A> m) {
-    return new MakeTree<V, A>(m);
+    return new MakeTree<>(m);
   }
 
   /**
@@ -160,8 +160,8 @@ public abstract class FingerTree<V, A> {
    */
   public abstract A head();
 
-  public Option<A> headOption() {
-      return isEmpty() ? Option.<A>none() : Option.some(head());
+  public final Option<A> headOption() {
+      return isEmpty() ? Option.none() : Option.some(head());
   }
 
   /**
@@ -225,7 +225,7 @@ public abstract class FingerTree<V, A> {
     public abstract int length();
 
     public static <A> FingerTree<Integer, A> emptyIntAddition() {
-        return FingerTree.mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
+        return mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
     }
 
 }

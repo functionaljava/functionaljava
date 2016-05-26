@@ -64,7 +64,7 @@ public class MapReduce {
         }));
 
     final ExecutorService pool = newFixedThreadPool(16);
-    final ParModule m = parModule(Strategy.<Unit>executorStrategy(pool));
+    final ParModule m = parModule(Strategy.executorStrategy(pool));
 
     System.out.println("Word Count: " + countWords(documents, m).claim());
 

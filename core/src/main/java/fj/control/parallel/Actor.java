@@ -33,17 +33,17 @@ public final class Actor<A> {
    * as they are sent.
    */
   public static <T> Actor<T> queueActor(final Strategy<Unit> s, final Effect1<T> ea) {
-    return actor(Strategy.<Unit>seqStrategy(), new Effect1<T>() {
+    return actor(Strategy.seqStrategy(), new Effect1<T>() {
 
       // Lock to ensure the actor only acts on one message at a time
-      AtomicBoolean suspended = new AtomicBoolean(true);
+      final AtomicBoolean suspended = new AtomicBoolean(true);
 
       // Queue to hold pending messages
-      ConcurrentLinkedQueue<T> mbox = new ConcurrentLinkedQueue<T>();
+      final ConcurrentLinkedQueue<T> mbox = new ConcurrentLinkedQueue<>();
 
       // Product so the actor can use its strategy (to act on messages in other threads,
       // to handle exceptions, etc.)
-      P1<Unit> processor = new P1<Unit>() {
+      final P1<Unit> processor = new P1<Unit>() {
         @Override public Unit _1() {
           // get next item from queue
           T a = mbox.poll();
@@ -69,13 +69,13 @@ public final class Actor<A> {
       }
 
       // If there are pending messages, use the strategy to run the processor
-      protected void work() {
+      void work() {
         if (!mbox.isEmpty() && suspended.compareAndSet(true, false)) {
           s.par(processor);
         }
       }
     });
-  };
+  }
   
   private Actor(final Strategy<Unit> s, final F<A, P1<Unit>> e) {
     this.s = s;
@@ -90,7 +90,7 @@ public final class Actor<A> {
    * @return A new actor that uses the given parallelization strategy and has the given side-effect.
    */
   public static <A> Actor<A> actor(final Strategy<Unit> s, final Effect1<A> e) {
-    return new Actor<A>(s, P1.curry(Effect.f(e)));
+    return new Actor<>(s, P1.curry(Effect.f(e)));
   }
 
   /**
@@ -101,7 +101,7 @@ public final class Actor<A> {
    * @return A new actor that uses the given parallelization strategy and has the given side-effect.
    */
   public static <A> Actor<A> actor(final Strategy<Unit> s, final F<A, P1<Unit>> e) {
-    return new Actor<A>(s, e);
+    return new Actor<>(s, e);
   }
 
   /**

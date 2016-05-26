@@ -82,13 +82,13 @@ public class ListTest {
     }
 
     @Test
-    public void toJavaArray() {
+    public void array() {
         final int max = 3;
         Integer[] ints = new Integer[max];
         for (int i = 0; i < max; i++) {
             ints[i] = i + 1;
         };
-        assertThat(List.range(1, max + 1).toJavaArray(), equalTo(ints));
+        assertThat(List.range(1, max + 1).array(Integer[].class), equalTo(ints));
     }
 
 }

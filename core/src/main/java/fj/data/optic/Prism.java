@@ -35,32 +35,32 @@ public final class Prism<S, A> extends PPrism<S, S, A, A> {
   /***********************************************************/
 
   /** compose a {@link Prism} with a {@link Setter} */
-  public final <C, D> Setter<S, C> composeSetter(final Setter<A, C> other) {
+  public <C, D> Setter<S, C> composeSetter(final Setter<A, C> other) {
     return new Setter<>(pPrism.composeSetter(other.pSetter));
   }
 
   /** compose a {@link Prism} with a {@link Traversal} */
-  public final <C, D> Traversal<S, C> composeTraversal(final Traversal<A, C> other) {
+  public <C, D> Traversal<S, C> composeTraversal(final Traversal<A, C> other) {
     return new Traversal<>(pPrism.composeTraversal(other.pTraversal));
   }
 
   /** compose a {@link Prism} with a {@link Optional} */
-  public final <C, D> Optional<S, C> composeOptional(final Optional<A, C> other) {
+  public <C, D> Optional<S, C> composeOptional(final Optional<A, C> other) {
     return new Optional<>(pPrism.composeOptional(other.pOptional));
   }
 
   /** compose a {@link Prism} with a {@link Lens} */
-  public final <C, D> Optional<S, C> composeLens(final Lens<A, C> other) {
+  public <C, D> Optional<S, C> composeLens(final Lens<A, C> other) {
     return new Optional<>(pPrism.composeLens(other.pLens));
   }
 
   /** compose a {@link Prism} with a {@link Prism} */
-  public final <C> Prism<S, C> composePrism(final Prism<A, C> other) {
+  public <C> Prism<S, C> composePrism(final Prism<A, C> other) {
     return new Prism<>(pPrism.composePrism(other.pPrism));
   }
 
   /** compose a {@link Prism} with an {@link Iso} */
-  public final <C, D> Prism<S, C> composeIso(final Iso<A, C> other) {
+  public <C, D> Prism<S, C> composeIso(final Iso<A, C> other) {
     return new Prism<>(pPrism.composeIso(other.pIso));
   }
 
@@ -70,19 +70,19 @@ public final class Prism<S, A> extends PPrism<S, S, A, A> {
 
   /** view a {@link Prism} as a {@link Setter} */
   @Override
-  public final Setter<S, A> asSetter() {
+  public Setter<S, A> asSetter() {
     return new Setter<>(pPrism.asSetter());
   }
 
   /** view a {@link Prism} as a {@link Traversal} */
   @Override
-  public final Traversal<S, A> asTraversal() {
+  public Traversal<S, A> asTraversal() {
     return new Traversal<>(pPrism.asTraversal());
   }
 
   /** view a {@link Prism} as a {@link Optional} */
   @Override
-  public final Optional<S, A> asOptional() {
+  public Optional<S, A> asOptional() {
     return new Optional<>(pPrism.asOptional());
   }
 
@@ -95,7 +95,7 @@ public final class Prism<S, A> extends PPrism<S, S, A, A> {
 
       @Override
       public Either<S, A> getOrModify(final S s) {
-        return getOption.f(s).option(Either.left(s), Either.<S, A> right_());
+        return getOption.f(s).option(Either.left(s), Either.right_());
       }
 
       @Override

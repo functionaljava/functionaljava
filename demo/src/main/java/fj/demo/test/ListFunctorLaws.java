@@ -1,7 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
-import fj.F3;
 import fj.Function;
 import static fj.Function.compose;
 import fj.P2;
@@ -39,10 +37,10 @@ forall f. forall g. forall x. map (f . g) x == map f (map g x)
 
 Note that to test this second law requires the generation of arbitrary functions.
 */
-@SuppressWarnings({"PackageVisibleField"})
+@SuppressWarnings("PackageVisibleField")
 @CheckParams(minSuccessful = 1000)
 public final class ListFunctorLaws {
-  final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.<String>identity()))));
+  final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.identity()))));
 
   final Property composition = property(arbF(coarbInteger, arbString), arbF(coarbLong, arbInteger), arbList(arbLong), (f, g, x) -> {
       final List<String> s1 = x.map(compose(f, g));
@@ -54,11 +52,9 @@ public final class ListFunctorLaws {
   // composition: OK, passed 1000 tests.
   @SuppressWarnings("unchecked")
   public static void main(final String[] args) {
-    check(ListFunctorLaws.class).foreachDoEffect(new Effect1<P2<String, CheckResult>>() {
-        public void f(final P2<String, CheckResult> r) {
-            System.out.print(r._1() + ": ");
-            summary.println(r._2());
-        }
+    check(ListFunctorLaws.class).foreachDoEffect(r -> {
+        System.out.print(r._1() + ": ");
+        summary.println(r._2());
     });
   }
 }

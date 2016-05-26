@@ -13,7 +13,7 @@ import static fj.data.List.iterableList;
  *
  * @version %build.number%
  */
-public class DList<A> {
+public final class DList<A> {
     private final F<List<A>,Trampoline<List<A>>> appendFn;
     
     private DList(final F<List<A>,Trampoline<List<A>>> appendFn) {
@@ -69,13 +69,13 @@ public class DList<A> {
      * @return the final List
      */
     public List<A> run() {
-        return appendFn.f(List.<A>nil()).run();
+        return appendFn.f(List.nil()).run();
     }
 
     /**
      * Converts the DList to a standard java.util.List.
      */
-    public java.util.List toJavaList() {
+    public java.util.List<A> toJavaList() {
         return run().toJavaList();
     }
     
@@ -85,7 +85,7 @@ public class DList<A> {
      * @return a empty DList.
      */
     public static <A> DList<A> nil() {
-        return new DList<>(Trampoline.<List<A>>pure());
+        return new DList<>(Trampoline.pure());
     }
     
     /**
@@ -104,7 +104,7 @@ public class DList<A> {
      * @return the new DList.
      */
     public DList<A> cons(A a) {
-        return DList.single(a).append(this);
+        return single(a).append(this);
     }
     
     /**
@@ -113,7 +113,7 @@ public class DList<A> {
      * @return the new DList.
      */
     public DList<A> snoc(A a) {
-        return this.append(DList.single(a));
+        return this.append(single(a));
     }
     
     /**

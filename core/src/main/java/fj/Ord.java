@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.Comparator;
 
 import static fj.Function.curry;
+import static fj.Semigroup.semigroup;
 
 /**
  * Tests for ordering between two objects.
@@ -75,7 +76,7 @@ public final class Ord<A> {
    * @return A new ord.
    */
   public <B> Ord<B> contramap(final F<B, A> f) {
-    return ord(F1Functions.o(F1Functions.o(F1Functions.<B, A, Ordering>andThen(f), this.f), f));
+    return ord(F1Functions.o(F1Functions.o(F1Functions.andThen(f), this.f), f));
   }
 
   /**
@@ -150,12 +151,20 @@ public final class Ord<A> {
   /**
    * A function that returns the greater of its two arguments.
    */
-  public final F<A, F<A, A>> max = curry((a, a1) -> max(a, a1));
+  public final F<A, F<A, A>> max = curry(this::max);
 
   /**
    * A function that returns the lesser of its two arguments.
    */
-  public final F<A, F<A, A>> min = curry((a, a1) -> min(a, a1));
+  public final F<A, F<A, A>> min = curry(this::min);
+
+  public final Semigroup<A> minSemigroup() {
+      return semigroup(this::min);
+  }
+
+  public final Semigroup<A> maxSemigroup() {
+      return semigroup(this::max);
+  }
 
   public final Ord<A> reverse() { return ord(Function.flip(f)); }
 
@@ -166,7 +175,7 @@ public final class Ord<A> {
    * @return An order instance.
    */
   public static <A> Ord<A> ord(final F<A, F<A, Ordering>> f) {
-    return new Ord<A>(f);
+    return new Ord<>(f);
   }
 
   /**
@@ -262,7 +271,7 @@ public final class Ord<A> {
   /**
    * An order instance for the {@link Ordering} type.
    */
-  public static final Ord<Ordering> orderingOrd = Ord.<Ordering>ord(curry((o1, o2) -> o1 == o2 ?
+  public static final Ord<Ordering> orderingOrd = Ord.ord(curry((o1, o2) -> o1 == o2 ?
          Ordering.EQ :
          o1 == Ordering.LT ?
          Ordering.LT :
@@ -334,7 +343,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Validation} type.
    */
   public static <A, B> Ord<Validation<A, B>> validationOrd(final Ord<A> oa, final Ord<B> ob) {
-    return eitherOrd(oa, ob).contramap(Validation.<A, B>either());
+    return eitherOrd(oa, ob).contramap(Validation.either());
   }
 
   /**
@@ -374,7 +383,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link NonEmptyList} type.
    */
   public static <A> Ord<NonEmptyList<A>> nonEmptyListOrd(final Ord<A> oa) {
-    return listOrd(oa).contramap(NonEmptyList.<A>toList_());
+    return listOrd(oa).contramap(NonEmptyList.toList_());
   }
 
   /**
@@ -428,7 +437,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Set} type.
    */
   public static <A> Ord<Set<A>> setOrd(final Ord<A> oa) {
-    return streamOrd(oa).contramap(as -> as.toStream());
+    return streamOrd(oa).contramap(Set::toStream);
   }
 
   /**
@@ -443,7 +452,7 @@ public final class Ord<A> {
    * @return An order instance for a product-1.
    */
   public static <A> Ord<P1<A>> p1Ord(final Ord<A> oa) {
-    return oa.contramap(P1.<A>__1());
+    return oa.contramap(P1.__1());
   }
 
 
@@ -527,7 +536,7 @@ public final class Ord<A> {
 
   class OrdComparator implements Comparator<A> {
 	@Override
-    public int compare(A o1, A o2) {
+    public final int compare(A o1, A o2) {
 	    return Ord.this.compare(o1, o2).toInt();
     }
   }

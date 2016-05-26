@@ -55,7 +55,7 @@ public final class Equal<A> {
    * @return A function that returns <code>true</code> if the two given arguments are equal.
    */
   public F2<A, A, Boolean> eq() {
-    return (a, a1) -> eq(a, a1);
+    return this::eq;
   }
 
   /**
@@ -75,7 +75,7 @@ public final class Equal<A> {
    * @return A new equal.
    */
   public <B> Equal<B> contramap(final F<B, A> f) {
-    return equal(F1Functions.o(F1Functions.o(F1Functions.<B, A, Boolean>andThen(f), this.f), f));
+    return equal(F1Functions.o(F1Functions.o(F1Functions.andThen(f), this.f), f));
   }
 
   /**
@@ -85,7 +85,7 @@ public final class Equal<A> {
    * @return An equal instance from the given function.
    */
   public static <A> Equal<A> equal(final F<A, F<A, Boolean>> f) {
-    return new Equal<A>(f);
+    return new Equal<>(f);
   }
 
   /**
@@ -96,7 +96,7 @@ public final class Equal<A> {
    *         equality.
    */
   public static <A> Equal<A> anyEqual() {
-    return equal(a1 -> a2 -> a1.equals(a2));
+    return equal(a1 -> a1::equals);
   }
 
   /**
@@ -202,7 +202,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Validation} type.
    */
   public static <A, B> Equal<Validation<A, B>> validationEqual(final Equal<A> ea, final Equal<B> eb) {
-    return eitherEqual(ea, eb).contramap(Validation.<A, B>either());
+    return eitherEqual(ea, eb).contramap(Validation.either());
   }
 
   /**
@@ -235,7 +235,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link NonEmptyList} type.
    */
   public static <A> Equal<NonEmptyList<A>> nonEmptyListEqual(final Equal<A> ea) {
-    return listEqual(ea).contramap(NonEmptyList.<A>toList_());
+    return listEqual(ea).contramap(NonEmptyList.toList_());
   }
 
   /**
@@ -302,7 +302,7 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Tree} type.
    */
   public static <A> Equal<Tree<A>> treeEqual(final Equal<A> ea) {
-    return Equal.<Tree<A>>equal(curry((t1, t2) -> ea.eq(t1.root(), t2.root()) && p1Equal(streamEqual(Equal.<A>treeEqual(ea))).eq(t2.subForest(), t1.subForest())));
+    return Equal.equal(curry((t1, t2) -> ea.eq(t1.root(), t2.root()) && p1Equal(streamEqual(Equal.treeEqual(ea))).eq(t2.subForest(), t1.subForest())));
   }
 
   /**
@@ -443,7 +443,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-2.
    */
   public static <A> Equal<V2<A>> v2Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V2.<A>toStream_());
+    return streamEqual(ea).contramap(V2.toStream_());
   }
 
   /**
@@ -453,7 +453,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-3.
    */
   public static <A> Equal<V3<A>> v3Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V3.<A>toStream_());
+    return streamEqual(ea).contramap(V3.toStream_());
   }
 
   /**
@@ -463,7 +463,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-4.
    */
   public static <A> Equal<V4<A>> v4Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V4.<A>toStream_());
+    return streamEqual(ea).contramap(V4.toStream_());
   }
 
   /**
@@ -473,7 +473,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-5.
    */
   public static <A> Equal<V5<A>> v5Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V5.<A>toStream_());
+    return streamEqual(ea).contramap(V5.toStream_());
   }
 
   /**
@@ -483,7 +483,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-6.
    */
   public static <A> Equal<V6<A>> v6Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V6.<A>toStream_());
+    return streamEqual(ea).contramap(V6.toStream_());
   }
 
   /**
@@ -493,7 +493,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-7.
    */
   public static <A> Equal<V7<A>> v7Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V7.<A>toStream_());
+    return streamEqual(ea).contramap(V7.toStream_());
   }
 
   /**
@@ -503,7 +503,7 @@ public final class Equal<A> {
    * @return An equal instance for a vector-8.
    */
   public static <A> Equal<V8<A>> v8Equal(final Equal<A> ea) {
-    return streamEqual(ea).contramap(V8.<A>toStream_());
+    return streamEqual(ea).contramap(V8.toStream_());
   }
 
   /**
@@ -538,30 +538,11 @@ public final class Equal<A> {
   }
 
   public static <K, V> Equal<TreeMap<K, V>> treeMapEqual(Equal<K> k, Equal<V> v) {
-    return equal(t1 -> t2 -> Equal.streamEqual(p2Equal(k, v)).eq(t1.toStream(), t2.toStream()));
+    return equal(t1 -> t2 -> streamEqual(p2Equal(k, v)).eq(t1.toStream(), t2.toStream()));
   }
 
   public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {
     return equal(w1 -> w2 -> p2Equal(eq1, eq2).eq(w1.run(), w2.run()));
-  }
-
-  /**
-   * @return Returns none if no equality can be determined by checking the nullity and reference values, else the equality
-   * @deprecated see issue #122.
-   */
-  @Deprecated
-  public static Option<Boolean> shallowEqualsO(Object o1, Object o2) {
-    if (o1 == null && o2 == null) {
-      return Option.some(true);
-    } else if (o1 == o2) {
-      return Option.some(true);
-    } else if (o1 != null && o2 != null) {
-      java.lang.Class<?> c = o1.getClass();
-      // WARNING: this may return some(false) for two instance of same type (and thus comparable) but of different class (typicaly anonymous class instance).
-      return c.isInstance(o2) ? Option.none() : Option.some(false);
-    } else {
-      return Option.some(false);
-    }
   }
   
   /**

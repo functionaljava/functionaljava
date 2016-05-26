@@ -56,7 +56,7 @@ public final class ParModule {
    * @return a function that evaluates a given product concurrently and returns a Promise of the result.
    */
   public <A> F<P1<A>, Promise<A>> promise() {
-    return ap1 -> promise(ap1);
+    return this::promise;
   }
 
   /**
@@ -77,7 +77,7 @@ public final class ParModule {
    * @return A higher-order function that takes pure functions to promise-valued functions.
    */
   public <A, B> F<F<A, B>, F<A, Promise<B>>> promisePure() {
-    return abf -> promise(abf);
+    return this::promise;
   }
 
   /**
@@ -110,7 +110,7 @@ public final class ParModule {
    * @return A function that takes an effect and returns a concurrent effect.
    */
   public <A> F<Effect1<A>, Actor<A>> effect() {
-    return effect -> effect(effect);
+    return this::effect;
   }
 
   /**
@@ -129,7 +129,7 @@ public final class ParModule {
    * @return A function that takes an effect and returns an actor that processes messages in some order.
    */
   public <A> F<Effect1<A>, Actor<A>> actor() {
-    return effect -> actor(effect);
+    return this::actor;
   }
 
   /**
@@ -148,7 +148,7 @@ public final class ParModule {
    * @return A first-class function that traverses a list inside a promise.
    */
   public <A> F<List<Promise<A>>, Promise<List<A>>> sequenceList() {
-    return list -> sequence(list);
+    return this::sequence;
   }
 
   /**
@@ -167,7 +167,7 @@ public final class ParModule {
    * @return A first-class function that traverses a stream inside a promise.
    */
   public <A> F<Stream<Promise<A>>, Promise<Stream<A>>> sequenceStream() {
-    return stream -> sequence(stream);
+    return this::sequence;
   }
 
   /**
@@ -261,7 +261,7 @@ public final class ParModule {
    * @return A Promise of a new NonEmptyList with the given function applied to each element.
    */
   public <A, B> Promise<NonEmptyList<B>> parMap(final NonEmptyList<A> as, final F<A, B> f) {
-    return mapM(as.toList(), promise(f)).fmap((F<List<B>, NonEmptyList<B>>) list -> NonEmptyList.fromList(list).some());
+    return mapM(as.toList(), promise(f)).fmap(list -> NonEmptyList.fromList(list).some());
   }
 
   /**
@@ -293,7 +293,7 @@ public final class ParModule {
    */
   public <A, B> Promise<Iterable<B>> parMap(final Iterable<A> as, final F<A, B> f) {
     return parMap(iterableStream(as), f)
-        .fmap(Function.<Stream<B>, Iterable<B>>vary(Function.<Stream<B>>identity()));
+        .fmap(Function.vary(Function.identity()));
   }
 
   /**
@@ -313,7 +313,7 @@ public final class ParModule {
    * @return A Promise of a new Array with the given function applied to each element.
    */
   public <A, B> Promise<Array<B>> parMap(final Array<A> as, final F<A, B> f) {
-    return parMap(as.toStream(), f).fmap(stream -> stream.toArray());
+    return parMap(as.toStream(), f).fmap(Stream::toArray);
   }
 
   /**
@@ -334,7 +334,7 @@ public final class ParModule {
    */
   public <A, B> Promise<Zipper<B>> parMap(final Zipper<A> za, final F<A, B> f) {
     return parMap(za.rights(), f)
-        .apply(promise(f).f(za.focus()).apply(parMap(za.lefts(), f).fmap(curry(Zipper.<B>zipper()))));
+        .apply(promise(f).f(za.focus()).apply(parMap(za.lefts(), f).fmap(curry(Zipper.zipper()))));
   }
 
   /**
@@ -346,7 +346,7 @@ public final class ParModule {
    */
   public <A, B> Promise<Tree<B>> parMap(final Tree<A> ta, final F<A, B> f) {
     return mapM(ta.subForest(), this.<Tree<A>, Tree<B>>mapStream().f(this.<A, B>parMapTree().f(f)))
-        .apply(promise(f).f(ta.root()).fmap(Tree.<B>node()));
+        .apply(promise(f).f(ta.root()).fmap(Tree.node()));
   }
 
   /**
@@ -370,8 +370,8 @@ public final class ParModule {
     final P4<Tree<A>, Stream<Tree<A>>, Stream<Tree<A>>, Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>>> p = za.p();
     return mapM(p._4(),
             p3 -> parMap(p3._3(), tf).apply(promise(f).f(p3._2()).apply(
-                parMap(p3._1(), tf).fmap(P.<Stream<Tree<B>>, B, Stream<Tree<B>>>p3())))).apply(parMap(za.rights(), tf).apply(
-        parMap(za.lefts(), tf).apply(parMap(p._1(), f).fmap(TreeZipper.<B>treeZipper()))));
+                parMap(p3._1(), tf).fmap(P.p3())))).apply(parMap(za.rights(), tf).apply(
+        parMap(za.lefts(), tf).apply(parMap(p._1(), f).fmap(TreeZipper.treeZipper()))));
   }
 
   /**
@@ -382,7 +382,7 @@ public final class ParModule {
    * @return A promise of a new List with the given function bound across its elements.
    */
   public <A, B> Promise<List<B>> parFlatMap(final List<A> as, final F<A, List<B>> f) {
-    return parFoldMap(as, f, Monoid.<B>listMonoid());
+    return parFoldMap(as, f, Monoid.listMonoid());
   }
 
   /**
@@ -393,7 +393,7 @@ public final class ParModule {
    * @return A promise of a new Stream with the given function bound across its elements.
    */
   public <A, B> Promise<Stream<B>> parFlatMap(final Stream<A> as, final F<A, Stream<B>> f) {
-    return parFoldMap(as, f, Monoid.<B>streamMonoid());
+    return parFoldMap(as, f, Monoid.streamMonoid());
   }
 
   /**
@@ -404,7 +404,7 @@ public final class ParModule {
    * @return A promise of a new Array with the given function bound across its elements.
    */
   public <A, B> Promise<Array<B>> parFlatMap(final Array<A> as, final F<A, Array<B>> f) {
-    return parMap(as, f).fmap(Array.<B>join());
+    return parMap(as, f).fmap(Array.join());
   }
 
   /**
@@ -415,8 +415,8 @@ public final class ParModule {
    * @return A promise of a new Iterable with the given function bound across its elements.
    */
   public <A, B> Promise<Iterable<B>> parFlatMap(final Iterable<A> as, final F<A, Iterable<B>> f) {
-    return parMap(as, f).fmap(IterableW.<B, Iterable<B>>join())
-        .fmap(Function.<IterableW<B>, Iterable<B>>vary(Function.<Iterable<B>>identity()));
+    return parMap(as, f).fmap(IterableW.join())
+        .fmap(Function.vary(Function.<Iterable<B>>identity()));
   }
 
   /**
@@ -428,7 +428,7 @@ public final class ParModule {
    * @return A Promise of a new list with the results of applying the given function across the two lists in lockstep.
    */
   public <A, B, C> Promise<List<C>> parZipWith(final List<A> as, final List<B> bs, final F<A, F<B, C>> f) {
-    return sequence(as.<B, Promise<C>>zipWith(bs, promise(uncurryF2(f))));
+    return sequence(as.zipWith(bs, promise(uncurryF2(f))));
   }
 
   /**
@@ -440,7 +440,7 @@ public final class ParModule {
    * @return A Promise of a new stream with the results of applying the given function across the two streams, stepwise.
    */
   public <A, B, C> Promise<Stream<C>> parZipWith(final Stream<A> as, final Stream<B> bs, final F<A, F<B, C>> f) {
-    return sequence(as.<B, Promise<C>>zipWith(bs, promise(uncurryF2(f))));
+    return sequence(as.zipWith(bs, promise(uncurryF2(f))));
   }
 
   /**
@@ -452,7 +452,7 @@ public final class ParModule {
    * @return A Promise of a new array with the results of applying the given function across the two arrays, stepwise.
    */
   public <A, B, C> Promise<Array<C>> parZipWith(final Array<A> as, final Array<B> bs, final F<A, F<B, C>> f) {
-    return parZipWith(as.toStream(), bs.toStream(), f).fmap(stream -> stream.toArray());
+    return parZipWith(as.toStream(), bs.toStream(), f).fmap(Stream::toArray);
   }
 
   /**
@@ -465,7 +465,7 @@ public final class ParModule {
    */
   public <A, B, C> Promise<Iterable<C>> parZipWith(final Iterable<A> as, final Iterable<B> bs, final F<A, F<B, C>> f) {
     return parZipWith(iterableStream(as), iterableStream(bs), f).fmap(
-        Function.<Stream<C>, Iterable<C>>vary(Function.<Iterable<C>>identity()));
+        Function.vary(Function.<Iterable<C>>identity()));
   }
 
   /**
@@ -496,7 +496,7 @@ public final class ParModule {
    */
   public <A, B> Promise<B> parFoldMap(final Stream<A> as, final F<A, B> map, final Monoid<B> reduce,
                                       final F<Stream<A>, P2<Stream<A>, Stream<A>>> chunking) {
-    return parMap(Stream.unfold(stream -> stream.isEmpty() ? Option.<P2<Stream<A>, Stream<A>>>none() : some(chunking.f(stream)), as), Stream.<A, B>map_().f(map)).bind(stream -> parMap(stream, reduce.sumLeftS()).fmap(reduce.sumLeftS()));
+    return parMap(Stream.unfold(stream -> stream.isEmpty() ? Option.none() : some(chunking.f(stream)), as), Stream.<A, B>map_().f(map)).bind(stream -> parMap(stream, reduce.sumLeftS()).fmap(reduce.sumLeftS()));
   }
 
   /**
@@ -515,7 +515,7 @@ public final class ParModule {
   public <A, B> Promise<B> parFoldMap(final Iterable<A> as, final F<A, B> map, final Monoid<B> reduce,
                                       final F<Iterable<A>, P2<Iterable<A>, Iterable<A>>> chunking) {
     return parFoldMap(iterableStream(as), map, reduce, (Stream<A> stream) -> {
-      final F<Iterable<A>, Stream<A>> is = iterable -> iterableStream(iterable);
+      final F<Iterable<A>, Stream<A>> is = Stream::iterableStream;
       return chunking.f(stream).map1(is).map2(is);
     });
   }

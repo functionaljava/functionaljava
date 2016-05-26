@@ -36,7 +36,7 @@ public final class Conversions {
    * @return A function that converts lists to arrays.
    */
   public static <A> F<List<A>, Array<A>> List_Array() {
-    return as -> as.toArray();
+    return List::toArray;
   }
 
   /**
@@ -45,7 +45,7 @@ public final class Conversions {
    * @return A function that converts lists to streams.
    */
   public static <A> F<List<A>, Stream<A>> List_Stream() {
-    return as -> as.toStream();
+    return List::toStream;
   }
 
   /**
@@ -54,7 +54,7 @@ public final class Conversions {
    * @return A function that converts lists to options.
    */
   public static <A> F<List<A>, Option<A>> List_Option() {
-    return as -> as.headOption();
+    return List::headOption;
   }
 
   /**
@@ -69,7 +69,7 @@ public final class Conversions {
   /**
    * A function that converts lists to strings.
    */
-  public static final F<List<Character>, String> List_String = cs -> asString(cs);
+  public static final F<List<Character>, String> List_String = List::asString;
 
   /**
    * A function that converts lists to string buffers.
@@ -91,7 +91,7 @@ public final class Conversions {
    * @return A function that converts arrays to lists.
    */
   public static <A> F<Array<A>, List<A>> Array_List() {
-    return as -> as.toList();
+    return Array::toList;
   }
 
   /**
@@ -100,7 +100,7 @@ public final class Conversions {
    * @return A function that converts arrays to streams.
    */
   public static <A> F<Array<A>, Stream<A>> Array_Stream() {
-    return as -> as.toStream();
+    return Array::toStream;
   }
 
   /**
@@ -109,7 +109,7 @@ public final class Conversions {
    * @return A function that converts arrays to options.
    */
   public static <A> F<Array<A>, Option<A>> Array_Option() {
-    return as -> as.toOption();
+    return Array::toOption;
   }
 
   /**
@@ -125,8 +125,8 @@ public final class Conversions {
    * A function that converts arrays to strings.
    */
   public static final F<Array<Character>, String> Array_String = cs -> {
-      final StringBuilder sb = new StringBuilder();
-      cs.foreachDoEffect(c -> sb.append(c));
+      final StringBuilder sb = new StringBuilder(cs.length());
+      cs.foreachDoEffect(sb::append);
       return sb.toString();
   };
 
@@ -134,8 +134,8 @@ public final class Conversions {
    * A function that converts arrays to string buffers.
    */
   public static final F<Array<Character>, StringBuffer> Array_StringBuffer = cs -> {
-      final StringBuffer sb = new StringBuffer();
-      cs.foreachDoEffect(c -> sb.append(c));
+      final StringBuffer sb = new StringBuffer(cs.length());
+      cs.foreachDoEffect(sb::append);
       return sb;
   };
 
@@ -143,8 +143,8 @@ public final class Conversions {
    * A function that converts arrays to string builders.
    */
   public static final F<Array<Character>, StringBuilder> Array_StringBuilder = cs -> {
-      final StringBuilder sb = new StringBuilder();
-      cs.foreachDoEffect((Character c) -> sb.append(c));
+      final StringBuilder sb = new StringBuilder(cs.length());
+      cs.foreachDoEffect(sb::append);
       return sb;
   };
 
@@ -158,7 +158,7 @@ public final class Conversions {
    * @return A function that converts streams to lists.
    */
   public static <A> F<Stream<A>, List<A>> Stream_List() {
-    return as -> as.toList();
+    return Stream::toList;
   }
 
   /**
@@ -167,7 +167,7 @@ public final class Conversions {
    * @return A function that converts streams to arrays.
    */
   public static <A> F<Stream<A>, Array<A>> Stream_Array() {
-    return as -> as.toArray();
+    return Stream::toArray;
   }
 
   /**
@@ -176,7 +176,7 @@ public final class Conversions {
    * @return A function that converts streams to options.
    */
   public static <A> F<Stream<A>, Option<A>> Stream_Option() {
-    return as -> as.toOption();
+    return Stream::toOption;
   }
 
   /**
@@ -193,7 +193,7 @@ public final class Conversions {
    */
   public static final F<Stream<Character>, String> Stream_String = cs -> {
       final StringBuilder sb = new StringBuilder();
-      cs.foreachDoEffect((Character c) -> sb.append(c));
+      cs.foreachDoEffect(sb::append);
       return sb.toString();
     };
 
@@ -202,7 +202,7 @@ public final class Conversions {
    */
   public static final F<Stream<Character>, StringBuffer> Stream_StringBuffer = cs -> {
       final StringBuffer sb = new StringBuffer();
-      cs.foreachDoEffect((Character c) -> sb.append(c));
+      cs.foreachDoEffect(sb::append);
       return sb;
   };
 
@@ -211,7 +211,7 @@ public final class Conversions {
    */
   public static final F<Stream<Character>, StringBuilder> Stream_StringBuilder = cs -> {
       final StringBuilder sb = new StringBuilder();
-      cs.foreachDoEffect((Character c) -> sb.append(c));
+      cs.foreachDoEffect(sb::append);
       return sb;
   };
 
@@ -225,7 +225,7 @@ public final class Conversions {
    * @return A function that converts options to lists.
    */
   public static <A> F<Option<A>, List<A>> Option_List() {
-    return o -> o.toList();
+    return Option::toList;
   }
 
   /**
@@ -234,7 +234,7 @@ public final class Conversions {
    * @return A function that converts options to arrays.
    */
   public static <A> F<Option<A>, Array<A>> Option_Array() {
-    return o -> o.toArray();
+    return Option::toArray;
   }
 
   /**
@@ -243,7 +243,7 @@ public final class Conversions {
    * @return A function that converts options to streams.
    */
   public static <A> F<Option<A>, Stream<A>> Option_Stream() {
-    return o -> o.toStream();
+    return Option::toStream;
   }
 
   /**
@@ -275,7 +275,7 @@ public final class Conversions {
     // BEGIN Effect
 
     public static F<Effect0, P1<Unit>> Effect0_P1() {
-        return e -> Effect0_P1(e);
+        return Conversions::Effect0_P1;
     }
 
     public static P1<Unit> Effect0_P1(Effect0 e) {
@@ -287,18 +287,18 @@ public final class Conversions {
     }
 
     public static <A> F<Effect1<A>, F<A, Unit>> Effect1_F() {
-        return e -> Effect1_F(e);
+        return Conversions::Effect1_F;
     }
 
     public static IO<Unit> Effect_IO(Effect0 e) {
         return () ->{
             e.f();
-            return Unit.unit();
+            return unit();
         };
     }
 
     public static F<Effect0, IO<Unit>> Effect_IO() {
-        return e -> Effect_IO(e);
+        return Conversions::Effect_IO;
     }
 
     public static SafeIO<Unit> Effect_SafeIO(Effect0 e) {
@@ -309,7 +309,7 @@ public final class Conversions {
     }
 
     public static F<Effect0, SafeIO<Unit>> Effect_SafeIO() {
-        return e -> Effect_SafeIO(e);
+        return Conversions::Effect_SafeIO;
     }
 
     // END Effect
@@ -451,7 +451,7 @@ public final class Conversions {
     }
 
     public static <A> F<F<Unit, A>, SafeIO<A>> F_SafeIO() {
-        return f -> F_SafeIO(f);
+        return Conversions::F_SafeIO;
     }
 
     // END F
@@ -461,7 +461,7 @@ public final class Conversions {
   /**
    * A function that converts strings to lists.
    */
-  public static final F<String, List<Character>> String_List = s -> fromString(s);
+  public static final F<String, List<Character>> String_List = List::fromString;
 
   /**
    * A function that converts strings to arrays.
@@ -490,12 +490,12 @@ public final class Conversions {
   /**
    * A function that converts strings to string buffers.
    */
-  public static final F<String, StringBuffer> String_StringBuffer = s -> new StringBuffer(s);
+  public static final F<String, StringBuffer> String_StringBuffer = StringBuffer::new;
 
   /**
    * A function that converts strings to string builders.
    */
-  public static final F<String, StringBuilder> String_StringBuilder = s -> new StringBuilder(s);
+  public static final F<String, StringBuilder> String_StringBuilder = StringBuilder::new;
 
   // END String ->
 
@@ -533,12 +533,12 @@ public final class Conversions {
   /**
    * A function that converts string buffers to strings.
    */
-  public static final F<StringBuffer, String> StringBuffer_String = s -> s.toString();
+  public static final F<StringBuffer, String> StringBuffer_String = StringBuffer::toString;
 
   /**
    * A function that converts string buffers to string builders.
    */
-  public static final F<StringBuffer, StringBuilder> StringBuffer_StringBuilder = s -> new StringBuilder(s);
+  public static final F<StringBuffer, StringBuilder> StringBuffer_StringBuilder = StringBuilder::new;
 
   // END StringBuffer ->
 
@@ -576,12 +576,12 @@ public final class Conversions {
   /**
    * A function that converts string builders to strings.
    */
-  public static final F<StringBuilder, String> StringBuilder_String = s -> s.toString();
+  public static final F<StringBuilder, String> StringBuilder_String = StringBuilder::toString;
 
   /**
    * A function that converts string builders to string buffers.
    */
-  public static final F<StringBuilder, StringBuffer> StringBuilder_StringBuffer = s -> new StringBuffer(s);
+  public static final F<StringBuilder, StringBuffer> StringBuilder_StringBuffer = StringBuffer::new;
 
   // END StringBuilder ->
 
@@ -593,15 +593,15 @@ public final class Conversions {
     }
 
     public static <A, B, Z extends Exception> F<Try0<A, Z>, SafeIO<Validation<Z, A>>> Try_SafeIO() {
-        return t -> Try_SafeIO(t);
+        return Conversions::Try_SafeIO;
     }
 
     public static <A, B, Z extends IOException> IO<A> Try_IO(Try0<A, Z> t) {
-        return () -> t.f();
+        return t::f;
     }
 
     public static <A, B, Z extends IOException> F<Try0<A, Z>, IO<A>> Try_IO() {
-        return t -> Try_IO(t);
+        return Conversions::Try_IO;
     }
 
     public static <A, B, Z extends IOException> F<A, Validation<Z, B>> Try_F(Try1<A, B, Z> t) {
@@ -609,14 +609,14 @@ public final class Conversions {
     }
 
     public static <A, B, Z extends IOException> F<Try1<A, B, Z>, F<A, Validation<Z, B>>> Try_F() {
-        return t -> Try_F(t);
+        return Conversions::Try_F;
     }
 
     // END Try
 
     // BEGIN TryEffect
 
-    static public <E extends Exception> P1<Validation<E, Unit>> TryEffect_P(final TryEffect0<E> t) {
+    public static <E extends Exception> P1<Validation<E, Unit>> TryEffect_P(final TryEffect0<E> t) {
         return TryEffect.f(t);
     }
 

@@ -22,40 +22,40 @@ public final class BigIntegers {
    * Curried Integer addition.
    */
   public static final F<BigInteger, F<BigInteger, BigInteger>> add =
-      curry((a1, a2) -> a1.add(a2));
+      curry((F2<BigInteger, BigInteger, BigInteger>) BigInteger::add);
 
   /**
    * Curried Integer multiplication.
    */
   public static final F<BigInteger, F<BigInteger, BigInteger>> multiply =
-      curry((a1, a2) -> a1.multiply(a2));
+      curry(BigInteger::multiply);
 
   /**
    * Curried Integer subtraction.
    */
   public static final F<BigInteger, F<BigInteger, BigInteger>> subtract =
-      curry((a1, a2) -> a1.subtract(a2));
+      curry((F2<BigInteger, BigInteger, BigInteger>) BigInteger::subtract);
 
   /**
    * Negation.
    */
-  public static final F<BigInteger, BigInteger> negate = i -> i.negate();
+  public static final F<BigInteger, BigInteger> negate = BigInteger::negate;
 
   /**
    * Absolute value.
    */
-  public static final F<BigInteger, BigInteger> abs = i -> i.abs();
+  public static final F<BigInteger, BigInteger> abs = BigInteger::abs;
 
   /**
    * Remainder.
    */
   public static final F<BigInteger, F<BigInteger, BigInteger>> remainder =
-      curry((a1, a2) -> a1.remainder(a2));
+      curry(BigInteger::remainder);
 
   /**
    * Power.
    */
-  public static final F<BigInteger, F<Integer, BigInteger>> power = curry((a1, a2) -> a1.pow(a2));
+  public static final F<BigInteger, F<Integer, BigInteger>> power = curry(BigInteger::pow);
 
   /**
    * Sums a list of big integers.

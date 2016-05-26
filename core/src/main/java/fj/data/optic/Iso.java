@@ -47,32 +47,32 @@ public final class Iso<S, A> extends PIso<S, S, A, A> {
   /**********************************************************/
 
   /** compose an {@link Iso} with a {@link Setter} */
-  public final <C> Setter<S, C> composeSetter(final Setter<A, C> other) {
+  public <C> Setter<S, C> composeSetter(final Setter<A, C> other) {
     return new Setter<>(pIso.composeSetter(other.pSetter));
   }
 
   /** compose an {@link Iso} with a {@link Traversal} */
-  public final <C> Traversal<S, C> composeTraversal(final Traversal<A, C> other) {
+  public <C> Traversal<S, C> composeTraversal(final Traversal<A, C> other) {
     return new Traversal<>(pIso.composeTraversal(other.pTraversal));
   }
 
   /** compose an {@link Iso} with a {@link Optional} */
-  public final <C> Optional<S, C> composeOptional(final Optional<A, C> other) {
+  public <C> Optional<S, C> composeOptional(final Optional<A, C> other) {
     return new Optional<>(pIso.composeOptional(other.pOptional));
   }
 
   /** compose an {@link Iso} with a {@link Prism} */
-  public final <C> Prism<S, C> composePrism(final Prism<A, C> other) {
+  public <C> Prism<S, C> composePrism(final Prism<A, C> other) {
     return new Prism<>(pIso.composePrism(other.pPrism));
   }
 
   /** compose an {@link Iso} with a {@link Lens} */
-  public final <C> Lens<S, C> composeLens(final Lens<A, C> other) {
+  public <C> Lens<S, C> composeLens(final Lens<A, C> other) {
     return asLens().composeLens(other);
   }
 
   /** compose an {@link Iso} with an {@link Iso} */
-  public final <C> Iso<S, C> composeIso(final Iso<A, C> other) {
+  public <C> Iso<S, C> composeIso(final Iso<A, C> other) {
     return new Iso<>(pIso.composeIso(other.pIso));
   }
 
@@ -82,31 +82,31 @@ public final class Iso<S, A> extends PIso<S, S, A, A> {
 
   /** view an {@link Iso} as a {@link Setter} */
   @Override
-  public final Setter<S, A> asSetter() {
+  public Setter<S, A> asSetter() {
     return new Setter<>(pIso.asSetter());
   }
 
   /** view an {@link Iso} as a {@link Traversal} */
   @Override
-  public final Traversal<S, A> asTraversal() {
+  public Traversal<S, A> asTraversal() {
     return new Traversal<>(pIso.asTraversal());
   }
 
   /** view an {@link Iso} as a {@link Optional} */
   @Override
-  public final Optional<S, A> asOptional() {
+  public Optional<S, A> asOptional() {
     return new Optional<>(pIso.asOptional());
   }
 
   /** view an {@link Iso} as a {@link Prism} */
   @Override
-  public final Prism<S, A> asPrism() {
+  public Prism<S, A> asPrism() {
     return new Prism<>(pIso.asPrism());
   }
 
   /** view an {@link Iso} as a {@link Lens} */
   @Override
-  public final Lens<S, A> asLens() {
+  public Lens<S, A> asLens() {
     return new Lens<>(pIso.asLens());
   }
 

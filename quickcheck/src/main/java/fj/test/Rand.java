@@ -2,11 +2,13 @@ package fj.test;
 
 import fj.F;
 import fj.data.Option;
-import static fj.data.Option.some;
 
+import java.util.Random;
+
+import static fj.data.Option.none;
+import static fj.data.Option.some;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import java.util.Random;
 
 /**
  * A random number generator.
@@ -17,9 +19,17 @@ public final class Rand {
   private final F<Option<Long>, F<Integer, F<Integer, Integer>>> f;
   private final F<Option<Long>, F<Double, F<Double, Double>>> g;
 
-  private Rand(final F<Option<Long>, F<Integer, F<Integer, Integer>>> f, final F<Option<Long>, F<Double, F<Double, Double>>> g) {
+  // TODO Change to F<Long,Rand> when rand(f,g) is removed
+  private final Option<F<Long, Rand>> optOnReseed;
+
+  private Rand(
+      F<Option<Long>, F<Integer, F<Integer, Integer>>> f,
+      F<Option<Long>, F<Double, F<Double, Double>>> g,
+      Option<F<Long, Rand>> optOnReseed) {
+
     this.f = f;
     this.g = g;
+    this.optOnReseed = optOnReseed;
   }
 
   /**
@@ -42,7 +52,7 @@ public final class Rand {
    * @return A random value in the given range.
    */
   public int choose(final int from, final int to) {
-    return f.f(Option.<Long>none()).f(from).f(to);
+    return f.f(Option.none()).f(from).f(to);
   }
 
   /**
@@ -65,7 +75,7 @@ public final class Rand {
    * @return A random value in the given range.
    */
   public double choose(final double from, final double to) {
-    return g.f(Option.<Long>none()).f(from).f(to);
+    return g.f(Option.none()).f(from).f(to);
   }
 
   /**
@@ -74,65 +84,97 @@ public final class Rand {
    * @param seed The seed of the new random generator.
    * @return A random generator with the given seed.
    */
-  public Rand reseed(final long seed) {
-    return new Rand(new F<Option<Long>, F<Integer, F<Integer, Integer>>>() {
-      public F<Integer, F<Integer, Integer>> f(final Option<Long> old) {
-        return new F<Integer, F<Integer, Integer>>() {
-          public F<Integer, Integer> f(final Integer from) {
-            return new F<Integer, Integer>() {
-              public Integer f(final Integer to) {
-                return f.f(some(seed)).f(from).f(to);
-              }
-            };
-          }
-        };
-      }
-    }, new F<Option<Long>, F<Double, F<Double, Double>>>() {
-      public F<Double, F<Double, Double>> f(final Option<Long> old) {
-        return new F<Double, F<Double, Double>>() {
-          public F<Double, Double> f(final Double from) {
-            return new F<Double, Double>() {
-              public Double f(final Double to) {
-                return g.f(some(seed)).f(from).f(to);
-              }
-            };
-          }
-        };
-      }
-    });
+  public Rand reseed(long seed) {
+    return optOnReseed.<Rand>option(
+        () -> {
+          throw new IllegalStateException("reseed() called on a Rand created with deprecated rand() method");
+        },
+        onReseed -> onReseed.f(seed));
   }
 
   /**
    * Constructs a random generator from the given functions that supply a range to produce a
    * result.
+   * <p>
+   * Calling {@link #reseed(long)} on an instance returned from this method will
+   * result in an exception being thrown. Use {@link #rand(F, F, F)} instead.
    *
    * @param f The integer random generator.
    * @param g The floating-point random generator.
    * @return A random generator from the given functions that supply a range to produce a result.
    */
-  public static Rand rand(final F<Option<Long>, F<Integer, F<Integer, Integer>>> f, final F<Option<Long>, F<Double, F<Double, Double>>> g) {
-    return new Rand(f, g);
+  // TODO Change Option<F<Long,Rand>> optOnReseed to F<Long,Road> onReseed when removing this method
+  @Deprecated
+  public static Rand rand(
+      F<Option<Long>, F<Integer, F<Integer, Integer>>> f,
+      F<Option<Long>, F<Double, F<Double, Double>>> g) {
+
+    return new Rand(f, g, none());
   }
 
+  /**
+   * Constructs a reseedable random generator from the given functions that supply a range to produce a
+   * result.
+   *
+   * @param f        The integer random generator.
+   * @param g        The floating-point random generator.
+   * @param onReseed Function to create a reseeded Rand.
+   * @return A random generator from the given functions that supply a range to produce a result.
+   */
+  public static Rand rand(
+      F<Option<Long>, F<Integer, F<Integer, Integer>>> f,
+      F<Option<Long>, F<Double, F<Double, Double>>> g,
+      F<Long, Rand> onReseed) {
 
-  private static final F<Long, Random> fr = new F<Long, Random>() {
-    public Random f(final Long x) {
-      return new Random(x);
-    }
-  };
+    return new Rand(f, g, some(onReseed));
+  }
 
   /**
    * A standard random generator that uses {@link Random}.
    */
-  public static final Rand standard = new Rand(seed -> from -> to -> {
-    final int min = min(from, to);
-    final int max = max(from, to);
-    final Random random = seed.map(fr).orSome(new Random());
-    return (int) ((random.nextLong() & Long.MAX_VALUE) % (1L + max - min)) + min;
-  }, seed -> from -> to -> {
-    final double min = min(from, to);
-    final double max = max(from, to);
-    final Random random = seed.map(fr).orSome(new Random());
-    return random.nextDouble() * (max - min) + min;
-  });
+  public static final Rand standard = createStandard(new Random());
+
+  private static Rand createStandard(Random defaultRandom) {
+    return rand(
+        optSeed -> from -> to ->
+            standardChooseInt(optSeed.<Random>option(() -> defaultRandom, Random::new), from, to),
+        optSeed -> from -> to ->
+            standardChooseDbl(optSeed.<Random>option(() -> defaultRandom, Random::new), from, to),
+        newSeed -> createStandard(new Random(newSeed)));
+  }
+
+  /*
+   * Returns a uniformly distributed value between min(from,to) (inclusive) and max(from,to) (inclusive).
+   */
+  private static int standardChooseInt(Random random, int from, int to) {
+    int result;
+    if (from != to) {
+      int min = min(from, to);
+      int max = max(from, to);
+      long range = (1L + max) - min;
+      long bound = Long.MAX_VALUE - (Long.MAX_VALUE % range);
+      long r = random.nextLong() & Long.MAX_VALUE;
+      while (r >= bound) {
+        // Ensure uniformity
+        r = random.nextLong() & Long.MAX_VALUE;
+      }
+      result = (int) ((r % range) + min);
+    } else {
+      result = from;
+    }
+    return result;
+  }
+
+  /*
+   * Returns a uniformly distributed value between min(from,to) (inclusive) and max(from,to) (exclusive)
+   *
+   * In theory, this differs from the choose() contract, which specifies a closed interval.
+   * In practice, the difference shouldn't matter.
+   */
+  private static double standardChooseDbl(Random random, double from, double to) {
+    double min = min(from, to);
+    double max = max(from, to);
+    return ((max - min) * random.nextDouble()) + min;
+  }
+
 }

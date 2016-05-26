@@ -30,7 +30,7 @@ public final class V2<A> implements Iterable<A> {
    * @return A new vector-2.
    */
   public static <A> V2<A> p(final P2<A, A> p) {
-    return new V2<A>(p);
+    return new V2<>(p);
   }
 
   /**
@@ -57,7 +57,7 @@ public final class V2<A> implements Iterable<A> {
    * @return a function that gets the first element of a given vector.
    */
   public static <A> F<V2<A>, A> __1() {
-    return v -> v._1();
+    return V2::_1;
   }
 
   /**
@@ -66,7 +66,7 @@ public final class V2<A> implements Iterable<A> {
    * @return a function that gets the second element of a given vector.
    */
   public static <A> F<V2<A>, A> __2() {
-    return v -> v._2();
+    return V2::_2;
   }
 
   /**
@@ -111,7 +111,7 @@ public final class V2<A> implements Iterable<A> {
    * @return a function that transforms a vector-2 to a stream of its elements.
    */
   public static <A> F<V2<A>, Stream<A>> toStream_() {
-    return v -> v.toStream();
+    return V2::toStream;
   }
 
   /**
@@ -120,7 +120,7 @@ public final class V2<A> implements Iterable<A> {
    * @return a function that transforms a vector-2 to the equivalent product-2.
    */
   public static <A> F<V2<A>, P2<A, A>> p_() {
-    return v -> v.p();
+    return V2::p;
   }
 
   /**
@@ -193,7 +193,7 @@ public final class V2<A> implements Iterable<A> {
    * @return the first element of this vector as a product-1.
    */
   public P1<A> head() {
-    return P.lazy(() -> V2.this._1());
+    return P.lazy(V2.this::_1);
   }
 
 }

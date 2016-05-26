@@ -72,7 +72,7 @@ public final class Bottom {
    * @param c The type being deconstructed.
    * @return A deconstruction failure that was non-exhaustive.
    */
-  @SuppressWarnings({"UnnecessaryFullyQualifiedName"})
+  @SuppressWarnings("UnnecessaryFullyQualifiedName")
   public static <A> Error decons(final java.lang.Class<A> c) {
     return error("Deconstruction failure on type " + c);
   }
@@ -83,7 +83,7 @@ public final class Bottom {
    * @return A function that returns the <code>toString</code> for a throwable.
    */
   public static <T extends Throwable> F<T, String> eToString() {
-    return t -> t.toString();
+    return Throwable::toString;
   }
 
   /**
@@ -92,6 +92,6 @@ public final class Bottom {
    * @return A function that returns the <code>getMessage</code> for a throwable.
    */
   public static <T extends Throwable> F<T, String> eMessage() {
-    return t -> t.getMessage();
+    return Throwable::getMessage;
   }
 }

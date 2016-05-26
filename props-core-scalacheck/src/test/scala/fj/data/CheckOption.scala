@@ -1,9 +1,11 @@
 package fj
 package data
 
+import fj.data.optic.PrismLaws
 import org.scalacheck.Prop._
 import ArbitraryOption.arbitraryOption
 import ArbitraryP.arbitraryP1
+import ArbitraryUnit._
 import Equal.{optionEqual, stringEqual}
 import Unit.unit
 import Option.{none, some, join}
@@ -84,4 +86,10 @@ object CheckOption extends Properties("Option") {
     a.isNone || optionEqual(stringEqual).eq(
       join(a),
       a.some))
+
+  property("Optic.pSome") = PrismLaws[Option[String], String](Option.Optic.pSome())
+
+  property("Optic.some") = PrismLaws[Option[String], String](Option.Optic.some())
+
+  property("Optic.none") = PrismLaws[Option[Unit], Unit](Option.Optic.none())
 }

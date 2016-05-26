@@ -38,7 +38,7 @@ public abstract class Digit<V, A> {
    */
     public final A reduceRight(final F<A, F<A, A>> f) {
         return match(
-            one -> one.value(),
+            One::value,
             two -> {
                 final V2<A> v = two.values();
                 return f.f(v._1()).f(v._2());
@@ -62,7 +62,7 @@ public abstract class Digit<V, A> {
    */
   public final A reduceLeft(final F<A, F<A, A>> f) {
     return match(
-        one -> one.value(),
+        One::value,
         two -> {
             final V2<A> v = two.values();
             return f.f(v._1()).f(v._2());
@@ -88,10 +88,10 @@ public abstract class Digit<V, A> {
    */
   public final <B> Digit<V, B> map(final F<A, B> f, final Measured<V, B> m) {
     return match(
-        one -> new One<V, B>(m, f.f(one.value())),
-        two -> new Two<V, B>(m, two.values().map(f)),
-        three -> new Three<V, B>(m, three.values().map(f)),
-        four -> new Four<V, B>(m, four.values().map(f))
+        one -> new One<>(m, f.f(one.value())),
+        two -> new Two<>(m, two.values().map(f)),
+        three -> new Three<>(m, three.values().map(f)),
+        four -> new Four<>(m, four.values().map(f))
     );
   }
 
@@ -132,27 +132,27 @@ public abstract class Digit<V, A> {
         final MakeTree<V, A> mk = mkTree(m);
         return match(
             one -> mk.single(one.value()),
-            two -> mk.deep(mk.one(two.values()._1()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.one(two.values()._2())),
-            three -> mk.deep(mk.two(three.values()._1(), three.values()._2()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.one(three.values()._3())),
-            four -> mk.deep(mk.two(four.values()._1(), four.values()._2()), new Empty<V, Node<V, A>>(m.nodeMeasured()), mk.two(four.values()._3(), four.values()._4()))
+            two -> mk.deep(mk.one(two.values()._1()), new Empty<>(m.nodeMeasured()), mk.one(two.values()._2())),
+            three -> mk.deep(mk.two(three.values()._1(), three.values()._2()), new Empty<>(m.nodeMeasured()), mk.one(three.values()._3())),
+            four -> mk.deep(mk.two(four.values()._1(), four.values()._2()), new Empty<>(m.nodeMeasured()), mk.two(four.values()._3(), four.values()._4()))
         );
     }
 
-  Option<Digit<V, A>> tail() {
+  final Option<Digit<V, A>> tail() {
     return match(
-      one -> Option.<Digit<V, A>> none(),
-      two -> Option.<Digit<V, A>> some(mkTree(m).one(two.values()._2())),
-      three -> Option.<Digit<V, A>> some(mkTree(m).two(three.values()._2(), three.values()._3())),
-      four -> Option.<Digit<V, A>> some(mkTree(m).three(four.values()._2(), four.values()._3(), four.values()._4()))
+      one -> Option.none(),
+      two -> Option.some(mkTree(m).one(two.values()._2())),
+      three -> Option.some(mkTree(m).two(three.values()._2(), three.values()._3())),
+      four -> Option.some(mkTree(m).three(four.values()._2(), four.values()._3(), four.values()._4()))
     );
   }
 
-  Option<Digit<V, A>> init() {
+  final Option<Digit<V, A>> init() {
     return match(
-      one -> Option.<Digit<V, A>> none(),
-      two -> Option.<Digit<V, A>> some(mkTree(m).one(two.values()._1())),
-      three -> Option.<Digit<V, A>> some(mkTree(m).two(three.values()._1(), three.values()._2())),
-      four -> Option.<Digit<V, A>> some(mkTree(m).three(four.values()._1(), four.values()._2(), four.values()._3()))
+      one -> Option.none(),
+      two -> Option.some(mkTree(m).one(two.values()._1())),
+      three -> Option.some(mkTree(m).two(three.values()._1(), three.values()._2())),
+      four -> Option.some(mkTree(m).three(four.values()._1(), four.values()._2(), four.values()._3()))
     );
   }
 

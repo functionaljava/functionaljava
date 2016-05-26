@@ -5,6 +5,8 @@ import fj.F;
 import fj.Show;
 import fj.data.List;
 import fj.data.Option;
+import fj.function.Strings;
+
 import static fj.data.Option.some;
 import static fj.Show.listShow;
 import static fj.Show.showS;
@@ -55,7 +57,7 @@ public final class CheckResult {
    * @return A result that the property has passed.
    */
   public static CheckResult passed(final int succeeded, final int discarded) {
-    return new CheckResult(R.Passed, Option.<List<Arg<?>>>none(), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Passed, Option.none(), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -67,7 +69,7 @@ public final class CheckResult {
    * @return A result that the property has been proven.
    */
   public static CheckResult proven(final List<Arg<?>> args, final int succeeded, final int discarded) {
-    return new CheckResult(R.Proven, some(args), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Proven, some(args), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -79,7 +81,7 @@ public final class CheckResult {
    * @return A result that the property has been falsified.
    */
   public static CheckResult falsified(final List<Arg<?>> args, final int succeeded, final int discarded) {
-    return new CheckResult(R.Falsified, some(args), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Falsified, some(args), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -90,7 +92,7 @@ public final class CheckResult {
    * @return A result that the property has been exhausted in checking.
    */
   public static CheckResult exhausted(final int succeeded, final int discarded) {
-    return new CheckResult(R.Exhausted, Option.<List<Arg<?>>>none(), Option.<Throwable>none(), succeeded, discarded);
+    return new CheckResult(R.Exhausted, Option.none(), Option.none(), succeeded, discarded);
   }
 
   /**
@@ -117,7 +119,7 @@ public final class CheckResult {
    * @return A result that generating values to check the property threw an exception.
    */
   public static CheckResult genException(final Throwable ex, final int succeeded, final int discarded) {
-    return new CheckResult(R.GenException, Option.<List<Arg<?>>>none(), some(ex), succeeded, discarded);
+    return new CheckResult(R.GenException, Option.none(), some(ex), succeeded, discarded);
   }
 
   /**
@@ -236,7 +238,7 @@ public final class CheckResult {
         return args.length() == 1 ? "argument: " + sa.showS(args.head()) : "arguments: " + listShow(sa).showS(args);
       }
 
-      @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+      @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
       public String f(final CheckResult r) {
         if (r.isProven())
           return "OK, property proven with " + arguments(r);
@@ -252,12 +254,12 @@ public final class CheckResult {
           final StringWriter sw = new StringWriter();
           final PrintWriter pw = new PrintWriter(sw);
           r.exception().some().printStackTrace(pw);
-          return "Exception on property evaluation with " + arguments(r) + System.getProperty("line.separator") + sw;
+          return "Exception on property evaluation with " + arguments(r) + Strings.lineSeparator + sw;
         } else if (r.isGenException()) {
           final StringWriter sw = new StringWriter();
           final PrintWriter pw = new PrintWriter(sw);
           r.exception().some().printStackTrace(pw);
-          return "Exception on argument generation " + System.getProperty("line.separator") + sw;
+          return "Exception on argument generation " + Strings.lineSeparator + sw;
         } else
           throw decons(r.getClass());
       }

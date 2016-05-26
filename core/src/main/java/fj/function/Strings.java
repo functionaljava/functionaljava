@@ -3,6 +3,9 @@ package fj.function;
 import fj.F;
 import fj.data.List;
 import fj.data.Stream;
+
+import java.util.regex.Pattern;
+
 import static fj.Function.curry;
 import static fj.function.Booleans.not;
 import static fj.function.Characters.isWhitespace;
@@ -16,6 +19,8 @@ public final class Strings {
   private Strings() {
     throw new UnsupportedOperationException();
   }
+
+  private static final Pattern lineSeparatorPattern = Pattern.compile("\\r?\\n");
 
   public static final String lineSeparator = System.getProperty("line.separator");
 
@@ -61,7 +66,7 @@ public final class Strings {
   /**
    * A curried version of {@link String#length()}.
    */
-  public static final F<String, Integer> length = s -> s.length();
+  public static final F<String, Integer> length = String::length;
 
   /**
    * A curried version of {@link String#contains(CharSequence)}.
@@ -76,21 +81,21 @@ public final class Strings {
   public static final F<String, F<String, Boolean>> matches = curry((s1, s2) -> s2.matches(s1));
 
   public static List<String> lines(String s) {
-    return List.list(s.split("\\r?\\n"));
+    return List.list(lineSeparatorPattern.split(s));
   }
 
   public static F<String, List<String>> lines() {
-    return s -> lines(s);
+    return Strings::lines;
   }
 
   public static String unlines(List<String> list) {
     StringBuilder sb = new StringBuilder();
-    list.intersperse(lineSeparator).foreachDoEffect(s -> sb.append(s));
+    list.intersperse(lineSeparator).foreachDoEffect(sb::append);
     return sb.toString();
   }
 
   public static F<List<String>, String> unlines() {
-    return l -> unlines(l);
+    return Strings::unlines;
   }
 
 }

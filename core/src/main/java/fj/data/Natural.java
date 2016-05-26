@@ -2,7 +2,7 @@ package fj.data;
 
 import static fj.Bottom.error;
 import fj.F;
-import fj.F2;
+
 import static fj.Monoid.naturalAdditionMonoid;
 import static fj.Monoid.naturalMultiplicationMonoid;
 import static fj.Function.curry;
@@ -32,7 +32,7 @@ public final class Natural extends Number {
    */
   public static Option<Natural> natural(final BigInteger i) {
     return i.compareTo(BigInteger.ZERO) < 0
-           ? Option.<Natural>none()
+           ? Option.none()
            : Option.some(new Natural(i));
   }
 
@@ -40,7 +40,7 @@ public final class Natural extends Number {
    * A function that returns the natural number equal to a given BigInteger
    */
   public static final F<BigInteger, Option<Natural>> fromBigInt =
-          i -> natural(i);
+      Natural::natural;
 
   /**
    * Returns the natural number equal to the given long
@@ -77,7 +77,7 @@ public final class Natural extends Number {
    * @return A function that returns the successor of a given natural number.
    */
   public static F<Natural, Natural> succ_() {
-    return natural -> natural.succ();
+    return Natural::succ;
   }
 
   /**
@@ -95,7 +95,7 @@ public final class Natural extends Number {
    * @return A function that returns the predecessor of a given natural number, or None if it's zero.
    */
   public static F<Natural, Option<Natural>> pred_() {
-    return natural -> natural.pred();
+    return Natural::pred;
   }
 
   /**
@@ -111,7 +111,7 @@ public final class Natural extends Number {
   /**
    * A function that adds two natural numbers.
    */
-  public static final F<Natural, F<Natural, Natural>> add = curry((n1, n2) -> n1.add(n2));
+  public static final F<Natural, F<Natural, Natural>> add = curry(Natural::add);
 
 
   /**
@@ -143,7 +143,7 @@ public final class Natural extends Number {
   /**
    * A function that multiplies a natural number by another.
    */
-  public static final F<Natural, F<Natural, Natural>> multiply = curry((n1, n2) -> n1.multiply(n2));
+  public static final F<Natural, F<Natural, Natural>> multiply = curry(Natural::multiply);
 
 
   /**
@@ -245,7 +245,7 @@ public final class Natural extends Number {
   /**
    * A function that returns the BigInteger value of a given Natural.
    */
-  public static final F<Natural, BigInteger> bigIntegerValue = n -> n.bigIntegerValue();
+  public static final F<Natural, BigInteger> bigIntegerValue = Natural::bigIntegerValue;
 
   /**
    * Sums a stream of natural numbers.

@@ -418,7 +418,7 @@ public abstract class PLens<S, T, A, B> {
     };
   }
 
-  public static final <S, T> PLens<S, T, S, T> pId() {
+  public static <S, T> PLens<S, T, S, T> pId() {
     return PIso.<S, T> pId().asLens();
   }
 

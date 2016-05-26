@@ -9,41 +9,41 @@ import fj.F1Functions;
  */
 public class Reader<A, B> {
 
-	private F<A, B> function;
+	private final F<A, B> function;
 
 	public Reader(F<A, B> f) {
 		function = f;
 	}
 
-	public F<A, B> getFunction() {
+	public final F<A, B> getFunction() {
 		return function;
 	}
 
 	public static <A, B> Reader<A, B> unit(F<A, B> f) {
-		return new Reader<A, B>(f);
+		return new Reader<>(f);
 	}
 
 	public static <A, B> Reader<A, B> constant(B b) {
 		return unit(a -> b);
 	}
 
-	public B f(A a) {
+	public final B f(A a) {
 		return function.f(a);
 	}
 
-	public <C> Reader<A, C> map(F<B, C> f) {
+	public final <C> Reader<A, C> map(F<B, C> f) {
 		return unit(F1Functions.andThen(function, f));
 	}
 
-	public <C> Reader<A, C> andThen(F<B, C> f) {
+	public final <C> Reader<A, C> andThen(F<B, C> f) {
 		return map(f);
 	}
 
-	public <C> Reader<A, C> flatMap(F<B, Reader<A, C>> f) {
+	public final <C> Reader<A, C> flatMap(F<B, Reader<A, C>> f) {
 		return unit(a -> f.f(function.f(a)).f(a));
 	}
 
-	public <C> Reader<A, C> bind(F<B, Reader<A, C>> f) {
+	public final <C> Reader<A, C> bind(F<B, Reader<A, C>> f) {
 		return flatMap(f);
 	}
 

@@ -1,8 +1,5 @@
 package fj.demo.test;
 
-import fj.F;
-import fj.F2;
-import fj.F3;
 import static fj.Function.curry;
 import fj.test.Arbitrary;
 import static fj.test.Arbitrary.arbByte;
@@ -65,7 +62,7 @@ public final class EqualsHashCode {
 
     // Arbitrary for MyClass that uses the restrictive arbitraries above.
     // We are using the monad pattern (bind) to make this a trivial exercise. 
-    final Arbitrary<MyClass> arbMyClass = arbitrary(arbByteR.gen.bind(arbStringR.gen, curry((b, s) -> new MyClass(b, s))));
+    final Arbitrary<MyClass> arbMyClass = arbitrary(arbByteR.gen.bind(arbStringR.gen, curry(MyClass::new)));
 
     // Finally the property.
     // if m1 equals m2, then this implies that m1's hashCode is equal to m2's hashCode.

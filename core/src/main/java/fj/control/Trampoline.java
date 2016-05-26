@@ -15,10 +15,10 @@ public abstract class Trampoline<A> {
 
   // A Normal Trampoline is either done or suspended, and is allowed to be a subcomputation of a Codense.
   // This is the pointed functor part of the Trampoline monad.
-  private static abstract class Normal<A> extends Trampoline<A> {
+  private abstract static class Normal<A> extends Trampoline<A> {
     public abstract <R> R foldNormal(final F<A, R> pure, final F<P1<Trampoline<A>>, R> k);
 
-    public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
+    public final <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
       return codense(this, f);
     }
   }
@@ -52,16 +52,14 @@ public abstract class Trampoline<A> {
     // The resumption of a Codense is the resumption of its subcomputation. If that computation is done, its result
     // gets shifted into the continuation.
     public Either<P1<Trampoline<A>>, A> resume() {
-      return left(sub.resume().either(p -> {
-        return p.map(ot -> {
-          // WARNING: In JDK 8, update 25 (current version) the following code is a
-          // workaround for an internal JDK compiler error, likely due to
-          // https:bugs.openjdk.java.net/browse/JDK-8062253.
-          F<Normal<Object>, Trampoline<A>> f = o -> o.foldNormal(o1 -> cont.f(o1), t -> t._1().bind(cont));
-          F<Codense<Object>, Trampoline<A>> g = c -> codense(c.sub, o -> c.cont.f(o).bind(cont));
-          return ot.fold(f, g);
-        });
-      }, o -> P.lazy(() -> cont.f(o))));
+      return left(sub.resume().either(p -> p.map(ot -> {
+        // WARNING: In JDK 8, update 25 (current version) the following code is a
+        // workaround for an internal JDK compiler error, likely due to
+        // https:bugs.openjdk.java.net/browse/JDK-8062253.
+        F<Normal<Object>, Trampoline<A>> f = o -> o.foldNormal(cont, t -> t._1().bind(cont));
+        F<Codense<Object>, Trampoline<A>> g = c -> codense(c.sub, o -> c.cont.f(o).bind(cont));
+        return ot.fold(f, g);
+      }), o -> P.lazy(() -> cont.f(o))));
     }
   }
 
@@ -109,15 +107,15 @@ public abstract class Trampoline<A> {
   }
 
   @SuppressWarnings("unchecked")
-  protected static <A, B> Codense<B> codense(final Normal<A> a, final F<A, Trampoline<B>> k) {
-    return new Codense<B>((Normal<Object>) a, (F<Object, Trampoline<B>>) k);
+  private static <A, B> Codense<B> codense(final Normal<A> a, final F<A, Trampoline<B>> k) {
+    return new Codense<>((Normal<Object>) a, (F<Object, Trampoline<B>>) k);
   }
 
   /**
    * @return The first-class version of `pure`.
    */
   public static <A> F<A, Trampoline<A>> pure() {
-    return a -> pure(a);
+    return Trampoline::pure;
   }
 
   /**
@@ -127,7 +125,7 @@ public abstract class Trampoline<A> {
    * @return A trampoline that results in the given value.
    */
   public static <A> Trampoline<A> pure(final A a) {
-    return new Pure<A>(a);
+    return new Pure<>(a);
   }
 
   /**
@@ -137,14 +135,14 @@ public abstract class Trampoline<A> {
    * @return A trampoline whose next step runs the given thunk.
    */
   public static <A> Trampoline<A> suspend(final P1<Trampoline<A>> a) {
-    return new Suspend<A>(a);
+    return new Suspend<>(a);
   }
 
   /**
    * @return The first-class version of `suspend`.
    */
   public static <A> F<P1<Trampoline<A>>, Trampoline<A>> suspend_() {
-    return trampolineP1 -> suspend(trampolineP1);
+    return Trampoline::suspend;
   }
 
   protected abstract <R> R fold(final F<Normal<A>, R> n, final F<Codense<A>, R> gs);
@@ -164,7 +162,7 @@ public abstract class Trampoline<A> {
    * @return A new trampoline that runs this trampoline, then applies the given function to the result.
    */
   public final <B> Trampoline<B> map(final F<A, B> f) {
-    return bind(F1Functions.o(Trampoline.<B>pure(), f));
+    return bind(F1Functions.o(Trampoline.pure(), f));
   }
 
   /**
@@ -185,7 +183,7 @@ public abstract class Trampoline<A> {
    * @return The first-class version of `resume`.
    */
   public static <A> F<Trampoline<A>, Either<P1<Trampoline<A>>, A>> resume_() {
-    return aTrampoline -> aTrampoline.resume();
+    return Trampoline::resume;
   }
 
   /**
@@ -201,7 +199,7 @@ public abstract class Trampoline<A> {
    * @return The end result of this computation.
    */
   @SuppressWarnings("LoopStatementThatDoesntLoop")
-  public A run() {
+  public final A run() {
     Trampoline<A> current = this;
     while (true) {
       final Either<P1<Trampoline<A>>, A> x = current.resume();
@@ -221,7 +219,7 @@ public abstract class Trampoline<A> {
    * @return A new Trampoline after applying the given function through this Trampoline.
    */
   public final <B> Trampoline<B> apply(final Trampoline<F<A, B>> lf) {
-    return lf.bind(f -> map(f));
+    return lf.bind(this::map);
   }
 
   /**
@@ -254,12 +252,12 @@ public abstract class Trampoline<A> {
    * @return A new trampoline that runs this trampoline and the given trampoline simultaneously.
    */
   @SuppressWarnings("LoopStatementThatDoesntLoop")
-  public <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
+  public final <B, C> Trampoline<C> zipWith(final Trampoline<B> b, final F2<A, B, C> f) {
     final Either<P1<Trampoline<A>>, A> ea = resume();
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.<Trampoline<C>>lazy(() -> ta.zipWith(tb, f))))));
+        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.lazy(() -> ta.zipWith(tb, f))))));
       }
       for (final B y : eb.right()) {
         return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));

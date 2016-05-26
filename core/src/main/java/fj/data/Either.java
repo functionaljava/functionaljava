@@ -39,7 +39,7 @@ public abstract class Either<A, B> {
    * @return A left projection of this either.
    */
   public final LeftProjection<A, B> left() {
-    return new LeftProjection<A, B>(this);
+    return new LeftProjection<>(this);
   }
 
   /**
@@ -48,7 +48,7 @@ public abstract class Either<A, B> {
    * @return A right projection of this either.
    */
   public final RightProjection<A, B> right() {
-    return new RightProjection<A, B>(this);
+    return new RightProjection<>(this);
   }
 
   /**
@@ -92,12 +92,12 @@ public abstract class Either<A, B> {
   }
 
   @Override
-  public boolean equals(Object other) {
-    return Equal.equals0(Either.class, this, other, () -> Equal.eitherEqual(Equal.<A>anyEqual(), Equal.<B>anyEqual()));
+  public final boolean equals(Object other) {
+    return Equal.equals0(Either.class, this, other, () -> Equal.eitherEqual(Equal.anyEqual(), Equal.anyEqual()));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Hash.eitherHash(Hash.<A>anyHash(), Hash.<B>anyHash()).hash(this);
   }
 
@@ -107,7 +107,7 @@ public abstract class Either<A, B> {
    * @return The value of this either swapped to the opposing side.
    */
   public final Either<B, A> swap() {
-    return isLeft() ? new Right<B, A>(((Left<A, B>) this).a) : new Left<B, A>(((Right<A, B>) this).b);
+    return isLeft() ? new Right<>(((Left<A, B>) this).a) : new Left<>(((Right<A, B>) this).b);
   }
 
   private static final class Left<A, B> extends Either<A, B> {
@@ -145,7 +145,7 @@ public abstract class Either<A, B> {
   /**
    * A left projection of an either value.
    */
-  public final class LeftProjection<A, B> implements Iterable<A> {
+  public static final class LeftProjection<A, B> implements Iterable<A> {
     private final Either<A, B> e;
 
     private LeftProjection(final Either<A, B> e) {
@@ -210,7 +210,7 @@ public abstract class Either<A, B> {
      * @return The value of this projection or the given argument.
      */
     public A orValue(final F0<A> a) {
-      return isLeft() ? value() : a.f();
+      return e.isLeft() ? value() : a.f();
     }
 
     /**
@@ -220,7 +220,7 @@ public abstract class Either<A, B> {
      * @return The value of this projection or the given argument.
      */
     public A orValue(final A a) {
-      return isLeft() ? value() : a;
+      return e.isLeft() ? value() : a;
     }
 
     /**
@@ -232,7 +232,7 @@ public abstract class Either<A, B> {
      *         value.
      */
     public A on(final F<B, A> f) {
-      return isLeft() ? value() : f.f(e.right().value());
+      return e.isLeft() ? value() : f.f(e.right().value());
     }
 
     /**
@@ -242,7 +242,7 @@ public abstract class Either<A, B> {
      * @return The unit value.
      */
     public Unit foreach(final F<A, Unit> f) {
-      if (isLeft())
+      if (e.isLeft())
         f.f(value());
 
       return unit();
@@ -254,7 +254,7 @@ public abstract class Either<A, B> {
      * @param f The side-effect to execute.
      */
     public void foreachDoEffect(final Effect1<A> f) {
-      if (isLeft())
+      if (e.isLeft())
         f.f(value());
     }
 
@@ -265,7 +265,7 @@ public abstract class Either<A, B> {
      * @return A new either value after mapping.
      */
     public <X> Either<X, B> map(final F<A, X> f) {
-      return isLeft() ? new Left<X, B>(f.f(value())) : new Right<X, B>(e.right().value());
+      return e.isLeft() ? new Left<>(f.f(value())) : new Right<>(e.right().value());
     }
 
     /**
@@ -275,7 +275,7 @@ public abstract class Either<A, B> {
      * @return A new either value after binding.
      */
     public <X> Either<X, B> bind(final F<A, Either<X, B>> f) {
-      return isLeft() ? f.f(value()) : new Right<X, B>(e.right().value());
+      return e.isLeft() ? f.f(value()) : new Right<>(e.right().value());
     }
 
     /**
@@ -285,7 +285,7 @@ public abstract class Either<A, B> {
      * @return An either after binding through this projection.
      */
     public <X> Either<X, B> sequence(final Either<X, B> e) {
-      return bind(Function.<A, Either<X, B>>constant(e));
+      return bind(Function.constant(e));
     }
 
       /**
@@ -295,9 +295,9 @@ public abstract class Either<A, B> {
        * @return An either after traversing through this projection.
        */
       public <C> List<Either<C, B>> traverseList(final F<A, List<C>> f) {
-          return isLeft() ?
-                  f.f(value()).map(x -> Either.<C, B>left(x)) :
-                  list(Either.<C, B>right(e.right().value()));
+          return e.isLeft() ?
+                  f.f(value()).map(Either::<C, B>left) :
+                  list(right(e.right().value()));
       }
 
       /**
@@ -307,9 +307,9 @@ public abstract class Either<A, B> {
        * @return An either after traversing through this projection.
        */
       public <C> IO<Either<C, B>> traverseIO(final F<A, IO<C>> f) {
-          return isRight() ?
-                  IOFunctions.map(f.f(value()), x -> Either.<C, B>left(x)) :
-                  IOFunctions.unit(Either.<C, B>right(e.right().value()));
+          return e.isRight() ?
+                  IOFunctions.map(f.f(value()), Either::<C, B>left) :
+                  IOFunctions.unit(Either.right(e.right().value()));
       }
 
     /**
@@ -321,11 +321,11 @@ public abstract class Either<A, B> {
      *         <code>p</code> does not hold for the value, otherwise, returns a right in <code>Some</code>.
      */
     public <X> Option<Either<A, X>> filter(final F<A, Boolean> f) {
-      return isLeft() ?
+      return e.isLeft() ?
              f.f(value()) ?
-             Option.<Either<A, X>>some(new Left<>(value())) :
-             Option.<Either<A, X>>none() :
-             Option.<Either<A, X>>none();
+             some(new Left<>(value())) :
+             Option.none() :
+             Option.none();
     }
 
     /**
@@ -335,7 +335,7 @@ public abstract class Either<A, B> {
      * @return The result of function application within either.
      */
     public <X> Either<X, B> apply(final Either<F<A, X>, B> e) {
-      return e.left().bind(f -> map(f));
+      return e.left().bind(this::map);
     }
 
     /**
@@ -347,7 +347,7 @@ public abstract class Either<A, B> {
      *         function to the value.
      */
     public boolean forall(final F<A, Boolean> f) {
-      return isRight() || f.f(value());
+      return e.isRight() || f.f(value());
     }
 
     /**
@@ -359,7 +359,7 @@ public abstract class Either<A, B> {
      *         function to the value.
      */
     public boolean exists(final F<A, Boolean> f) {
-      return isLeft() && f.f(value());
+      return e.isLeft() && f.f(value());
     }
 
     /**
@@ -368,7 +368,7 @@ public abstract class Either<A, B> {
      * @return A single element list if this projection has a value, otherwise an empty list.
      */
     public List<A> toList() {
-      return isLeft() ? single(value()) : List.<A>nil();
+      return e.isLeft() ? single(value()) : List.nil();
     }
 
     /**
@@ -379,7 +379,7 @@ public abstract class Either<A, B> {
      *         <code>None</code>.
      */
     public Option<A> toOption() {
-      return isLeft() ? some(value()) : Option.<A>none();
+      return e.isLeft() ? some(value()) : Option.none();
     }
 
     /**
@@ -388,7 +388,7 @@ public abstract class Either<A, B> {
      * @return A single element array if this projection has a value, otherwise an empty array.
      */
     public Array<A> toArray() {
-      if (isLeft()) {
+      if (e.isLeft()) {
         final Object[] a = new Object[1];
         a[0] = value();
         return mkArray(a);
@@ -402,7 +402,7 @@ public abstract class Either<A, B> {
      * @return A single element stream if this projection has a value, otherwise an empty stream.
      */
     public Stream<A> toStream() {
-      return isLeft() ? Stream.single(value()) : Stream.<A>nil();
+      return e.isLeft() ? Stream.single(value()) : Stream.nil();
     }
 
     /**
@@ -415,22 +415,22 @@ public abstract class Either<A, B> {
     }
 
    public <C> Option<Either<C,B>> traverseOption(F<A, Option<C>> f) {
-       return isLeft() ?
-               f.f(value()).map(x -> Either.<C, B>left(x)) :
-               Option.some(Either.<C, B>right(e.right().value()));
+       return e.isLeft() ?
+               f.f(value()).map(Either::<C, B>left) :
+               some(Either.right(e.right().value()));
    }
 
   public <C> Stream<Either<C, B>> traverseStream(F<A, Stream<C>> f) {
-      return isLeft() ?
-              f.f(value()).map(c -> Either.<C, B>left(c)) :
-              Stream.single(Either.<C, B>right(e.right().value()));
+      return e.isLeft() ?
+              f.f(value()).map(Either::<C, B>left) :
+              Stream.single(Either.right(e.right().value()));
   }
   }
 
   /**
    * A right projection of an either value.
    */
-  public final class RightProjection<A, B> implements Iterable<B> {
+  public static final class RightProjection<A, B> implements Iterable<B> {
     private final Either<A, B> e;
 
     private RightProjection(final Either<A, B> e) {
@@ -485,7 +485,7 @@ public abstract class Either<A, B> {
      * @return The value of this projection or the given argument.
      */
     public B orValue(final F0<B> b) {
-      return isRight() ? value() : b.f();
+      return e.isRight() ? value() : b.f();
     }
 
     /**
@@ -497,7 +497,7 @@ public abstract class Either<A, B> {
      *         value.
      */
     public B on(final F<A, B> f) {
-      return isRight() ? value() : f.f(e.left().value());
+      return e.isRight() ? value() : f.f(e.left().value());
     }
 
     /**
@@ -507,7 +507,7 @@ public abstract class Either<A, B> {
      * @return The unit value.
      */
     public Unit foreach(final F<B, Unit> f) {
-      if (isRight())
+      if (e.isRight())
         f.f(value());
 
       return unit();
@@ -519,7 +519,7 @@ public abstract class Either<A, B> {
      * @param f The side-effect to execute.
      */
     public void foreachDoEffect(final Effect1<B> f) {
-      if (isRight())
+      if (e.isRight())
         f.f(value());
     }
 
@@ -530,7 +530,7 @@ public abstract class Either<A, B> {
      * @return A new either value after mapping.
      */
     public <X> Either<A, X> map(final F<B, X> f) {
-      return isRight() ? new Right<>(f.f(value())) : new Left<>(e.left().value());
+      return e.isRight() ? new Right<>(f.f(value())) : new Left<>(e.left().value());
     }
 
     /**
@@ -540,7 +540,7 @@ public abstract class Either<A, B> {
      * @return A new either value after binding.
      */
     public <X> Either<A, X> bind(final F<B, Either<A, X>> f) {
-      return isRight() ? f.f(value()) : new Left<>(e.left().value());
+      return e.isRight() ? f.f(value()) : new Left<>(e.left().value());
     }
 
 
@@ -551,7 +551,7 @@ public abstract class Either<A, B> {
      * @return An either after binding through this projection.
      */
     public <X> Either<A, X> sequence(final Either<A, X> e) {
-      return bind(Function.<B, Either<A, X>>constant(e));
+      return bind(Function.constant(e));
     }
     /**
        * Traverse with function that produces List (non-determinism).
@@ -560,9 +560,9 @@ public abstract class Either<A, B> {
        * @return An either after traversing through this projection.
     */
       public <C> List<Either<A, C>> traverseList(final F<B, List<C>> f) {
-          return isRight() ?
-                  f.f(value()).map(x -> Either.right(x)) :
-                  list(Either.<A, C>left(e.left().value()));
+          return e.isRight() ?
+                  f.f(value()).map(Either::right) :
+                  list(left(e.left().value()));
       }
 
       /**
@@ -572,21 +572,21 @@ public abstract class Either<A, B> {
        * @return An either after traversing through this projection.
        */
       public <C> IO<Either<A, C>> traverseIO(final F<B, IO<C>> f) {
-          return isRight() ?
-                  IOFunctions.map(f.f(value()), x -> Either.<A, C>right(x)) :
-                  IOFunctions.lazy(() -> Either.<A, C>left(e.left().value()));
+          return e.isRight() ?
+                  IOFunctions.map(f.f(value()), Either::<A, C>right) :
+                  IOFunctions.lazy(() -> left(e.left().value()));
       }
 
       public <C> P1<Either<A, C>> traverseP1(final F<B, P1<C>> f) {
-          return isRight() ?
-                  f.f(value()).map(x -> Either.<A, C>right(x)) :
-                  P.p(Either.<A, C>left(e.left().value()));
+          return e.isRight() ?
+                  f.f(value()).map(Either::<A, C>right) :
+                  p(left(e.left().value()));
       }
 
       public <C> Option<Either<A, C>> traverseOption(final F<B, Option<C>> f) {
-          return isRight() ?
-                  f.f(value()).map(x -> Either.<A, C>right(x)) :
-                  Option.some(Either.<A, C>left(e.left().value()));
+          return e.isRight() ?
+                  f.f(value()).map(Either::<A, C>right) :
+                  some(left(e.left().value()));
       }
 
     /**
@@ -598,11 +598,11 @@ public abstract class Either<A, B> {
      *         <code>p</code> does not hold for the value, otherwise, returns a left in <code>Some</code>.
      */
     public <X> Option<Either<X, B>> filter(final F<B, Boolean> f) {
-      return isRight() ?
+      return e.isRight() ?
              f.f(value()) ?
-             Option.<Either<X, B>>some(new Right<X, B>(value())) :
-             Option.<Either<X, B>>none() :
-             Option.<Either<X, B>>none();
+             some(new Right<X, B>(value())) :
+             Option.none() :
+             Option.none();
     }
 
     /**
@@ -612,7 +612,7 @@ public abstract class Either<A, B> {
      * @return The result of function application within either.
      */
     public <X> Either<A, X> apply(final Either<A, F<B, X>> e) {
-      return e.right().bind(f -> map(f));
+      return e.right().bind(this::map);
     }
 
     /**
@@ -624,7 +624,7 @@ public abstract class Either<A, B> {
      *         function to the value.
      */
     public boolean forall(final F<B, Boolean> f) {
-      return isLeft() || f.f(value());
+      return e.isLeft() || f.f(value());
     }
 
     /**
@@ -636,7 +636,7 @@ public abstract class Either<A, B> {
      *         function to the value.
      */
     public boolean exists(final F<B, Boolean> f) {
-      return isRight() && f.f(value());
+      return e.isRight() && f.f(value());
     }
 
     /**
@@ -645,7 +645,7 @@ public abstract class Either<A, B> {
      * @return A single element list if this projection has a value, otherwise an empty list.
      */
     public List<B> toList() {
-      return isRight() ? single(value()) : List.<B>nil();
+      return e.isRight() ? single(value()) : List.nil();
     }
 
     /**
@@ -656,7 +656,7 @@ public abstract class Either<A, B> {
      *         <code>None</code>.
      */
     public Option<B> toOption() {
-      return isRight() ? some(value()) : Option.<B>none();
+      return e.isRight() ? some(value()) : Option.none();
     }
 
     /**
@@ -665,7 +665,7 @@ public abstract class Either<A, B> {
      * @return A single element array if this projection has a value, otherwise an empty array.
      */
     public Array<B> toArray() {
-      if (isRight()) {
+      if (e.isRight()) {
         final Object[] a = new Object[1];
         a[0] = value();
         return mkArray(a);
@@ -679,7 +679,7 @@ public abstract class Either<A, B> {
      * @return A single element stream if this projection has a value, otherwise an empty stream.
      */
     public Stream<B> toStream() {
-      return isRight() ? Stream.single(value()) : Stream.<B>nil();
+      return e.isRight() ? Stream.single(value()) : Stream.nil();
     }
 
     /**
@@ -692,9 +692,9 @@ public abstract class Either<A, B> {
     }
 
       public <C> Stream<Either<A, C>> traverseStream(F<B, Stream<C>> f) {
-          return isRight() ?
-                  f.f(value()).map(x -> Either.right(x)) :
-                  Stream.<Either<A,C>>single(Either.left(e.left().value()));
+          return e.isRight() ?
+                  f.f(value()).map(Either::right) :
+                  Stream.single(left(e.left().value()));
 
       }
   }
@@ -706,7 +706,7 @@ public abstract class Either<A, B> {
    * @return A left value of either.
    */
   public static <A, B> Either<A, B> left(final A a) {
-    return new Left<A, B>(a);
+    return new Left<>(a);
   }
 
   /**
@@ -715,7 +715,7 @@ public abstract class Either<A, B> {
    * @return A function that constructs a left value of either.
    */
   public static <A, B> F<A, Either<A, B>> left_() {
-    return a -> left(a);
+    return Either::left;
   }
 
   /**
@@ -724,7 +724,7 @@ public abstract class Either<A, B> {
    * @return A function that constructs a right value of either.
    */
   public static <A, B> F<B, Either<A, B>> right_() {
-    return b -> right(b);
+    return Either::right;
   }
 
   /**
@@ -734,7 +734,7 @@ public abstract class Either<A, B> {
    * @return A right value of either.
    */
   public static <A, B> Either<A, B> right(final B b) {
-    return new Right<A, B>(b);
+    return new Right<>(b);
   }
 
   /**
@@ -781,7 +781,7 @@ public abstract class Either<A, B> {
    */
   public static <A, X> Either<List<A>, X> sequenceLeft(final List<Either<A, X>> a) {
     return a.isEmpty() ?
-           Either.<List<A>, X>left(List.<A>nil()) :
+           Either.left(List.nil()) :
            a.head().left().bind(aa -> sequenceLeft(a.tail()).left().map(cons_(aa)));
   }
 
@@ -793,7 +793,7 @@ public abstract class Either<A, B> {
    */
   public static <B, X> Either<X, List<B>> sequenceRight(final List<Either<X, B>> a) {
     return a.isEmpty() ?
-           Either.<X, List<B>>right(List.<B>nil()) :
+           Either.right(List.nil()) :
            a.head().right().bind(bb -> sequenceRight(a.tail()).right().map(cons_(bb)));
   }
 
@@ -802,8 +802,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> List<Either<A, C>> traverseListRight(final F<B, List<C>> f) {
-    return right().<C>traverseList(f);
+  public final <C> List<Either<A, C>> traverseListRight(final F<B, List<C>> f) {
+    return right().traverseList(f);
   }
 
   /**
@@ -811,8 +811,8 @@ public abstract class Either<A, B> {
      *
      * @return traversed value
   */
-    public <C> List<Either<C, B>> traverseListLeft(final F<A, List<C>> f) {
-        return left().<C>traverseList(f);
+    public final <C> List<Either<C, B>> traverseListLeft(final F<A, List<C>> f) {
+        return left().traverseList(f);
     }
 
   /**
@@ -820,8 +820,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> IO<Either<A, C>> traverseIORight(final F<B, IO<C>> f) {
-    return right().<C>traverseIO(f);
+  public final <C> IO<Either<A, C>> traverseIORight(final F<B, IO<C>> f) {
+    return right().traverseIO(f);
   }
 
   /**
@@ -829,8 +829,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> IO<Either<C, B>> traverseIOLeft(final F<A, IO<C>> f) {
-    return left().<C>traverseIO(f);
+  public final <C> IO<Either<C, B>> traverseIOLeft(final F<A, IO<C>> f) {
+    return left().traverseIO(f);
   }
 
   /**
@@ -838,8 +838,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Option<Either<A, C>> traverseOptionRight(final F<B, Option<C>> f) {
-    return right().<C>traverseOption(f);
+  public final <C> Option<Either<A, C>> traverseOptionRight(final F<B, Option<C>> f) {
+    return right().traverseOption(f);
   }
 
   /**
@@ -847,8 +847,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Option<Either<C, B>> traverseOptionLeft(final F<A, Option<C>> f) {
-    return left().<C>traverseOption(f);
+  public final <C> Option<Either<C, B>> traverseOptionLeft(final F<A, Option<C>> f) {
+    return left().traverseOption(f);
   }
 
   /**
@@ -856,8 +856,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Stream<Either<A, C>> traverseStreamRight(final F<B, Stream<C>> f) {
-    return right().<C>traverseStream(f);
+  public final <C> Stream<Either<A, C>> traverseStreamRight(final F<B, Stream<C>> f) {
+    return right().traverseStream(f);
   }
 
   /**
@@ -865,8 +865,8 @@ public abstract class Either<A, B> {
    *
    * @return traversed value
    */
-  public <C> Stream<Either<C, B>> traverseStreamLeft(final F<A, Stream<C>> f) {
-    return left().<C>traverseStream(f);
+  public final <C> Stream<Either<C, B>> traverseStreamLeft(final F<A, Stream<C>> f) {
+    return left().traverseStream(f);
   }
 
 
@@ -890,7 +890,7 @@ public abstract class Either<A, B> {
    * @return A constructed either based on the given condition.
    */
   public static <A, B> Either<A, B> iif(final boolean c, final F0<B> right, final F0<A> left) {
-    return c ? new Right<A, B>(right.f()) : new Left<A, B>(left.f());
+    return c ? new Right<>(right.f()) : new Left<>(left.f());
   }
 
   /**
@@ -900,7 +900,7 @@ public abstract class Either<A, B> {
    * @return All the left values in the given list.
    */
   public static <A, B> List<A> lefts(final List<Either<A, B>> es) {
-    return es.foldRight(e -> as -> e.isLeft() ? as.cons(e.left().value()) : as, List.<A>nil());
+    return es.foldRight(e -> as -> e.isLeft() ? as.cons(e.left().value()) : as, List.nil());
   }
 
   /**
@@ -910,10 +910,10 @@ public abstract class Either<A, B> {
    * @return All the right values in the given list.
    */
   public static <A, B> List<B> rights(final List<Either<A, B>> es) {
-    return es.foldRight(e -> bs -> e.isRight() ? bs.cons(e.right().value()) : bs, List.<B>nil());
+    return es.foldRight(e -> bs -> e.isRight() ? bs.cons(e.right().value()) : bs, List.nil());
   }
 
-    public String toString() {
+    public final String toString() {
         return Show.eitherShow(Show.<A>anyShow(), Show.<B>anyShow()).showS(this);
     }
 

@@ -36,7 +36,7 @@ public final class HashSet<A> implements Iterable<A> {
    * @param h The hashing strategy.
    */
   public HashSet(final Equal<A> e, final Hash<A> h) {
-    m = new HashMap<A, Unit>(e, h);
+    m = new HashMap<>(e, h);
   }
 
   /**
@@ -47,7 +47,7 @@ public final class HashSet<A> implements Iterable<A> {
    * @param initialCapacity The initial capacity.
    */
   public HashSet(final Equal<A> e, final Hash<A> h, final int initialCapacity) {
-    m = new HashMap<A, Unit>(e, h, initialCapacity);
+    m = new HashMap<>(e, h, initialCapacity);
   }
 
   /**
@@ -59,7 +59,7 @@ public final class HashSet<A> implements Iterable<A> {
    * @param loadFactor      The load factor.
    */
   public HashSet(final Equal<A> e, final Hash<A> h, final int initialCapacity, final float loadFactor) {
-    m = new HashMap<A, Unit>(e, h, initialCapacity, loadFactor);
+    m = new HashMap<>(e, h, initialCapacity, loadFactor);
   }
 
   /**
@@ -87,7 +87,7 @@ public final class HashSet<A> implements Iterable<A> {
    * Creates a new HashSet using the given Equal and Hash
    */
   public static <A> HashSet<A> empty(final Equal<A> e, final Hash<A> h) {
-    return new HashSet<A>(e, h);
+    return new HashSet<>(e, h);
   }
 
   /**
@@ -230,7 +230,7 @@ public final class HashSet<A> implements Iterable<A> {
   }
 
   public java.util.Set<A> toJavaSet() {
-    return new java.util.HashSet<A>(toCollection());
+    return new java.util.HashSet<>(toCollection());
   }
 
   public static <A> HashSet<A> fromSet(java.util.Set<A> s) {

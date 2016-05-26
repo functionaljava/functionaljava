@@ -1,6 +1,5 @@
 package fj.demo.euler;
 
-import fj.F;
 import fj.data.Stream;
 
 import static fj.data.List.range;

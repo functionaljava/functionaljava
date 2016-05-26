@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 public final class Seq<A> implements Iterable<A> {
   private static final Measured<Integer, Object> ELEM_MEASURED = measured(intAdditionMonoid, Function.constant(1));
   private static final MakeTree<Integer, Object> MK_TREE = FingerTree.mkTree(ELEM_MEASURED);
-  private static final Seq<Object> EMPTY = new Seq<Object>(MK_TREE.empty());
+  private static final Seq<Object> EMPTY = new Seq<>(MK_TREE.empty());
 
   @SuppressWarnings("unchecked")
   private static <A> MakeTree<Integer, A> mkTree() {
@@ -52,7 +52,7 @@ public final class Seq<A> implements Iterable<A> {
 
   @Override
   public boolean equals(Object other) {
-    return Equal.equals0(Seq.class, this, other, () -> Equal.seqEqual(Equal.<A>anyEqual()));
+    return Equal.equals0(Seq.class, this, other, () -> Equal.seqEqual(Equal.anyEqual()));
   }
 
   /**
@@ -62,7 +62,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A new sequence with the given element in it.
    */
   public static <A> Seq<A> single(final A a) {
-    return new Seq<A>(Seq.<A>mkTree().single(a));
+    return new Seq<>(Seq.<A>mkTree().single(a));
   }
 
   /**
@@ -106,7 +106,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A sequence with the elements of the iterable.
    */
   public static <A>Seq<A> iterableSeq(final Iterable<A> i) {
-    Seq<A> s = Seq.empty();
+    Seq<A> s = empty();
     for (final A a: i) {
       s = s.snoc(a);
     }
@@ -146,7 +146,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A new sequence with the given element at the front.
    */
   public Seq<A> cons(final A a) {
-    return new Seq<A>(ftree.cons(a));
+    return new Seq<>(ftree.cons(a));
   }
 
   /**
@@ -156,7 +156,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A new sequence with the given element at the end.
    */
   public Seq<A> snoc(final A a) {
-    return new Seq<A>(ftree.snoc(a));
+    return new Seq<>(ftree.snoc(a));
   }
 
   /**
@@ -214,7 +214,7 @@ public final class Seq<A> implements Iterable<A> {
   /**
    * Converts the sequence to a java.util.List
    */
-  public final java.util.List<A> toJavaList() {
+  public java.util.List<A> toJavaList() {
     return new AbstractList<A>() {
       @Override public A get(int i) { return index(i); }
       @Override public Iterator<A> iterator() { return Seq.this.iterator(); }
@@ -227,7 +227,7 @@ public final class Seq<A> implements Iterable<A> {
    *
    * @return A iterator for this seq.
    */
-  public final Iterator<A> iterator() {
+  public Iterator<A> iterator() {
     return new Iterator<A>() {
       private FingerTree<Integer, A> ftree = Seq.this.ftree;
 
@@ -263,7 +263,7 @@ public final class Seq<A> implements Iterable<A> {
    * @return A new sequence with the given sequence appended to this one.
    */
   public Seq<A> append(final Seq<A> as) {
-    return new Seq<A>(ftree.append(as.ftree));
+    return new Seq<>(ftree.append(as.ftree));
   }
 
   /**
@@ -312,7 +312,7 @@ public final class Seq<A> implements Iterable<A> {
    */
   public A index(final int i) {
     checkBounds(i);
-    return ftree.lookup(Function.<Integer>identity(), i)._2();
+    return ftree.lookup(Function.identity(), i)._2();
   }
 
   /**
@@ -376,7 +376,7 @@ public final class Seq<A> implements Iterable<A> {
     }
 
     public <B> Seq<B> map(F<A, B> f) {
-        return new Seq<B>(ftree.map(f, Seq.<B>elemMeasured()));
+        return new Seq<>(ftree.map(f, Seq.elemMeasured()));
     }
 
 }

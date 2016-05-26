@@ -224,7 +224,7 @@ public final class LazyString implements CharSequence {
    * @return The first index of the given character in this lazy string, or None if the character is not present.
    */
   public Option<Integer> indexOf(final char c) {
-    return s.indexOf(Equal.charEqual.eq(c));
+    return s.indexOf(charEqual.eq(c));
   }
 
   /**
@@ -256,7 +256,7 @@ public final class LazyString implements CharSequence {
   public Stream<LazyString> split(final F<Character, Boolean> p) {
     final Stream<Character> findIt = s.dropWhile(p);
     final P2<Stream<Character>, Stream<Character>> ws = findIt.split(p);
-    return findIt.isEmpty() ? Stream.<LazyString>nil()
+    return findIt.isEmpty() ? Stream.nil()
                             : Stream.cons(fromStream(ws._1()), () -> fromStream(ws._2()).split(p));
   }
 

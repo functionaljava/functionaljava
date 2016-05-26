@@ -1,7 +1,6 @@
 package fj.demo;
 
 import fj.F;
-import fj.F2;
 import fj.P2;
 import fj.data.List;
 import fj.data.Option;
@@ -25,7 +24,7 @@ public final class ChequeWrite {
   private ChequeWrite() {}
 
   static List<Integer> toZero(final int from) {
-    return unfold(i -> i < 0 ? Option.<P2<Integer, Integer>>none() : some(p(i, i - 1)), from);
+    return unfold(i -> i < 0 ? Option.none() : some(p(i, i - 1)), from);
   }
 
   static int signum(final int i) {
@@ -61,9 +60,9 @@ public final class ChequeWrite {
                    : stringShow.showl(
                        list("twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety").index(
                            d1 - '0' - 2))
-                       .append(d2 == '0' ? List.<Character>nil() : show(d2).cons('-'))
+                       .append(d2 == '0' ? List.nil() : show(d2).cons('-'))
                : d1 == '0' && d2 == '0' && d2r.head() == '0'
-                 ? List.<Character>nil()
+                 ? List.nil()
                  : d1 == '0'
                    ? show(list(d2, d2r.head()))
                    : d2 == '0' && d2r.head() == '0'
@@ -77,7 +76,7 @@ public final class ChequeWrite {
     final int len = as.length();
 
     final List<List<A>> ds = as.zip(toZero(len - 1)).foldRight((ki, z) ->
-        ki._2() % 3 == 0 ? z.conss(single(ki._1())) : z.tail().conss(z.head().cons(ki._1())), List.<List<A>>nil()
+        ki._2() % 3 == 0 ? z.conss(single(ki._1())) : z.tail().conss(z.head().cons(ki._1())), List.nil()
     );
     return ds.zip(toZero(len / 3 + signum(len % 3) - 1));
   }
@@ -107,24 +106,22 @@ public final class ChequeWrite {
       if (cs.isEmpty())
         return fromString("zero dollars");
       else {
-        final List.Buffer<List<Character>> x = new List.Buffer<List<Character>>();
+        final List.Buffer<List<Character>> x = new List.Buffer<>();
 
         final List<P2<List<Character>, Integer>> k = split(cs);
         final int c = k.head()._2();
 
-        k.foreachDoEffect(new Effect1<P2<List<Character>, Integer>>() {
-            public void f(final P2<List<Character>, Integer> z) {
-                final List<Character> w = z._1();
-                final int i = z._2();
+        k.foreachDoEffect(z -> {
+            final List<Character> w = z._1();
+            final int i = z._2();
 
-                if (i == 0 && c > 0 && and(w))
-                    x.snoc(fromString("and"));
+            if (i == 0 && c > 0 && and(w))
+                x.snoc(fromString("and"));
 
-                if (existsNotZero(w)) {
-                    x.snoc(show(w));
-                    if (i != 0)
-                        x.snoc(illion(i - 1));
-                }
+            if (existsNotZero(w)) {
+                x.snoc(show(w));
+                if (i != 0)
+                    x.snoc(illion(i - 1));
             }
         });
 

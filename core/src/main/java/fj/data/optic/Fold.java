@@ -76,7 +76,7 @@ public abstract class Fold<S, A> {
     return new Fold<S, B>() {
       @Override
       public <C> F<S, C> foldMap(final Monoid<C> m, final F<B, C> f) {
-        return Fold.this.<C> foldMap(m, other.<C> foldMap(m, f));
+        return Fold.this.foldMap(m, other.<C> foldMap(m, f));
       }
     };
   }
@@ -110,7 +110,7 @@ public abstract class Fold<S, A> {
     return PIso.<A, A> pId().asFold();
   }
 
-  public static final <A> Fold<Either<A, A>, A> codiagonal() {
+  public static <A> Fold<Either<A, A>, A> codiagonal() {
     return new Fold<Either<A, A>, A>() {
       @Override
       public <B> F<Either<A, A>, B> foldMap(final Monoid<B> m, final F<A, B> f) {

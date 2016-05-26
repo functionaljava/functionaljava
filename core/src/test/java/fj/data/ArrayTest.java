@@ -3,6 +3,7 @@ package fj.data;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -11,10 +12,10 @@ import static org.junit.Assert.assertThat;
 public class ArrayTest {
 
     @Test
-    public void toJavaArray() {
-        final int max = 3;
-        List<Integer> list = List.range(1, max + 1);
-        assertThat(list.toArray().toJavaArray(), equalTo(list.toJavaArray()));
+    public void array_is_safe() {
+        List<Integer> list = List.range(1, 2);
+
+        assertThat(list.toArray().array(Integer[].class), instanceOf(Integer[].class));
     }
 
 }

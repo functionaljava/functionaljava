@@ -1,6 +1,5 @@
 package fj.demo;
 
-import fj.F;
 import fj.data.Set;
 import static fj.data.Set.empty;
 import fj.Ord;

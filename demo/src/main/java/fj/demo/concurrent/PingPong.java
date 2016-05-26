@@ -2,7 +2,6 @@ package fj.demo.concurrent;
 
 import static fj.Bottom.error;
 import fj.Unit;
-import fj.Effect;
 import fj.control.parallel.Strategy;
 import fj.control.parallel.Actor;
 import fj.function.Effect1;
@@ -16,7 +15,7 @@ import java.util.concurrent.Executors;
  * Example of parallel synchronous messaging using Actors in Functional Java.
  * Author: Runar
  */
-@SuppressWarnings({"ArithmeticOnVolatileField"})
+@SuppressWarnings("ArithmeticOnVolatileField")
 public class PingPong {
   private final int actors;
   private final int pings;
@@ -31,15 +30,13 @@ public class PingPong {
 
     // This actor gives feedback to the user that work is being done
     // and also terminates the program when all work has been completed.
-    callback = Actor.queueActor(s, new Effect1<Integer>() {
-      public void f(final Integer i) {
-        done++;
-        if (done >= actors) {
-          System.out.println("All done.");
-          pool.shutdown();
-        } else if (actors < 10 || done % (actors / 10) == 0)
-          System.out.println(MessageFormat.format("{0} actors done ({1} total pongs).", done, pings * done));
-      }
+    callback = Actor.queueActor(s, i -> {
+      done++;
+      if (done >= actors) {
+        System.out.println("All done.");
+        pool.shutdown();
+      } else if (actors < 10 || done % (actors / 10) == 0)
+        System.out.println(MessageFormat.format("{0} actors done ({1} total pongs).", done, pings * done));
     });
   }
 
@@ -54,7 +51,7 @@ public class PingPong {
     new PingPong(Executors.newFixedThreadPool(threads), actors, pings).start();
   }
 
-  public void start() {
+  public final void start() {
     // We will use one Pong actor...
     final Pong pong = new Pong(s);
 

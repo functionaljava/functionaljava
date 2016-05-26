@@ -12,7 +12,7 @@ public final class Array_foldLeft {
 
         // WARNING: In JDK 8, update 20 and 25 (current version) the following code triggers an internal JDK compiler error, likely due to https://bugs.openjdk.java.net/browse/JDK-8062253.   The code below is a workaround for this compiler bug.
         //    final int c = a.foldLeft(i -> (j -> i + j), 0);
-        F<Integer, F<Integer, Integer>> add2 = i -> (j -> i + j);
+        F<Integer, F<Integer, Integer>> add2 = i -> j -> i + j;
         final int c = a.foldLeft(add2, 0);
         System.out.println(b); // 1774
     }

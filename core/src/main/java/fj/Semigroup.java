@@ -2,6 +2,8 @@ package fj;
 
 import fj.data.Array;
 import fj.data.List;
+import fj.data.IO;
+import fj.data.IOFunctions;
 import fj.data.Natural;
 import fj.data.NonEmptyList;
 import fj.data.Option;
@@ -12,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static fj.Function.curry;
+import static fj.Function.flip;
 
 /**
  * Implementations must satisfy the law of associativity:
@@ -90,8 +93,29 @@ public final class Semigroup<A> {
         }
       }
       xTmp = sum.f(xTmp).f(xTmp);
-      yTmp = (yTmp) >>> 1;
+      yTmp = yTmp >>> 1;
     }
+  }
+
+  /**
+   * Sums the given values with left-fold.
+   */
+  public A sumNel(final NonEmptyList<A> as) {
+    return as.foldLeft1(sum);
+  }
+
+  /**
+   * Swaps the arguments when summing.
+   */
+  public Semigroup<A> dual() {
+    return semigroup(flip(sum));
+  }
+
+  /**
+   * Lifts the semigroup to obtain a trivial monoid.
+   */
+  public Monoid<Option<A>> lift() {
+    return Monoid.monoid(a -> b -> Option.liftM2(sum).f(a).f(b).orElse(a).orElse(b), Option.none());
   }
 
   /**
@@ -101,7 +125,7 @@ public final class Semigroup<A> {
    * @return A semigroup from the given function.
    */
   public static <A> Semigroup<A> semigroup(final F<A, F<A, A>> sum) {
-    return new Semigroup<A>(sum);
+    return new Semigroup<>(sum);
   }
 
   /**
@@ -111,7 +135,7 @@ public final class Semigroup<A> {
    * @return A semigroup from the given function.
    */
   public static <A> Semigroup<A> semigroup(final F2<A, A, A> sum) {
-    return new Semigroup<A>(curry(sum));
+    return new Semigroup<>(curry(sum));
   }
 
   /**
@@ -137,78 +161,78 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of integers.
    */
-  public static final Semigroup<Integer> intMaximumSemigroup = semigroup(Ord.intOrd.max);
+  public static final Semigroup<Integer> intMaximumSemigroup = Ord.intOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of integers.
    */
-  public static final Semigroup<Integer> intMinimumSemigroup = semigroup(Ord.intOrd.min);
+  public static final Semigroup<Integer> intMinimumSemigroup = Ord.intOrd.minSemigroup();
 
   /**
    * A semigroup that adds big integers.
    */
   public static final Semigroup<BigInteger> bigintAdditionSemigroup =
-      semigroup((i1, i2) -> i1.add(i2));
+      semigroup(BigInteger::add);
 
   /**
    * A semigroup that multiplies big integers.
    */
   public static final Semigroup<BigInteger> bigintMultiplicationSemigroup =
-      semigroup((i1, i2) -> i1.multiply(i2));
+      semigroup(BigInteger::multiply);
 
   /**
    * A semigroup that yields the maximum of big integers.
    */
-  public static final Semigroup<BigInteger> bigintMaximumSemigroup = semigroup(Ord.bigintOrd.max);
+  public static final Semigroup<BigInteger> bigintMaximumSemigroup = Ord.bigintOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of big integers.
    */
-  public static final Semigroup<BigInteger> bigintMinimumSemigroup = semigroup(Ord.bigintOrd.min);
+  public static final Semigroup<BigInteger> bigintMinimumSemigroup = Ord.bigintOrd.minSemigroup();
 
   /**
    * A semigroup that adds big decimals.
    */
   public static final Semigroup<BigDecimal> bigdecimalAdditionSemigroup =
-      semigroup((i1, i2) -> i1.add(i2));
+      semigroup(BigDecimal::add);
 
   /**
    * A semigroup that multiplies big decimals.
    */
   public static final Semigroup<BigDecimal> bigdecimalMultiplicationSemigroup =
-      semigroup((i1, i2) -> i1.multiply(i2));
+      semigroup(BigDecimal::multiply);
 
   /**
    * A semigroup that yields the maximum of big decimals.
    */
-  public static final Semigroup<BigDecimal> bigDecimalMaximumSemigroup = semigroup(Ord.bigdecimalOrd.max);
+  public static final Semigroup<BigDecimal> bigDecimalMaximumSemigroup = Ord.bigdecimalOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of big decimals.
    */
-  public static final Semigroup<BigDecimal> bigDecimalMinimumSemigroup = semigroup(Ord.bigdecimalOrd.min);
+  public static final Semigroup<BigDecimal> bigDecimalMinimumSemigroup = Ord.bigdecimalOrd.minSemigroup();
 
   /**
    * A semigroup that multiplies natural numbers.
    */
   public static final Semigroup<Natural> naturalMultiplicationSemigroup =
-      semigroup((n1, n2) -> n1.multiply(n2));
+      semigroup(Natural::multiply);
 
   /**
    * A semigroup that multiplies natural numbers.
    */
   public static final Semigroup<Natural> naturalAdditionSemigroup =
-      semigroup((n1, n2) -> n1.add(n2));
+      semigroup(Natural::add);
 
   /**
    * A semigroup that yields the maximum of natural numbers.
    */
-  public static final Semigroup<Natural> naturalMaximumSemigroup = semigroup(Ord.naturalOrd.max);
+  public static final Semigroup<Natural> naturalMaximumSemigroup = Ord.naturalOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of natural numbers.
    */
-  public static final Semigroup<Natural> naturalMinimumSemigroup = semigroup(Ord.naturalOrd.min);
+  public static final Semigroup<Natural> naturalMinimumSemigroup = Ord.naturalOrd.minSemigroup();
 
   /**
    * A semigroup that adds longs.
@@ -223,12 +247,12 @@ public final class Semigroup<A> {
   /**
    * A semigroup that yields the maximum of longs.
    */
-  public static final Semigroup<Long> longMaximumSemigroup = semigroup(Ord.longOrd.max);
+  public static final Semigroup<Long> longMaximumSemigroup = Ord.longOrd.maxSemigroup();
 
   /**
    * A semigroup that yields the minimum of longs.
    */
-  public static final Semigroup<Long> longMinimumSemigroup = semigroup(Ord.longOrd.min);
+  public static final Semigroup<Long> longMinimumSemigroup = Ord.longOrd.minSemigroup();
 
   /**
    * A semigroup that ORs booleans.
@@ -238,7 +262,7 @@ public final class Semigroup<A> {
   /**
    * A semigroup that XORs booleans.
    */
-  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p, q) -> p && !q || !p && q);
+  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = semigroup((p, q) -> p ? !q : q);
 
   /**
    * A semigroup that ANDs booleans.
@@ -263,6 +287,20 @@ public final class Semigroup<A> {
       semigroup((s1, s2) -> new StringBuilder(s1).append(s2));
 
   /**
+   * A semigroup which always uses the "first" (left-hand side) value.
+   */
+  public static <A> Semigroup<A> firstSemigroup() {
+      return semigroup((a1, a2) -> a1);
+  }
+
+  /**
+   * A semigroup which always uses the "last" (right-hand side) value.
+   */
+  public static <A> Semigroup<A> lastSemigroup() {
+    return semigroup((a1, a2) -> a2);
+  }
+
+  /**
    * A semigroup for functions.
    *
    * @param sb The smeigroup for the codomain.
@@ -278,7 +316,7 @@ public final class Semigroup<A> {
    * @return A semigroup for lists.
    */
   public static <A> Semigroup<List<A>> listSemigroup() {
-    return semigroup((a1, a2) -> a1.append(a2));
+    return semigroup(List::append);
   }
 
   /**
@@ -287,7 +325,7 @@ public final class Semigroup<A> {
    * @return A semigroup for non-empty lists.
    */
   public static <A> Semigroup<NonEmptyList<A>> nonEmptyListSemigroup() {
-    return semigroup((a1, a2) -> a1.append(a2));
+    return semigroup(NonEmptyList::append);
   }
 
   /**
@@ -331,7 +369,7 @@ public final class Semigroup<A> {
    * @return A semigroup for arrays.
    */
   public static <A> Semigroup<Array<A>> arraySemigroup() {
-    return semigroup((a1, a2) -> a1.append(a2));
+    return semigroup(Array::append);
   }
 
   /**
@@ -356,6 +394,13 @@ public final class Semigroup<A> {
   }
 
   /**
+   * A semigroup for IO values.
+   */
+  public static <A> Semigroup<IO<A>> ioSemigroup(final Semigroup <A> sa) {
+      return semigroup((a1, a2) -> IOFunctions.liftM2(a1, a2, sa::sum));
+  }
+
+  /**
    * A semigroup for the Unit value.
    */
   public static final Semigroup<Unit> unitSemigroup = semigroup((u1, u2) -> Unit.unit());
@@ -366,7 +411,7 @@ public final class Semigroup<A> {
    * @return a semigroup for sets.
    */
   public static <A> Semigroup<Set<A>> setSemigroup() {
-    return semigroup((a, b) -> a.union(b));
+    return semigroup(Set::union);
   }
 
 }

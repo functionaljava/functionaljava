@@ -54,15 +54,7 @@ public final class Property {
    * @return A generator of results from this property.
    */
   public Gen<Result> gen() {
-    return Gen.gen(new F<Integer, F<Rand, Result>>() {
-      public F<Rand, Result> f(final Integer i) {
-        return new F<Rand, Result>() {
-          public Result f(final Rand r) {
-            return f.f(i).f(r);
-          }
-        };
-      }
-    });
+    return Gen.gen(i -> r -> f.f(i).f(r));
   }
 
   /**
@@ -72,15 +64,7 @@ public final class Property {
    * @return A conjunction of this property with the given property.
    */
   public Property and(final Property p) {
-    return fromGen(gen().bind(p.gen(), new F<Result, F<Result, Result>>() {
-      public F<Result, Result> f(final Result res1) {
-        return new F<Result, Result>() {
-          public Result f(final Result res2) {
-            return res1.isException() || res1.isFalsified() ? res1 : res2.isException() || res2.isFalsified() ? res2 : res1.isProven() || res1.isUnfalsified() ? res2 : res2.isProven() || res2.isUnfalsified() ? res1 : noResult();
-          }
-        };
-      }
-    }));
+    return fromGen(gen().bind(p.gen(), res1 -> res2 -> res1.isException() || res1.isFalsified() ? res1 : res2.isException() || res2.isFalsified() ? res2 : res1.isProven() || res1.isUnfalsified() ? res2 : res2.isProven() || res2.isUnfalsified() ? res1 : noResult()));
   }
 
   /**
@@ -90,15 +74,7 @@ public final class Property {
    * @return A disjunction of this property with the given property.
    */
   public Property or(final Property p) {
-    return fromGen(gen().bind(p.gen(), new F<Result, F<Result, Result>>() {
-      public F<Result, Result> f(final Result res1) {
-        return new F<Result, Result>() {
-          public Result f(final Result res2) {
-            return res1.isException() || res1.isFalsified() ? res1 : res2.isException() || res2.isFalsified() ? res2 : res1.isProven() || res1.isUnfalsified() ? res1 : res2.isProven() || res2.isUnfalsified() ? res2 : noResult();
-          }
-        };
-      }
-    }));
+    return fromGen(gen().bind(p.gen(), res1 -> res2 -> res1.isException() || res1.isFalsified() ? res1 : res2.isException() || res2.isFalsified() ? res2 : res1.isProven() || res1.isUnfalsified() ? res1 : res2.isProven() || res2.isUnfalsified() ? res2 : noResult()));
   }
 
   /**
@@ -111,15 +87,7 @@ public final class Property {
    * @return A sequence of this property with the given property.
    */
   public Property sequence(final Property p) {
-    return fromGen(gen().bind(p.gen(), new F<Result, F<Result, Result>>() {
-      public F<Result, Result> f(final Result res1) {
-        return new F<Result, Result>() {
-          public Result f(final Result res2) {
-            return res1.isException() || res1.isProven() || res1.isUnfalsified() ? res1 : res2.isException() || res2.isProven() || res2.isUnfalsified() ? res2 : res1.isFalsified() ? res2 : res2.isFalsified() ? res1 : noResult();
-          }
-        };
-      }
-    }));
+    return fromGen(gen().bind(p.gen(), res1 -> res2 -> res1.isException() || res1.isProven() || res1.isUnfalsified() ? res1 : res2.isException() || res2.isProven() || res2.isUnfalsified() ? res2 : res1.isFalsified() ? res2 : res2.isFalsified() ? res1 : noResult()));
   }
 
   /**
@@ -133,7 +101,7 @@ public final class Property {
    * @param maxSize       The maximum size to use for checking.
    * @return A result after checking this property.
    */
-  @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+  @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
   public CheckResult check(final Rand r,
                            final int minSuccessful,
                            final int maxDiscarded,
@@ -184,7 +152,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator} and the given
+   * Checks this property using a {@link Rand#standard standard random generator} and the given
    * arguments to produce a result.
    *
    * @param minSuccessful The minimum number of successful tests before a result is reached.
@@ -226,7 +194,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests and the given arguments to produce a result.
    *
    * @param minSize The minimum size to use for checking.
@@ -239,7 +207,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @return A result after checking this property.
@@ -249,7 +217,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, the given minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, the given minimum
    * successful checks, 500 maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @param minSuccessful The minimum number of successful tests before a result is reached.
@@ -272,7 +240,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, the given maximum discarded tests, minimum size of 0, maximum size of 100.
    *
    * @param maxDiscarded The maximum number of tests discarded because they did not satisfy
@@ -297,7 +265,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests, the given minimum size, maximum size of 100.
    *
    * @param minSize The minimum size to use for checking.
@@ -320,7 +288,7 @@ public final class Property {
   }
 
   /**
-   * Checks this property using a {@link Rand#Rand(F, F) standard random generator}, 100 minimum
+   * Checks this property using a {@link Rand#standard standard random generator}, 100 minimum
    * successful checks, 500 maximum discarded tests, minimum size of 0, the given maximum size.
    *
    * @param maxSize The maximum size to use for checking.
@@ -351,15 +319,7 @@ public final class Property {
    * @return A property that produces a result only if the given condition satisfies.
    */
   public static Property implies(final boolean b, final F0<Property> p) {
-    return b ? p.f() : new Property(new F<Integer, F<Rand, Result>>() {
-      public F<Rand, Result> f(final Integer i) {
-        return new F<Rand, Result>() {
-          public Result f(final Rand r) {
-            return noResult();
-          }
-        };
-      }
-    });
+    return b ? p.f() : new Property(i -> r -> noResult());
   }
 
     /**
@@ -367,7 +327,7 @@ public final class Property {
      * will be taken from the given boolean b.
      */
     public static Property impliesBoolean(final boolean a, final boolean b) {
-        return implies(a, () -> Property.prop(b));
+        return implies(a, () -> prop(b));
     }
 
     /**
@@ -375,7 +335,7 @@ public final class Property {
      * will be taken from the given lazy boolean b.
      */
     public static Property impliesBoolean(final boolean a, final F0<Boolean> b) {
-        return implies(a, () -> Property.prop(b.f()));
+        return implies(a, () -> prop(b.f()));
     }
 
   /**
@@ -395,15 +355,7 @@ public final class Property {
    * @return A property that always has the given result.
    */
   public static Property prop(final Result r) {
-    return new Property(new F<Integer, F<Rand, Result>>() {
-      public F<Rand, Result> f(final Integer integer) {
-        return new F<Rand, Result>() {
-          public Result f(final Rand x) {
-            return r;
-          }
-        };
-      }
-    });
+    return new Property(integer -> x -> r);
   }
 
   /**
@@ -416,7 +368,7 @@ public final class Property {
    *         otherwise.
    */
   public static Property prop(final boolean b) {
-    return b ? prop(Result.proven(List.<Arg<?>>nil())) : prop(Result.falsified(List.<Arg<?>>nil()));
+    return b ? prop(Result.proven(List.nil())) : prop(Result.falsified(List.nil()));
   }
 
   /**
@@ -426,15 +378,7 @@ public final class Property {
    * @return A property from a generator of results.
    */
   public static Property fromGen(final Gen<Result> g) {
-    return prop(new F<Integer, F<Rand, Result>>() {
-      public F<Rand, Result> f(final Integer i) {
-        return new F<Rand, Result>() {
-          public Result f(final Rand r) {
-            return g.gen(i, r);
-          }
-        };
-      }
-    });
+    return prop(i -> r -> g.gen(i, r));
   }
 
   /**
@@ -448,60 +392,44 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A> Property forall(final Gen<A> g, final Shrink<A> shrink, final F<A, P1<Property>> f) {
-    return prop(new F<Integer, F<Rand, Result>>() {
-      public F<Rand, Result> f(final Integer i) {
-        return new F<Rand, Result>() {
-          public Result f(final Rand r) {
-            final class Util {
-              @SuppressWarnings({"IfMayBeConditional"})
-              Option<P2<A, Result>> first(final Stream<A> as, final int shrinks) {
-                final Stream<Option<P2<A, Result>>> results = as.map(new F<A, Option<P2<A, Result>>>() {
-                  public Option<P2<A, Result>> f(final A a) {
-                    final Result result = exception(f.f(a)).prop(i, r);
+    return prop(i -> r -> {
+      final class Util {
+        @SuppressWarnings("IfMayBeConditional")
+        Option<P2<A, Result>> first(final Stream<A> as, final int shrinks) {
+          final Stream<Option<P2<A, Result>>> results = as.map(a -> {
+            final Result result = exception(f.f(a)).prop(i, r);
 
-                    return result.toOption().map(new F<Result, P2<A, Result>>() {
-                      public P2<A, Result> f(final Result result) {
-                        return p(a, result.provenAsUnfalsified().addArg(arg(a, shrinks)));
-                      }
-                    });
-                  }
-                });
+            return result.toOption().map(result1 -> p(a, result1.provenAsUnfalsified().addArg(arg(a, shrinks))));
+          });
 
-                if (results.isEmpty())
-                  return none();
-                else return results.find(new F<Option<P2<A, Result>>, Boolean>() {
-                  public Boolean f(final Option<P2<A, Result>> o) {
-                    return failed(o);
-                  }
-                }).orSome(() -> results.head());
-              }
+          if (results.isEmpty())
+            return none();
+          else return results.find(this::failed).orSome(results::head);
+        }
 
-              public boolean failed(final Option<P2<A, Result>> o) {
-                return o.isSome() && o.some()._2().failed();
-              }
-            }
-
-            final Util u = new Util();
-
-            Option<P2<A, Result>> x = u.first(Stream.single(g.gen(i, r)), 0);
-            final F<P2<A, Result>, Result> __2 = __2();
-            if (u.failed(x)) {
-              Option<Result> or;
-              int shrinks = 0;
-
-              do {
-                shrinks++;
-                or = x.map(__2);
-                x = u.first(shrink.shrink(x.some()._1()), shrinks);
-              }
-              while (u.failed(x));
-
-              return noResult(or);
-            } else
-              return noResult(x.map(__2));
-          }
-        };
+        public boolean failed(final Option<P2<A, Result>> o) {
+          return o.isSome() && o.some()._2().failed();
+        }
       }
+
+      final Util u = new Util();
+
+      Option<P2<A, Result>> x = u.first(Stream.single(g.gen(i, r)), 0);
+      final F<P2<A, Result>, Result> __2 = __2();
+      if (u.failed(x)) {
+        Option<Result> or;
+        int shrinks = 0;
+
+        do {
+          shrinks++;
+          or = x.map(__2);
+          x = u.first(shrink.shrink(x.some()._1()), shrinks);
+        }
+        while (u.failed(x));
+
+        return noResult(or);
+      } else
+        return noResult(x.map(__2));
     });
   }
 
@@ -543,7 +471,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A> Property propertyP(final Arbitrary<A> aa, final F<A, P1<Property>> f) {
-    return propertyP(aa, Shrink.<A>empty(), f);
+    return propertyP(aa, Shrink.empty(), f);
   }
 
   /**
@@ -573,14 +501,10 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property propertyP(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, P1<Property>>> f) {
-    return property(aa, sa, new F<A, Property>() {
-      public Property f(final A a) {
-        return propertyP(ab, sb, new F<B, P1<Property>>() {
-          public P1<Property> f(final B b) {
-            return f.f(a).f(b);
-          }
-        });
-      }
+    return property(aa, sa, a -> {
+      return propertyP(ab, sb, b -> {
+        return f.f(a).f(b);
+      });
     });
   }
 
@@ -597,7 +521,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, Property>> f) {
-    return propertyP(aa, ab, sa, sb, compose2(P.<Property>p1(), f));
+    return propertyP(aa, ab, sa, sb, compose2(P.p1(), f));
   }
 
   /**
@@ -611,15 +535,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property propertyP(final Arbitrary<A> aa, final Arbitrary<B> ab, final F<A, F<B, P1<Property>>> f) {
-    return property(aa, new F<A, Property>() {
-      public Property f(final A a) {
-        return propertyP(ab, new F<B, P1<Property>>() {
-          public P1<Property> f(final B b) {
-            return f.f(a).f(b);
-          }
-        });
-      }
-    });
+    return property(aa, a -> propertyP(ab, b -> f.f(a).f(b)));
   }
 
   /**
@@ -633,7 +549,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final F<A, F<B, Property>> f) {
-    return propertyP(aa, ab, compose2(P.<Property>p1(), f));
+    return propertyP(aa, ab, compose2(P.p1(), f));
   }
 
   /**
@@ -665,7 +581,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F2<A, B, Property> f) {
-    return propertyP(aa, ab, sa, sb, compose2(P.<Property>p1(), curry(f)));
+    return propertyP(aa, ab, sa, sb, compose2(P.p1(), curry(f)));
   }
 
   /**
@@ -693,7 +609,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final F2<A, B, Property> f) {
-    return propertyP(aa, ab, compose2(P.<Property>p1(), curry(f)));
+    return propertyP(aa, ab, compose2(P.p1(), curry(f)));
   }
 
   /**
@@ -717,19 +633,9 @@ public final class Property {
                                             final Shrink<B> sb,
                                             final Shrink<C> sc,
                                             final F<A, F<B, F<C, Property>>> f) {
-    return property(aa, ab, sa, sb, new F<A, F<B, Property>>() {
-      public F<B, Property> f(final A a) {
-        return new F<B, Property>() {
-          public Property f(final B b) {
-            return property(ac, sc, new F<C, Property>() {
-              public Property f(final C c) {
-                return f.f(a).f(b).f(c);
-              }
-            });
-          }
-        };
-      }
-    });
+    return property(aa, ab, sa, sb, a -> b -> property(ac, sc, c -> {
+      return f.f(a).f(b).f(c);
+    }));
   }
 
   /**
@@ -747,19 +653,7 @@ public final class Property {
                                             final Arbitrary<B> ab,
                                             final Arbitrary<C> ac,
                                             final F<A, F<B, F<C, Property>>> f) {
-    return property(aa, ab, new F<A, F<B, Property>>() {
-      public F<B, Property> f(final A a) {
-        return new F<B, Property>() {
-          public Property f(final B b) {
-            return property(ac, new F<C, Property>() {
-              public Property f(final C c) {
-                return f.f(a).f(b).f(c);
-              }
-            });
-          }
-        };
-      }
-    });
+    return property(aa, ab, a -> b -> property(ac, c -> f.f(a).f(b).f(c)));
   }
 
   /**
@@ -829,23 +723,9 @@ public final class Property {
                                                final Shrink<C> sc,
                                                final Shrink<D> sd,
                                                final F<A, F<B, F<C, F<D, Property>>>> f) {
-    return property(aa, ab, ac, sa, sb, sc, new F<A, F<B, F<C, Property>>>() {
-      public F<B, F<C, Property>> f(final A a) {
-        return new F<B, F<C, Property>>() {
-          public F<C, Property> f(final B b) {
-            return new F<C, Property>() {
-              public Property f(final C c) {
-                return property(ad, sd, new F<D, Property>() {
-                  public Property f(final D d) {
-                    return f.f(a).f(b).f(c).f(d);
-                  }
-                });
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, sa, sb, sc, a -> b -> c -> property(ad, sd, d -> {
+      return f.f(a).f(b).f(c).f(d);
+    }));
   }
 
   /**
@@ -865,23 +745,7 @@ public final class Property {
                                                final Arbitrary<C> ac,
                                                final Arbitrary<D> ad,
                                                final F<A, F<B, F<C, F<D, Property>>>> f) {
-    return property(aa, ab, ac, new F<A, F<B, F<C, Property>>>() {
-      public F<B, F<C, Property>> f(final A a) {
-        return new F<B, F<C, Property>>() {
-          public F<C, Property> f(final B b) {
-            return new F<C, Property>() {
-              public Property f(final C c) {
-                return property(ad, new F<D, Property>() {
-                  public Property f(final D d) {
-                    return f.f(a).f(b).f(c).f(d);
-                  }
-                });
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, a -> b -> c -> property(ad, d -> f.f(a).f(b).f(c).f(d)));
   }
 
   /**
@@ -961,27 +825,9 @@ public final class Property {
                                                   final Shrink<D> sd,
                                                   final Shrink<E> se,
                                                   final F<A, F<B, F<C, F<D, F<E, Property>>>>> f) {
-    return property(aa, ab, ac, ad, sa, sb, sc, sd, new F<A, F<B, F<C, F<D, Property>>>>() {
-      public F<B, F<C, F<D, Property>>> f(final A a) {
-        return new F<B, F<C, F<D, Property>>>() {
-          public F<C, F<D, Property>> f(final B b) {
-            return new F<C, F<D, Property>>() {
-              public F<D, Property> f(final C c) {
-                return new F<D, Property>() {
-                  public Property f(final D d) {
-                    return property(ae, se, new F<E, Property>() {
-                      public Property f(final E e) {
-                        return f.f(a).f(b).f(c).f(d).f(e);
-                      }
-                    });
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, sa, sb, sc, sd, a -> b -> c -> d -> property(ae, se, e -> {
+      return f.f(a).f(b).f(c).f(d).f(e);
+    }));
   }
 
   /**
@@ -1003,27 +849,7 @@ public final class Property {
                                                   final Arbitrary<D> ad,
                                                   final Arbitrary<E> ae,
                                                   final F<A, F<B, F<C, F<D, F<E, Property>>>>> f) {
-    return property(aa, ab, ac, ad, new F<A, F<B, F<C, F<D, Property>>>>() {
-      public F<B, F<C, F<D, Property>>> f(final A a) {
-        return new F<B, F<C, F<D, Property>>>() {
-          public F<C, F<D, Property>> f(final B b) {
-            return new F<C, F<D, Property>>() {
-              public F<D, Property> f(final C c) {
-                return new F<D, Property>() {
-                  public Property f(final D d) {
-                    return property(ae, new F<E, Property>() {
-                      public Property f(final E e) {
-                        return f.f(a).f(b).f(c).f(d).f(e);
-                      }
-                    });
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, a -> b -> c -> d -> property(ae, e -> f.f(a).f(b).f(c).f(d).f(e)));
   }
 
   /**
@@ -1113,31 +939,9 @@ public final class Property {
                                                       final Shrink<E> se,
                                                       final Shrink<F$> sf,
                                                       final F<A, F<B, F<C, F<D, F<E, F<F$, Property>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, sa, sb, sc, sd, se, new F<A, F<B, F<C, F<D, F<E, Property>>>>>() {
-      public F<B, F<C, F<D, F<E, Property>>>> f(final A a) {
-        return new F<B, F<C, F<D, F<E, Property>>>>() {
-          public F<C, F<D, F<E, Property>>> f(final B b) {
-            return new F<C, F<D, F<E, Property>>>() {
-              public F<D, F<E, Property>> f(final C c) {
-                return new F<D, F<E, Property>>() {
-                  public F<E, Property> f(final D d) {
-                    return new F<E, Property>() {
-                      public Property f(final E e) {
-                        return property(af, sf, new F<F$, Property>() {
-                          public Property f(final F$ f$) {
-                            return f.f(a).f(b).f(c).f(d).f(e).f(f$);
-                          }
-                        });
-                      }
-                    };
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, ae, sa, sb, sc, sd, se, a -> b -> c -> d -> e -> property(af, sf, f$ -> {
+      return f.f(a).f(b).f(c).f(d).f(e).f(f$);
+    }));
   }
 
   /**
@@ -1161,31 +965,7 @@ public final class Property {
                                                       final Arbitrary<E> ae,
                                                       final Arbitrary<F$> af,
                                                       final F<A, F<B, F<C, F<D, F<E, F<F$, Property>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, new F<A, F<B, F<C, F<D, F<E, Property>>>>>() {
-      public F<B, F<C, F<D, F<E, Property>>>> f(final A a) {
-        return new F<B, F<C, F<D, F<E, Property>>>>() {
-          public F<C, F<D, F<E, Property>>> f(final B b) {
-            return new F<C, F<D, F<E, Property>>>() {
-              public F<D, F<E, Property>> f(final C c) {
-                return new F<D, F<E, Property>>() {
-                  public F<E, Property> f(final D d) {
-                    return new F<E, Property>() {
-                      public Property f(final E e) {
-                        return property(af, new F<F$, Property>() {
-                          public Property f(final F$ f$) {
-                            return f.f(a).f(b).f(c).f(d).f(e).f(f$);
-                          }
-                        });
-                      }
-                    };
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, ae, a -> b -> c -> d -> e -> property(af, f$ -> f.f(a).f(b).f(c).f(d).f(e).f(f$)));
   }
 
   /**
@@ -1285,35 +1065,9 @@ public final class Property {
                                                          final Shrink<F$> sf,
                                                          final Shrink<G> sg,
                                                          final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, af, sa, sb, sc, sd, se, sf, new F<A, F<B, F<C, F<D, F<E, F<F$, Property>>>>>>() {
-      public F<B, F<C, F<D, F<E, F<F$, Property>>>>> f(final A a) {
-        return new F<B, F<C, F<D, F<E, F<F$, Property>>>>>() {
-          public F<C, F<D, F<E, F<F$, Property>>>> f(final B b) {
-            return new F<C, F<D, F<E, F<F$, Property>>>>() {
-              public F<D, F<E, F<F$, Property>>> f(final C c) {
-                return new F<D, F<E, F<F$, Property>>>() {
-                  public F<E, F<F$, Property>> f(final D d) {
-                    return new F<E, F<F$, Property>>() {
-                      public F<F$, Property> f(final E e) {
-                        return new F<F$, Property>() {
-                          public Property f(final F$ f$) {
-                            return property(ag, sg, new F<G, Property>() {
-                              public Property f(final G g) {
-                                return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g);
-                              }
-                            });
-                          }
-                        };
-                      }
-                    };
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, ae, af, sa, sb, sc, sd, se, sf, a -> b -> c -> d -> e -> f$ -> property(ag, sg, g -> {
+      return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g);
+    }));
   }
 
   /**
@@ -1339,35 +1093,7 @@ public final class Property {
                                                          final Arbitrary<F$> af,
                                                          final Arbitrary<G> ag,
                                                          final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, af, new F<A, F<B, F<C, F<D, F<E, F<F$, Property>>>>>>() {
-      public F<B, F<C, F<D, F<E, F<F$, Property>>>>> f(final A a) {
-        return new F<B, F<C, F<D, F<E, F<F$, Property>>>>>() {
-          public F<C, F<D, F<E, F<F$, Property>>>> f(final B b) {
-            return new F<C, F<D, F<E, F<F$, Property>>>>() {
-              public F<D, F<E, F<F$, Property>>> f(final C c) {
-                return new F<D, F<E, F<F$, Property>>>() {
-                  public F<E, F<F$, Property>> f(final D d) {
-                    return new F<E, F<F$, Property>>() {
-                      public F<F$, Property> f(final E e) {
-                        return new F<F$, Property>() {
-                          public Property f(final F$ f$) {
-                            return property(ag, new F<G, Property>() {
-                              public Property f(final G g) {
-                                return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g);
-                              }
-                            });
-                          }
-                        };
-                      }
-                    };
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, ae, af, a -> b -> c -> d -> e -> f$ -> property(ag, g -> f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g)));
   }
 
   /**
@@ -1477,39 +1203,9 @@ public final class Property {
                                                             final Shrink<G> sg,
                                                             final Shrink<H> sh,
                                                             final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, Property>>>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, af, ag, sa, sb, sc, sd, se, sf, sg, new F<A, F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>>() {
-      public F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>> f(final A a) {
-        return new F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>() {
-          public F<C, F<D, F<E, F<F$, F<G, Property>>>>> f(final B b) {
-            return new F<C, F<D, F<E, F<F$, F<G, Property>>>>>() {
-              public F<D, F<E, F<F$, F<G, Property>>>> f(final C c) {
-                return new F<D, F<E, F<F$, F<G, Property>>>>() {
-                  public F<E, F<F$, F<G, Property>>> f(final D d) {
-                    return new F<E, F<F$, F<G, Property>>>() {
-                      public F<F$, F<G, Property>> f(final E e) {
-                        return new F<F$, F<G, Property>>() {
-                          public F<G, Property> f(final F$ f$) {
-                            return new F<G, Property>() {
-                              public Property f(final G g) {
-                                return property(ah, sh, new F<H, Property>() {
-                                  public Property f(final H h) {
-                                    return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h);
-                                  }
-                                });
-                              }
-                            };
-                          }
-                        };
-                      }
-                    };
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, ae, af, ag, sa, sb, sc, sd, se, sf, sg, a -> b -> c -> d -> e -> f$ -> g -> property(ah, sh, h -> {
+      return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h);
+    }));
   }
 
   /**
@@ -1537,39 +1233,7 @@ public final class Property {
                                                             final Arbitrary<G> ag,
                                                             final Arbitrary<H> ah,
                                                             final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, Property>>>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, af, ag, new F<A, F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>>() {
-      public F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>> f(final A a) {
-        return new F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>() {
-          public F<C, F<D, F<E, F<F$, F<G, Property>>>>> f(final B b) {
-            return new F<C, F<D, F<E, F<F$, F<G, Property>>>>>() {
-              public F<D, F<E, F<F$, F<G, Property>>>> f(final C c) {
-                return new F<D, F<E, F<F$, F<G, Property>>>>() {
-                  public F<E, F<F$, F<G, Property>>> f(final D d) {
-                    return new F<E, F<F$, F<G, Property>>>() {
-                      public F<F$, F<G, Property>> f(final E e) {
-                        return new F<F$, F<G, Property>>() {
-                          public F<G, Property> f(final F$ f$) {
-                            return new F<G, Property>() {
-                              public Property f(final G g) {
-                                return property(ah, new F<H, Property>() {
-                                  public Property f(final H h) {
-                                    return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h);
-                                  }
-                                });
-                              }
-                            };
-                          }
-                        };
-                      }
-                    };
-                  }
-                };
-              }
-            };
-          }
-        };
-      }
-    });
+    return property(aa, ab, ac, ad, ae, af, ag, a -> b -> c -> d -> e -> f$ -> g -> property(ah, h -> f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h)));
   }
 
   /**
@@ -1656,15 +1320,7 @@ public final class Property {
     try {
       return p.f();
     } catch (final Throwable t) {
-      return new Property(new F<Integer, F<Rand, Result>>() {
-        public F<Rand, Result> f(final Integer i) {
-          return new F<Rand, Result>() {
-            public Result f(final Rand r) {
-              return Result.exception(List.<Arg<?>>nil(), t);
-            }
-          };
-        }
-      });
+      return new Property(i -> r -> Result.exception(List.nil(), t));
     }
   }
 

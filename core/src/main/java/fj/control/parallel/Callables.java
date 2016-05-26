@@ -51,7 +51,7 @@ public final class Callables {
    * @return A function from a value to a Callable that completely preserves that value.
    */
   public static <A> F<A, Callable<A>> callable() {
-    return a -> callable(a);
+    return Callables::callable;
   }
 
   /**
@@ -72,7 +72,7 @@ public final class Callables {
    * @return A transformation from a function to the equivalent Callable-valued function.
    */
   public static <A, B> F<F<A, B>, F<A, Callable<B>>> arrow() {
-    return f -> callable(f);
+    return Callables::callable;
   }
 
   /**
@@ -93,7 +93,7 @@ public final class Callables {
    * @return That function lifted to a function on Callables.
    */
   public static <A, B> F<Callable<A>, Callable<B>> fmap(final F<A, B> f) {
-    return a -> Callables.bind(a, callable(f));
+    return a -> bind(a, callable(f));
   }
 
   /**
@@ -126,7 +126,7 @@ public final class Callables {
    * @return A new Callable that is the join of the given Callable.
    */
   public static <A> Callable<A> join(final Callable<Callable<A>> a) {
-    return bind(a, Function.<Callable<A>>identity());
+    return bind(a, Function.identity());
   }
 
   /**
@@ -146,8 +146,7 @@ public final class Callables {
    * @return A single callable for the given List.
    */
   public static <A> Callable<List<A>> sequence(final List<Callable<A>> as) {
-    return as.foldRight(Callables.<A, List<A>,
-        List<A>>liftM2(List.<A>cons()), callable(List.<A>nil()));
+    return as.foldRight(Callables.liftM2(List.cons()), callable(List.nil()));
   }
 
   /**
@@ -156,7 +155,7 @@ public final class Callables {
    * @return A function from a List of Callables to a single Callable of a List.
    */
   public static <A> F<List<Callable<A>>, Callable<List<A>>> sequence_() {
-    return as -> sequence(as);
+    return Callables::sequence;
   }
 
   /**
@@ -181,7 +180,7 @@ public final class Callables {
    * @return a function that turns a Callable into an optional value.
    */
   public static <A> F<Callable<A>, P1<Option<A>>> option() {
-    return a -> option(a);
+    return Callables::option;
   }
 
   /**
@@ -206,7 +205,7 @@ public final class Callables {
    * @return a function that turns a Callable into an Either.
    */
   public static <A> F<Callable<A>, P1<Either<Exception, A>>> either() {
-    return a -> either(a);
+    return Callables::either;
   }
 
   /**
@@ -216,14 +215,12 @@ public final class Callables {
    * @return A Callable equivalent to the given Either value.
    */
   public static <A> Callable<A> fromEither(final F0<Either<Exception, A>> e) {
-    return new Callable<A>() {
-      public A call() throws Exception {
-        final Either<Exception, A> e1 = e.f();
-        if (e1.isLeft())
-          throw e1.left().value();
-        else
-          return e1.right().value();
-      }
+    return () -> {
+      final Either<Exception, A> e1 = e.f();
+      if (e1.isLeft())
+        throw e1.left().value();
+      else
+        return e1.right().value();
     };
   }
 
@@ -233,7 +230,7 @@ public final class Callables {
    * @return a function that turns an Either into a Callable.
    */
   public static <A> F<P1<Either<Exception, A>>, Callable<A>> fromEither() {
-    return e -> fromEither(e);
+    return Callables::fromEither;
   }
 
   /**
@@ -243,14 +240,12 @@ public final class Callables {
    * @return A Callable that yields some value or throws an exception in the case of no value.
    */
   public static <A> Callable<A> fromOption(final F0<Option<A>> o) {
-    return new Callable<A>() {
-      public A call() throws Exception {
-        final Option<A> o1 = o.f();
-        if (o1.isSome())
-          return o1.some();
-        else
-          throw new Exception("No value.");
-      }
+    return () -> {
+      final Option<A> o1 = o.f();
+      if (o1.isSome())
+        return o1.some();
+      else
+        throw new Exception("No value.");
     };
   }
 
@@ -261,7 +256,7 @@ public final class Callables {
    *         or throws an exception in the case of no value.
    */
   public static <A> F<P1<Option<A>>, Callable<A>> fromOption() {
-    return o -> fromOption(o);
+    return Callables::fromOption;
   }
 
   /**
@@ -285,7 +280,7 @@ public final class Callables {
    * @return A function that normalises the given Callable by calling it and wrapping the result in a new Callable.
    */
   public static <A> F<Callable<A>, Callable<A>> normalise() {
-    return a -> normalise(a);
+    return Callables::normalise;
   }
 
 }

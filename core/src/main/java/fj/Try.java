@@ -13,7 +13,10 @@ import static fj.data.Validation.success;
 /**
  * Created by mperry on 24/07/2014.
  */
-public class Try {
+public final class Try {
+
+    private Try() {
+    }
 
     /**
      * Promotes the Try0 to a Validation that returns an Exception on the failure side and its result on the success side.
@@ -22,7 +25,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, E extends Exception> P1<Validation<E, A>> f(final Try0<A, E> t) {
+    public static <A, E extends Exception> P1<Validation<E, A>> f(final Try0<A, E> t) {
         return P.lazy(() -> {
             try {
                 return success(t.f());
@@ -39,10 +42,10 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, E extends Exception> F<A, Validation<E, B>> f(final Try1<A, B, E> t) {
+    public static <A, B, E extends Exception> F<A, Validation<E, B>> f(final Try1<A, B, E> t) {
         return a -> {
             try {
-                return Validation.success(t.f(a));
+                return success(t.f(a));
             } catch (Exception e) {
                 return fail((E) e);
             }
@@ -56,7 +59,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, C, E extends Exception> F2<A, B, Validation<E, C>> f(final Try2<A, B, C, E> t) {
+    public static <A, B, C, E extends Exception> F2<A, B, Validation<E, C>> f(final Try2<A, B, C, E> t) {
         return (a, b) -> {
             try {
                 return success(t.f(a, b));
@@ -73,7 +76,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, C, D, E extends Exception> F3<A, B, C, Validation<E, D>> f(final Try3<A, B, C, D, E> t) {
+    public static <A, B, C, D, E extends Exception> F3<A, B, C, Validation<E, D>> f(final Try3<A, B, C, D, E> t) {
         return (a, b, c) -> {
             try {
                 return success(t.f(a, b, c));
@@ -90,7 +93,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, C, D, E, Z extends Exception> F4<A, B, C, D, Validation<Z, E>> f(final Try4<A, B, C, D, E, Z> t) {
+    public static <A, B, C, D, E, Z extends Exception> F4<A, B, C, D, Validation<Z, E>> f(final Try4<A, B, C, D, E, Z> t) {
         return (a, b, c, d) -> {
             try {
                 return success(t.f(a, b, c, d));
@@ -107,7 +110,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, C, D, E, F, Z extends Exception> F5<A, B, C, D, E, Validation<Z, F>> f(final Try5<A, B, C, D, E, F, Z> t) {
+    public static <A, B, C, D, E, F, Z extends Exception> F5<A, B, C, D, E, Validation<Z, F>> f(final Try5<A, B, C, D, E, F, Z> t) {
         return (a, b, c, d, e) -> {
             try {
                 return success(t.f(a, b, c, d, e));
@@ -124,7 +127,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, C, D, E, F, G, Z extends Exception> F6<A, B, C, D, E, F, Validation<Z, G>> f(final Try6<A, B, C, D, E, F, G, Z> t) {
+    public static <A, B, C, D, E, F, G, Z extends Exception> F6<A, B, C, D, E, F, Validation<Z, G>> f(final Try6<A, B, C, D, E, F, G, Z> t) {
         return (a, b, c, d, e, f) -> {
             try {
                 return success(t.f(a, b, c, d, e, f));
@@ -141,7 +144,7 @@ public class Try {
      * @return A Validation with an Exception on the failure side and its result on the success side.
      */
     @SuppressWarnings("unchecked")
-    static public <A, B, C, D, E, F, G, H, Z extends Exception> F7<A, B, C, D, E, F, G, Validation<Z, H>> f(final Try7<A, B, C, D, E, F, G, H, Z> t) {
+    public static <A, B, C, D, E, F, G, H, Z extends Exception> F7<A, B, C, D, E, F, G, Validation<Z, H>> f(final Try7<A, B, C, D, E, F, G, H, Z> t) {
         return (a, b, c, d, e, f, g) -> {
             try {
                 return success(t.f(a, b, c, d, e, f, g));

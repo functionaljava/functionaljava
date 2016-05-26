@@ -103,17 +103,17 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
   }
 
   /** join two {@link Optional} with the same target */
-  public final <S1> Optional<Either<S, S1>, A> sum(final Optional<S1, A> other) {
+  public <S1> Optional<Either<S, S1>, A> sum(final Optional<S1, A> other) {
     return new Optional<>(pOptional.sum(other.pOptional));
   }
 
   @Override
-  public final <C> Optional<P2<S, C>, P2<A, C>> first() {
+  public <C> Optional<P2<S, C>, P2<A, C>> first() {
     return new Optional<>(pOptional.first());
   }
 
   @Override
-  public final <C> Optional<P2<C, S>, P2<C, A>> second() {
+  public <C> Optional<P2<C, S>, P2<C, A>> second() {
     return new Optional<>(pOptional.second());
   }
 
@@ -122,32 +122,32 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
   /**************************************************************/
 
   /** compose a {@link Optional} with a {@link Setter} */
-  public final <C> Setter<S, C> composeSetter(final Setter<A, C> other) {
+  public <C> Setter<S, C> composeSetter(final Setter<A, C> other) {
     return new Setter<>(pOptional.composeSetter(other.pSetter));
   }
 
   /** compose a {@link Optional} with a {@link Traversal} */
-  public final <C> Traversal<S, C> composeTraversal(final Traversal<A, C> other) {
+  public <C> Traversal<S, C> composeTraversal(final Traversal<A, C> other) {
     return new Traversal<>(pOptional.composeTraversal(other.pTraversal));
   }
 
   /** compose a {@link Optional} with a {@link Optional} */
-  public final <C> Optional<S, C> composeOptional(final Optional<A, C> other) {
+  public <C> Optional<S, C> composeOptional(final Optional<A, C> other) {
     return new Optional<>(pOptional.composeOptional(other.pOptional));
   }
 
   /** compose a {@link Optional} with a {@link Prism} */
-  public final <C> Optional<S, C> composePrism(final Prism<A, C> other) {
+  public <C> Optional<S, C> composePrism(final Prism<A, C> other) {
     return new Optional<>(pOptional.composePrism(other.pPrism));
   }
 
   /** compose a {@link Optional} with a {@link Lens} */
-  public final <C> Optional<S, C> composeLens(final Lens<A, C> other) {
+  public <C> Optional<S, C> composeLens(final Lens<A, C> other) {
     return new Optional<>(pOptional.composeLens(other.pLens));
   }
 
   /** compose a {@link Optional} with an {@link Iso} */
-  public final <C> Optional<S, C> composeIso(final Iso<A, C> other) {
+  public <C> Optional<S, C> composeIso(final Iso<A, C> other) {
     return new Optional<>(pOptional.composeIso(other.pIso));
   }
 
@@ -157,13 +157,13 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
   /** view a {@link Optional} as a {@link Setter} */
   @Override
-  public final Setter<S, A> asSetter() {
+  public Setter<S, A> asSetter() {
     return new Setter<>(pOptional.asSetter());
   }
 
   /** view a {@link Optional} as a {@link Traversal} */
   @Override
-  public final Traversal<S, A> asTraversal() {
+  public Traversal<S, A> asTraversal() {
     return new Traversal<>(pOptional.asTraversal());
   }
 
@@ -171,12 +171,16 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
     return new Optional<>(POptional.pId());
   }
 
+  public static <S, A> Optional<S, A> ignored() {
+    return optional(s -> Option.none(), a -> s -> s);
+  }
+
   public static final <S, A> Optional<S, A> optional(final F<S, Option<A>> getOption, final F<A, F<S, S>> set) {
     return new Optional<>(new POptional<S, S, A, A>() {
 
       @Override
       public Either<S, A> getOrModify(final S s) {
-        return getOption.f(s).option(Either.left(s), Either.<S, A> right_());
+        return getOption.f(s).option(Either.left(s), Either.right_());
       }
 
       @Override
@@ -209,7 +213,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
       public F<S, IO<S>> modifyIOF(final F<A, IO<A>> f) {
         return s -> getOption.f(s).option(
             IOFunctions.unit(s),
-            a -> IOFunctions.<A, S> map(f.f(a), b -> set.f(b).f(s))
+            a -> IOFunctions.map(f.f(a), b -> set.f(b).f(s))
             );
       }
 

@@ -4,8 +4,6 @@ import fj.F;
 import static fj.Function.identity;
 import fj.P2;
 import fj.Unit;
-import static fj.Unit.unit;
-import static java.lang.System.out;
 
 import fj.data.hlist.HList;
 import static fj.data.hlist.HList.single;

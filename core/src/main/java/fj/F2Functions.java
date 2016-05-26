@@ -13,16 +13,19 @@ import static fj.data.Zipper.zipper;
 /**
  * Created by MarkPerry on 6/04/2014.
  */
-public class F2Functions {
+public final class F2Functions {
 
 
-    /**
+  private F2Functions() {
+  }
+
+  /**
      * Partial application.
      *
      * @param a The <code>A</code> to which to apply this function.
      * @return The function partially applied to the given argument.
      */
-    static public <A, B, C> F<B, C> f(final F2<A, B, C> f, final A a) {
+  public static <A, B, C> F<B, C> f(final F2<A, B, C> f, final A a) {
         return b -> f.f(a, b);
     }
 
@@ -31,7 +34,7 @@ public class F2Functions {
      *
      * @return a wrapped function of arity-1 that returns another wrapped function.
      */
-    static public <A, B, C> F<A, F<B, C>> curry(final F2<A, B, C> f) {
+    public static <A, B, C> F<A, F<B, C>> curry(final F2<A, B, C> f) {
         return a -> b -> f.f(a, b);
     }
 
@@ -40,7 +43,7 @@ public class F2Functions {
      *
      * @return A new function with the arguments of this function flipped.
      */
-    static public <A, B, C> F2<B, A, C> flip(final F2<A, B, C> f) {
+    public static <A, B, C> F2<B, A, C> flip(final F2<A, B, C> f) {
         return (b, a) -> f.f(a, b);
     }
 
@@ -49,7 +52,7 @@ public class F2Functions {
      *
      * @return A new function that calls this function with the elements of a given tuple.
      */
-    static public <A, B, C> F<P2<A, B>, C> tuple(final F2<A, B, C> f) {
+    public static <A, B, C> F<P2<A, B>, C> tuple(final F2<A, B, C> f) {
         return p -> f.f(p._1(), p._2());
     }
 
@@ -58,7 +61,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Arrays.
      */
-    static public <A, B, C> F2<Array<A>, Array<B>, Array<C>> arrayM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Array<A>, Array<B>, Array<C>> arrayM(final F2<A, B, C> f) {
         return (a, b) -> a.bind(b, curry(f));
     }
 
@@ -67,7 +70,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Promises.
      */
-    static public <A, B, C> F2<Promise<A>, Promise<B>, Promise<C>> promiseM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Promise<A>, Promise<B>, Promise<C>> promiseM(final F2<A, B, C> f) {
         return (a, b) -> a.bind(b, curry(f));
     }
 
@@ -76,7 +79,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Iterables.
      */
-    static public <A, B, C> F2<Iterable<A>, Iterable<B>, IterableW<C>> iterableM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Iterable<A>, Iterable<B>, IterableW<C>> iterableM(final F2<A, B, C> f) {
         return (a, b) -> IterableW.liftM2(curry(f)).f(a).f(b);
     }
 
@@ -85,7 +88,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Lists.
      */
-    static public <A, B, C> F2<List<A>, List<B>, List<C>> listM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<List<A>, List<B>, List<C>> listM(final F2<A, B, C> f) {
         return (a, b) -> List.liftM2(curry(f)).f(a).f(b);
     }
 
@@ -94,7 +97,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform non-empty lists.
      */
-    static public <A, B, C> F2<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> nelM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> nelM(final F2<A, B, C> f) {
         return (as, bs) -> NonEmptyList.fromList(as.toList().bind(bs.toList(), f)).some();
     }
 
@@ -103,7 +106,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Options.
      */
-    static public <A, B, C> F2<Option<A>, Option<B>, Option<C>> optionM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Option<A>, Option<B>, Option<C>> optionM(final F2<A, B, C> f) {
         return (a, b) -> Option.liftM2(curry(f)).f(a).f(b);
     }
 
@@ -113,7 +116,7 @@ public class F2Functions {
      * @param o An ordering for the result of the promoted function.
      * @return This function promoted to transform Sets.
      */
-    static public <A, B, C> F2<Set<A>, Set<B>, Set<C>> setM(final F2<A, B, C> f, final Ord<C> o) {
+    public static <A, B, C> F2<Set<A>, Set<B>, Set<C>> setM(final F2<A, B, C> f, final Ord<C> o) {
         return (as, bs) -> {
             Set<C> cs = Set.empty(o);
             for (final A a : as)
@@ -128,7 +131,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Streams.
      */
-    static public <A, B, C> F2<Stream<A>, Stream<B>, Stream<C>> streamM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Stream<A>, Stream<B>, Stream<C>> streamM(final F2<A, B, C> f) {
         return (as, bs) -> as.bind(bs, f);
     }
 
@@ -137,7 +140,7 @@ public class F2Functions {
      *
      * @return This function promoted to transform Trees.
      */
-    static public <A, B, C> F2<Tree<A>, Tree<B>, Tree<C>> treeM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Tree<A>, Tree<B>, Tree<C>> treeM(final F2<A, B, C> f) {
         return new F2<Tree<A>, Tree<B>, Tree<C>>() {
             public Tree<C> f(final Tree<A> as, final Tree<B> bs) {
                 final F2<Tree<A>, Tree<B>, Tree<C>> self = this;
@@ -151,7 +154,7 @@ public class F2Functions {
      *
      * @return A function that zips two arrays with this function.
      */
-    static public <A, B, C> F2<Array<A>, Array<B>, Array<C>> zipArrayM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Array<A>, Array<B>, Array<C>> zipArrayM(final F2<A, B, C> f) {
         return (as, bs) -> as.zipWith(bs, f);
     }
 
@@ -160,7 +163,7 @@ public class F2Functions {
      *
      * @return A function that zips two iterables with this function.
      */
-    static public <A, B, C> F2<Iterable<A>, Iterable<B>, Iterable<C>> zipIterableM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Iterable<A>, Iterable<B>, Iterable<C>> zipIterableM(final F2<A, B, C> f) {
         return (as, bs) -> wrap(as).zipWith(bs, f);
     }
 
@@ -169,7 +172,7 @@ public class F2Functions {
      *
      * @return A function that zips two lists with this function.
      */
-    static public <A, B, C> F2<List<A>, List<B>, List<C>> zipListM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<List<A>, List<B>, List<C>> zipListM(final F2<A, B, C> f) {
         return (as, bs) -> as.zipWith(bs, f);
     }
 
@@ -179,7 +182,7 @@ public class F2Functions {
      *
      * @return A function that zips two streams with this function.
      */
-    static public <A, B, C> F2<Stream<A>, Stream<B>, Stream<C>> zipStreamM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Stream<A>, Stream<B>, Stream<C>> zipStreamM(final F2<A, B, C> f) {
         return (as, bs) -> as.zipWith(bs, f);
     }
 
@@ -188,7 +191,7 @@ public class F2Functions {
      *
      * @return A function that zips two non-empty lists with this function.
      */
-    static public <A, B, C> F2<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> zipNelM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<NonEmptyList<A>, NonEmptyList<B>, NonEmptyList<C>> zipNelM(final F2<A, B, C> f) {
         return (as, bs) -> NonEmptyList.fromList(as.toList().zipWith(bs.toList(), f)).some();
     }
 
@@ -198,7 +201,7 @@ public class F2Functions {
      * @param o An ordering for the resulting set.
      * @return A function that zips two sets with this function.
      */
-    static public <A, B, C> F2<Set<A>, Set<B>, Set<C>> zipSetM(final F2<A, B, C> f, final Ord<C> o) {
+    public static <A, B, C> F2<Set<A>, Set<B>, Set<C>> zipSetM(final F2<A, B, C> f, final Ord<C> o) {
         return (as, bs) -> iterableSet(o, as.toStream().zipWith(bs.toStream(), f));
     }
 
@@ -208,7 +211,7 @@ public class F2Functions {
      *
      * @return A function that zips two trees with this function.
      */
-    static public <A, B, C> F2<Tree<A>, Tree<B>, Tree<C>> zipTreeM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Tree<A>, Tree<B>, Tree<C>> zipTreeM(final F2<A, B, C> f) {
         return new F2<Tree<A>, Tree<B>, Tree<C>>() {
             public Tree<C> f(final Tree<A> ta, final Tree<B> tb) {
                 final F2<Tree<A>, Tree<B>, Tree<C>> self = this;
@@ -223,7 +226,7 @@ public class F2Functions {
      *
      * @return A function that zips two zippers with this function.
      */
-    static public <A, B, C> F2<Zipper<A>, Zipper<B>, Zipper<C>> zipZipperM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<Zipper<A>, Zipper<B>, Zipper<C>> zipZipperM(final F2<A, B, C> f) {
         return (ta, tb) -> {
             final F2<Stream<A>, Stream<B>, Stream<C>> sf = zipStreamM(f);
             return zipper(sf.f(ta.lefts(), tb.lefts()), f.f(ta.focus(), tb.focus()), sf.f(ta.rights(), tb.rights()));
@@ -236,7 +239,7 @@ public class F2Functions {
      *
      * @return A function that zips two TreeZippers with this function.
      */
-    static public <A, B, C> F2<TreeZipper<A>, TreeZipper<B>, TreeZipper<C>> zipTreeZipperM(final F2<A, B, C> f) {
+    public static <A, B, C> F2<TreeZipper<A>, TreeZipper<B>, TreeZipper<C>> zipTreeZipperM(final F2<A, B, C> f) {
         return (ta, tb) -> {
             final F2<Stream<Tree<A>>, Stream<Tree<B>>, Stream<Tree<C>>> sf = zipStreamM(treeM(f));
             final
@@ -251,19 +254,19 @@ public class F2Functions {
         };
     }
 
-    static public <A, B, C, Z> F2<Z, B, C> contramapFirst(F2<A, B, C> target, F<Z, A> f) {
+    public static <A, B, C, Z> F2<Z, B, C> contramapFirst(F2<A, B, C> target, F<Z, A> f) {
         return (z, b) -> target.f(f.f(z), b);
     }
 
-    static public <A, B, C, Z> F2<A, Z, C> contramapSecond(F2<A, B, C> target, F<Z, B> f) {
+    public static <A, B, C, Z> F2<A, Z, C> contramapSecond(F2<A, B, C> target, F<Z, B> f) {
         return (a, z) -> target.f(a, f.f(z));
     }
 
-    static public <A, B, C, X, Y> F2<X, Y, C> contramap(F2<A, B, C> target, F<X, A> f, F<Y, B> g) {
+    public static <A, B, C, X, Y> F2<X, Y, C> contramap(F2<A, B, C> target, F<X, A> f, F<Y, B> g) {
         return contramapSecond(contramapFirst(target, f), g);
     }
 
-    static public <A, B, C, Z> F2<A, B, Z> map(F2<A, B, C> target, F<C, Z> f) {
+    public static <A, B, C, Z> F2<A, B, Z> map(F2<A, B, C> target, F<C, Z> f) {
         return (a, b) -> f.f(target.f(a, b));
     }
 

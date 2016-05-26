@@ -1,6 +1,5 @@
 package fj.data.hlist;
 
-import fj.F;
 import fj.Show;
 
 /**

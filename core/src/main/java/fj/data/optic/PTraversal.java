@@ -533,7 +533,7 @@ public abstract class PTraversal<S, T, A, B> {
 
   public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
       final F4<B, B, B, S, T> set) {
-    return fromCurried(pTraversal(get1, get2, (b1, b2, s) -> (b3 -> set.f(b1, b2, b3, s))), get3);
+    return fromCurried(pTraversal(get1, get2, (b1, b2, s) -> b3 -> set.f(b1, b2, b3, s)), get3);
   }
 
   public static <S, T, A, B> PTraversal<S, T, A, B> pTraversal(final F<S, A> get1, final F<S, A> get2, final F<S, A> get3,
