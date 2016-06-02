@@ -520,4 +520,9 @@ public final class Deep<V, A> extends FingerTree<V, A> {
       });
     });
   }
+
+  public String toString() {
+    return Show.fingerTreeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
 }

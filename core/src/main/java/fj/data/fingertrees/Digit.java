@@ -162,4 +162,7 @@ public abstract class Digit<V, A> {
 
     public abstract int length();
 
+    public String toString() {
+        return Show.digitShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+    }
 }

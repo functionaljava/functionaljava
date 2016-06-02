@@ -3,6 +3,7 @@ package fj.data.fingertrees;
 import fj.F;
 import fj.P2;
 import fj.P3;
+import fj.Show;
 
 import static fj.Bottom.error;
 
@@ -81,4 +82,9 @@ public final class Empty<V, A> extends FingerTree<V, A> {
   @Override P3<FingerTree<V, A>, A, FingerTree<V, A>> split1(final F<V, Boolean> predicate, final V acc) {
     throw error("Splitting an empty tree");
   }
+
+  public String toString() {
+    return Show.fingerTreeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
 }

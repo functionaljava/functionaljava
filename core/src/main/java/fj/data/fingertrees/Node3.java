@@ -2,6 +2,7 @@ package fj.data.fingertrees;
 
 import fj.P;
 import fj.P3;
+import fj.Show;
 import fj.data.Option;
 import fj.data.vector.V3;
 import fj.F;
@@ -74,4 +75,9 @@ public final class Node3<V, A> extends Node<V, A> {
   public V3<A> toVector() {
     return as;
   }
+
+  public String toString() {
+    return Show.nodeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
 }

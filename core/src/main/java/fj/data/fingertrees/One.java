@@ -4,6 +4,7 @@ import fj.F;
 import fj.P;
 import fj.P2;
 import fj.P3;
+import fj.Show;
 import fj.data.Option;
 
 import static fj.data.Option.none;
@@ -54,4 +55,8 @@ public final class One<V, A> extends Digit<V, A> {
     public int length() {
         return 1;
     }
+
+  public String toString() {
+    return Show.digitShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
 }

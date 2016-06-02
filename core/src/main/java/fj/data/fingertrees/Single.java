@@ -4,8 +4,10 @@ import fj.F;
 import fj.P;
 import fj.P2;
 import fj.P3;
+import fj.Show;
 
 import static fj.P.p;
+import static fj.Show.anyShow;
 
 /**
  * A tree with a single element.
@@ -99,4 +101,9 @@ public final class Single<V, A> extends FingerTree<V, A> {
   public A value() {
     return a;
   }
+
+  public String toString() {
+    return Show.fingerTreeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
 }

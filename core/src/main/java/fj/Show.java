@@ -1,6 +1,8 @@
 package fj;
 
 import fj.data.*;
+import fj.data.fingertrees.FingerTree;
+import fj.data.fingertrees.Node;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -300,6 +302,44 @@ public final class Show<A> {
       return fromString("Tree(").append(p(result)).append(fromString(")"));
     });
   }
+
+  public static <V, A> Show<fj.data.fingertrees.Digit<V, A>> digitShow(final Show<V> sv, final Show<A> sa) {
+    return show(d -> {
+      String s = d.match(
+              o -> "One(" + o.measure() + " -> " + o.value() + ")",
+              two -> "Two(" + two.measure() + " -> " + v2Show(sa).showS(two.values()) + ")",
+              three -> "Three(" + three.measure() + " -> " + v3Show(sa).showS(three.values()) + ")",
+              four -> "Four(" + four.measure() + " -> " + v4Show(sa).showS(four.values()) + ")"
+      );
+      return Stream.fromString(s);
+    });
+  }
+
+  public static <V, A> Show<Node<V, A>> nodeShow(final Show<V> sv, final Show<A> sa) {
+    return show(n -> {
+      final String s = n.match(
+          n2 -> "Node2(" + n2.measure() + " -> " + v2Show(sa).showS(n2.toVector()) + ")",
+          n3 -> "Node3(" + n3.measure() + " -> " + v3Show(sa).showS(n3.toVector()) + ")");
+      return Stream.fromString(s);
+    });
+  }
+
+  public static <V, A> Show<FingerTree<V, A>> fingerTreeShow(final Show<V> sv, final Show<A> sa) {
+
+    return show(ft -> {
+      String sep = ", ";
+      String str = ft.match(e -> "Empty()",
+              s -> "Single(" + sv.showS(ft.measure()) + " -> " + sa.showS(s.value()) + ")",
+              d -> "Deep(" + d.measure() + " -> " +
+                      digitShow(sv, sa).showS(d.prefix()) + sep +
+                      fingerTreeShow(sv, nodeShow(sv, sa)).showS(d.middle()) + sep +
+                      digitShow(sv, sa).showS(d.suffix()) +
+                      ")"
+      );
+      return Stream.fromString(str);
+    });
+  }
+
 
   public static <A> Show<Seq<A>> seqShow(final Show<A> sa) {
     return show(s -> streamShow(sa, "Seq(", ",", ")").show(s.toStream()));
