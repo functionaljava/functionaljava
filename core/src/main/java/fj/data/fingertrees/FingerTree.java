@@ -5,6 +5,7 @@ import fj.data.Option;
 import fj.data.Seq;
 
 import static fj.Monoid.intAdditionMonoid;
+import static fj.Monoid.intMaxMonoid;
 
 /**
  * Provides 2-3 finger trees, a functional representation of persistent sequences supporting access to the ends in
@@ -96,8 +97,8 @@ public abstract class FingerTree<V, A> {
   public final boolean isEmpty() {
     return this instanceof Empty;
   }
-
-  final Measured<V, A> measured() {
+  
+  public final Measured<V, A> measured() {
     return m;
   }
 
@@ -225,7 +226,15 @@ public abstract class FingerTree<V, A> {
     public abstract int length();
 
     public static <A> FingerTree<Integer, A> emptyIntAddition() {
-        return mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
+      return empty(intAdditionMonoid, Function.constant(1));
     }
+
+  public static <V, A> FingerTree<V, A> empty(Monoid<V> m, F<A, V> f) {
+    return FingerTree.mkTree(measured(m, f)).empty();
+  }
+
+  public static <A> FingerTree<Integer, P2<Integer, A>> emptyIntMax() {
+    return empty(intMaxMonoid, (P2<Integer, A> p) -> p._1());
+  }
 
 }
