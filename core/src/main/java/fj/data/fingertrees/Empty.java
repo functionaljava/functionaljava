@@ -4,6 +4,7 @@ import fj.F;
 import fj.P2;
 import fj.P3;
 import fj.Show;
+import fj.data.Stream;
 
 import static fj.Bottom.error;
 
@@ -85,6 +86,10 @@ public final class Empty<V, A> extends FingerTree<V, A> {
 
   public String toString() {
     return Show.fingerTreeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
+  public Stream<A> toStream() {
+    return Stream.nil();
   }
 
 }

@@ -4,6 +4,7 @@ import fj.P;
 import fj.P3;
 import fj.Show;
 import fj.data.Option;
+import fj.data.Stream;
 import fj.data.vector.V3;
 import fj.F;
 import fj.P2;
@@ -78,6 +79,10 @@ public final class Node3<V, A> extends Node<V, A> {
 
   public String toString() {
     return Show.nodeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
+  public Stream<A> toStream() {
+    return as.toStream();
   }
 
 }

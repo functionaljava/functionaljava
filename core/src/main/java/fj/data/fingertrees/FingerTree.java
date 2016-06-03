@@ -3,9 +3,11 @@ package fj.data.fingertrees;
 import fj.*;
 import fj.data.Option;
 import fj.data.Seq;
+import fj.data.Stream;
 
 import static fj.Monoid.intAdditionMonoid;
 import static fj.Monoid.intMaxMonoid;
+import static fj.data.Stream.nil;
 
 /**
  * Provides 2-3 finger trees, a functional representation of persistent sequences supporting access to the ends in
@@ -236,5 +238,7 @@ public abstract class FingerTree<V, A> {
   public static <A> FingerTree<Integer, P2<Integer, A>> emptyIntMax() {
     return empty(intMaxMonoid, (P2<Integer, A> p) -> p._1());
   }
+
+  public abstract Stream<A> toStream();
 
 }

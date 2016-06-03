@@ -2,6 +2,7 @@ package fj.data.fingertrees;
 
 import fj.*;
 import fj.data.Option;
+import fj.data.Stream;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -9,6 +10,7 @@ import fj.data.vector.V4;
 import static fj.Function.constant;
 import static fj.data.List.list;
 import static fj.Function.flip;
+import static fj.data.Stream.nil;
 
 /**
  * A finger tree with 1-4-digits on the left and right, and a finger tree of 2-3-nodes in the middle.
@@ -523,6 +525,16 @@ public final class Deep<V, A> extends FingerTree<V, A> {
 
   public String toString() {
     return Show.fingerTreeShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
+  public Stream<A> toStream() {
+    return prefix().toStream().append(() ->
+            middle().match(
+                    e -> Stream.<A>nil(),
+                    s -> s.value().toStream(),
+                    d -> d.toStream().bind(p -> p.toStream())
+            )
+    ).append(() -> suffix.toStream());
   }
 
 }
