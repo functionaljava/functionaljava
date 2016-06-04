@@ -6,6 +6,7 @@ import fj.Monoid;
 import fj.P;
 import fj.P2;
 import fj.P3;
+import fj.Show;
 import fj.data.fingertrees.FingerTree;
 
 /**
@@ -55,7 +56,7 @@ public class PriorityQueue<K, A> {
     }
 
     public PriorityQueue<K, A> enqueue(K k, A a) {
-        return priorityQueue(equal, ftree.cons(P.p(k, a)));
+        return priorityQueue(equal, ftree.snoc(P.p(k, a)));
     }
 
     public PriorityQueue<K, A> enqueue(List<P2<K, A>> list) {
@@ -64,8 +65,9 @@ public class PriorityQueue<K, A> {
 
     public PriorityQueue<K, A> dequeue() {
         K top = ftree.measure();
-        P3<FingerTree<K, P2<K, A>>, P2<K, A>, FingerTree<K, P2<K, A>>> p = ftree.split1(k -> equal.eq(k, top));
-        return priorityQueue(equal, p._1().append(p._3()));
+        P2<FingerTree<K, P2<K, A>>, FingerTree<K, P2<K, A>>> p = ftree.split(k -> equal.eq(k, top));
+        FingerTree<K, P2<K, A>> right = p._2();
+        return right.isEmpty() ? this : priorityQueue(equal, p._1().append(right.tail()));
     }
 
     public PriorityQueue<K, A> dequeue(int n) {
@@ -76,6 +78,14 @@ public class PriorityQueue<K, A> {
             result = result.dequeue();
         }
         return result;
+    }
+
+    public Stream<P2<K, A>> toStream() {
+        return ftree.toStream();
+    }
+
+    public String toString() {
+        return Show.priorityQueueShow(Show.<K>anyShow(), Show.<A>anyShow()).showS(this);
     }
 
 }

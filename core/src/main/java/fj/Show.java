@@ -377,7 +377,7 @@ public final class Show<A> {
    * @return A show instance for the {@link P2 tuple-2} type.
    */
   public static <A, B> Show<P2<A, B>> p2MapShow(final Show<A> sa, final Show<B> sb) {
-    return p2Show(sa, sb, "(", ":", ")");
+    return p2Show(sa, sb, "(", ": ", ")");
   }
 
   /**
@@ -588,6 +588,12 @@ public final class Show<A> {
         .append(sc.show(p._3())).snoc(',').append(sd.show(p._4())).snoc(',')
         .append(se.show(p._5())).snoc(',').append(sf.show(p._6())).snoc(',')
         .append(sg.show(p._7())).snoc(',').append(sh.show(p._8())).snoc(')'));
+  }
+
+  public static <K, V> Show<PriorityQueue<K, V>> priorityQueueShow(Show<K> sk, Show<V> sv) {
+    return show(pq -> {
+      return streamShow(p2MapShow(sk, sv), "PriorityQueue(", ", ", ")").show(pq.toStream());
+    });
   }
 
   /**
