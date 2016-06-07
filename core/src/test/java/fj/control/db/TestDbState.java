@@ -2,6 +2,7 @@ package fj.control.db;
 
 import fj.Unit;
 import fj.data.Option;
+import fj.function.Try1;
 import org.apache.commons.dbutils.DbUtils;
 import org.junit.Test;
 
@@ -16,20 +17,18 @@ public class TestDbState {
         final int TEN = 10;
         DbState writer = DbState.writer(DbState.driverManager("jdbc:h2:mem:"));
 
-        DB<Unit> setup = new DB<Unit>() {
-            @Override
-            public Unit run(Connection c) throws SQLException {
-                Statement s = null;
-                try {
-                    s = c.createStatement();
-                    assertThat(s.executeUpdate("CREATE TABLE TEST(ID INT PRIMARY KEY, NAME VARCHAR(255))"), is(0));
-                    assertThat(s.executeUpdate("INSERT INTO TEST (ID, NAME) VALUES (" + TEN + ", 'FOO')"), is(1));
-                } finally {
-                    DbUtils.closeQuietly(s);
-                }
-                return Unit.unit();
+        DB<Unit> setup = DB.db((Try1<Connection, Unit, SQLException>) c -> {
+            Statement s = null;
+            try {
+                s = c.createStatement();
+                assertThat(s.executeUpdate("CREATE TABLE TEST(ID INT PRIMARY KEY, NAME VARCHAR(255))"), is(0));
+                assertThat(s.executeUpdate("INSERT INTO TEST (ID, NAME) VALUES (" + TEN + ", 'FOO')"), is(1));
+            } finally {
+                DbUtils.closeQuietly(s);
             }
-        };
+            return Unit.unit();
+        });
+
         DB<Option<Integer>> query = new DB<Option<Integer>>() {
             @Override
             public Option<Integer> run(Connection c) throws SQLException {
