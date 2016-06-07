@@ -116,10 +116,10 @@ public abstract class Coarbitrary<A> {
    * @param c A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function.
    */
-  public static <A, B> Coarbitrary<F<A, B>> coarbF(final Arbitrary<A> a, final Coarbitrary<B> c) {
+  public static <A, B> Coarbitrary<F<A, B>> coarbF(final Gen<A> a, final Coarbitrary<B> c) {
     return new Coarbitrary<F<A, B>>() {
       public <X> Gen<X> coarbitrary(final F<A, B> f, final Gen<X> g) {
-        return a.gen.bind(a1 -> c.coarbitrary(f.f(a1), g));
+        return a.bind(a1 -> c.coarbitrary(f.f(a1), g));
       }
     };
   }
@@ -132,7 +132,7 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-2.
    */
-  public static <A, B, C> Coarbitrary<F2<A, B, C>> coarbF2(final Arbitrary<A> aa, final Arbitrary<B> ab,
+  public static <A, B, C> Coarbitrary<F2<A, B, C>> coarbF2(final Gen<A> aa, final Gen<B> ab,
                                                            final Coarbitrary<C> c) {
     return new Coarbitrary<F2<A, B, C>>() {
       public <X> Gen<X> coarbitrary(final F2<A, B, C> f, final Gen<X> g) {
@@ -150,8 +150,8 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-3.
    */
-  public static <A, B, C, D> Coarbitrary<F3<A, B, C, D>> coarbF3(final Arbitrary<A> aa, final Arbitrary<B> ab,
-                                                                 final Arbitrary<C> ac, final Coarbitrary<D> c) {
+  public static <A, B, C, D> Coarbitrary<F3<A, B, C, D>> coarbF3(final Gen<A> aa, final Gen<B> ab,
+                                                                 final Gen<C> ac, final Coarbitrary<D> c) {
     return new Coarbitrary<F3<A, B, C, D>>() {
       public <X> Gen<X> coarbitrary(final F3<A, B, C, D> f, final Gen<X> g) {
         return coarbF(aa, coarbF(ab, coarbF(ac, c))).coarbitrary(curry(f), g);
@@ -169,8 +169,8 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-4.
    */
-  public static <A, B, C, D, E> Coarbitrary<F4<A, B, C, D, E>> coarbF4(final Arbitrary<A> aa, final Arbitrary<B> ab,
-                                                                       final Arbitrary<C> ac, final Arbitrary<D> ad,
+  public static <A, B, C, D, E> Coarbitrary<F4<A, B, C, D, E>> coarbF4(final Gen<A> aa, final Gen<B> ab,
+                                                                       final Gen<C> ac, final Gen<D> ad,
                                                                        final Coarbitrary<E> c) {
     return new Coarbitrary<F4<A, B, C, D, E>>() {
       public <X> Gen<X> coarbitrary(final F4<A, B, C, D, E> f, final Gen<X> g) {
@@ -190,11 +190,11 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-5.
    */
-  public static <A, B, C, D, E, F$> Coarbitrary<F5<A, B, C, D, E, F$>> coarbF5(final Arbitrary<A> aa,
-                                                                               final Arbitrary<B> ab,
-                                                                               final Arbitrary<C> ac,
-                                                                               final Arbitrary<D> ad,
-                                                                               final Arbitrary<E> ae,
+  public static <A, B, C, D, E, F$> Coarbitrary<F5<A, B, C, D, E, F$>> coarbF5(final Gen<A> aa,
+                                                                               final Gen<B> ab,
+                                                                               final Gen<C> ac,
+                                                                               final Gen<D> ad,
+                                                                               final Gen<E> ae,
                                                                                final Coarbitrary<F$> c) {
     return new Coarbitrary<F5<A, B, C, D, E, F$>>() {
       public <X> Gen<X> coarbitrary(final F5<A, B, C, D, E, F$> f, final Gen<X> g) {
@@ -215,12 +215,12 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-6.
    */
-  public static <A, B, C, D, E, F$, G> Coarbitrary<F6<A, B, C, D, E, F$, G>> coarbF6(final Arbitrary<A> aa,
-                                                                                     final Arbitrary<B> ab,
-                                                                                     final Arbitrary<C> ac,
-                                                                                     final Arbitrary<D> ad,
-                                                                                     final Arbitrary<E> ae,
-                                                                                     final Arbitrary<F$> af,
+  public static <A, B, C, D, E, F$, G> Coarbitrary<F6<A, B, C, D, E, F$, G>> coarbF6(final Gen<A> aa,
+                                                                                     final Gen<B> ab,
+                                                                                     final Gen<C> ac,
+                                                                                     final Gen<D> ad,
+                                                                                     final Gen<E> ae,
+                                                                                     final Gen<F$> af,
                                                                                      final Coarbitrary<G> c) {
     return new Coarbitrary<F6<A, B, C, D, E, F$, G>>() {
       public <X> Gen<X> coarbitrary(final F6<A, B, C, D, E, F$, G> f, final Gen<X> g) {
@@ -242,13 +242,13 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-7.
    */
-  public static <A, B, C, D, E, F$, G, H> Coarbitrary<F7<A, B, C, D, E, F$, G, H>> coarbF7(final Arbitrary<A> aa,
-                                                                                           final Arbitrary<B> ab,
-                                                                                           final Arbitrary<C> ac,
-                                                                                           final Arbitrary<D> ad,
-                                                                                           final Arbitrary<E> ae,
-                                                                                           final Arbitrary<F$> af,
-                                                                                           final Arbitrary<G> ag,
+  public static <A, B, C, D, E, F$, G, H> Coarbitrary<F7<A, B, C, D, E, F$, G, H>> coarbF7(final Gen<A> aa,
+                                                                                           final Gen<B> ab,
+                                                                                           final Gen<C> ac,
+                                                                                           final Gen<D> ad,
+                                                                                           final Gen<E> ae,
+                                                                                           final Gen<F$> af,
+                                                                                           final Gen<G> ag,
                                                                                            final Coarbitrary<H> c) {
     return new Coarbitrary<F7<A, B, C, D, E, F$, G, H>>() {
       public <X> Gen<X> coarbitrary(final F7<A, B, C, D, E, F$, G, H> f, final Gen<X> g) {
@@ -272,14 +272,14 @@ public abstract class Coarbitrary<A> {
    * @param c  A coarbitrary for the codomain of the function.
    * @return A coarbitrary for a function-8.
    */
-  public static <A, B, C, D, E, F$, G, H, I> Coarbitrary<F8<A, B, C, D, E, F$, G, H, I>> coarbF8(final Arbitrary<A> aa,
-                                                                                                 final Arbitrary<B> ab,
-                                                                                                 final Arbitrary<C> ac,
-                                                                                                 final Arbitrary<D> ad,
-                                                                                                 final Arbitrary<E> ae,
-                                                                                                 final Arbitrary<F$> af,
-                                                                                                 final Arbitrary<G> ag,
-                                                                                                 final Arbitrary<H> ah,
+  public static <A, B, C, D, E, F$, G, H, I> Coarbitrary<F8<A, B, C, D, E, F$, G, H, I>> coarbF8(final Gen<A> aa,
+                                                                                                 final Gen<B> ab,
+                                                                                                 final Gen<C> ac,
+                                                                                                 final Gen<D> ad,
+                                                                                                 final Gen<E> ae,
+                                                                                                 final Gen<F$> af,
+                                                                                                 final Gen<G> ag,
+                                                                                                 final Gen<H> ah,
                                                                                                  final Coarbitrary<I> c) {
     return new Coarbitrary<F8<A, B, C, D, E, F$, G, H, I>>() {
       public <X> Gen<X> coarbitrary(final F8<A, B, C, D, E, F$, G, H, I> f, final Gen<X> g) {
@@ -468,11 +468,11 @@ public abstract class Coarbitrary<A> {
   /**
    * A coarbitrary for state.
    */
-  public static <S, A> Coarbitrary<State<S, A>> coarbState(Arbitrary<S> as, F2<S, A, Long> f) {
+  public static <S, A> Coarbitrary<State<S, A>> coarbState(Gen<S> as, F2<S, A, Long> f) {
     return new Coarbitrary<State<S, A>>() {
       @Override
       public <B> Gen<B> coarbitrary(State<S, A> s1, Gen<B> g) {
-        return as.gen.bind(r -> {
+        return as.bind(r -> {
           P2<S, A> p = s1.run(r);
           return variant(f.f(p._1(), p._2()), g);
         });

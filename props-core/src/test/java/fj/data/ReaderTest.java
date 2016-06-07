@@ -52,7 +52,7 @@ public class ReaderTest {
 
     @Test
     public void testFlatMapProp() {
-        Arbitrary<F<Integer, Reader<Integer, Integer>>> a = arbF(coarbInteger, arbReader());
+        Gen<F<Integer, Reader<Integer, Integer>>> a = arbF(coarbInteger, arbReader());
         Property p = property(
                 arbF(coarbInteger, arbInteger),
                 a,
@@ -108,7 +108,7 @@ public class ReaderTest {
         PropertyAssert.assertResult(p);
     }
 
-    public Arbitrary<Reader<Integer, Integer>> arbReader() {
+    public Gen<Reader<Integer, Integer>> arbReader() {
         return Arbitrary.arbReader(coarbInteger, arbInteger);
     }
 

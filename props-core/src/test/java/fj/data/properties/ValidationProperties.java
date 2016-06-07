@@ -4,7 +4,7 @@ import fj.P2;
 import fj.Semigroup;
 import fj.data.List;
 import fj.data.Validation;
-import fj.test.Arbitrary;
+import fj.test.Gen;
 import fj.test.Property;
 import fj.test.runner.PropertyTestRunner;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ import static fj.test.Property.prop;
 public class ValidationProperties {
 
     public Property partition() {
-        Arbitrary<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
+        Gen<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
         return Property.property(al, list -> {
             P2<List<String>, List<Integer>> p = Validation.partition(list);
             boolean b1 = p._1().length() + p._2().length() == list.length();
@@ -31,7 +31,7 @@ public class ValidationProperties {
     }
 
     public Property sequenceNonCumulative() {
-        Arbitrary<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
+        Gen<List<Validation<String, Integer>>> al = arbList(arbValidation(arbUSASCIIString, arbInteger));
         return Property.property(al, list -> {
             Validation<List<String>, List<Integer>> v = Validation.sequenceNonCumulative(list);
             Property p1 = implies(

@@ -10,7 +10,6 @@ import fj.test.Property;
 import org.junit.Test;
 
 import static fj.Function.compose;
-import static fj.test.Arbitrary.*;
 import static fj.test.Arbitrary.arbLong;
 import static fj.test.Coarbitrary.coarbInteger;
 import static fj.test.Coarbitrary.coarbLong;
@@ -24,7 +23,7 @@ public class TestNull {
 
 	@Test
 	public void testShowNullParameters() {
-		Property p = property(arbitrary(Gen.<Integer>value(null)), (Integer i) -> {
+		Property p = property(Gen.<Integer>value(null), (Integer i) -> {
 				return prop(i != null);
 		});
 		CheckResult.summary.println(p.check());

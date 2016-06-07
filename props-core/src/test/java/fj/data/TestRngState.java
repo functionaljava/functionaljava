@@ -79,11 +79,11 @@ public class TestRngState {
         Assert.assertTrue(listIntEqual.eq(list, expected));
     }
 
-    public static Arbitrary<State<LcgRng, Integer>> arbState() {
+    public static Gen<State<LcgRng, Integer>> arbState() {
         return Arbitrary.arbState(Arbitrary.arbLcgRng(), Coarbitrary.coarbLcgRng(), arbInteger);
     }
 
-    public static Arbitrary<F<LcgRng, P2<LcgRng, Integer>>> arbStateF() {
+    public static Gen<F<LcgRng, P2<LcgRng, Integer>>> arbStateF() {
         return arbF(Coarbitrary.coarbLcgRng(), arbP2(arbLcgRng(), arbInteger));
     }
 
@@ -91,7 +91,7 @@ public class TestRngState {
         return Coarbitrary.coarbState(Arbitrary.arbLcgRng(), (LcgRng s, Integer j) -> (long) (j >= 0 ? 2 * j : -2 * j + 1));
     }
 
-    public static Arbitrary<F<Integer, State<LcgRng, Integer>>> arbBindable() {
+    public static Gen<F<Integer, State<LcgRng, Integer>>> arbBindable() {
         return arbF(coarbInteger, arbState());
     }
 

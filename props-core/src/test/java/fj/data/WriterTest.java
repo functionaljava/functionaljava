@@ -4,6 +4,7 @@ import fj.Equal;
 import fj.F;
 import fj.data.test.PropertyAssert;
 import fj.test.Arbitrary;
+import fj.test.Gen;
 import fj.test.Property;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,12 +63,12 @@ public class WriterTest {
 
     }
 
-    public Arbitrary<Writer<String, Integer>> arbWriterStringInt() {
+    public Gen<Writer<String, Integer>> arbWriterStringInt() {
         return arbWriterString(arbInteger);
     }
 
-    public <A> Arbitrary<Writer<String, A>> arbWriterString(Arbitrary<A> arb) {
-        return Arbitrary.arbitrary(arb.gen.map(a -> Writer.<A>stringLogger().f(a)));
+    public <A> Gen<Writer<String, A>> arbWriterString(Gen<A> arb) {
+        return arb.map(a -> Writer.<A>stringLogger().f(a));
     }
 
     // Left identity: return a >>= f == f a
