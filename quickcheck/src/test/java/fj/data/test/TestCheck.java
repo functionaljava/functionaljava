@@ -11,8 +11,6 @@ import org.junit.*;
 
 import static fj.Function.compose;
 import static fj.test.Arbitrary.arbLong;
-import static fj.test.Coarbitrary.coarbInteger;
-import static fj.test.Coarbitrary.coarbLong;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static org.junit.Assert.*;

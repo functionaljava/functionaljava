@@ -83,26 +83,26 @@ public final class Arbitrary {
   /**
    * An arbitrary for functions.
    *
-   * @param c The coarbitrary for the function domain.
+   * @param c The cogen for the function domain.
    * @param a The arbitrary for the function codomain.
    * @return An arbitrary for functions.
    */
-  public static <A, B> Gen<F<A, B>> arbF(final Coarbitrary<A> c, final Gen<B> a) {
+  public static <A, B> Gen<F<A, B>> arbF(final Cogen<A> c, final Gen<B> a) {
     return promote(new F<A, Gen<B>>() {
       public Gen<B> f(final A x) {
-        return c.coarbitrary(x, a);
+        return c.cogen(x, a);
       }
     });
   }
 
-    public static <A, B> Gen<Reader<A, B>> arbReader(Coarbitrary<A> aa, Gen<B> ab) {
+    public static <A, B> Gen<Reader<A, B>> arbReader(Cogen<A> aa, Gen<B> ab) {
         return arbF(aa, ab).map(Reader::unit);
     }
 
     /**
      * An arbitrary for state.
      */
-    public static <S, A> Gen<State<S, A>> arbState(Gen<S> as, Coarbitrary<S> cs, Gen<A> aa) {
+    public static <S, A> Gen<State<S, A>> arbState(Gen<S> as, Cogen<S> cs, Gen<A> aa) {
         return arbF(cs, arbP2(as, aa)).map(State::unit);
     }
 
@@ -126,12 +126,12 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-2.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-2.
    */
-  public static <A, B, C> Gen<F2<A, B, C>> arbF2(final Coarbitrary<A> ca, final Coarbitrary<B> cb,
+  public static <A, B, C> Gen<F2<A, B, C>> arbF2(final Cogen<A> ca, final Cogen<B> cb,
                                                  final Gen<C> a) {
     return arbF(ca, arbF(cb, a)).map(Function.uncurryF2());
   }
@@ -149,14 +149,14 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-3.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
-   * @param cc A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
+   * @param cc A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-3.
    */
-  public static <A, B, C, D> Gen<F3<A, B, C, D>> arbF3(final Coarbitrary<A> ca, final Coarbitrary<B> cb,
-                                                       final Coarbitrary<C> cc, final Gen<D> a) {
+  public static <A, B, C, D> Gen<F3<A, B, C, D>> arbF3(final Cogen<A> ca, final Cogen<B> cb,
+                                                       final Cogen<C> cc, final Gen<D> a) {
     return arbF(ca, arbF(cb, arbF(cc, a))).map(Function.uncurryF3());
   }
 
@@ -176,15 +176,15 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-4.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
-   * @param cc A coarbitrary for the part of the domain of the function.
-   * @param cd A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
+   * @param cc A cogen for the part of the domain of the function.
+   * @param cd A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-4.
    */
-  public static <A, B, C, D, E> Gen<F4<A, B, C, D, E>> arbF4(final Coarbitrary<A> ca, final Coarbitrary<B> cb,
-                                                             final Coarbitrary<C> cc, final Coarbitrary<D> cd,
+  public static <A, B, C, D, E> Gen<F4<A, B, C, D, E>> arbF4(final Cogen<A> ca, final Cogen<B> cb,
+                                                             final Cogen<C> cc, final Cogen<D> cd,
                                                              final Gen<E> a) {
     return arbF(ca, arbF(cb, arbF(cc, arbF(cd, a)))).map(Function.uncurryF4());
   }
@@ -206,19 +206,19 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-5.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
-   * @param cc A coarbitrary for the part of the domain of the function.
-   * @param cd A coarbitrary for the part of the domain of the function.
-   * @param ce A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
+   * @param cc A cogen for the part of the domain of the function.
+   * @param cd A cogen for the part of the domain of the function.
+   * @param ce A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-5.
    */
-  public static <A, B, C, D, E, F$> Gen<F5<A, B, C, D, E, F$>> arbF5(final Coarbitrary<A> ca,
-                                                                     final Coarbitrary<B> cb,
-                                                                     final Coarbitrary<C> cc,
-                                                                     final Coarbitrary<D> cd,
-                                                                     final Coarbitrary<E> ce,
+  public static <A, B, C, D, E, F$> Gen<F5<A, B, C, D, E, F$>> arbF5(final Cogen<A> ca,
+                                                                     final Cogen<B> cb,
+                                                                     final Cogen<C> cc,
+                                                                     final Cogen<D> cd,
+                                                                     final Cogen<E> ce,
                                                                      final Gen<F$> a) {
     return arbF(ca, arbF(cb, arbF(cc, arbF(cd, arbF(ce, a))))).map(Function.uncurryF5());
   }
@@ -241,21 +241,21 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-6.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
-   * @param cc A coarbitrary for the part of the domain of the function.
-   * @param cd A coarbitrary for the part of the domain of the function.
-   * @param ce A coarbitrary for the part of the domain of the function.
-   * @param cf A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
+   * @param cc A cogen for the part of the domain of the function.
+   * @param cd A cogen for the part of the domain of the function.
+   * @param ce A cogen for the part of the domain of the function.
+   * @param cf A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-6.
    */
-  public static <A, B, C, D, E, F$, G> Gen<F6<A, B, C, D, E, F$, G>> arbF6(final Coarbitrary<A> ca,
-                                                                           final Coarbitrary<B> cb,
-                                                                           final Coarbitrary<C> cc,
-                                                                           final Coarbitrary<D> cd,
-                                                                           final Coarbitrary<E> ce,
-                                                                           final Coarbitrary<F$> cf,
+  public static <A, B, C, D, E, F$, G> Gen<F6<A, B, C, D, E, F$, G>> arbF6(final Cogen<A> ca,
+                                                                           final Cogen<B> cb,
+                                                                           final Cogen<C> cc,
+                                                                           final Cogen<D> cd,
+                                                                           final Cogen<E> ce,
+                                                                           final Cogen<F$> cf,
                                                                            final Gen<G> a) {
     return arbF(ca, arbF(cb, arbF(cc, arbF(cd, arbF(ce, arbF(cf, a)))))).map(
         Function.uncurryF6());
@@ -280,23 +280,23 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-7.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
-   * @param cc A coarbitrary for the part of the domain of the function.
-   * @param cd A coarbitrary for the part of the domain of the function.
-   * @param ce A coarbitrary for the part of the domain of the function.
-   * @param cf A coarbitrary for the part of the domain of the function.
-   * @param cg A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
+   * @param cc A cogen for the part of the domain of the function.
+   * @param cd A cogen for the part of the domain of the function.
+   * @param ce A cogen for the part of the domain of the function.
+   * @param cf A cogen for the part of the domain of the function.
+   * @param cg A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-7.
    */
-  public static <A, B, C, D, E, F$, G, H> Gen<F7<A, B, C, D, E, F$, G, H>> arbF7(final Coarbitrary<A> ca,
-                                                                                 final Coarbitrary<B> cb,
-                                                                                 final Coarbitrary<C> cc,
-                                                                                 final Coarbitrary<D> cd,
-                                                                                 final Coarbitrary<E> ce,
-                                                                                 final Coarbitrary<F$> cf,
-                                                                                 final Coarbitrary<G> cg,
+  public static <A, B, C, D, E, F$, G, H> Gen<F7<A, B, C, D, E, F$, G, H>> arbF7(final Cogen<A> ca,
+                                                                                 final Cogen<B> cb,
+                                                                                 final Cogen<C> cc,
+                                                                                 final Cogen<D> cd,
+                                                                                 final Cogen<E> ce,
+                                                                                 final Cogen<F$> cf,
+                                                                                 final Cogen<G> cg,
                                                                                  final Gen<H> a) {
     return arbF(ca, arbF(cb, arbF(cc, arbF(cd, arbF(ce, arbF(cf, arbF(cg, a))))))).map(
         Function.uncurryF7());
@@ -322,25 +322,25 @@ public final class Arbitrary {
   /**
    * An arbitrary for function-8.
    *
-   * @param ca A coarbitrary for the part of the domain of the function.
-   * @param cb A coarbitrary for the part of the domain of the function.
-   * @param cc A coarbitrary for the part of the domain of the function.
-   * @param cd A coarbitrary for the part of the domain of the function.
-   * @param ce A coarbitrary for the part of the domain of the function.
-   * @param cf A coarbitrary for the part of the domain of the function.
-   * @param cg A coarbitrary for the part of the domain of the function.
-   * @param ch A coarbitrary for the part of the domain of the function.
+   * @param ca A cogen for the part of the domain of the function.
+   * @param cb A cogen for the part of the domain of the function.
+   * @param cc A cogen for the part of the domain of the function.
+   * @param cd A cogen for the part of the domain of the function.
+   * @param ce A cogen for the part of the domain of the function.
+   * @param cf A cogen for the part of the domain of the function.
+   * @param cg A cogen for the part of the domain of the function.
+   * @param ch A cogen for the part of the domain of the function.
    * @param a  An arbitrary for the codomain of the function.
    * @return An arbitrary for function-8.
    */
-  public static <A, B, C, D, E, F$, G, H, I> Gen<F8<A, B, C, D, E, F$, G, H, I>> arbF8(final Coarbitrary<A> ca,
-                                                                                       final Coarbitrary<B> cb,
-                                                                                       final Coarbitrary<C> cc,
-                                                                                       final Coarbitrary<D> cd,
-                                                                                       final Coarbitrary<E> ce,
-                                                                                       final Coarbitrary<F$> cf,
-                                                                                       final Coarbitrary<G> cg,
-                                                                                       final Coarbitrary<H> ch,
+  public static <A, B, C, D, E, F$, G, H, I> Gen<F8<A, B, C, D, E, F$, G, H, I>> arbF8(final Cogen<A> ca,
+                                                                                       final Cogen<B> cb,
+                                                                                       final Cogen<C> cc,
+                                                                                       final Cogen<D> cd,
+                                                                                       final Cogen<E> ce,
+                                                                                       final Cogen<F$> cf,
+                                                                                       final Cogen<G> cg,
+                                                                                       final Cogen<H> ch,
                                                                                        final Gen<I> a) {
     return arbF(ca, arbF(cb, arbF(cc, arbF(cd, arbF(ce, arbF(cf, arbF(cg, arbF(ch, a)))))))).map(
         Function.uncurryF8());

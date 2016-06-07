@@ -2,7 +2,7 @@ package fj.data;
 
 import fj.*;
 import fj.test.Arbitrary;
-import fj.test.Coarbitrary;
+import fj.test.Cogen;
 import fj.test.Gen;
 import fj.test.Property;
 import org.junit.Assert;
@@ -12,7 +12,7 @@ import static fj.data.Option.some;
 import static fj.data.Stream.unfold;
 import static fj.data.test.PropertyAssert.assertResult;
 import static fj.test.Arbitrary.*;
-import static fj.test.Coarbitrary.coarbInteger;
+import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static fj.test.Variant.variant;
@@ -80,19 +80,19 @@ public class TestRngState {
     }
 
     public static Gen<State<LcgRng, Integer>> arbState() {
-        return Arbitrary.arbState(Arbitrary.arbLcgRng(), Coarbitrary.coarbLcgRng(), arbInteger);
+        return Arbitrary.arbState(Arbitrary.arbLcgRng(), Cogen.cogenLcgRng(), arbInteger);
     }
 
     public static Gen<F<LcgRng, P2<LcgRng, Integer>>> arbStateF() {
-        return arbF(Coarbitrary.coarbLcgRng(), arbP2(arbLcgRng(), arbInteger));
+        return arbF(Cogen.cogenLcgRng(), arbP2(arbLcgRng(), arbInteger));
     }
 
-    public static Coarbitrary<State<LcgRng, Integer>> coarbState() {
-        return Coarbitrary.coarbState(Arbitrary.arbLcgRng(), (LcgRng s, Integer j) -> (long) (j >= 0 ? 2 * j : -2 * j + 1));
+    public static Cogen<State<LcgRng, Integer>> cogenState() {
+        return Cogen.cogenState(Arbitrary.arbLcgRng(), (LcgRng s, Integer j) -> (long) (j >= 0 ? 2 * j : -2 * j + 1));
     }
 
     public static Gen<F<Integer, State<LcgRng, Integer>>> arbBindable() {
-        return arbF(coarbInteger, arbState());
+        return arbF(cogenInteger, arbState());
     }
 
     // Left identity: return i >>= f == f i

@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import static fj.data.test.PropertyAssert.assertResult;
 import static fj.test.Arbitrary.*;
-import static fj.test.Coarbitrary.coarbInteger;
+import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +46,7 @@ public class WriterTest {
 
     @Test
     public void testMap() {
-        Property p = property(arbInteger, arbF(coarbInteger, arbInteger), (i, f) -> {
+        Property p = property(arbInteger, arbF(cogenInteger, arbInteger), (i, f) -> {
             boolean b = eq.eq(defaultWriter.f(i).map(f), defaultWriter.f(f.f(i)));
             return prop(b);
         });
@@ -55,7 +55,7 @@ public class WriterTest {
 
     @Test
     public void testFlatMap() {
-        Property p = property(arbInteger,arbF(coarbInteger, arbWriterStringInt()), (i, f) -> {
+        Property p = property(arbInteger,arbF(cogenInteger, arbWriterStringInt()), (i, f) -> {
             boolean b = eq.eq(Writer.<Integer>stringLogger().f(i).flatMap(f), f.f(i));
             return prop(b);
         });
@@ -76,7 +76,7 @@ public class WriterTest {
     public void testLeftIdentity() {
         Property p = Property.property(
                 arbInteger,
-                arbF(coarbInteger, arbWriterStringInt()),
+                arbF(cogenInteger, arbWriterStringInt()),
                 (i, f) -> {
                     return prop(eq.eq(defaultWriter.f(i).flatMap(f), f.f(i)));
                 });
@@ -98,8 +98,8 @@ public class WriterTest {
     public void testAssociativity() {
         Property p = Property.property(
                 arbWriterStringInt(),
-                arbF(coarbInteger, arbWriterStringInt()),
-                arbF(coarbInteger, arbWriterStringInt()),
+                arbF(cogenInteger, arbWriterStringInt()),
+                arbF(cogenInteger, arbWriterStringInt()),
                 (w, f, g) -> {
                     boolean t = eq.eq(w.flatMap(f).flatMap(g), w.flatMap(x -> f.f(x).flatMap(g)));
                     return prop(t);
