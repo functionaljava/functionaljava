@@ -26,8 +26,23 @@ import static java.lang.System.out;
 @CheckParams(maxSize = 10000)
 public class BitSetProperties {
 
+    Property and() {
+        return property(arbLong, arbLong, (a, b) -> prop(fromLong(a).and(fromLong(b)).longValue() == (a & b)));
+    }
 
+    Property asString() {
+        return property(arbLong, a -> prop(fromLong(a).asString().equals(Long.toBinaryString(a))));
+    }
 
+    Property bitsToRight() {
+        return property(arbLong, arbBitSetSize, (a, i) ->
+            prop(bitsToRight(a, i))
+        );
+    }
+
+    public static boolean bitsToRight(long a, int i) {
+        return fromLong(a).bitsToRight(i) == fromLong(a).toList().reverse().take(i).filter(b -> b).length();
+    }
 
     Property longRoundTrip() {
         return property(arbBoundedLong, l -> prop(fromLong(l).longValue() == l));
@@ -77,5 +92,7 @@ public class BitSetProperties {
     static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
 
     static final Arbitrary<Long> arbBoundedLong = arbitrary(Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue()));
+
+    static final Arbitrary<Integer> arbBitSetSize = arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE - 1));
 
 }

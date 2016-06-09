@@ -8,6 +8,7 @@ import org.junit.Test;
 import static fj.Equal.booleanEqual;
 import static fj.Equal.listEqual;
 import static fj.data.List.list;
+import static fj.data.hamt.BitSet.fromLong;
 import static java.lang.System.out;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -24,6 +25,34 @@ public class BitSetTest {
     @Test
     public void fromLong() {
         BitSet.fromLong(1);
+    }
+
+    @Test
+    public void bitsToRightOfNegative() {
+        long l = -6;
+        BitSet bs = BitSet.fromLong(l);
+        out.println(bs);
+        int n = 4;
+        int index = bs.bitsToRight(n);
+        out.println(index);
+        assertThat(index, equalTo(2));
+
+        int j = bs.toList().reverse().take(n).filter(b -> b).length();
+        out.println(j);
+        assertThat(index, equalTo(j));
+
+        long a = -601295421440L;
+        int i = 32;
+        boolean b2 = BitSet.fromLong(a).bitsToRight(i) == BitSet.fromLong(a).toList().reverse().take(i).filter(b -> b).length();
+        out.println(b2);
+
+        a = 19250043420672L;
+        i = 63;
+        int x = BitSet.fromLong(a).bitsToRight(i);
+        List<Boolean> list = BitSet.fromLong(a).toList().reverse();
+        int y = list.take(i).filter(b -> b).length();
+        boolean b3 = x == y;
+        out.println(b3);
     }
 
     @Test
@@ -132,12 +161,14 @@ public class BitSetTest {
         List<Boolean> list2 = bs1.toList();
 
         boolean b = Equal.listEqual(Equal.booleanEqual).eq(list1, list2);
-
         assertTrue(b);
-
-
-
     }
 
+    @Test
+    public void clear() {
+//        assertThat(4L, is(4L));
+        BitSet bs = BitSet.fromLong(6).clear(1);
+        assertThat(bs.longValue(), equalTo(4L));
+    }
 
 }

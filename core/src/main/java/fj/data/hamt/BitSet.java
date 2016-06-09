@@ -21,6 +21,7 @@ public final class BitSet {
     public static final int TRUE_BIT = 1;
     public static final int FALSE_BIT = 0;
 
+    public static final long BASE_LONG = 1L;
     public static final int MAX_BIT_SIZE = Long.SIZE;
 
     private final long value;
@@ -58,7 +59,7 @@ public final class BitSet {
     }
 
     public boolean isSet(final int index) {
-        return (value & (1L << index)) != 0;
+        return (value & (BASE_LONG << index)) != 0;
     }
 
     public boolean isEmpty() {
@@ -66,7 +67,7 @@ public final class BitSet {
     }
 
     public BitSet set(final int index) {
-        return fromLong(value | (1L << index));
+        return fromLong(value | (BASE_LONG << index));
     }
 
     public BitSet set(final int index, boolean b) {
@@ -74,7 +75,7 @@ public final class BitSet {
     }
 
     public BitSet clear(final int index) {
-        return fromLong(value & ~(1L << index));
+        return fromLong(value & ~(BASE_LONG << index));
     }
 
     public long longValue() {
@@ -110,9 +111,13 @@ public final class BitSet {
     }
 
     public int bitsToRight(final int index) {
+        if (index >= MAX_BIT_SIZE) {
+            throw new IllegalArgumentException("Does not support lists " +
+                    "greater than or equal to " + MAX_BIT_SIZE + " bits");
+        }
         //  fromString("10101111").bitsRoRight(2)= 2
         int pos = index - 1;
-        long mask = 1 << (pos);
+        long mask = BASE_LONG << (pos);
         int result = 0;
         while (pos >= 0) {
             if ((mask & value) != 0) {
