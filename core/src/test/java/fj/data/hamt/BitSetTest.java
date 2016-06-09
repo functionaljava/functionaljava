@@ -26,7 +26,6 @@ public class BitSetTest {
         BitSet.fromLong(1);
     }
 
-
     @Test
     public void fromList() {
         List<Boolean> list = list(true, false);
@@ -78,8 +77,8 @@ public class BitSetTest {
 
     @Test
     public void reverseStream() {
-        List<Boolean> l = BitSet.fromLong(5).toReverseStream().toList();
-        assertThat(l, is(list(true, false, true)));
+        List<Boolean> l = BitSet.fromLong(6).toStream().reverse().toList();
+        assertThat(l, is(list(false, true, true)));
     }
 
     @Test

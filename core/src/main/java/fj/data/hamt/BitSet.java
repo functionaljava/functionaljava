@@ -4,22 +4,24 @@ import fj.F2;
 import fj.Show;
 import fj.data.List;
 import fj.data.Stream;
+import fj.function.Integers;
 
 /**
  * Created by maperr on 31/05/2016.
  *
- * BitSet("1011") represents the number 11 and has indices [3, 0] inclusive where the lowest index
- * is the rightmost bit
+ * A sequence of bits representing a value.  The most significant bit (the
+ * bit with the highest value) is the leftmost bit and has the highest index.
+ * For example, the BitSet("1011") represents the decimal number 11 and has
+ * indices [3, 0] inclusive where the bit with the lowest value has the lowest
+ * index and is the rightmost bit.
+ *
  */
 public final class BitSet {
-
-    public static final char TRUE_CHAR = '1';
-    public static final char FALSE_CHAR = '0';
 
     public static final int TRUE_BIT = 1;
     public static final int FALSE_BIT = 0;
 
-    public static final int BITS = Long.SIZE;
+    public static final int MAX_BIT_SIZE = Long.SIZE;
 
     private final long value;
 
@@ -35,9 +37,8 @@ public final class BitSet {
         return new BitSet(l);
     }
 
-    // most significant bit first [1, 1, 0] = 6
     public static BitSet fromList(final List<Boolean> list) {
-        final int n = Long.SIZE;
+        final int n = MAX_BIT_SIZE;
         if (list.length() > n) {
             throw new IllegalArgumentException("Does not support lists greater than " + n + " bits");
         }
@@ -73,7 +74,7 @@ public final class BitSet {
     }
 
     public BitSet clear(final int index) {
-        return xor(fromLong(1L << index));
+        return fromLong(value & ~(1L << index));
     }
 
     public long longValue() {
@@ -104,12 +105,8 @@ public final class BitSet {
         return Stream.fromString(Long.toBinaryString(value)).map(c -> toBoolean(c)).dropWhile(b -> !b);
     }
 
-    public String asString() {
-        return Long.toBinaryString(value);
-    }
-
     public String toString() {
-        return "BitSet(" + asString() + ")";
+        return Show.bitSetShow.showS(this);
     }
 
     public int bitsToRight(final int index) {
@@ -125,14 +122,6 @@ public final class BitSet {
             pos--;
         }
         return result;
-    }
-
-    public Stream<Boolean> toReverseStream() {
-        return toStream().reverse();
-    }
-
-    public List<Boolean> toReverseList() {
-        return toReverseStream().toList();
     }
 
     public List<Boolean> toList() {
@@ -156,7 +145,7 @@ public final class BitSet {
     }
 
     public BitSet takeLower(final int n) {
-        return fromStream(toReverseStream().take(n).reverse());
+        return fromStream(toStream().reverse().take(n).reverse());
     }
 
     public BitSet takeUpper(final int n) {
@@ -167,7 +156,7 @@ public final class BitSet {
     public BitSet range(final int highIndex, final int lowIndex) {
         int max = Math.max(lowIndex, highIndex);
         int min = Math.min(lowIndex, highIndex);
-        return fromStream(toReverseStream().drop(min).take(max - min).reverse());
+        return fromStream(toStream().reverse().drop(min).take(max - min).reverse());
     }
 
     public static boolean toBoolean(final char c) {
@@ -182,10 +171,8 @@ public final class BitSet {
         return b ? TRUE_BIT : FALSE_BIT;
     }
 
-    public static char toChar(final boolean b) {
-        return b ? TRUE_CHAR : FALSE_CHAR;
+    public String asString() {
+        return Long.toBinaryString(value);
     }
-
-    public static final Show<BitSet> bitSetShow = Show.show(bs -> Stream.fromString(bs.toString()));
 
 }

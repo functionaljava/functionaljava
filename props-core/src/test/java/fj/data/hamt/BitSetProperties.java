@@ -43,7 +43,7 @@ public class BitSetProperties {
         );
     }
 
-    Arbitrary<List<Boolean>> arbListBoolean = arbitrary(Gen.choose(0, BitSet.BITS).bind(i -> Gen.sequenceN(i, arbBoolean.gen)));
+    Arbitrary<List<Boolean>> arbListBoolean = arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE).bind(i -> Gen.sequenceN(i, arbBoolean.gen)));
 
     Property toList() {
         Arbitrary<List<Boolean>> alb = arbListBoolean;
@@ -63,14 +63,14 @@ public class BitSetProperties {
     }
 
     Property isSet() {
-        return property(arbBoundedLong, arbitrary(Gen.choose(0, BitSet.BITS)),
+        return property(arbBoundedLong, arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE)),
                 (Long l, Integer i) -> prop(fromLong(l).isSet(i) == ((l & (1L << i)) != 0))
         );
     }
 
     Property strings() {
         return property(arbBoundedLong, l ->
-                prop(BitSet.fromString(BitSet.fromLong(l).asString()).longValue() == l)
+            prop(BitSet.fromString(BitSet.fromLong(l).asString()).longValue() == l)
         );
     }
 

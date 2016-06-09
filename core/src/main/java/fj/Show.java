@@ -1,6 +1,9 @@
 package fj;
 
 import fj.data.*;
+import fj.data.hamt.BitSet;
+import fj.data.hamt.HashArrayMappedTrie;
+import fj.data.hamt.Node;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -655,4 +658,19 @@ public final class Show<A> {
   public static <E, L extends HList<L>> Show<HList.HCons<E, L>> HListShow(final Show<E> e, final Show<L> l) {
     return show(c -> fromString("HList(").append(e.show(c.head())).append(l.show(c.tail())).append(fromString(")")));
   }
+
+  public static <K, V> Show<Node<K, V>> hamtNodeShow(Show<K> sk, Show<V> sv) {
+    F<Node<K, V>, String> f = n -> n.match(p -> p2Show(sk, sv).showS(p), h -> hamtShow(sk, sv).showS(h));
+    return Show.showS(f);
+  }
+
+  public static <K, V> Show<HashArrayMappedTrie<K, V>> hamtShow(Show<K> sk, Show<V> sv) {
+    return Show.showS(hamt -> hamt.showS(sk, sv));
+  }
+
+  public static final Show<BitSet> bitSetShow = Show.showS(
+          bs -> "BitSet(" + bs.asString() + ")"
+  );
+
+
 }

@@ -1,8 +1,10 @@
 package fj.data.hamt;
 
 import fj.Equal;
+import fj.F2;
 import fj.Hash;
 import fj.P2;
+import fj.Show;
 import fj.data.List;
 import fj.data.Option;
 import fj.data.Seq;
@@ -13,7 +15,15 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 
 /**
+ * A hash array mapped trie (HAMT) is an implementation of an associative
+ * array that combines the characteristics of a hash table and an array
+ * mapped trie.  It is a refined version of the more general notion of
+ * a hash tree.
+ *
  * Created by maperr on 31/05/2016.
+ *
+ * Based on "Ideal Hash Trees" by Phil Bagwell, available from
+ * http://lampwww.epfl.ch/papers/idealhashtrees.pdf
  */
 public final class HashArrayMappedTrie<K, V> {
 
@@ -43,7 +53,7 @@ public final class HashArrayMappedTrie<K, V> {
     }
 
     public Option<V> find(final K k) {
-        return find(k, 0, BITS_IN_INDEX);
+        return find(k, MIN_INDEX, MIN_INDEX + BITS_IN_INDEX);
     }
 
     public Option<V> find(final K k, final int lowIndex, final int highIndex) {
@@ -61,7 +71,7 @@ public final class HashArrayMappedTrie<K, V> {
     }
 
     public HashArrayMappedTrie<K, V> set(final K k, final V v) {
-        return set(k, v, 0, BITS_IN_INDEX);
+        return set(k, v, MIN_INDEX, MIN_INDEX + BITS_IN_INDEX);
     }
 
     public HashArrayMappedTrie<K, V> set(final List<P2<K, V>> list) {
@@ -105,8 +115,18 @@ public final class HashArrayMappedTrie<K, V> {
         return "HashArrayMappedTrie(" + bitSet.toString() + ", " + seq.toString() + ")";
     }
 
+    public String showS(Show<K> sk, Show<V> sv) {
+        return "HashArrayMappedTrie(" + Show.bitSetShow.showS(bitSet) + ", " + Show.seqShow(Show.hamtNodeShow(sk, sv)).showS(seq) + ")";
+    }
+
+    public <B> B foldLeft(F2<B, Node<K, V>, B> f, B b) {
+        return seq.foldLeft(f, b);
+    }
+
     public int length() {
-        return seq.foldLeft((acc, sn) -> sn.match(sn2 -> acc + 1, hamt -> acc + hamt.length()), 0);
+        return seq.foldLeft(
+            (acc, node) -> node.match(p2 -> acc + 1, hamt -> acc + hamt.length()), 0
+        );
     }
 
 }

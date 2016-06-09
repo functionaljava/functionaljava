@@ -2,12 +2,15 @@ package fj.data.hamt;
 
 import fj.F;
 import fj.P2;
+import fj.Show;
 import fj.data.Either;
 import fj.data.Option;
 import fj.data.Stream;
 
 /**
  * Created by maperr on 31/05/2016.
+ *
+ *
  */
 public final class Node<K, V> {
 
@@ -46,7 +49,7 @@ public final class Node<K, V> {
     }
 
     public String toString() {
-        return "Node(" + either.toString() + ")";
+        return Show.hamtNodeShow(Show.<K>anyShow(), Show.<V>anyShow()).showS(this);
     }
 
 }
