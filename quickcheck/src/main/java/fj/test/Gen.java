@@ -50,21 +50,20 @@ class Person {
  * invoking the {@link #bind(F)}  methods &mdash; in this case, {@link #bind(Gen , Gen , F)} the one
  * that takes two generator arguments}, since the class has one more than two fields (the bind
  * method is invoked on a generator adding the extra one to the count as they are composed). The
- * class fields are of types for which there exist generators (on {@link Arbitrary} so those can be
+ * class fields are of types for which there exist generators (on {@link Gen} so those can be
  * used to compose a generator for <code>Person</code>: </p>
 <pre>
-static Arbitrary&lt;Person&gt; personArbitrary() {
-  final Gen&lt;Person&gt; personGenerator = arbInteger.gen.bind(arbString().gen, arbBoolean().gen,
+static Gen&lt;Person&gt; personArbitrary() {
+  return arbInteger.bind(arbString(), arbBoolean(),
       // compose the generators
       {int age =&gt; {String name =&gt; {boolean male =&gt; new Person(age, name, male)}}};
-  return arbitrary(personGenerator);
 }
 </pre>
  * <p/>
  * The example above uses Java 7 closure syntax. Here is the same example using objects instead:
 <pre>
-static Arbitrary&lt;Person&gt; personArbitrary() {
-  final Gen&lt;Person&gt; personGenerator = arbInteger.gen.bind(arbString.gen, arbBoolean.gen,
+static Gen&lt;Person&gt; personArbitrary() {
+  return arbInteger.bind(arbString, arbBoolean,
       // compose the generators
       new F&lt;Integer, F&lt;String, F&lt;Boolean, Person&gt;&gt;&gt;() {
         public F&lt;String, F&lt;Boolean, Person&gt;&gt; f(final Integer age) {
@@ -79,7 +78,6 @@ static Arbitrary&lt;Person&gt; personArbitrary() {
           };
         }
       });
-  return arbitrary(personGenerator);
 }
 </pre>
  *
