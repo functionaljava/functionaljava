@@ -665,12 +665,14 @@ public final class Show<A> {
   }
 
   public static <K, V> Show<HashArrayMappedTrie<K, V>> hamtShow(Show<K> sk, Show<V> sv) {
-    return Show.showS(hamt -> hamt.showS(sk, sv));
+    return Show.showS(hamt ->
+      "HashArrayMappedTrie(" + Show.bitSetShow.showS(hamt.getBitSet()) +
+      ", " + Show.seqShow(Show.hamtNodeShow(sk, sv)).showS(hamt.getSeq()) + ")"
+    );
   }
 
   public static final Show<BitSet> bitSetShow = Show.showS(
           bs -> "BitSet(" + bs.asString() + ")"
   );
-
 
 }

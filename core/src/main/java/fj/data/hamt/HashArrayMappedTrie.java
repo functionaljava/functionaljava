@@ -112,15 +112,19 @@ public final class HashArrayMappedTrie<K, V> {
     }
 
     public String toString() {
-        return "HashArrayMappedTrie(" + bitSet.toString() + ", " + seq.toString() + ")";
-    }
-
-    public String showS(Show<K> sk, Show<V> sv) {
-        return "HashArrayMappedTrie(" + Show.bitSetShow.showS(bitSet) + ", " + Show.seqShow(Show.hamtNodeShow(sk, sv)).showS(seq) + ")";
+        return Show.hamtShow(Show.<K>anyShow(), Show.<V>anyShow()).showS(this);
     }
 
     public <B> B foldLeft(F2<B, Node<K, V>, B> f, B b) {
         return seq.foldLeft(f, b);
+    }
+
+    public BitSet getBitSet() {
+        return bitSet;
+    }
+
+    public Seq<Node<K, V>> getSeq() {
+        return seq;
     }
 
     public int length() {
