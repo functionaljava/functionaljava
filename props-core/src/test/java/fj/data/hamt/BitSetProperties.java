@@ -144,6 +144,52 @@ public class BitSetProperties {
         return prop(true);
     }
 
+    Property setTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property setBooleanTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property shiftLeftTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property shiftRightTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property takeLowerTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property takeUpperTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property toStreamTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property toStringTest() {
+        // TODO
+        return prop(true);
+    }
+
+    Property xorTest() {
+        // TODO
+        return prop(true);
+    }
+
+
 //    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
 
     static final Arbitrary<Long> arbBoundedLong = arbitrary(Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue()));
