@@ -139,6 +139,11 @@ public class BitSetProperties {
         ));
     }
 
+    Property rangeTest() {
+        // TODO
+        return prop(true);
+    }
+
 //    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
 
     static final Arbitrary<Long> arbBoundedLong = arbitrary(Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue()));
