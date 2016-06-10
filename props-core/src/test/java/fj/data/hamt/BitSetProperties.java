@@ -1,6 +1,7 @@
 package fj.data.hamt;
 
 import fj.Equal;
+import fj.Function;
 import fj.data.List;
 import fj.function.Booleans;
 import fj.test.Arbitrary;
@@ -10,9 +11,14 @@ import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
 import org.junit.runner.RunWith;
 
+import java.math.BigInteger;
+
+import static fj.Function.identity;
+import static fj.data.hamt.BitSet.fromList;
 import static fj.data.hamt.BitSet.fromLong;
 import static fj.test.Arbitrary.arbBoolean;
 import static fj.test.Arbitrary.arbLong;
+import static fj.test.Arbitrary.arbString;
 import static fj.test.Arbitrary.arbitrary;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -26,70 +32,114 @@ import static java.lang.System.out;
 @CheckParams(maxSize = 10000)
 public class BitSetProperties {
 
-    Property and() {
+    Property andTest() {
         return property(arbLong, arbLong, (a, b) -> prop(fromLong(a).and(fromLong(b)).longValue() == (a & b)));
     }
 
-    Property asString() {
+    Property asStringTest() {
         return property(arbLong, a -> prop(fromLong(a).asString().equals(Long.toBinaryString(a))));
     }
 
-    Property bitsToRight() {
+    Property bitsToRightTest() {
         return property(arbLong, arbBitSetSize, (a, i) ->
-            prop(bitsToRight(a, i))
-        );
+            prop(
+                fromLong(a).bitsToRight(i) ==
+                fromLong(a).toList().reverse().take(i).filter(identity()).length()
+        ));
     }
 
-    public static boolean bitsToRight(long a, int i) {
-        return fromLong(a).bitsToRight(i) == fromLong(a).toList().reverse().take(i).filter(b -> b).length();
-    }
-
-    Property longRoundTrip() {
+    Property longRoundTripTest() {
         return property(arbBoundedLong, l -> prop(fromLong(l).longValue() == l));
     }
 
-    Property emptyIsEmpty() {
-        return property(arbBoolean, i -> prop(BitSet.empty().isEmpty()));
+    Property emptyTest() {
+        return prop(BitSet.empty().isEmpty());
     }
 
-    Property generalEmptiness() {
+    Property generalEmptinessTest() {
         return property(arbListBoolean, list ->
-                prop(list.dropWhile(Booleans.not).isEmpty() == BitSet.fromList(list).isEmpty())
+                prop(list.dropWhile(Booleans.not).isEmpty() == fromList(list).isEmpty())
         );
+    }
+
+    Property foldLeftTest() {
+        return property(arbLong, l -> prop(
+            BitSet.fromLong(l).toList().dropWhile(b -> !b).foldLeft(
+                    (acc, b) -> acc + 1, 0
+            ) == BitSet.fromLong(l).bitsUsed()
+        ));
+    }
+
+    Property fromListTest() {
+        return property(arbListBoolean, l -> prop(fromList(l).toList().equals(l.dropWhile(b -> !b))));
+    }
+
+    Property fromStreamTest() {
+        return property(arbListBoolean, l -> prop(fromList(l).toStream().toList().equals(l.dropWhile(b -> !b))));
+    }
+
+    Property fromLongTest() {
+        return property(arbLong, l -> prop(BitSet.fromLong(l).longValue() == l));
+    }
+
+    Property fromStringTest() {
+        Gen<String> g = arbListBoolean.gen.map(l -> l.map(b -> Integer.toString(BitSet.toInt(b))).foldLeft((acc, s) -> acc + s, ""));
+        return property(arbitrary(g), (s) -> {
+            boolean zeroLength = s.isEmpty();
+            return Property.implies(!zeroLength, () -> {
+                long x = new BigInteger(s, 2).longValue();
+                long y = BitSet.fromString(s).longValue();
+                return prop(x == y);
+            });
+        });
     }
 
     Arbitrary<List<Boolean>> arbListBoolean = arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE).bind(i -> Gen.sequenceN(i, arbBoolean.gen)));
 
-    Property toList() {
-        Arbitrary<List<Boolean>> alb = arbListBoolean;
-        return property(alb, list -> {
-            int n = list.length();
-            out.println("list size: " + n);
-            List<Boolean> list1 = list.dropWhile(Booleans.not);
-//            int n2 = list1.length();
-            BitSet bs1 = BitSet.fromList(list);
-            long l = bs1.longValue();
-            out.println("value: " + l);
-            List<Boolean> list2 = bs1.toList();
-
-            boolean b = Equal.listEqual(Equal.booleanEqual).eq(list1, list2);
-            return prop(b);
+    Property toListTest() {
+        return property(arbListBoolean, list -> {
+            List<Boolean> expected = list.dropWhile(Booleans.not);
+            List<Boolean> actual = fromList(list).toList();
+            return prop(Equal.listEqual(Equal.booleanEqual).eq(expected, actual));
         });
     }
 
-    Property isSet() {
+    Property clearTest() {
+        return property(arbLong, arbBitSetSize, (l, i) ->
+                prop(BitSet.fromLong(l).clear(i).isSet(i) == false)
+        );
+    }
+
+    Property bitsUsedTest() {
+        return property(arbListBoolean, list -> prop(
+                    list.dropWhile(b -> !b).length() ==
+                    fromList(list).bitsUsed()
+        ));
+    }
+
+    Property isSetTest() {
         return property(arbBoundedLong, arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE)),
                 (Long l, Integer i) -> prop(fromLong(l).isSet(i) == ((l & (1L << i)) != 0))
         );
     }
 
-    Property strings() {
+    Property stringsTest() {
         return property(arbBoundedLong, l ->
             prop(BitSet.fromString(BitSet.fromLong(l).asString()).longValue() == l)
         );
     }
 
-    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
+    Property notTest() {
+        return property(arbLong, l -> prop(fromLong(l).not().longValue() == ~l));
+    }
+
+    Property orTest() {
+        return property(arbLong, arbLong, (x, y) -> prop(
+                fromLong(x).or(fromLong(y)).longValue() == (x | y)
+        ));
+    }
+
+//    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
 
     static final Arbitrary<Long> arbBoundedLong = arbitrary(Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue()));
 
