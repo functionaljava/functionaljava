@@ -25,15 +25,14 @@ public class HamtTest {
     @Test
     public void testEmpty() {
         HashArrayMappedTrie<Integer, Integer> h = empty();
-
-        out.println(h.toString());
+//        out.println(h.toString());
         assertThat(h.length(), equalTo(0));
     }
 
     @Test
     public void one() {
         HashArrayMappedTrie<Integer, Integer> h = empty().set(3, 6);
-        out.println(h);
+//        out.println(h);
         assertThat(h.length(), equalTo(1));
     }
 
@@ -42,23 +41,20 @@ public class HamtTest {
         HashArrayMappedTrie<Integer, Integer> h1 = empty();
         HashArrayMappedTrie<Integer, Integer> h2 = h1.set(3, 3);
         HashArrayMappedTrie<Integer, Integer> h3 = h2.set(3, 5);
-        out.println(h1);
-        out.println(h2);
-        out.println(h3);
+//        out.println(h1);
+//        out.println(h2);
+//        out.println(h3);
         assertThat(h3.length(), equalTo(1));
     }
 
     @Test
-    public void subtrie() {
+    public void subtrieLength() {
         List<P2<Integer, Integer>> list = List.list(p(0, 1), p(31, 1), p(32, 1), p(33, 1));
         HashArrayMappedTrie<Integer, Integer> h = empty();
         HashArrayMappedTrie<Integer, Integer> h2 = h.set(list);
-        out.println(h);
-        out.println(h2);
-
-        Stream<P2<Integer, Integer>> s = h2.toStream();
-        out.println(s.toList());
-        assertThat(h2.length(), equalTo(list.length()));
+//        out.println(h);
+//        out.println(h2);
+        assertThat(h2.toStream().length(), equalTo(list.length()));
     }
 
 }
