@@ -1,10 +1,8 @@
 package fj.data.hamt;
 
 import fj.Equal;
-import fj.Function;
 import fj.data.List;
 import fj.function.Booleans;
-import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
@@ -18,11 +16,8 @@ import static fj.data.hamt.BitSet.fromList;
 import static fj.data.hamt.BitSet.fromLong;
 import static fj.test.Arbitrary.arbBoolean;
 import static fj.test.Arbitrary.arbLong;
-import static fj.test.Arbitrary.arbString;
-import static fj.test.Arbitrary.arbitrary;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
-import static java.lang.System.out;
 
 /**
  * Created by maperr on 31/05/2016.
@@ -83,8 +78,8 @@ public class BitSetProperties {
     }
 
     Property fromStringTest() {
-        Gen<String> g = arbListBoolean.gen.map(l -> l.map(b -> Integer.toString(BitSet.toInt(b))).foldLeft((acc, s) -> acc + s, ""));
-        return property(arbitrary(g), (s) -> {
+        Gen<String> g = arbListBoolean.map(l -> l.map(b -> Integer.toString(BitSet.toInt(b))).foldLeft((acc, s) -> acc + s, ""));
+        return property(g, (s) -> {
             boolean zeroLength = s.isEmpty();
             return Property.implies(!zeroLength, () -> {
                 long x = new BigInteger(s, 2).longValue();
@@ -94,7 +89,7 @@ public class BitSetProperties {
         });
     }
 
-    Arbitrary<List<Boolean>> arbListBoolean = arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE).bind(i -> Gen.sequenceN(i, arbBoolean.gen)));
+    Gen<List<Boolean>> arbListBoolean = Gen.choose(0, BitSet.MAX_BIT_SIZE).bind(i -> Gen.sequenceN(i, arbBoolean));
 
     Property toListTest() {
         return property(arbListBoolean, list -> {
@@ -118,7 +113,7 @@ public class BitSetProperties {
     }
 
     Property isSetTest() {
-        return property(arbBoundedLong, arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE)),
+        return property(arbBoundedLong, Gen.choose(0, BitSet.MAX_BIT_SIZE),
                 (Long l, Integer i) -> prop(fromLong(l).isSet(i) == ((l & (1L << i)) != 0))
         );
     }
@@ -192,8 +187,8 @@ public class BitSetProperties {
 
 //    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
 
-    static final Arbitrary<Long> arbBoundedLong = arbitrary(Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue()));
+    static final Gen<Long> arbBoundedLong = Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue());
 
-    static final Arbitrary<Integer> arbBitSetSize = arbitrary(Gen.choose(0, BitSet.MAX_BIT_SIZE - 1));
+    static final Gen<Integer> arbBitSetSize = Gen.choose(0, BitSet.MAX_BIT_SIZE - 1);
 
 }
