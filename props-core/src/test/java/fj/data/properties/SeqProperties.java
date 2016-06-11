@@ -6,7 +6,6 @@ import fj.P2;
 import fj.data.Seq;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
-import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;
 import org.junit.runner.RunWith;
@@ -21,9 +20,9 @@ import static fj.test.Property.property;
 @CheckParams(maxSize = 10000)
 public class SeqProperties {
 
-  private static final Arbitrary<P2<Seq<Integer>, Integer>> arbSeqWithIndex = arbitrary(arbSeq(arbInteger).gen
+  private static final Gen<P2<Seq<Integer>, Integer>> arbSeqWithIndex = arbSeq(arbInteger)
     .filter(Seq::isNotEmpty)
-    .bind(seq -> Gen.choose(0, seq.length() - 1).map(i -> P.p(seq, i))));
+    .bind(seq -> Gen.choose(0, seq.length() - 1).map(i -> P.p(seq, i)));
 
   public Property consHead() {
     return property(arbSeq(arbInteger), arbInteger, (seq, n) -> prop(seq.cons(n).head().equals(n)));
@@ -107,12 +106,12 @@ public class SeqProperties {
   }
 
   public Property foldLeft() {
-    return property(arbSeq(arbitrary(Gen.value(1))), seq ->
+    return property(arbSeq(Gen.value(1)), seq ->
       prop(seq.foldLeft((acc, i) -> acc + i, 0) == seq.length()));
   }
 
   public Property foldRight() {
-    return property(arbSeq(arbitrary(Gen.value(1))), seq ->
+    return property(arbSeq(Gen.value(1)), seq ->
       prop(seq.foldRight((i, acc) -> acc + i, 0) == seq.length()));
   }
 

@@ -8,7 +8,7 @@ import org.junit.Test;
 import static fj.F1Functions.bind;
 import static fj.F1Functions.map;
 import static fj.test.Arbitrary.*;
-import static fj.test.Coarbitrary.coarbInteger;
+import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static org.junit.Assert.assertTrue;
@@ -39,8 +39,8 @@ public class ReaderTest {
     @Test
     public void testMapProp() {
         Property p = property(
-                arbF(coarbInteger, arbInteger),
-                arbF(coarbInteger, arbInteger),
+                arbF(cogenInteger, arbInteger),
+                arbF(cogenInteger, arbInteger),
                 arbInteger,
                 (f, g, i) -> {
                     int expected = map(f, g).f(i);
@@ -52,9 +52,9 @@ public class ReaderTest {
 
     @Test
     public void testFlatMapProp() {
-        Arbitrary<F<Integer, Reader<Integer, Integer>>> a = arbF(coarbInteger, arbReader());
+        Gen<F<Integer, Reader<Integer, Integer>>> a = arbF(cogenInteger, arbReader());
         Property p = property(
-                arbF(coarbInteger, arbInteger),
+                arbF(cogenInteger, arbInteger),
                 a,
                 arbInteger,
                 (f, g, i) -> {
@@ -72,7 +72,7 @@ public class ReaderTest {
         Property p = Property.property(
                 arbInteger,
                 arbInteger,
-                arbF(coarbInteger, arbReader()),
+                arbF(cogenInteger, arbReader()),
                 (i, j, f) -> {
                     int a = Reader.<Integer, Integer>constant(i).flatMap(f).f(j);
                     int b = f.f(i).f(j);
@@ -99,8 +99,8 @@ public class ReaderTest {
         Property p = Property.property(
                 arbInteger,
                 arbReader(),
-                arbF(coarbInteger, arbReader()),
-                arbF(coarbInteger, arbReader()),
+                arbF(cogenInteger, arbReader()),
+                arbF(cogenInteger, arbReader()),
                 (i, r, f, g) -> {
                     boolean b2 = r.flatMap(f).flatMap(g).f(i) == r.flatMap(x -> f.f(x).flatMap(g)).f(i);
                     return prop(b2);
@@ -108,8 +108,8 @@ public class ReaderTest {
         PropertyAssert.assertResult(p);
     }
 
-    public Arbitrary<Reader<Integer, Integer>> arbReader() {
-        return Arbitrary.arbReader(coarbInteger, arbInteger);
+    public Gen<Reader<Integer, Integer>> arbReader() {
+        return Arbitrary.arbReader(cogenInteger, arbInteger);
     }
 
 

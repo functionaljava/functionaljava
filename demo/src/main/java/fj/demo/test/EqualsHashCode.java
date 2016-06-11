@@ -1,10 +1,9 @@
 package fj.demo.test;
 
 import static fj.Function.curry;
-import fj.test.Arbitrary;
+import fj.test.Gen;
 import static fj.test.Arbitrary.arbByte;
 import static fj.test.Arbitrary.arbCharacter;
-import static fj.test.Arbitrary.arbitrary;
 import static fj.test.Bool.bool;
 import static fj.test.CheckResult.summary;
 import fj.test.Property;
@@ -55,14 +54,14 @@ public final class EqualsHashCode {
 
   public static void main(final String[] args) {
     // Restrictive arbitrary for Byte, produces from three possible values.
-    final Arbitrary<Byte> arbByteR = arbitrary(arbByte.gen.map(b -> (byte)(b % 3)));
+    final Gen<Byte> arbByteR = arbByte.map(b -> (byte)(b % 3));
 
     // Restrictive arbitrary for String, produces from twelve (2 * 3 * 2) possible values.
-    final Arbitrary<String> arbStringR = arbitrary(arbCharacter.gen.bind(arbCharacter.gen, arbCharacter.gen, curry((c1, c2, c3) -> new String(new char[]{(char)(c1 % 2 + 'a'), (char)(c2 % 3 + 'a'), (char)(c3 % 2 + 'a')}))));
+    final Gen<String> arbStringR = arbCharacter.bind(arbCharacter, arbCharacter, curry((c1, c2, c3) -> new String(new char[]{(char)(c1 % 2 + 'a'), (char)(c2 % 3 + 'a'), (char)(c3 % 2 + 'a')})));
 
     // Arbitrary for MyClass that uses the restrictive arbitraries above.
     // We are using the monad pattern (bind) to make this a trivial exercise. 
-    final Arbitrary<MyClass> arbMyClass = arbitrary(arbByteR.gen.bind(arbStringR.gen, curry(MyClass::new)));
+    final Gen<MyClass> arbMyClass = arbByteR.bind(arbStringR, curry(MyClass::new));
 
     // Finally the property.
     // if m1 equals m2, then this implies that m1's hashCode is equal to m2's hashCode.

@@ -4,7 +4,6 @@ import fj.*;
 import fj.data.List;
 import fj.data.Stream;
 import fj.data.TreeMap;
-import fj.test.Arbitrary;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
 import fj.test.Gen;
@@ -36,9 +35,9 @@ public class ListProperties {
 
   private static final Equal<List<Integer>> eq = listEqual(intEqual);
 
-  private static final Arbitrary<P2<List<Integer>, Integer>> arbListWithIndex = arbitrary(arbList(arbInteger).gen
+  private static final Gen<P2<List<Integer>, Integer>> arbListWithIndex = arbList(arbInteger)
     .filter(List::isNotEmpty)
-    .bind(list -> Gen.choose(0, list.length() - 1).map(i -> p(list, i))));
+    .bind(list -> Gen.choose(0, list.length() - 1).map(i -> p(list, i)));
 
   public Property isEmpty() {
     return property(arbList(arbInteger), list -> prop(list.isEmpty() != list.isNotEmpty()));
@@ -172,11 +171,11 @@ public class ListProperties {
 
   @CheckParams(minSize = 2, maxSize = 10000)
   public Property indexTail() {
-    final Gen<P2<List<Integer>, Integer>> gen = arbList(arbInteger).gen
+    final Gen<P2<List<Integer>, Integer>> gen = arbList(arbInteger)
       .filter(list -> list.length() > 1)
       .bind(list -> Gen.choose(1, list.length() - 1).map(i -> p(list, i)));
 
-    return property(Arbitrary.arbitrary(gen), pair -> {
+    return property(gen, pair -> {
       final List<Integer> list = pair._1();
       final int i = pair._2();
       return prop(intEqual.eq(list.index(i), list.tail().index(i - 1)));
@@ -277,17 +276,17 @@ public class ListProperties {
   }
 
   public Property isPrefixOf() {
-    final Gen<P2<List<Integer>, Integer>> gen = arbList(arbInteger).gen.bind(list ->
+    final Gen<P2<List<Integer>, Integer>> gen = arbList(arbInteger).bind(list ->
       Gen.choose(0, list.length()).map(i -> p(list, i)));
 
-    return property(arbitrary(gen), pair -> prop(pair._1().take(pair._2()).isPrefixOf(intEqual, pair._1())));
+    return property(gen, pair -> prop(pair._1().take(pair._2()).isPrefixOf(intEqual, pair._1())));
   }
 
   public Property isSuffixOf() {
-    final Gen<P2<List<Integer>, Integer>> gen = arbList(arbInteger).gen.bind(list ->
+    final Gen<P2<List<Integer>, Integer>> gen = arbList(arbInteger).bind(list ->
       Gen.choose(0, list.length()).map(i -> p(list, i)));
 
-    return property(arbitrary(gen), pair -> prop(pair._1().drop(pair._2()).isSuffixOf(intEqual, pair._1())));
+    return property(gen, pair -> prop(pair._1().drop(pair._2()).isSuffixOf(intEqual, pair._1())));
   }
 
   public Property isPrefixOfShorter() {

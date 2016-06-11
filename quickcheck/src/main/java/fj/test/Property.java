@@ -443,8 +443,8 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A> Property propertyP(final Arbitrary<A> aa, final Shrink<A> sa, final F<A, P1<Property>> f) {
-    return forall(aa.gen, sa, f);
+  public static <A> Property propertyP(final Gen<A> aa, final Shrink<A> sa, final F<A, P1<Property>> f) {
+    return forall(aa, sa, f);
   }
 
   /**
@@ -457,7 +457,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A> Property property(final Arbitrary<A> aa, final Shrink<A> sa, final F<A, Property> f) {
+  public static <A> Property property(final Gen<A> aa, final Shrink<A> sa, final F<A, Property> f) {
     return propertyP(aa, sa, P1.curry(f));
   }
 
@@ -470,7 +470,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A> Property propertyP(final Arbitrary<A> aa, final F<A, P1<Property>> f) {
+  public static <A> Property propertyP(final Gen<A> aa, final F<A, P1<Property>> f) {
     return propertyP(aa, Shrink.empty(), f);
   }
 
@@ -483,7 +483,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A> Property property(final Arbitrary<A> aa, final F<A, Property> f) {
+  public static <A> Property property(final Gen<A> aa, final F<A, Property> f) {
     return propertyP(aa, P1.curry(f));
   }
 
@@ -500,7 +500,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property propertyP(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, P1<Property>>> f) {
+  public static <A, B> Property propertyP(final Gen<A> aa, final Gen<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, P1<Property>>> f) {
     return property(aa, sa, a -> {
       return propertyP(ab, sb, b -> {
         return f.f(a).f(b);
@@ -520,7 +520,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, Property>> f) {
+  public static <A, B> Property property(final Gen<A> aa, final Gen<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, Property>> f) {
     return propertyP(aa, ab, sa, sb, compose2(P.p1(), f));
   }
 
@@ -534,7 +534,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property propertyP(final Arbitrary<A> aa, final Arbitrary<B> ab, final F<A, F<B, P1<Property>>> f) {
+  public static <A, B> Property propertyP(final Gen<A> aa, final Gen<B> ab, final F<A, F<B, P1<Property>>> f) {
     return property(aa, a -> propertyP(ab, b -> f.f(a).f(b)));
   }
 
@@ -548,7 +548,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final F<A, F<B, Property>> f) {
+  public static <A, B> Property property(final Gen<A> aa, final Gen<B> ab, final F<A, F<B, Property>> f) {
     return propertyP(aa, ab, compose2(P.p1(), f));
   }
 
@@ -564,7 +564,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property propertyP(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F2<A, B, P1<Property>> f) {
+  public static <A, B> Property propertyP(final Gen<A> aa, final Gen<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F2<A, B, P1<Property>> f) {
     return propertyP(aa, ab, sa, sb, curry(f));
   }
 
@@ -580,7 +580,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F2<A, B, Property> f) {
+  public static <A, B> Property property(final Gen<A> aa, final Gen<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F2<A, B, Property> f) {
     return propertyP(aa, ab, sa, sb, compose2(P.p1(), curry(f)));
   }
 
@@ -594,7 +594,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property propertyP(final Arbitrary<A> aa, final Arbitrary<B> ab, final F2<A, B, P1<Property>> f) {
+  public static <A, B> Property propertyP(final Gen<A> aa, final Gen<B> ab, final F2<A, B, P1<Property>> f) {
     return propertyP(aa, ab, curry(f));
   }
 
@@ -608,7 +608,7 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B> Property property(final Arbitrary<A> aa, final Arbitrary<B> ab, final F2<A, B, Property> f) {
+  public static <A, B> Property property(final Gen<A> aa, final Gen<B> ab, final F2<A, B, Property> f) {
     return propertyP(aa, ab, compose2(P.p1(), curry(f)));
   }
 
@@ -626,9 +626,9 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C> Property property(final Arbitrary<A> aa,
-                                            final Arbitrary<B> ab,
-                                            final Arbitrary<C> ac,
+  public static <A, B, C> Property property(final Gen<A> aa,
+                                            final Gen<B> ab,
+                                            final Gen<C> ac,
                                             final Shrink<A> sa,
                                             final Shrink<B> sb,
                                             final Shrink<C> sc,
@@ -649,9 +649,9 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C> Property property(final Arbitrary<A> aa,
-                                            final Arbitrary<B> ab,
-                                            final Arbitrary<C> ac,
+  public static <A, B, C> Property property(final Gen<A> aa,
+                                            final Gen<B> ab,
+                                            final Gen<C> ac,
                                             final F<A, F<B, F<C, Property>>> f) {
     return property(aa, ab, a -> b -> property(ac, c -> f.f(a).f(b).f(c)));
   }
@@ -670,9 +670,9 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C> Property property(final Arbitrary<A> aa,
-                                            final Arbitrary<B> ab,
-                                            final Arbitrary<C> ac,
+  public static <A, B, C> Property property(final Gen<A> aa,
+                                            final Gen<B> ab,
+                                            final Gen<C> ac,
                                             final Shrink<A> sa,
                                             final Shrink<B> sb,
                                             final Shrink<C> sc,
@@ -691,9 +691,9 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C> Property property(final Arbitrary<A> aa,
-                                            final Arbitrary<B> ab,
-                                            final Arbitrary<C> ac,
+  public static <A, B, C> Property property(final Gen<A> aa,
+                                            final Gen<B> ab,
+                                            final Gen<C> ac,
                                             final F3<A, B, C, Property> f) {
     return property(aa, ab, ac, curry(f));
   }
@@ -714,10 +714,10 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D> Property property(final Arbitrary<A> aa,
-                                               final Arbitrary<B> ab,
-                                               final Arbitrary<C> ac,
-                                               final Arbitrary<D> ad,
+  public static <A, B, C, D> Property property(final Gen<A> aa,
+                                               final Gen<B> ab,
+                                               final Gen<C> ac,
+                                               final Gen<D> ad,
                                                final Shrink<A> sa,
                                                final Shrink<B> sb,
                                                final Shrink<C> sc,
@@ -740,10 +740,10 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D> Property property(final Arbitrary<A> aa,
-                                               final Arbitrary<B> ab,
-                                               final Arbitrary<C> ac,
-                                               final Arbitrary<D> ad,
+  public static <A, B, C, D> Property property(final Gen<A> aa,
+                                               final Gen<B> ab,
+                                               final Gen<C> ac,
+                                               final Gen<D> ad,
                                                final F<A, F<B, F<C, F<D, Property>>>> f) {
     return property(aa, ab, ac, a -> b -> c -> property(ad, d -> f.f(a).f(b).f(c).f(d)));
   }
@@ -764,10 +764,10 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D> Property property(final Arbitrary<A> aa,
-                                               final Arbitrary<B> ab,
-                                               final Arbitrary<C> ac,
-                                               final Arbitrary<D> ad,
+  public static <A, B, C, D> Property property(final Gen<A> aa,
+                                               final Gen<B> ab,
+                                               final Gen<C> ac,
+                                               final Gen<D> ad,
                                                final Shrink<A> sa,
                                                final Shrink<B> sb,
                                                final Shrink<C> sc,
@@ -788,10 +788,10 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D> Property property(final Arbitrary<A> aa,
-                                               final Arbitrary<B> ab,
-                                               final Arbitrary<C> ac,
-                                               final Arbitrary<D> ad,
+  public static <A, B, C, D> Property property(final Gen<A> aa,
+                                               final Gen<B> ab,
+                                               final Gen<C> ac,
+                                               final Gen<D> ad,
                                                final F4<A, B, C, D, Property> f) {
     return property(aa, ab, ac, ad, curry(f));
   }
@@ -814,11 +814,11 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E> Property property(final Arbitrary<A> aa,
-                                                  final Arbitrary<B> ab,
-                                                  final Arbitrary<C> ac,
-                                                  final Arbitrary<D> ad,
-                                                  final Arbitrary<E> ae,
+  public static <A, B, C, D, E> Property property(final Gen<A> aa,
+                                                  final Gen<B> ab,
+                                                  final Gen<C> ac,
+                                                  final Gen<D> ad,
+                                                  final Gen<E> ae,
                                                   final Shrink<A> sa,
                                                   final Shrink<B> sb,
                                                   final Shrink<C> sc,
@@ -843,11 +843,11 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E> Property property(final Arbitrary<A> aa,
-                                                  final Arbitrary<B> ab,
-                                                  final Arbitrary<C> ac,
-                                                  final Arbitrary<D> ad,
-                                                  final Arbitrary<E> ae,
+  public static <A, B, C, D, E> Property property(final Gen<A> aa,
+                                                  final Gen<B> ab,
+                                                  final Gen<C> ac,
+                                                  final Gen<D> ad,
+                                                  final Gen<E> ae,
                                                   final F<A, F<B, F<C, F<D, F<E, Property>>>>> f) {
     return property(aa, ab, ac, ad, a -> b -> c -> d -> property(ae, e -> f.f(a).f(b).f(c).f(d).f(e)));
   }
@@ -870,11 +870,11 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E> Property property(final Arbitrary<A> aa,
-                                                  final Arbitrary<B> ab,
-                                                  final Arbitrary<C> ac,
-                                                  final Arbitrary<D> ad,
-                                                  final Arbitrary<E> ae,
+  public static <A, B, C, D, E> Property property(final Gen<A> aa,
+                                                  final Gen<B> ab,
+                                                  final Gen<C> ac,
+                                                  final Gen<D> ad,
+                                                  final Gen<E> ae,
                                                   final Shrink<A> sa,
                                                   final Shrink<B> sb,
                                                   final Shrink<C> sc,
@@ -897,11 +897,11 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E> Property property(final Arbitrary<A> aa,
-                                                  final Arbitrary<B> ab,
-                                                  final Arbitrary<C> ac,
-                                                  final Arbitrary<D> ad,
-                                                  final Arbitrary<E> ae,
+  public static <A, B, C, D, E> Property property(final Gen<A> aa,
+                                                  final Gen<B> ab,
+                                                  final Gen<C> ac,
+                                                  final Gen<D> ad,
+                                                  final Gen<E> ae,
                                                   final F5<A, B, C, D, E, Property> f) {
     return property(aa, ab, ac, ad, ae, curry(f));
   }
@@ -926,12 +926,12 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$> Property property(final Arbitrary<A> aa,
-                                                      final Arbitrary<B> ab,
-                                                      final Arbitrary<C> ac,
-                                                      final Arbitrary<D> ad,
-                                                      final Arbitrary<E> ae,
-                                                      final Arbitrary<F$> af,
+  public static <A, B, C, D, E, F$> Property property(final Gen<A> aa,
+                                                      final Gen<B> ab,
+                                                      final Gen<C> ac,
+                                                      final Gen<D> ad,
+                                                      final Gen<E> ae,
+                                                      final Gen<F$> af,
                                                       final Shrink<A> sa,
                                                       final Shrink<B> sb,
                                                       final Shrink<C> sc,
@@ -958,12 +958,12 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$> Property property(final Arbitrary<A> aa,
-                                                      final Arbitrary<B> ab,
-                                                      final Arbitrary<C> ac,
-                                                      final Arbitrary<D> ad,
-                                                      final Arbitrary<E> ae,
-                                                      final Arbitrary<F$> af,
+  public static <A, B, C, D, E, F$> Property property(final Gen<A> aa,
+                                                      final Gen<B> ab,
+                                                      final Gen<C> ac,
+                                                      final Gen<D> ad,
+                                                      final Gen<E> ae,
+                                                      final Gen<F$> af,
                                                       final F<A, F<B, F<C, F<D, F<E, F<F$, Property>>>>>> f) {
     return property(aa, ab, ac, ad, ae, a -> b -> c -> d -> e -> property(af, f$ -> f.f(a).f(b).f(c).f(d).f(e).f(f$)));
   }
@@ -988,12 +988,12 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$> Property property(final Arbitrary<A> aa,
-                                                      final Arbitrary<B> ab,
-                                                      final Arbitrary<C> ac,
-                                                      final Arbitrary<D> ad,
-                                                      final Arbitrary<E> ae,
-                                                      final Arbitrary<F$> af,
+  public static <A, B, C, D, E, F$> Property property(final Gen<A> aa,
+                                                      final Gen<B> ab,
+                                                      final Gen<C> ac,
+                                                      final Gen<D> ad,
+                                                      final Gen<E> ae,
+                                                      final Gen<F$> af,
                                                       final Shrink<A> sa,
                                                       final Shrink<B> sb,
                                                       final Shrink<C> sc,
@@ -1018,12 +1018,12 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$> Property property(final Arbitrary<A> aa,
-                                                      final Arbitrary<B> ab,
-                                                      final Arbitrary<C> ac,
-                                                      final Arbitrary<D> ad,
-                                                      final Arbitrary<E> ae,
-                                                      final Arbitrary<F$> af,
+  public static <A, B, C, D, E, F$> Property property(final Gen<A> aa,
+                                                      final Gen<B> ab,
+                                                      final Gen<C> ac,
+                                                      final Gen<D> ad,
+                                                      final Gen<E> ae,
+                                                      final Gen<F$> af,
                                                       final F6<A, B, C, D, E, F$, Property> f) {
     return property(aa, ab, ac, ad, ae, af, curry(f));
   }
@@ -1050,13 +1050,13 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G> Property property(final Arbitrary<A> aa,
-                                                         final Arbitrary<B> ab,
-                                                         final Arbitrary<C> ac,
-                                                         final Arbitrary<D> ad,
-                                                         final Arbitrary<E> ae,
-                                                         final Arbitrary<F$> af,
-                                                         final Arbitrary<G> ag,
+  public static <A, B, C, D, E, F$, G> Property property(final Gen<A> aa,
+                                                         final Gen<B> ab,
+                                                         final Gen<C> ac,
+                                                         final Gen<D> ad,
+                                                         final Gen<E> ae,
+                                                         final Gen<F$> af,
+                                                         final Gen<G> ag,
                                                          final Shrink<A> sa,
                                                          final Shrink<B> sb,
                                                          final Shrink<C> sc,
@@ -1085,13 +1085,13 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G> Property property(final Arbitrary<A> aa,
-                                                         final Arbitrary<B> ab,
-                                                         final Arbitrary<C> ac,
-                                                         final Arbitrary<D> ad,
-                                                         final Arbitrary<E> ae,
-                                                         final Arbitrary<F$> af,
-                                                         final Arbitrary<G> ag,
+  public static <A, B, C, D, E, F$, G> Property property(final Gen<A> aa,
+                                                         final Gen<B> ab,
+                                                         final Gen<C> ac,
+                                                         final Gen<D> ad,
+                                                         final Gen<E> ae,
+                                                         final Gen<F$> af,
+                                                         final Gen<G> ag,
                                                          final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>> f) {
     return property(aa, ab, ac, ad, ae, af, a -> b -> c -> d -> e -> f$ -> property(ag, g -> f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g)));
   }
@@ -1118,13 +1118,13 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G> Property property(final Arbitrary<A> aa,
-                                                         final Arbitrary<B> ab,
-                                                         final Arbitrary<C> ac,
-                                                         final Arbitrary<D> ad,
-                                                         final Arbitrary<E> ae,
-                                                         final Arbitrary<F$> af,
-                                                         final Arbitrary<G> ag,
+  public static <A, B, C, D, E, F$, G> Property property(final Gen<A> aa,
+                                                         final Gen<B> ab,
+                                                         final Gen<C> ac,
+                                                         final Gen<D> ad,
+                                                         final Gen<E> ae,
+                                                         final Gen<F$> af,
+                                                         final Gen<G> ag,
                                                          final Shrink<A> sa,
                                                          final Shrink<B> sb,
                                                          final Shrink<C> sc,
@@ -1151,13 +1151,13 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G> Property property(final Arbitrary<A> aa,
-                                                         final Arbitrary<B> ab,
-                                                         final Arbitrary<C> ac,
-                                                         final Arbitrary<D> ad,
-                                                         final Arbitrary<E> ae,
-                                                         final Arbitrary<F$> af,
-                                                         final Arbitrary<G> ag,
+  public static <A, B, C, D, E, F$, G> Property property(final Gen<A> aa,
+                                                         final Gen<B> ab,
+                                                         final Gen<C> ac,
+                                                         final Gen<D> ad,
+                                                         final Gen<E> ae,
+                                                         final Gen<F$> af,
+                                                         final Gen<G> ag,
                                                          final F7<A, B, C, D, E, F$, G, Property> f) {
     return property(aa, ab, ac, ad, ae, af, ag, curry(f));
   }
@@ -1186,14 +1186,14 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G, H> Property property(final Arbitrary<A> aa,
-                                                            final Arbitrary<B> ab,
-                                                            final Arbitrary<C> ac,
-                                                            final Arbitrary<D> ad,
-                                                            final Arbitrary<E> ae,
-                                                            final Arbitrary<F$> af,
-                                                            final Arbitrary<G> ag,
-                                                            final Arbitrary<H> ah,
+  public static <A, B, C, D, E, F$, G, H> Property property(final Gen<A> aa,
+                                                            final Gen<B> ab,
+                                                            final Gen<C> ac,
+                                                            final Gen<D> ad,
+                                                            final Gen<E> ae,
+                                                            final Gen<F$> af,
+                                                            final Gen<G> ag,
+                                                            final Gen<H> ah,
                                                             final Shrink<A> sa,
                                                             final Shrink<B> sb,
                                                             final Shrink<C> sc,
@@ -1224,14 +1224,14 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G, H> Property property(final Arbitrary<A> aa,
-                                                            final Arbitrary<B> ab,
-                                                            final Arbitrary<C> ac,
-                                                            final Arbitrary<D> ad,
-                                                            final Arbitrary<E> ae,
-                                                            final Arbitrary<F$> af,
-                                                            final Arbitrary<G> ag,
-                                                            final Arbitrary<H> ah,
+  public static <A, B, C, D, E, F$, G, H> Property property(final Gen<A> aa,
+                                                            final Gen<B> ab,
+                                                            final Gen<C> ac,
+                                                            final Gen<D> ad,
+                                                            final Gen<E> ae,
+                                                            final Gen<F$> af,
+                                                            final Gen<G> ag,
+                                                            final Gen<H> ah,
                                                             final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, Property>>>>>>>> f) {
     return property(aa, ab, ac, ad, ae, af, ag, a -> b -> c -> d -> e -> f$ -> g -> property(ah, h -> f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h)));
   }
@@ -1260,14 +1260,14 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G, H> Property property(final Arbitrary<A> aa,
-                                                            final Arbitrary<B> ab,
-                                                            final Arbitrary<C> ac,
-                                                            final Arbitrary<D> ad,
-                                                            final Arbitrary<E> ae,
-                                                            final Arbitrary<F$> af,
-                                                            final Arbitrary<G> ag,
-                                                            final Arbitrary<H> ah,
+  public static <A, B, C, D, E, F$, G, H> Property property(final Gen<A> aa,
+                                                            final Gen<B> ab,
+                                                            final Gen<C> ac,
+                                                            final Gen<D> ad,
+                                                            final Gen<E> ae,
+                                                            final Gen<F$> af,
+                                                            final Gen<G> ag,
+                                                            final Gen<H> ah,
                                                             final Shrink<A> sa,
                                                             final Shrink<B> sb,
                                                             final Shrink<C> sc,
@@ -1296,14 +1296,14 @@ public final class Property {
    * @return A property where its result is derived from universal quantification across the
    *         application of its arguments.
    */
-  public static <A, B, C, D, E, F$, G, H> Property property(final Arbitrary<A> aa,
-                                                            final Arbitrary<B> ab,
-                                                            final Arbitrary<C> ac,
-                                                            final Arbitrary<D> ad,
-                                                            final Arbitrary<E> ae,
-                                                            final Arbitrary<F$> af,
-                                                            final Arbitrary<G> ag,
-                                                            final Arbitrary<H> ah,
+  public static <A, B, C, D, E, F$, G, H> Property property(final Gen<A> aa,
+                                                            final Gen<B> ab,
+                                                            final Gen<C> ac,
+                                                            final Gen<D> ad,
+                                                            final Gen<E> ae,
+                                                            final Gen<F$> af,
+                                                            final Gen<G> ag,
+                                                            final Gen<H> ah,
                                                             final F8<A, B, C, D, E, F$, G, H, Property> f) {
     return property(aa, ab, ac, ad, ae, af, ag, ah, curry(f));
   }
