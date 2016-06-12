@@ -30,6 +30,7 @@ import fj.data.Array;
 import fj.data.Either;
 import fj.data.Java;
 import fj.data.List;
+import fj.data.Natural;
 import fj.data.Option;
 import fj.data.Stream;
 

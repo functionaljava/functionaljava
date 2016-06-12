@@ -1342,6 +1342,6 @@ public final class Arbitrary {
   /**
    * An arbitrary implementation for naturals.
    */
-  public static Arbitrary<Natural> arbNatural = arbitrary(arbLong.gen.map(Longs.abs).map(Natural::natural).map(o -> o.some()));
+  public static Gen<Natural> arbNatural = arbLong.map(Longs.abs).map(Natural::natural).map(o -> o.some());
 
 }
