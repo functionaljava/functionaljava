@@ -38,6 +38,7 @@ import fj.data.List;
 import fj.data.Set;
 import fj.data.TreeMap;
 import fj.function.Effect1;
+import fj.function.Longs;
 
 import static fj.data.Stream.range;
 import static fj.test.Gen.choose;
@@ -1364,6 +1365,6 @@ public final class Arbitrary<A> {
   /**
    * An arbitrary implementation for naturals.
    */
-  public static Arbitrary<Natural> arbNatural = arbitrary(arbLong.gen.map(Math::abs).map(Natural::natural).map(o -> o.some()));
+  public static Arbitrary<Natural> arbNatural = arbitrary(arbLong.gen.map(Longs.abs).map(Natural::natural).map(o -> o.some()));
 
 }
