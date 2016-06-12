@@ -6,7 +6,6 @@ import fj.P2;
 import fj.data.List;
 import fj.data.Stream;
 import fj.data.TreeMap;
-import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
@@ -33,8 +32,8 @@ public class TreeMapProperties {
 
     private static final int smallMax = 5;
     private static final int midMax = 20;
-    public static final Arbitrary<TreeMap<Integer, String>> smallArbTreeMapIS = arbTreeMap(intOrd, arbInteger, arbString, smallMax);
-    public static final Arbitrary<TreeMap<Integer, String>> arbTreeMapIS = arbTreeMap(intOrd, arbInteger, arbString, midMax);
+    public static final Gen<TreeMap<Integer, String>> smallArbTreeMapIS = arbTreeMap(intOrd, arbInteger, arbString, smallMax);
+    public static final Gen<TreeMap<Integer, String>> arbTreeMapIS = arbTreeMap(intOrd, arbInteger, arbString, midMax);
     public static final Ord<P2<Integer, String>> p2Ord = Ord.p2Ord1(Ord.intOrd);
     Equal<List<P2<Integer, String>>> listEq = Equal.listEqual(p2Equal(intEqual, stringEqual));
 

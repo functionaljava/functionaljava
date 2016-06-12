@@ -6,6 +6,7 @@ import fj.data.List;
 import fj.data.Set;
 import fj.data.Stream;
 import fj.test.Arbitrary;
+import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
@@ -22,7 +23,7 @@ import static fj.test.Property.property;
 public class SetProperties {
 
     public final static int maxSize = 20;
-    public final static Arbitrary<Set<Integer>> as = Arbitrary.arbSet(Ord.intOrd, Arbitrary.arbInteger, maxSize);
+    public final static Gen<Set<Integer>> as = Arbitrary.arbSet(Ord.intOrd, Arbitrary.arbInteger, maxSize);
     public final static Equal<List<Integer>> eq = Equal.listEqual(Equal.intEqual);
 
 	Property setToListIsSorted() {
