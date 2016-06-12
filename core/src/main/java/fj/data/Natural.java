@@ -1,11 +1,16 @@
 package fj.data;
 
 import static fj.Bottom.error;
+
+import fj.Equal;
 import fj.F;
 
 import static fj.Monoid.naturalAdditionMonoid;
 import static fj.Monoid.naturalMultiplicationMonoid;
 import static fj.Function.curry;
+
+import fj.Hash;
+import fj.Show;
 import fj.data.vector.V2;
 import fj.data.vector.V;
 
@@ -121,7 +126,7 @@ public final class Natural extends Number {
    * @return The difference between the two numbers, if this number is larger than the given one. Otherwise none.
    */
   public Option<Natural> subtract(final Natural n) {
-    return natural(n.value.subtract(value));
+    return natural(value.subtract(n.value));
   }
 
   /**
@@ -285,5 +290,21 @@ public final class Natural extends Number {
    */
   public static Natural product(final List<Natural> ns) {
     return naturalMultiplicationMonoid.sumLeft(ns);
+  }
+
+
+  @Override
+  public int hashCode() {
+    return Hash.naturalHash.hash(this);
+  }
+
+  @Override
+  public boolean equals(final Object that) {
+    return Equal.equals0(Natural.class, this, that, Equal.naturalEqual);
+  }
+
+  @Override
+  public String toString() {
+    return Show.naturalShow.showS(this);
   }
 }

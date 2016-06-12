@@ -150,6 +150,11 @@ public final class Equal<A> {
   public static final Equal<Short> shortEqual = anyEqual();
 
   /**
+   * An equal instance for the <code>Natural</code> type.
+   */
+  public static final Equal<Natural> naturalEqual = bigintEqual.contramap(Natural::bigIntegerValue);
+
+  /**
    * An equal instance for the {@link String} type.
    */
   public static final Equal<String> stringEqual = anyEqual();

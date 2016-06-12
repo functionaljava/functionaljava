@@ -1,6 +1,8 @@
 package fj.test;
 
+import fj.Equal;
 import fj.F;
+import fj.F1Functions;
 import fj.F2;
 import fj.F3;
 import fj.F4;
@@ -11,6 +13,7 @@ import fj.F8;
 import fj.Function;
 import fj.Bottom;
 
+import static fj.Equal.longEqual;
 import static fj.Function.compose;
 import static fj.P.p;
 
@@ -37,9 +40,12 @@ import static fj.data.Option.some;
 import fj.data.List;
 import fj.data.Set;
 import fj.data.TreeMap;
+import fj.function.Booleans;
 import fj.function.Effect1;
+import fj.function.Longs;
 
 import static fj.data.Stream.range;
+import static fj.function.Booleans.not;
 import static fj.test.Gen.choose;
 import static fj.test.Gen.elements;
 import static fj.test.Gen.fail;
@@ -470,6 +476,12 @@ public final class Arbitrary {
   });
 
   /**
+   * An arbitrary implementation for naturals.
+   */
+  public static final Gen<Natural> arbNatural = arbLong.filter(not(longEqual.eq(Long.MIN_VALUE)))
+      .map(Longs.abs).map(Natural::natural).map(o -> o.some());
+
+  /**
    * An arbitrary implementation for character values.
    */
   public static final Gen<Character> arbCharacter = choose(0, 65536).map(i -> (char) i.intValue());
@@ -760,7 +772,7 @@ public final class Arbitrary {
   /**
    * Returns an arbitrary implementation for a Java enumeration.
    *
-   * @param clazz The type of enum to return an arbtrary of.
+   * @param clazz The type of enum to return an arbitrary of.
    * @return An arbitrary for instances of the supplied enum type.
    */
   public static <A extends Enum<A>> Gen<A> arbEnumValue(final Class<A> clazz) {
@@ -1337,4 +1349,5 @@ public final class Arbitrary {
     return aa.bind(ab, ac, ad, ae, af, ag, ah,
         a -> b -> c -> d -> e -> f -> g -> h -> p(a, b, c, d, e, f, g, h));
   }
+
 }
