@@ -846,4 +846,10 @@ public final class Shrink<A> {
                           sg.shrink(p._7()), sh.shrink(p._8()), p8);
             });
   }
+
+  /**
+   * A shrink strategy for naturals.
+   */
+  public static Shrink<Natural> shrinkNatural = shrinkLong.map(bi -> Natural.natural(bi).orSome(Natural.ZERO), Natural::longValue);
+
 }

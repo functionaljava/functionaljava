@@ -1360,4 +1360,10 @@ public final class Arbitrary<A> {
     return arbitrary(aa.gen.bind(ab.gen, ac.gen, ad.gen, ae.gen, af.gen, ag.gen, ah.gen,
         a -> b -> c -> d -> e -> f -> g -> h -> p(a, b, c, d, e, f, g, h)));
   }
+
+  /**
+   * An arbitrary implementation for naturals.
+   */
+  public static Arbitrary<Natural> arbNatural = arbitrary(arbLong.gen.map(Math::abs).map(Natural::natural).map(o -> o.some()));
+
 }

@@ -507,6 +507,11 @@ public final class Equal<A> {
   }
 
   /**
+   * An equal instance for the <code>Natural</code> type.
+   */
+  public static Equal<Natural> naturalEqual = Equal.equal(l -> r -> bigintEqual.eq(l.bigIntegerValue(), r.bigIntegerValue()));
+
+  /**
    * An equal instance for lazy strings.
    */
   public static final Equal<LazyString> eq = streamEqual(charEqual).contramap(LazyString.toStream);
