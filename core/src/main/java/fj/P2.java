@@ -335,7 +335,7 @@ public abstract class P2<A, B> {
     /**
      * Monomorphic lens targeted on _1.
      */
-    public static <A, B, C> Lens<P2<A, B>, A> _1() {
+    public static <A, B> Lens<P2<A, B>, A> _1() {
       return new Lens<>(_1p());
     }
 
@@ -349,7 +349,7 @@ public abstract class P2<A, B> {
     /**
      * Monomorphic lens targeted on _1.
      */
-    public static <A, B, C> Lens<P2<A, B>, B> _2() {
+    public static <A, B> Lens<P2<A, B>, B> _2() {
       return new Lens<>(_2p());
     }
 
