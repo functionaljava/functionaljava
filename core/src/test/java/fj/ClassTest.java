@@ -23,28 +23,28 @@ public class ClassTest {
 
     @Test
     public void testClassParameters() {
-        Class c = Class.clas(Option.none().getClass());
+        Class<? extends Option> c = Class.clas(Option.none().getClass());
         Tree<Type> cp = c.classParameters();
         assertThat(cp.length(), is(1));
     }
 
     @Test
     public void testSuperclassParameters() {
-        Class c = Class.clas(Option.none().getClass());
+        Class<? extends Option> c = Class.clas(Option.none().getClass());
         Tree<Type> cp = c.superclassParameters();
         assertThat(cp.length(), is(2));
     }
 
     @Test
     public void testInterfaceParameters() {
-        Class c = Class.clas(Option.none().getClass());
-        List<Type> l =c.interfaceParameters();
+        Class<? extends Option> c = Class.clas(Option.none().getClass());
+        List<Tree<Type>> l =c.interfaceParameters();
         assertThat(l.length(), is(0));
     }
 
     @Test
     public void testTypeParameterTree() {
-        Class c = Class.clas(Option.none().getClass());
+        Class<? extends Option> c = Class.clas(Option.none().getClass());
         Collection<Type> coll = c.classParameters().toCollection();
         for (Type t: coll) {
             assertThat(Class.typeParameterTree(t).toString(), is("Tree(class fj.data.Option$None)"));
