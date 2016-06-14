@@ -3,8 +3,7 @@ package fj.data;
 import fj.F;
 import fj.P2;
 import fj.Unit;
-import fj.test.Arbitrary;
-import fj.test.Coarbitrary;
+import fj.test.Cogen;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
@@ -17,21 +16,16 @@ import static fj.test.Arbitrary.arbF;
 import static fj.test.Arbitrary.arbInteger;
 import static fj.test.Arbitrary.arbList;
 import static fj.test.Arbitrary.arbP2;
-import static fj.test.Arbitrary.arbitrary;
-import static fj.test.Coarbitrary.coarbInteger;
-import static fj.test.Coarbitrary.coarbP2;
+import static fj.test.Cogen.cogenInteger;
+import static fj.test.Cogen.cogenP2;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
 @RunWith(PropertyTestRunner.class)
 public final class StateProperties {
 
-  public Property unit() {
-    return property(
-        arbRunF(coarbInteger, arbInteger, arbInteger),
-        arbInteger,
-        (runF, initS) -> prop(testUnit(runF, initS)));
-  }
+  private static final Gen<Unit> arbUnit = Gen.value(Unit.unit());
+  private static final int HUGE_SIZE = 10000;
 
   private static <S, A> boolean testUnit(F<S, P2<S, A>> runF, S initS) {
     State<S, A> instance = State.unit(runF);
@@ -40,24 +34,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property init() {
-    return property(
-        arbInteger,
-        initS -> prop(testInit(initS)));
-  }
-
   private static <S> boolean testInit(S initS) {
     State<S, S> instance = State.init();
     P2<S, S> actual = instance.run(initS);
     P2<S, S> expected = p(initS, initS);
     return actual.equals(expected);
-  }
-
-  public Property units() {
-    return property(
-        arbF(coarbInteger, arbInteger),
-        arbInteger,
-        (f, initS) -> prop(testUnits(f, initS)));
   }
 
   private static <S> boolean testUnits(F<S, S> f, S initS) {
@@ -68,25 +49,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property constant() {
-    return property(
-        arbInteger,
-        arbInteger,
-        (a, initS) -> prop(testConstant(a, initS)));
-  }
-
   private static <S, A> boolean testConstant(A a, S initS) {
     State<S, A> instance = State.constant(a);
     P2<S, A> actual = instance.run(initS);
     P2<S, A> expected = p(initS, a);
     return actual.equals(expected);
-  }
-
-  public Property staticGets() {
-    return property(
-        arbF(coarbInteger, arbInteger),
-        arbInteger,
-        (f, initS) -> prop(testStaticGets(f, initS)));
   }
 
   private static <S, A> boolean testStaticGets(F<S, A> f, S initS) {
@@ -96,25 +63,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property put() {
-    return property(
-        arbInteger,
-        arbInteger,
-        (newS, initS) -> prop(testPut(newS, initS)));
-  }
-
   private static <S> boolean testPut(S newS, S initS) {
     State<S, Unit> instance = State.put(newS);
     P2<S, Unit> actual = instance.run(initS);
     P2<S, Unit> expected = p(newS, Unit.unit());
     return actual.equals(expected);
-  }
-
-  public Property modify() {
-    return property(
-        arbF(coarbInteger, arbInteger),
-        arbInteger,
-        (f, initS) -> prop(testModify(f, initS)));
   }
 
   private static <S> boolean testModify(F<S, S> f, S initS) {
@@ -124,27 +77,12 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property staticFlatMap() {
-    return property(
-        arbRunF(coarbInteger, arbInteger, arbInteger),
-        arbF(coarbInteger, arbState(coarbInteger, arbInteger, arbInteger)),
-        arbInteger,
-        (runF, f, initS) -> prop(testStaticFlatMap(runF, f, initS)));
-  }
-
   private static <S, A, B> boolean testStaticFlatMap(F<S, P2<S, A>> runF, F<A, State<S, B>> f, S initS) {
     State<S, B> instance = State.flatMap(State.unit(runF), f);
     P2<S, B> actual = instance.run(initS);
     P2<S, A> intermediateExpected = runF.f(initS);
     P2<S, B> expected = f.f(intermediateExpected._2()).run(intermediateExpected._1());
     return actual.equals(expected);
-  }
-
-  public Property sequence() {
-    return property(
-        arbList(arbState(coarbInteger, arbInteger, arbInteger)),
-        arbInteger,
-        (states, initS) -> prop(testSequence(states, initS)));
   }
 
   private static <S, A> boolean testSequence(List<State<S, A>> states, S initS) {
@@ -166,15 +104,6 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property traverse() {
-    return property(
-        arbList(arbInteger),
-        arbF(coarbInteger, arbState(coarbInteger, arbInteger, arbInteger)),
-        arbInteger,
-        (as, f, initS) -> prop(testTraverse(as, f, initS)));
-
-  }
-
   private static <S, A, B> boolean testTraverse(List<A> as, F<A, State<S, B>> f, S initS) {
     State<S, List<B>> instance = State.traverse(as, f);
     P2<S, List<B>> actual = instance.run(initS);
@@ -194,25 +123,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property run() {
-    return property(
-        arbRunF(coarbInteger, arbInteger, arbInteger),
-        arbInteger,
-        (runF, initS) -> prop(testRun(runF, initS)));
-  }
-
   private static <S, A> boolean testRun(F<S, P2<S, A>> runF, S initS) {
     State<S, A> instance = State.unit(runF);
     P2<S, A> actual = instance.run(initS);
     P2<S, A> expected = runF.f(initS);
     return actual.equals(expected);
-  }
-
-  public Property eval() {
-    return property(
-        arbRunF(coarbInteger, arbInteger, arbInteger),
-        arbInteger,
-        (runF, initS) -> prop(testEval(runF, initS)));
   }
 
   private static <S, A> boolean testEval(F<S, P2<S, A>> runF, S initS) {
@@ -222,25 +137,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property exec() {
-    return property(
-        arbRunF(coarbInteger, arbInteger, arbUnit),
-        arbInteger,
-        (runF, initS) -> prop(testExec(runF, initS)));
-  }
-
   private static <S> boolean testExec(F<S, P2<S, Unit>> runF, S initS) {
     State<S, Unit> instance = State.unit(runF);
     S actual = instance.exec(initS);
     S expected = runF.f(initS)._1();
     return actual.equals(expected);
-  }
-
-  public Property getsProperty() {
-    return property(
-        arbState(coarbInteger, arbInteger, arbInteger),
-        arbInteger,
-        (state, initS) -> prop(testGets(state, initS)));
   }
 
   private static <S, A> boolean testGets(State<S, A> state, S initS) {
@@ -250,27 +151,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property map() {
-    return property(
-        arbState(coarbInteger, arbInteger, arbInteger),
-        arbF(coarbInteger, arbInteger),
-        arbInteger,
-        (state, f, initS) -> prop(testMap(state, f, initS)));
-  }
-
   private static <S, A, B> boolean testMap(State<S, A> state, F<A, B> f, S initS) {
     State<S, B> instance = state.map(f);
     P2<S, B> actual = instance.run(initS);
     P2<S, B> expected = state.run(initS).map2(f);
     return actual.equals(expected);
-  }
-
-  public Property mapState() {
-    return property(
-        arbState(coarbInteger, arbInteger, arbInteger),
-        arbMapStateF(coarbInteger, coarbInteger, arbInteger, arbInteger),
-        arbInteger,
-        (state, f, initS) -> prop(testMapState(state, f, initS)));
   }
 
   private static <S, A, B> boolean testMapState(State<S, A> state, F<P2<S, A>, P2<S, B>> f, S initS) {
@@ -280,27 +165,11 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
-  public Property withs() {
-    return property(
-        arbState(coarbInteger, arbInteger, arbInteger),
-        arbF(coarbInteger, arbInteger),
-        arbInteger,
-        (state, f, initS) -> prop(testWiths(state, f, initS)));
-  }
-
   private static <S, A> boolean testWiths(State<S, A> state, F<S, S> f, S initS) {
     State<S, A> instance = state.withs(f);
     P2<S, A> actual = instance.run(initS);
     P2<S, A> expected = state.run(f.f(initS));
     return actual.equals(expected);
-  }
-
-  public Property flatMap() {
-    return property(
-        arbState(coarbInteger, arbInteger, arbInteger),
-        arbF(coarbInteger, arbState(coarbInteger, arbInteger, arbInteger)),
-        arbInteger,
-        (state, f, initS) -> prop(testFlatMap(state, f, initS)));
   }
 
   private static <S, A, B> boolean testFlatMap(State<S, A> state, F<A, State<S, B>> f, S initS) {
@@ -310,12 +179,184 @@ public final class StateProperties {
     return actual.equals(expected);
   }
 
+  private static <S, A> boolean testNoStackOverflow(State<S, A> instance, S initS) {
+    instance.run(initS);
+    return true;
+  }
+
+  private static <S, A> Gen<F<S, P2<S, A>>> arbRunF(
+      Cogen<S> cogenInitS,
+      Gen<S> arbNextS,
+      Gen<A> arbValue) {
+
+    return arbF(cogenInitS, arbP2(arbNextS, arbValue));
+  }
+
+  private static <S, A> Gen<F<P2<S, A>, P2<S, A>>> arbMapStateF(
+      Cogen<S> cogenInitS,
+      Cogen<A> cogenInitValue,
+      Gen<S> arbNextS,
+      Gen<A> arbNextValue) {
+
+    return arbF(cogenP2(cogenInitS, cogenInitValue), arbP2(arbNextS, arbNextValue));
+  }
+
+  private static <S, A> Gen<State<S, A>> arbState(
+      Cogen<S> cogenInitS,
+      Gen<S> arbNextS,
+      Gen<A> arbValue) {
+
+    Gen<F<S, P2<S, A>>> arbRunF = arbRunF(cogenInitS, arbNextS, arbValue);
+    return Gen.gen(s -> r -> State.unit(arbRunF.gen(s, r)));
+  }
+
+  private static <S, A> Gen<State<S, A>> arbHugeState(
+      Gen<State<S, A>> arbInitState,
+      F<State<S, A>, Gen<State<S, A>>> nextArbStateF) {
+
+    return Gen.gen(s -> r -> range(0, HUGE_SIZE).foldLeft(
+        (acc, x) -> nextArbStateF.f(acc).gen(s, r),
+        arbInitState.gen(s, r)));
+  }
+
+  public Property unit() {
+    return property(
+        arbRunF(cogenInteger, arbInteger, arbInteger),
+        arbInteger,
+        (runF, initS) -> prop(testUnit(runF, initS)));
+  }
+
+  public Property init() {
+    return property(
+        arbInteger,
+        initS -> prop(testInit(initS)));
+  }
+
+  public Property units() {
+    return property(
+        arbF(cogenInteger, arbInteger),
+        arbInteger,
+        (f, initS) -> prop(testUnits(f, initS)));
+  }
+
+  public Property constant() {
+    return property(
+        arbInteger,
+        arbInteger,
+        (a, initS) -> prop(testConstant(a, initS)));
+  }
+
+  public Property staticGets() {
+    return property(
+        arbF(cogenInteger, arbInteger),
+        arbInteger,
+        (f, initS) -> prop(testStaticGets(f, initS)));
+  }
+
+  public Property put() {
+    return property(
+        arbInteger,
+        arbInteger,
+        (newS, initS) -> prop(testPut(newS, initS)));
+  }
+
+  public Property modify() {
+    return property(
+        arbF(cogenInteger, arbInteger),
+        arbInteger,
+        (f, initS) -> prop(testModify(f, initS)));
+  }
+
+  public Property staticFlatMap() {
+    return property(
+        arbRunF(cogenInteger, arbInteger, arbInteger),
+        arbF(cogenInteger, arbState(cogenInteger, arbInteger, arbInteger)),
+        arbInteger,
+        (runF, f, initS) -> prop(testStaticFlatMap(runF, f, initS)));
+  }
+
+  public Property sequence() {
+    return property(
+        arbList(arbState(cogenInteger, arbInteger, arbInteger)),
+        arbInteger,
+        (states, initS) -> prop(testSequence(states, initS)));
+  }
+
+  public Property traverse() {
+    return property(
+        arbList(arbInteger),
+        arbF(cogenInteger, arbState(cogenInteger, arbInteger, arbInteger)),
+        arbInteger,
+        (as, f, initS) -> prop(testTraverse(as, f, initS)));
+
+  }
+
+  public Property run() {
+    return property(
+        arbRunF(cogenInteger, arbInteger, arbInteger),
+        arbInteger,
+        (runF, initS) -> prop(testRun(runF, initS)));
+  }
+
+  public Property eval() {
+    return property(
+        arbRunF(cogenInteger, arbInteger, arbInteger),
+        arbInteger,
+        (runF, initS) -> prop(testEval(runF, initS)));
+  }
+
+  public Property exec() {
+    return property(
+        arbRunF(cogenInteger, arbInteger, arbUnit),
+        arbInteger,
+        (runF, initS) -> prop(testExec(runF, initS)));
+  }
+
+  public Property getsProperty() {
+    return property(
+        arbState(cogenInteger, arbInteger, arbInteger),
+        arbInteger,
+        (state, initS) -> prop(testGets(state, initS)));
+  }
+
+  public Property map() {
+    return property(
+        arbState(cogenInteger, arbInteger, arbInteger),
+        arbF(cogenInteger, arbInteger),
+        arbInteger,
+        (state, f, initS) -> prop(testMap(state, f, initS)));
+  }
+
+  public Property mapState() {
+    return property(
+        arbState(cogenInteger, arbInteger, arbInteger),
+        arbMapStateF(cogenInteger, cogenInteger, arbInteger, arbInteger),
+        arbInteger,
+        (state, f, initS) -> prop(testMapState(state, f, initS)));
+  }
+
+  public Property withs() {
+    return property(
+        arbState(cogenInteger, arbInteger, arbInteger),
+        arbF(cogenInteger, arbInteger),
+        arbInteger,
+        (state, f, initS) -> prop(testWiths(state, f, initS)));
+  }
+
+  public Property flatMap() {
+    return property(
+        arbState(cogenInteger, arbInteger, arbInteger),
+        arbF(cogenInteger, arbState(cogenInteger, arbInteger, arbInteger)),
+        arbInteger,
+        (state, f, initS) -> prop(testFlatMap(state, f, initS)));
+  }
+
   @CheckParams(minSuccessful = 1)
   public Property getsStackSafety() {
     return property(
         arbHugeState(
-            arbState(coarbInteger, arbInteger, arbInteger),
-            currState -> arbitrary(Gen.value(currState.gets()))),
+            arbState(cogenInteger, arbInteger, arbInteger),
+            currState -> Gen.value(currState.gets())),
         arbInteger,
         (instance, initS) -> prop(testNoStackOverflow(instance, initS)));
   }
@@ -324,8 +365,8 @@ public final class StateProperties {
   public Property mapStackSafety() {
     return property(
         arbHugeState(
-            arbState(coarbInteger, arbInteger, arbInteger),
-            currState -> arbitrary(Gen.gen(s -> r -> currState.map(arbF(coarbInteger, arbInteger).gen.gen(s, r))))),
+            arbState(cogenInteger, arbInteger, arbInteger),
+            currState -> Gen.gen(s -> r -> currState.map(arbF(cogenInteger, arbInteger).gen(s, r)))),
         arbInteger,
         (instance, initS) -> prop(testNoStackOverflow(instance, initS)));
   }
@@ -334,9 +375,9 @@ public final class StateProperties {
   public Property mapStateStackSafety() {
     return property(
         arbHugeState(
-            arbState(coarbInteger, arbInteger, arbInteger),
-            currState -> arbitrary(Gen.gen(s -> r ->
-                currState.mapState(arbMapStateF(coarbInteger, coarbInteger, arbInteger, arbInteger).gen.gen(s, r))))),
+            arbState(cogenInteger, arbInteger, arbInteger),
+            currState -> Gen.gen(s -> r ->
+                currState.mapState(arbMapStateF(cogenInteger, cogenInteger, arbInteger, arbInteger).gen(s, r)))),
         arbInteger,
         (instance, initS) -> prop(testNoStackOverflow(instance, initS)));
   }
@@ -345,8 +386,8 @@ public final class StateProperties {
   public Property withsStackSafety() {
     return property(
         arbHugeState(
-            arbState(coarbInteger, arbInteger, arbInteger),
-            currState -> arbitrary(Gen.gen(s -> r -> currState.withs(arbF(coarbInteger, arbInteger).gen.gen(s, r))))),
+            arbState(cogenInteger, arbInteger, arbInteger),
+            currState -> Gen.gen(s -> r -> currState.withs(arbF(cogenInteger, arbInteger).gen(s, r)))),
         arbInteger,
         (instance, initS) -> prop(testNoStackOverflow(instance, initS)));
   }
@@ -355,55 +396,11 @@ public final class StateProperties {
   public Property flatMapStackSafety() {
     return property(
         arbHugeState(
-            arbState(coarbInteger, arbInteger, arbInteger),
-            currState -> arbitrary(Gen.gen(s -> r ->
-                currState.flatMap(arbF(coarbInteger, arbState(coarbInteger, arbInteger, arbInteger)).gen.gen(s, r))))),
+            arbState(cogenInteger, arbInteger, arbInteger),
+            currState -> Gen.gen(s -> r ->
+                currState.flatMap(arbF(cogenInteger, arbState(cogenInteger, arbInteger, arbInteger)).gen(s, r)))),
         arbInteger,
         (instance, initS) -> prop(testNoStackOverflow(instance, initS)));
-  }
-
-  private static <S, A> boolean testNoStackOverflow(State<S, A> instance, S initS) {
-    instance.run(initS);
-    return true;
-  }
-
-  private static final Arbitrary<Unit> arbUnit = arbitrary(Gen.value(Unit.unit()));
-
-  private static <S, A> Arbitrary<F<S, P2<S, A>>> arbRunF(
-      Coarbitrary<S> coarbInitS,
-      Arbitrary<S> arbNextS,
-      Arbitrary<A> arbValue) {
-
-    return arbF(coarbInitS, arbP2(arbNextS, arbValue));
-  }
-
-  private static <S, A> Arbitrary<F<P2<S, A>, P2<S, A>>> arbMapStateF(
-      Coarbitrary<S> coarbInitS,
-      Coarbitrary<A> coarbInitValue,
-      Arbitrary<S> arbNextS,
-      Arbitrary<A> arbNextValue) {
-
-    return arbF(coarbP2(coarbInitS, coarbInitValue), arbP2(arbNextS, arbNextValue));
-  }
-
-  private static <S, A> Arbitrary<State<S, A>> arbState(
-      Coarbitrary<S> coarbInitS,
-      Arbitrary<S> arbNextS,
-      Arbitrary<A> arbValue) {
-
-    Arbitrary<F<S, P2<S, A>>> arbRunF = arbRunF(coarbInitS, arbNextS, arbValue);
-    return arbitrary(Gen.gen(s -> r -> State.unit(arbRunF.gen.gen(s, r))));
-  }
-
-  private static final int HUGE_SIZE = 10000;
-
-  private static <S, A> Arbitrary<State<S, A>> arbHugeState(
-      Arbitrary<State<S, A>> arbInitState,
-      F<State<S, A>, Arbitrary<State<S, A>>> nextArbStateF) {
-
-    return arbitrary(Gen.gen(s -> r -> range(0, HUGE_SIZE).foldLeft(
-        (acc, x) -> nextArbStateF.f(acc).gen.gen(s, r),
-        arbInitState.gen.gen(s, r))));
   }
 
 }
