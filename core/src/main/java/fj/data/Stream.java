@@ -922,10 +922,11 @@ public abstract class Stream<A> implements Iterable<A> {
    * affectation of the result of this method to a non generic array
    * will result in runtime error (ClassCastException).
    *
-   * @deprecated use {@link #array(Class)}
+   * @deprecated As of release 4.6, use {@link #array(Class)}.
    */
   @Deprecated
   public final A[] toJavaArray() {
+    @SuppressWarnings("unchecked")
     final A[] array = (A[]) new Object[length()];
     int i = 0;
     for (A a: this) {
