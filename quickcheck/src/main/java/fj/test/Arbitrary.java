@@ -1,5 +1,6 @@
 package fj.test;
 
+import fj.Equal;
 import fj.F;
 import fj.F2;
 import fj.F3;
@@ -38,6 +39,7 @@ import fj.data.List;
 import fj.data.Set;
 import fj.data.TreeMap;
 import fj.function.Effect1;
+import fj.function.Longs;
 
 import static fj.data.Stream.range;
 import static fj.test.Gen.choose;
@@ -760,7 +762,7 @@ public final class Arbitrary {
   /**
    * Returns an arbitrary implementation for a Java enumeration.
    *
-   * @param clazz The type of enum to return an arbtrary of.
+   * @param clazz The type of enum to return an arbitrary of.
    * @return An arbitrary for instances of the supplied enum type.
    */
   public static <A extends Enum<A>> Gen<A> arbEnumValue(final Class<A> clazz) {
@@ -1337,4 +1339,11 @@ public final class Arbitrary {
     return aa.bind(ab, ac, ad, ae, af, ag, ah,
         a -> b -> c -> d -> e -> f -> g -> h -> p(a, b, c, d, e, f, g, h));
   }
+
+  /**
+   * An arbitrary implementation for naturals.
+   */
+  public static Gen<Natural> arbNatural = arbLong.filter(l -> Equal.longEqual.notEq(l, Long.MIN_VALUE))
+          .map(Longs.abs).map(Natural::natural).map(o -> o.some());
+
 }

@@ -219,7 +219,7 @@ public final class Semigroup<A> {
       semigroup(Natural::multiply);
 
   /**
-   * A semigroup that multiplies natural numbers.
+   * A semigroup that adds natural numbers.
    */
   public static final Semigroup<Natural> naturalAdditionSemigroup =
       semigroup(Natural::add);

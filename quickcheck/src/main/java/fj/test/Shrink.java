@@ -30,6 +30,7 @@ import fj.data.Array;
 import fj.data.Either;
 import fj.data.Java;
 import fj.data.List;
+import fj.data.Natural;
 import fj.data.Option;
 import fj.data.Stream;
 
@@ -846,4 +847,10 @@ public final class Shrink<A> {
                           sg.shrink(p._7()), sh.shrink(p._8()), p8);
             });
   }
+
+  /**
+   * A shrink strategy for naturals.
+   */
+  public static Shrink<Natural> shrinkNatural = shrinkLong.map(bi -> Natural.natural(bi).orSome(Natural.ZERO), Natural::longValue);
+
 }
