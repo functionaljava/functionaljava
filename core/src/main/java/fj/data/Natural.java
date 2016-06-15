@@ -300,7 +300,7 @@ public final class Natural extends Number {
 
   @Override
   public boolean equals(final Object that) {
-    return Equal.equals0(Natural.class, this, that, Equal.equal(l -> r -> l.value.equals(r.value)));
+    return Equal.equals0(Natural.class, this, that, Equal.naturalEqual);
   }
 
   @Override
