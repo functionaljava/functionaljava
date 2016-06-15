@@ -65,7 +65,7 @@ public final class Equal<A> {
    * @return A function that returns <code>true</code> if the given argument equals the argument to this method.
    */
   public F<A, Boolean> eq(final A a) {
-    return a1 -> eq(a, a1);
+    return f.f(a);
   }
 
   /**
