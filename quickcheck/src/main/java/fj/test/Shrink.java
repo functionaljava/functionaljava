@@ -39,6 +39,8 @@ import static fj.data.Stream.iterate;
 import static fj.data.Stream.nil;
 
 import static java.lang.System.arraycopy;
+import static java.math.BigInteger.ZERO;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
@@ -354,7 +356,7 @@ public final class Shrink<A> {
    * A shrink strategy for enum maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for enum maps.
    */
   public static <K extends Enum<K>, V> Shrink<EnumMap<K, V>> shrinkEnumMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -385,7 +387,7 @@ public final class Shrink<A> {
    * A shrink strategy for hash maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for hash maps.
    */
   public static <K, V> Shrink<HashMap<K, V>> shrinkHashMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -406,7 +408,7 @@ public final class Shrink<A> {
    * A shrink strategy for hash tables.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for hash tables.
    */
   @SuppressWarnings("UseOfObsoleteCollectionType")
@@ -430,7 +432,7 @@ public final class Shrink<A> {
    * A shrink strategy for identity hash maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for identity hash maps.
    */
   public static <K, V> Shrink<IdentityHashMap<K, V>> shrinkIdentityHashMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -441,7 +443,7 @@ public final class Shrink<A> {
    * A shrink strategy for linked hash maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for linked hash maps.
    */
   public static <K, V> Shrink<LinkedHashMap<K, V>> shrinkLinkedHashMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -514,7 +516,7 @@ public final class Shrink<A> {
    * A shrink strategy for tree maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for tree maps.
    */
   public static <K, V> Shrink<TreeMap<K, V>> shrinkTreeMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -545,7 +547,7 @@ public final class Shrink<A> {
    * A shrink strategy for weak hash maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for weak hash maps.
    */
   public static <K, V> Shrink<WeakHashMap<K, V>> shrinkWeakHashMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -570,7 +572,7 @@ public final class Shrink<A> {
    * A shrink strategy for concurrent hash maps.
    *
    * @param sk The shrink strategy for keys.
-   * @param sv The shrink stratgey for values.
+   * @param sv The shrink strategy for values.
    * @return A shrink strategy for concurrent hash maps.
    */
   public static <K, V> Shrink<ConcurrentHashMap<K, V>> shrinkConcurrentHashMap(final Shrink<K> sk, final Shrink<V> sv) {
@@ -676,23 +678,20 @@ public final class Shrink<A> {
   /**
    * A shrink strategy for big integers.
    */
-  public static final Shrink<BigInteger> shrinkBigInteger =
-      shrinkP2(shrinkByte, shrinkArray(shrinkByte)).map(bs -> {
-        final byte[] x = new byte[bs._2().length() + 1];
+  public static final Shrink<BigInteger> shrinkBigInteger = shrink(i -> {
+    final Equal<BigInteger> eq = Equal.bigintEqual;
+    final BigInteger two = BigInteger.valueOf(2L);
+    if (eq.eq(i, ZERO)) {
+      return nil();
+    } else {
+      final Stream<BigInteger> is = cons(ZERO,
+              () -> iterate(x -> x.divide(two), i)
+                      .takeWhile(x2 -> eq.notEq(x2, ZERO))
+                      .map(i::subtract));
 
-        for (int i = 0; i < bs._2().array().length; i++) {
-          x[i] = bs._2().get(i);
-        }
-
-        x[bs._2().length()] = bs._1();
-
-        return new BigInteger(x);
-      }, i -> {
-        final byte[] b = i.toByteArray();
-        final Byte[] x = new Byte[b.length - 1];
-        arraycopy(b, 0, x, 0, b.length - 1);
-        return p(b[0], array(x));
-      });
+      return Ord.bigintOrd.isLessThan(i, ZERO) ? cons(i.negate(), () -> is) : is;
+    }
+  });
 
   /**
    * A shrink strategy for big decimals.
