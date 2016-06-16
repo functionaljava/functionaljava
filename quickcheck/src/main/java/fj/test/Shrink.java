@@ -184,10 +184,6 @@ public final class Shrink<A> {
    */
   public static final Shrink<Double> shrinkDouble = shrinkLong.map(Long_Double, Double_Long);
 
-  /**
-   * A shrink strategy for naturals.
-   */
-  public static final Shrink<Natural> shrinkNatural = shrinkLong.map(l -> Natural.natural(l).orSome(Natural.ZERO), Natural::longValue);
 
   /**
    * Returns a shrink strategy for optional values. A 'no value' is already fully
@@ -700,6 +696,12 @@ public final class Shrink<A> {
       shrinkBigInteger.map(BigDecimal::new, BigDecimal::toBigInteger);
 
   // END java.math
+
+  /**
+   * A shrink strategy for naturals.
+   */
+  public static final Shrink<Natural> shrinkNatural = shrinkBigInteger.map(l -> Natural.natural(l).orSome(Natural.ZERO), Natural::bigIntegerValue);
+
 
   /**
    * Returns a shrinking strategy for product-1 values.

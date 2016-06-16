@@ -476,12 +476,6 @@ public final class Arbitrary {
   });
 
   /**
-   * An arbitrary implementation for naturals.
-   */
-  public static final Gen<Natural> arbNatural = arbLong.filter(not(longEqual.eq(Long.MIN_VALUE)))
-      .map(Longs.abs).map(Natural::natural).map(o -> o.some());
-
-  /**
    * An arbitrary implementation for character values.
    */
   public static final Gen<Character> arbCharacter = choose(0, 65536).map(i -> (char) i.intValue());
@@ -1178,6 +1172,11 @@ public final class Arbitrary {
       arbBigInteger.map(BigDecimal::new);
 
   // END java.math
+
+  /**
+   * An arbitrary implementation for naturals.
+   */
+  public static final Gen<Natural> arbNatural = arbBigInteger.map(BigInteger::abs).map(Natural::natural).map(o -> o.some());
 
   /**
    * An arbitrary implementation for locales.
