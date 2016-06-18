@@ -10,6 +10,8 @@ import fj.P3;
 import fj.Show;
 import fj.data.fingertrees.FingerTree;
 
+import static fj.data.List.list;
+
 /**
  * A priority queue implementation backed by a {@link fj.data.fingertrees.FingerTree}.  The finger tree nodes are annotated with type K, are combined using a monoid of K and both the key and value are stored in the leaf.  Priorities of the same value are returned FIFO (first in, first out).
  *
@@ -89,6 +91,16 @@ public class PriorityQueue<K, A> {
         return p._2().headOption();
     }
 
+    public List<P2<K, A>> topN() {
+        Stream<P2<K, A>> s = toStream();
+        if (s.isEmpty()) {
+            return List.nil();
+        } else {
+            final K k = s.head()._1();
+            return s.takeWhile(p -> equal.eq(k, p._1())).toList();
+        }
+    }
+
     /**
      * Adds a node with priority k and value a.  This operation take O(1).
      */
@@ -159,10 +171,18 @@ public class PriorityQueue<K, A> {
     }
 
     /**
-     * Does the priority k have greater priority than the top of the queue?
+     * Does the top of the queue have lower priority than k?
      */
+    public boolean isLessThan(Ord<K> ok, K k) {
+        return top().map(p -> ok.isLessThan(p._1(), k)).orSome(true);
+    }
+
     public boolean isGreaterThan(Ord<K> ok, K k) {
-        return top().map(p -> ok.isGreaterThan(k, p._1())).orSome(true);
+        return top().map(p -> ok.isGreaterThan(p._1(), k)).orSome(false);
+    }
+
+    public boolean isEqual(Ord<K> ok, K k) {
+        return top().map(p -> ok.eq(p._1(), k)).orSome(false);
     }
 
     /**
