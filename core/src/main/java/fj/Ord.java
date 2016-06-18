@@ -92,6 +92,19 @@ public final class Ord<A> {
     return compare(a1, a2) == Ordering.LT;
   }
 
+    /**
+     * Returns <code>true</code> if the first given argument is less than or equal to the second given argument,
+     * <code>false</code> otherwise.
+     *
+     * @param a1 An instance to compare for ordering to another.
+     * @param a2 An instance to compare for ordering to another.
+     * @return <code>true</code> if the first given argument is less than or equal to the second given argument,
+     *         <code>false</code> otherwise.
+     */
+    public boolean isLessThanOrEqualTo(final A a1, final A a2) {
+        return isLessThan(a1, a2) || eq(a1, a2);
+    }
+
   /**
    * Returns <code>true</code> if the first given argument is greater than the second given
    * argument, <code>false</code> otherwise.
