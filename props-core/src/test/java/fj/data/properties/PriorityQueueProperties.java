@@ -8,6 +8,7 @@ import fj.data.Option;
 import fj.data.PriorityQueue;
 import fj.data.Set;
 import fj.test.Arbitrary;
+import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
@@ -18,7 +19,6 @@ import static fj.data.PriorityQueue.emptyInt;
 import static fj.test.Arbitrary.arbAlphaNumString;
 import static fj.test.Arbitrary.arbInteger;
 import static fj.test.Arbitrary.arbSet;
-import static fj.test.Arbitrary.arbitrary;
 import static fj.test.Property.impliesBoolean;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -32,15 +32,15 @@ import static org.junit.Assert.assertThat;
 @CheckParams(maxSize = 100)
 public class PriorityQueueProperties {
 
-    public static Arbitrary<PriorityQueue<Integer, String>> arbPriorityQueueIntegerString = arbUniqueQueue(arbAlphaNumString);
+    public static Gen<PriorityQueue<Integer, String>> arbPriorityQueueIntegerString = arbUniqueQueue(arbAlphaNumString);
 
-    public static <A> Arbitrary<PriorityQueue<Integer, A>> arbUniqueQueue(Arbitrary<A> aa) {
-        Arbitrary<Set<Integer>> as = arbSet(Ord.intOrd, arbInteger);
-        Arbitrary<List<Integer>> ints = arbitrary(as.gen.map(si -> si.toList()));
-        Arbitrary<List<P2<Integer, A>>> alp = arbitrary(
-                ints.gen.bind(li -> aa.gen.map(s -> li.map(i -> P.p(i, s))))
+    public static <A> Gen<PriorityQueue<Integer, A>> arbUniqueQueue(Gen<A> aa) {
+        Gen<Set<Integer>> as = arbSet(Ord.intOrd, arbInteger);
+        Gen<List<Integer>> ints = (as.map(si -> si.toList()));
+        Gen<List<P2<Integer, A>>> alp = (
+                ints.bind(li -> aa.map(s -> li.map(i -> P.p(i, s))))
         );
-        return arbitrary(alp.gen.map(l -> PriorityQueue.<A>emptyInt().enqueue(l)));
+        return (alp.map(l -> PriorityQueue.<A>emptyInt().enqueue(l)));
     }
 
     Property empty() {
@@ -75,10 +75,10 @@ public class PriorityQueueProperties {
     }
 
     Property sorted() {
-        Arbitrary<Set<Integer>> as = arbSet(Ord.intOrd, arbInteger);
-        Arbitrary<List<Integer>> ints = arbitrary(as.gen.map(si -> si.toList()));
-        Arbitrary<List<P2<Integer, String>>> alp = arbitrary(
-            ints.gen.bind(li -> arbAlphaNumString.gen.map(s -> li.map(i -> P.p(i, s))))
+        Gen<Set<Integer>> as = arbSet(Ord.intOrd, arbInteger);
+        Gen<List<Integer>> ints = (as.map(si -> si.toList()));
+        Gen<List<P2<Integer, String>>> alp = (
+            ints.bind(li -> arbAlphaNumString.map(s -> li.map(i -> P.p(i, s))))
         );
         return property(alp, list -> {
             PriorityQueue<Integer, String> q = PriorityQueue.<String>emptyInt().enqueue(list);
