@@ -231,10 +231,22 @@ public abstract class FingerTree<V, A> {
       return empty(intAdditionMonoid, Function.constant(1));
     }
 
+  /**
+   * Creates an empty finger tree with elements of type A and node annotations
+   * of type V.
+   *
+   * @param m A monoid to combine node annotations
+   * @param f Function to convert node element to annotation.
+   * @return An empty finger tree.
+   */
   public static <V, A> FingerTree<V, A> empty(Monoid<V> m, F<A, V> f) {
     return FingerTree.mkTree(measured(m, f)).empty();
   }
 
+  /**
+   * Returns a finger tree which combines the integer node annotations with the
+   * maximum function.  A priority queue with integer priorities.
+   */
   public static <A> FingerTree<Integer, P2<Integer, A>> emptyIntMax() {
     return empty(intMaxMonoid, (P2<Integer, A> p) -> p._1());
   }
