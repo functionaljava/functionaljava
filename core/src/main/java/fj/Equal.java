@@ -65,7 +65,7 @@ public final class Equal<A> {
    * @return A function that returns <code>true</code> if the given argument equals the argument to this method.
    */
   public F<A, Boolean> eq(final A a) {
-    return a1 -> eq(a, a1);
+    return f.f(a);
   }
 
   /**
@@ -148,6 +148,11 @@ public final class Equal<A> {
    * An equal instance for the <code>short</code> type.
    */
   public static final Equal<Short> shortEqual = anyEqual();
+
+  /**
+   * An equal instance for the <code>Natural</code> type.
+   */
+  public static final Equal<Natural> naturalEqual = bigintEqual.contramap(Natural::bigIntegerValue);
 
   /**
    * An equal instance for the {@link String} type.
