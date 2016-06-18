@@ -10,10 +10,7 @@ import fj.test.Property;
 import org.junit.*;
 
 import static fj.Function.compose;
-import static fj.test.Arbitrary.*;
 import static fj.test.Arbitrary.arbLong;
-import static fj.test.Coarbitrary.coarbInteger;
-import static fj.test.Coarbitrary.coarbLong;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static org.junit.Assert.*;
@@ -26,7 +23,7 @@ public class TestCheck {
 			throw new RuntimeException("test failure");
 		});
 
-		Property p = property(arbitrary(failingGen), (Integer i) -> {
+		Property p = property(failingGen, (Integer i) -> {
 			return prop(i == 0);
 		});
 

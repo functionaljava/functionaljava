@@ -135,8 +135,9 @@ public final class Array<A> implements Iterable<A> {
    * affectation of the result of this method to a non generic array
    * will result in runtime error (ClassCastException).
    *
-   * @deprecated use {@link #array(Class)}
+   * @deprecated As of release 4.6, use {@link #array(Class)}.
    */
+  @SuppressWarnings("unchecked")
   @Deprecated
   public A[] toJavaArray() {
     return (A[]) array();

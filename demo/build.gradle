@@ -8,7 +8,13 @@ archivesBaseName = "${project.projectName}-${project.name}"
 configureAllRetroLambda()
 
 dependencies {
-	compile project(":core")
-	compile project(":quickcheck")
+    compile project(":core")
+    compile project(":quickcheck")
     testCompile dependencyJunit
+}
+
+test {
+    jacoco {
+        enabled = false
+    }
 }

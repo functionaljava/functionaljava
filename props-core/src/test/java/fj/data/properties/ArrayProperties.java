@@ -3,7 +3,6 @@ package fj.data.properties;
 import fj.*;
 import fj.data.Array;
 import fj.data.Either;
-import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
@@ -31,9 +30,9 @@ public class ArrayProperties {
 
   private static final Equal<Array<Integer>> eq = arrayEqual(intEqual);
 
-  private static final Arbitrary<P2<Array<Integer>, Integer>> arbArrayWithIndex = arbitrary(arbArray(arbInteger).gen
+  private static final Gen<P2<Array<Integer>, Integer>> arbArrayWithIndex = arbArray(arbInteger)
     .filter(Array::isNotEmpty)
-    .bind(array -> Gen.choose(0, array.length() - 1).map(i -> P.p(array, i))));
+    .bind(array -> Gen.choose(0, array.length() - 1).map(i -> P.p(array, i)));
 
   public Property isEmpty() {
     return property(arbArray(arbInteger), array -> prop(array.isEmpty() != array.isNotEmpty()));

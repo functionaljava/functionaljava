@@ -2,6 +2,7 @@ package fj.control.db;
 
 import fj.F;
 import fj.Function;
+import fj.function.Try1;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,6 +32,21 @@ public abstract class DB<A> {
     return new DB<A>() {
       public A run(final Connection c) {
         return f.f(c);
+      }
+    };
+  }
+
+  /**
+   * Constructs a database action as a function from a database connection to a value.
+   *
+   * @param t A function from a database connection to a value allowed to throw
+   *          SQLException
+   * @return A database action representing the given function.
+   */
+  public static <A> DB<A> db(final Try1<Connection, A, SQLException> t){
+    return new DB<A>() {
+      public A run(final Connection c) throws SQLException {
+        return t.f(c);
       }
     };
   }

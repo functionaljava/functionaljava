@@ -116,6 +116,11 @@ public final class Hash<A> {
   public static final Hash<BigDecimal> bigdecimalHash = anyHash();
 
   /**
+   * A hash instance for the {@link Natural} type.
+   */
+  public static final Hash<Natural> naturalHash = bigintHash.contramap(Natural::bigIntegerValue);
+
+  /**
    * A hash instance for the <code>String</code> type.
    */
   public static final Hash<String> stringHash = anyHash();
@@ -535,4 +540,5 @@ public final class Hash<A> {
   public static <A> Hash<V8<A>> v8Hash(final Hash<A> ea) {
     return streamHash(ea).contramap(V8.toStream_());
   }
+
 }

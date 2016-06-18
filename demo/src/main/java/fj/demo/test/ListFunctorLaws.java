@@ -15,8 +15,8 @@ import static fj.test.Arbitrary.arbString;
 import fj.function.Effect1;
 import fj.test.CheckResult;
 import static fj.test.CheckResult.summary;
-import static fj.test.Coarbitrary.coarbInteger;
-import static fj.test.Coarbitrary.coarbLong;
+import static fj.test.Cogen.cogenInteger;
+import static fj.test.Cogen.cogenLong;
 import fj.test.Property;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -42,7 +42,7 @@ Note that to test this second law requires the generation of arbitrary functions
 public final class ListFunctorLaws {
   final Property identity = property(arbList(arbString), x -> prop(listEqual(stringEqual).eq(x, x.map(Function.identity()))));
 
-  final Property composition = property(arbF(coarbInteger, arbString), arbF(coarbLong, arbInteger), arbList(arbLong), (f, g, x) -> {
+  final Property composition = property(arbF(cogenInteger, arbString), arbF(cogenLong, arbInteger), arbList(arbLong), (f, g, x) -> {
       final List<String> s1 = x.map(compose(f, g));
       final List<String> s2 = x.map(g).map(f);
       return prop(listEqual(stringEqual).eq(s1, s2));

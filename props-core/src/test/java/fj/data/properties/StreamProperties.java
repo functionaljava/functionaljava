@@ -3,7 +3,6 @@ package fj.data.properties;
 import fj.*;
 import fj.data.Either;
 import fj.data.Stream;
-import fj.test.Arbitrary;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
@@ -170,11 +169,11 @@ public class StreamProperties {
 
   @CheckParams(minSize = 2, maxSize = 10000)
   public Property indexTail() {
-    final Gen<P2<Stream<Integer>, Integer>> gen = arbStream(arbInteger).gen
+    final Gen<P2<Stream<Integer>, Integer>> gen = arbStream(arbInteger)
       .filter(stream -> stream.length() > 1)
       .bind(stream -> Gen.choose(1, stream.length() - 1).map(i -> P.p(stream, i)));
 
-    return property(Arbitrary.arbitrary(gen), pair -> {
+    return property(gen, pair -> {
       final Stream<Integer> stream = pair._1();
       final int i = pair._2();
       return prop(intEqual.eq(stream.index(i), stream.tail()._1().index(i - 1)));
