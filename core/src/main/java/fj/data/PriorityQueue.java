@@ -3,6 +3,7 @@ package fj.data;
 import fj.Equal;
 import fj.F;
 import fj.Monoid;
+import fj.Ord;
 import fj.P;
 import fj.P2;
 import fj.P3;
@@ -41,8 +42,12 @@ public class PriorityQueue<K, A> {
         );
     }
 
-    public PriorityQueue<K, A> filter(F<A, Boolean> f) {
+    public PriorityQueue<K, A> filterValues(F<A, Boolean> f) {
         return priorityQueue(equal, ftree.filter(p2 -> f.f(p2._2())));
+    }
+
+    public PriorityQueue<K, A> filterKeys(F<K, Boolean> f) {
+        return priorityQueue(equal, ftree.filter(p2 -> f.f(p2._1())));
     }
 
     public boolean isEmpty() {
@@ -63,11 +68,31 @@ public class PriorityQueue<K, A> {
         return list.foldLeft(pq -> p -> pq.enqueue(p._1(), p._2()), this);
     }
 
+    public boolean contains(final K k1) {
+        return !ftree.split(k2 -> equal.eq(k1, k2))._2().isEmpty();
+    }
+
+    public PriorityQueue<K, A> enqueue(Iterable<P2<K, A>> it) {
+        PriorityQueue<K, A> result = this;
+        for (P2<K, A> p: it) {
+            result = result.enqueue(p);
+        }
+        return result;
+    }
+
+    public PriorityQueue<K, A> enqueue(P2<K, A> p) {
+        return enqueue(p._1(), p._2());
+    }
+
     public PriorityQueue<K, A> dequeue() {
         K top = ftree.measure();
         P2<FingerTree<K, P2<K, A>>, FingerTree<K, P2<K, A>>> p = ftree.split(k -> equal.eq(k, top));
         FingerTree<K, P2<K, A>> right = p._2();
         return right.isEmpty() ? this : priorityQueue(equal, p._1().append(right.tail()));
+    }
+
+    public P2<Option<P2<K, A>>, PriorityQueue<K, A>> dequeueTop() {
+        return P.p(top(), dequeue());
     }
 
     public PriorityQueue<K, A> dequeue(int n) {
@@ -80,8 +105,16 @@ public class PriorityQueue<K, A> {
         return result;
     }
 
+    public boolean isGreaterThan(Ord<K> ok, K k) {
+        return top().map(p -> ok.isGreaterThan(k, p._1())).orSome(true);
+    }
+
     public Stream<P2<K, A>> toStream() {
-        return ftree.toStream();
+        return top().map(p -> Stream.cons(p, () -> dequeue().toStream())).orSome(() -> Stream.nil());
+    }
+
+    public List<P2<K, A>> toList() {
+        return toStream().toList();
     }
 
     public String toString() {
