@@ -58,34 +58,16 @@ public class BitSetTest {
     public void fromList() {
         List<Boolean> list = list(true, false);
         BitSet bs = BitSet.listBitSet(list);
-        out.println(bs.toString());
         assertThat(bs.longValue(), is(2L));
     }
 
     @Test
     public void fromList2() {
+        // test with leading false
         List<Boolean> list = list(false, true, true);
         BitSet bs = BitSet.listBitSet(list);
-        out.println(bs.toString());
         assertThat(bs.longValue(), is(3L));
     }
-
-
-
-    @Test
-    public void fromList3() {
-        List<Boolean> list = list(false,false,true,true,true,true,true,true,true,false,false,true,false,true);
-        list = list(false, true, false, true);
-        BitSet bs = BitSet.listBitSet(list);
-        out.println(bs.toString());
-//        assertThat(bs.longValue(), is(4069L));
-        List<Boolean> list1 = list.dropWhile(b -> !b);
-        assertThat(bs.toList(), is(list1));
-    }
-
-
-
-
 
     @Test
     public void toList() {

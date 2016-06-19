@@ -2,6 +2,7 @@ package fj.test;
 
 import fj.F;
 import fj.Function;
+import fj.Ord;
 import fj.P2;
 import fj.Unit;
 import fj.control.Trampoline;
@@ -465,6 +466,10 @@ public final class Gen<A> {
    */
   public static <A> Gen<List<A>> listOf(final Gen<A> g, final int x) {
     return sized(size -> choose(x, max(x, size)).bind(n -> sequenceN(n, g)));
+  }
+
+  public static <A> Gen<List<A>> listOfSorted(final Gen<A> g, final int x, Ord<A> ord) {
+    return listOf(g, x).map(l -> l.sort(ord));
   }
 
   /**

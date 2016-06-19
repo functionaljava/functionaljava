@@ -1,12 +1,18 @@
 package fj.data.hamt;
 
 import fj.Equal;
+import fj.Ord;
+import fj.P;
+import fj.P3;
 import fj.data.List;
+import fj.data.Seq;
+import fj.data.test.PropertyAssert;
 import fj.function.Booleans;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
@@ -44,11 +50,11 @@ public class BitSetProperties {
     }
 
     Property longRoundTripTest() {
-        return property(arbBoundedLong, l -> prop(longBitSet(l).longValue() == l));
+        return property(arbNaturalLong, l -> prop(longBitSet(l).longValue() == l));
     }
 
-    Property emptyTest() {
-        return prop(BitSet.empty().isEmpty());
+    Property empty() {
+        return prop(BitSet.empty().isEmpty() && BitSet.empty().longValue() == 0);
     }
 
     Property generalEmptinessTest() {
@@ -113,13 +119,13 @@ public class BitSetProperties {
     }
 
     Property isSetTest() {
-        return property(arbBoundedLong, Gen.choose(0, BitSet.MAX_BIT_SIZE),
+        return property(arbNaturalLong, Gen.choose(0, BitSet.MAX_BIT_SIZE),
                 (Long l, Integer i) -> prop(longBitSet(l).isSet(i) == ((l & (1L << i)) != 0))
         );
     }
 
-    Property stringsTest() {
-        return property(arbBoundedLong, l ->
+    Property stringBitSet() {
+        return property(arbNaturalLong, l ->
             prop(BitSet.stringBitSet(BitSet.longBitSet(l).asString()).longValue() == l)
         );
     }
@@ -134,9 +140,28 @@ public class BitSetProperties {
         ));
     }
 
+    Gen<List<Integer>> bitSetIndices(int n) {
+        return Gen.listOfSorted(Gen.choose(0, BitSet.MAX_BIT_SIZE - 1), n, Ord.intOrd);
+    }
+
     Property rangeTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, bitSetIndices(4), (x, list) -> {
+//            int vl = list.index(0);
+            int l = list.index(0);
+            int m = list.index(1);
+            int h = list.index(2);
+            int vh = list.index(3);
+
+            BitSet bs1 = longBitSet(x);
+            BitSet bs2 = bs1.range(l, h);
+            boolean b =
+//                bs2.isSet(vl) == false &&
+//                bs1.isSet(l) == bs2.isSet(l) &&
+                bs1.isSet(m) == bs2.isSet(m - l) &&
+//                bs1.isSet(h - 1) == bs2.isSet(h - 1) &&
+                bs2.isSet(vh - l) == false;
+            return prop(b);
+        });
     }
 
     Property setTest() {
@@ -187,7 +212,7 @@ public class BitSetProperties {
 
 //    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
 
-    static final Gen<Long> arbBoundedLong = Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue());
+    static final Gen<Long> arbNaturalLong = Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue());
 
     static final Gen<Integer> arbBitSetSize = Gen.choose(0, BitSet.MAX_BIT_SIZE - 1);
 

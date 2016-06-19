@@ -37,9 +37,9 @@ public final class BitSet {
     }
 
     public static BitSet listBitSet(final List<Boolean> list) {
-        final int n = MAX_BIT_SIZE;
-        if (list.length() > n) {
-            throw new IllegalArgumentException("Does not support lists greater than " + n + " bits");
+        final int n = list.length();
+        if (n > MAX_BIT_SIZE) {
+            throw new IllegalArgumentException("Does not support lists greater than " + MAX_BIT_SIZE + " bits, actual size is " + n);
         }
         long result = 0;
         for (Boolean b: list) {
@@ -100,6 +100,10 @@ public final class BitSet {
         return toStream().length();
     }
 
+    /**
+     * Returns a stream of boolean where the head is the most significant bit
+     * (the bit with the largest value)
+     */
     public Stream<Boolean> toStream() {
         return Stream.fromString(Long.toBinaryString(value)).map(c -> toBoolean(c)).dropWhile(b -> !b);
     }
@@ -155,7 +159,11 @@ public final class BitSet {
         return streamBitSet(toStream().take(n));
     }
 
-    // min index starts from the least significant bit (on the right), e.g. "101101".range(1, 4) == "110"
+    /**
+     * Returns the bit set from indices in the range from low (inclusive)
+     * to high(exclusive) from the least significant bit (on the right),
+     * e.g. "101101".range(1, 4) == "0110"
+     */
     public BitSet range(final int highIndex, final int lowIndex) {
         int max = Math.max(lowIndex, highIndex);
         int min = Math.min(lowIndex, highIndex);
