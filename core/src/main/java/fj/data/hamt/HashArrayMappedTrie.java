@@ -104,7 +104,7 @@ public final class HashArrayMappedTrie<K, V> {
 
     // bits between low (inclusive) and high (exclusive)
     public static int bitsBetween(final int n, final int low, final int high) {
-        return (int) BitSet.fromLong(n).range(high, low).longValue();
+        return (int) BitSet.longBitSet(n).range(high, low).longValue();
     }
 
     public Stream<P2<K, V>> toStream() {

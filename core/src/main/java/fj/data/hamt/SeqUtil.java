@@ -11,7 +11,6 @@ import fj.data.Seq;
 public class SeqUtil {
 
     public static <A> Seq<A> filter(Seq<A> s, F<A, Boolean> f) {
-
         return s.foldLeft((Seq<A> acc, A a) -> f.f(a) ? acc.snoc(a) : acc, Seq.<A>empty());
     }
 

@@ -4,17 +4,15 @@ import fj.F2;
 import fj.Show;
 import fj.data.List;
 import fj.data.Stream;
-import fj.function.Integers;
 
 /**
- * Created by maperr on 31/05/2016.
- *
  * A sequence of bits representing a value.  The most significant bit (the
  * bit with the highest value) is the leftmost bit and has the highest index.
  * For example, the BitSet("1011") represents the decimal number 11 and has
  * indices [3, 0] inclusive where the bit with the lowest value has the lowest
  * index and is the rightmost bit.
  *
+ * Created by maperr on 31/05/2016.
  */
 public final class BitSet {
 
@@ -34,11 +32,11 @@ public final class BitSet {
         return new BitSet(FALSE_BIT);
     }
 
-    public static BitSet fromLong(final long l) {
+    public static BitSet longBitSet(final long l) {
         return new BitSet(l);
     }
 
-    public static BitSet fromList(final List<Boolean> list) {
+    public static BitSet listBitSet(final List<Boolean> list) {
         final int n = MAX_BIT_SIZE;
         if (list.length() > n) {
             throw new IllegalArgumentException("Does not support lists greater than " + n + " bits");
@@ -47,15 +45,15 @@ public final class BitSet {
         for (Boolean b: list) {
             result = (result << 1) | toInt(b);
         }
-        return fromLong(result);
+        return longBitSet(result);
     }
 
-    public static BitSet fromStream(final Stream<Boolean> s) {
-        return fromList(s.toList());
+    public static BitSet streamBitSet(final Stream<Boolean> s) {
+        return listBitSet(s.toList());
     }
 
-    public static BitSet fromString(final String s) {
-        return fromStream(Stream.fromString(s).map(c -> toBoolean(c)));
+    public static BitSet stringBitSet(final String s) {
+        return streamBitSet(Stream.fromString(s).map(c -> toBoolean(c)));
     }
 
     public boolean isSet(final int index) {
@@ -67,7 +65,7 @@ public final class BitSet {
     }
 
     public BitSet set(final int index) {
-        return fromLong(value | (BASE_LONG << index));
+        return longBitSet(value | (BASE_LONG << index));
     }
 
     public BitSet set(final int index, boolean b) {
@@ -75,7 +73,7 @@ public final class BitSet {
     }
 
     public BitSet clear(final int index) {
-        return fromLong(value & ~(BASE_LONG << index));
+        return longBitSet(value & ~(BASE_LONG << index));
     }
 
     public long longValue() {
@@ -83,19 +81,19 @@ public final class BitSet {
     }
 
     public BitSet and(final BitSet bs) {
-        return fromLong(value & bs.longValue());
+        return longBitSet(value & bs.longValue());
     }
 
     public BitSet or(final BitSet bs) {
-        return fromLong(value | bs.longValue());
+        return longBitSet(value | bs.longValue());
     }
 
     public BitSet shiftRight(final int n) {
-        return fromLong(value >> n);
+        return longBitSet(value >> n);
     }
 
     public BitSet shiftLeft(final int n) {
-        return fromLong(value << n);
+        return longBitSet(value << n);
     }
 
     public int bitsUsed() {
@@ -112,10 +110,10 @@ public final class BitSet {
 
     public int bitsToRight(final int index) {
         if (index >= MAX_BIT_SIZE) {
-            throw new IllegalArgumentException("Does not support lists " +
-                    "greater than or equal to " + MAX_BIT_SIZE + " bits");
+            throw new IllegalArgumentException("Does not support an index " +
+                    "greater than or equal to " + MAX_BIT_SIZE + " bits, actual argument is " + index);
         }
-        //  fromString("10101111").bitsRoRight(2)= 2
+        //  stringBitSet("10101111").bitsRoRight(2)= 2
         int pos = index - 1;
         long mask = BASE_LONG << (pos);
         int result = 0;
@@ -142,26 +140,26 @@ public final class BitSet {
     }
 
     public BitSet xor(final BitSet bs) {
-        return fromLong(value ^ bs.longValue());
+        return longBitSet(value ^ bs.longValue());
     }
 
     public BitSet not() {
-        return fromLong(~value);
+        return longBitSet(~value);
     }
 
     public BitSet takeLower(final int n) {
-        return fromStream(toStream().reverse().take(n).reverse());
+        return streamBitSet(toStream().reverse().take(n).reverse());
     }
 
     public BitSet takeUpper(final int n) {
-        return fromStream(toStream().take(n));
+        return streamBitSet(toStream().take(n));
     }
 
     // min index starts from the least significant bit (on the right), e.g. "101101".range(1, 4) == "110"
     public BitSet range(final int highIndex, final int lowIndex) {
         int max = Math.max(lowIndex, highIndex);
         int min = Math.min(lowIndex, highIndex);
-        return fromStream(toStream().reverse().drop(min).take(max - min).reverse());
+        return streamBitSet(toStream().reverse().drop(min).take(max - min).reverse());
     }
 
     public static boolean toBoolean(final char c) {
@@ -177,7 +175,7 @@ public final class BitSet {
     }
 
     public String asString() {
-        return Long.toBinaryString(value);
+        return Show.bitSetShow.showS(this);
     }
 
 }

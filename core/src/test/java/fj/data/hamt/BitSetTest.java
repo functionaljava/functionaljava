@@ -8,7 +8,6 @@ import org.junit.Test;
 import static fj.Equal.booleanEqual;
 import static fj.Equal.listEqual;
 import static fj.data.List.list;
-import static fj.data.hamt.BitSet.fromLong;
 import static java.lang.System.out;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -24,13 +23,13 @@ public class BitSetTest {
 
     @Test
     public void fromLong() {
-        BitSet.fromLong(1);
+        BitSet.longBitSet(1);
     }
 
     @Test
     public void bitsToRightOfNegative() {
         long l = -6;
-        BitSet bs = BitSet.fromLong(l);
+        BitSet bs = BitSet.longBitSet(l);
         out.println(bs);
         int n = 4;
         int index = bs.bitsToRight(n);
@@ -43,13 +42,13 @@ public class BitSetTest {
 
         long a = -601295421440L;
         int i = 32;
-        boolean b2 = BitSet.fromLong(a).bitsToRight(i) == BitSet.fromLong(a).toList().reverse().take(i).filter(b -> b).length();
+        boolean b2 = BitSet.longBitSet(a).bitsToRight(i) == BitSet.longBitSet(a).toList().reverse().take(i).filter(b -> b).length();
         out.println(b2);
 
         a = 19250043420672L;
         i = 63;
-        int x = BitSet.fromLong(a).bitsToRight(i);
-        List<Boolean> list = BitSet.fromLong(a).toList().reverse();
+        int x = BitSet.longBitSet(a).bitsToRight(i);
+        List<Boolean> list = BitSet.longBitSet(a).toList().reverse();
         int y = list.take(i).filter(b -> b).length();
         boolean b3 = x == y;
         out.println(b3);
@@ -58,7 +57,7 @@ public class BitSetTest {
     @Test
     public void fromList() {
         List<Boolean> list = list(true, false);
-        BitSet bs = BitSet.fromList(list);
+        BitSet bs = BitSet.listBitSet(list);
         out.println(bs.toString());
         assertThat(bs.longValue(), is(2L));
     }
@@ -66,7 +65,7 @@ public class BitSetTest {
     @Test
     public void fromList2() {
         List<Boolean> list = list(false, true, true);
-        BitSet bs = BitSet.fromList(list);
+        BitSet bs = BitSet.listBitSet(list);
         out.println(bs.toString());
         assertThat(bs.longValue(), is(3L));
     }
@@ -77,7 +76,7 @@ public class BitSetTest {
     public void fromList3() {
         List<Boolean> list = list(false,false,true,true,true,true,true,true,true,false,false,true,false,true);
         list = list(false, true, false, true);
-        BitSet bs = BitSet.fromList(list);
+        BitSet bs = BitSet.listBitSet(list);
         out.println(bs.toString());
 //        assertThat(bs.longValue(), is(4069L));
         List<Boolean> list1 = list.dropWhile(b -> !b);
@@ -96,24 +95,24 @@ public class BitSetTest {
     }
 
     public boolean isMatch(long l, List<Boolean> list) {
-        return listBooleanEqual.eq(BitSet.fromLong(l).toList(), list);
+        return listBooleanEqual.eq(BitSet.longBitSet(l).toList(), list);
     }
 
     List<Boolean> toList(long l) {
-        return BitSet.fromLong(l).toList();
+        return BitSet.longBitSet(l).toList();
     }
 
 
     @Test
     public void reverseStream() {
-        List<Boolean> l = BitSet.fromLong(6).toStream().reverse().toList();
+        List<Boolean> l = BitSet.longBitSet(6).toStream().reverse().toList();
         assertThat(l, is(list(false, true, true)));
     }
 
     @Test
     public void strings() {
         long l = 472446402560L;
-        long actual = BitSet.fromString(BitSet.fromLong(l).asString()).longValue();
+        long actual = BitSet.stringBitSet(BitSet.longBitSet(l).asString()).longValue();
         assertThat(actual, is(l));
 
     }
@@ -122,7 +121,7 @@ public class BitSetTest {
     @Test
     public void negativeLong() {
         long l = -1760752564951867896L;
-        BitSet bs = BitSet.fromLong(l);
+        BitSet bs = BitSet.longBitSet(l);
         List<Boolean> list = bs.toList();
         out.println(list);
 
@@ -131,9 +130,9 @@ public class BitSetTest {
     @Test
     public void negativeRoundTrip() {
         long expected = -2;
-        BitSet bs1 = BitSet.fromLong(expected);
+        BitSet bs1 = BitSet.longBitSet(expected);
         List<Boolean> list1 = bs1.toList();
-        BitSet bs2 = BitSet.fromList(list1);
+        BitSet bs2 = BitSet.listBitSet(list1);
         long actual = bs2.longValue();
         assertThat(actual, equalTo(expected));
     }
@@ -142,7 +141,7 @@ public class BitSetTest {
     public void negativeLong2() {
         long l = -10;
         String s = Long.toBinaryString(l);
-        BitSet bs = BitSet.fromLong(l);
+        BitSet bs = BitSet.longBitSet(l);
         List<Boolean> list = bs.toList();
         out.println(list);
 
@@ -155,7 +154,7 @@ public class BitSetTest {
         out.println("list size: " + n);
         List<Boolean> list1 = list.dropWhile(Booleans.not);
 //            int n2 = list1.length();
-        BitSet bs1 = BitSet.fromList(list);
+        BitSet bs1 = BitSet.listBitSet(list);
         long l = bs1.longValue();
         out.println("value: " + l);
         List<Boolean> list2 = bs1.toList();
@@ -167,7 +166,7 @@ public class BitSetTest {
     @Test
     public void clear() {
 //        assertThat(4L, is(4L));
-        BitSet bs = BitSet.fromLong(6).clear(1);
+        BitSet bs = BitSet.longBitSet(6).clear(1);
         assertThat(bs.longValue(), equalTo(4L));
     }
 
