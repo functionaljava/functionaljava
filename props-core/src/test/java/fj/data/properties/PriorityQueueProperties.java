@@ -94,7 +94,6 @@ public class PriorityQueueProperties {
         return property(arbPriorityQueueIntegerString, pq -> {
             List<P2<Integer, String>> expected = pq.toList().sort(Ord.p2Ord1(Ord.intOrd.reverse()));
             List<P2<Integer, String>> actual = pq.toList();
-            assertThat(actual, equalTo(expected));
             return prop(actual.equals(expected));
         });
     }

@@ -13,11 +13,15 @@ import fj.data.fingertrees.FingerTree;
 import static fj.data.List.list;
 
 /**
- * A priority queue implementation backed by a {@link fj.data.fingertrees.FingerTree}.  The finger tree nodes are annotated with type K, are combined using a monoid of K and both the key and value are stored in the leaf.  Priorities of the same value are returned FIFO (first in, first out).
+ * A priority queue implementation backed by a
+ * {@link fj.data.fingertrees.FingerTree}.  The finger tree nodes are
+ * annotated with type K, are combined using a monoid of K and both the
+ * key and value are stored in the leaf.  Priorities of the same value
+ * are returned FIFO (first in, first out).
  *
  * Created by MarkPerry on 31 May 16.
  */
-public class PriorityQueue<K, A> {
+public final class PriorityQueue<K, A> {
 
     private final FingerTree<K, P2<K, A>> ftree;
     private final Equal<K> equal;
@@ -31,7 +35,7 @@ public class PriorityQueue<K, A> {
      * Creates a priority queue from a finger tree.
      */
     public static <K, A> PriorityQueue<K, A> priorityQueue(Equal<K> e, FingerTree<K, P2<K, A>> ft) {
-        return new PriorityQueue<K, A>(e, ft);
+        return new PriorityQueue<>(e, ft);
     }
 
     /**
@@ -41,14 +45,14 @@ public class PriorityQueue<K, A> {
      * @param e A value to compare key equality.
      */
     public static <K, A> PriorityQueue<K, A> empty(Monoid<K> m, Equal<K> e) {
-        return priorityQueue(e, FingerTree.empty(m, (P2<K, A> p) -> p._1()));
+        return priorityQueue(e, FingerTree.empty(m, P2.__1()));
     }
 
     /**
      * An empty priority queue with integer priorities.
      */
     public static <A> PriorityQueue<Integer, A> emptyInt() {
-        return priorityQueue(Equal.intEqual, FingerTree.empty(Monoid.intMaxMonoid, (P2<Integer, A> p) -> p._1()));
+        return empty(Monoid.intMaxMonoid, Equal.intEqual);
     }
 
     /**
@@ -56,8 +60,9 @@ public class PriorityQueue<K, A> {
      */
     public <B> PriorityQueue<K, B> map(F<A, B> f) {
         return priorityQueue(equal,
-                ftree.map(p2 -> p2.map2(a -> f.f(a)),
-                FingerTree.measured(ftree.measured().monoid(), (P2<K, B> p2) -> p2._1()))
+                ftree.map(P2.map2_(f),
+                        FingerTree.measured(ftree.measured().monoid(), P2.__1())
+                )
         );
     }
 
@@ -91,6 +96,9 @@ public class PriorityQueue<K, A> {
         return p._2().headOption();
     }
 
+    /**
+     * Returns all the elements of the queue with the highest (same) priority.
+     */
     public List<P2<K, A>> topN() {
         Stream<P2<K, A>> s = toStream();
         if (s.isEmpty()) {
@@ -153,7 +161,7 @@ public class PriorityQueue<K, A> {
     /**
      * Returns a tuple of the node with the highest priority and the rest of the priority queue.
      */
-    public P2<Option<P2<K, A>>, PriorityQueue<K, A>> dequeueTop() {
+    public P2<Option<P2<K, A>>, PriorityQueue<K, A>> topDequeue() {
         return P.p(top(), dequeue());
     }
 
