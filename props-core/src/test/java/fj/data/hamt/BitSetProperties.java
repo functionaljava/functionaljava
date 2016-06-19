@@ -17,11 +17,17 @@ import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
 
+import static fj.Equal.bitSetSequal;
+import static fj.Equal.booleanEqual;
+import static fj.Equal.listEqual;
+import static fj.Equal.stringEqual;
 import static fj.Function.identity;
+import static fj.data.hamt.BitSet.MAX_BIT_SIZE;
 import static fj.data.hamt.BitSet.listBitSet;
 import static fj.data.hamt.BitSet.longBitSet;
 import static fj.test.Arbitrary.arbBoolean;
 import static fj.test.Arbitrary.arbLong;
+import static fj.test.Property.impliesBoolean;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
@@ -95,7 +101,7 @@ public class BitSetProperties {
         });
     }
 
-    Gen<List<Boolean>> arbListBoolean = Gen.choose(0, BitSet.MAX_BIT_SIZE).bind(i -> Gen.sequenceN(i, arbBoolean));
+    Gen<List<Boolean>> arbListBoolean = Gen.choose(0, MAX_BIT_SIZE).bind(i -> Gen.sequenceN(i, arbBoolean));
 
     Property toListTest() {
         return property(arbListBoolean, list -> {
@@ -119,7 +125,7 @@ public class BitSetProperties {
     }
 
     Property isSetTest() {
-        return property(arbNaturalLong, Gen.choose(0, BitSet.MAX_BIT_SIZE),
+        return property(arbNaturalLong, Gen.choose(0, MAX_BIT_SIZE),
                 (Long l, Integer i) -> prop(longBitSet(l).isSet(i) == ((l & (1L << i)) != 0))
         );
     }
@@ -141,12 +147,11 @@ public class BitSetProperties {
     }
 
     Gen<List<Integer>> bitSetIndices(int n) {
-        return Gen.listOfSorted(Gen.choose(0, BitSet.MAX_BIT_SIZE - 1), n, Ord.intOrd);
+        return Gen.listOfSorted(Gen.choose(0, MAX_BIT_SIZE - 1), n, Ord.intOrd);
     }
 
     Property rangeTest() {
         return property(arbNaturalLong, bitSetIndices(4), (x, list) -> {
-//            int vl = list.index(0);
             int l = list.index(0);
             int m = list.index(1);
             int h = list.index(2);
@@ -155,65 +160,65 @@ public class BitSetProperties {
             BitSet bs1 = longBitSet(x);
             BitSet bs2 = bs1.range(l, h);
             boolean b =
-//                bs2.isSet(vl) == false &&
-//                bs1.isSet(l) == bs2.isSet(l) &&
                 bs1.isSet(m) == bs2.isSet(m - l) &&
-//                bs1.isSet(h - 1) == bs2.isSet(h - 1) &&
                 bs2.isSet(vh - l) == false;
             return prop(b);
         });
     }
 
     Property setTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbBitSetSize, (l, i) -> prop(longBitSet(l).set(i).isSet(i)));
     }
 
     Property setBooleanTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbBitSetSize, arbBoolean, (l, i, b) -> prop(longBitSet(l).set(i, b).isSet(i) == b));
     }
 
     Property shiftLeftTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbBitSetSize, (l, i) -> {
+            BitSet bs = longBitSet(l);
+            boolean b = bs.shiftLeft(i).longValue() == (l << i);
+            return impliesBoolean(bs.bitsUsed() + i < MAX_BIT_SIZE, b);
+        });
     }
 
     Property shiftRightTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbBitSetSize, (l, i) -> {
+            return prop(longBitSet(l).shiftRight(i).longValue() == (l >> i));
+        });
     }
 
     Property takeLowerTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbBitSetSize, (l, i) -> {
+            return prop(bitSetSequal.eq(longBitSet(l).takeLower(i), longBitSet(l).range(0, i)));
+        });
     }
 
     Property takeUpperTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbBitSetSize, (l, i) -> {
+            return prop(bitSetSequal.eq(longBitSet(l).takeUpper(i), longBitSet(l).range(MAX_BIT_SIZE, MAX_BIT_SIZE - i)));
+        });
     }
 
     Property toStreamTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, l -> {
+            return prop(listEqual(booleanEqual).eq(longBitSet(l).toList(), longBitSet(l).toStream().toList()));
+        });
     }
 
     Property toStringTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, l -> {
+            return prop(stringEqual.eq(longBitSet(l).toString(), Long.toBinaryString(l)));
+        });
     }
 
     Property xorTest() {
-        // TODO
-        return prop(true);
+        return property(arbNaturalLong, arbNaturalLong, (a, b) -> {
+            return prop(longBitSet(a).xor(longBitSet(b)).longValue() == (a ^ b));
+        });
     }
+    static final Gen<Long> arbNaturalLong = Gen.choose(0, Long.MAX_VALUE);
 
-
-//    static final Arbitrary<Long> arbNonNegativeLong = arbitrary(arbLong.gen.map(l -> l < 0 ? -l : l));
-
-    static final Gen<Long> arbNaturalLong = Gen.choose(0, Long.MAX_VALUE).map(i -> i.longValue());
-
-    static final Gen<Integer> arbBitSetSize = Gen.choose(0, BitSet.MAX_BIT_SIZE - 1);
+    static final Gen<Integer> arbBitSetSize = Gen.choose(0, MAX_BIT_SIZE - 1);
 
 }

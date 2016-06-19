@@ -363,6 +363,12 @@ public final class Gen<A> {
     return parameterised(curry((i, r) -> value(r.choose(f, t))));
   }
 
+  public static Gen<Long> choose(final long from, final long to) {
+    final long f = min(from, to);
+    final long t = max(from, to);
+    return parameterised(i -> r -> value(r.choose(f, t)));
+  }
+
   /**
    * Returns a generator that produces values between the given range (inclusive).
    *

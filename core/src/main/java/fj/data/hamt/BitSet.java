@@ -1,5 +1,6 @@
 package fj.data.hamt;
 
+import fj.Equal;
 import fj.F2;
 import fj.Show;
 import fj.data.List;
@@ -111,6 +112,11 @@ public final class BitSet {
     public String toString() {
         return Show.bitSetShow.showS(this);
     }
+
+    public boolean equals(Object obj) {
+        return Equal.equals0(BitSet.class, this, obj, () -> Equal.bitSetSequal);
+    }
+
 
     public int bitsToRight(final int index) {
         if (index >= MAX_BIT_SIZE) {
