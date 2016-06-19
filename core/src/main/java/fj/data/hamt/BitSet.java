@@ -2,9 +2,11 @@ package fj.data.hamt;
 
 import fj.Equal;
 import fj.F2;
+import fj.Monoid;
 import fj.Show;
 import fj.data.List;
 import fj.data.Stream;
+import fj.function.Strings;
 
 /**
  * A sequence of bits representing a value.  The most significant bit (the
@@ -22,6 +24,7 @@ public final class BitSet {
 
     public static final long BASE_LONG = 1L;
     public static final int MAX_BIT_SIZE = Long.SIZE;
+    public static final int MAX_BIT_INDEX = Long.SIZE - 1;
 
     private final long value;
 
@@ -162,7 +165,10 @@ public final class BitSet {
     }
 
     public BitSet takeUpper(final int n) {
-        return streamBitSet(toStream().take(n));
+        String zero = Integer.toString(FALSE_BIT);
+        String current = asString();
+        String pad = Monoid.stringMonoid.sumLeft(List.replicate(MAX_BIT_SIZE - current.length(), zero));
+        return stringBitSet(pad + current.substring(0, Math.max(n - pad.length(), 0)));
     }
 
     /**

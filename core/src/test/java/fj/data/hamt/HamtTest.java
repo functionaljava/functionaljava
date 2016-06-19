@@ -18,8 +18,7 @@ import static org.junit.Assert.assertThat;
 public class HamtTest {
 
     HashArrayMappedTrie<Integer, Integer> empty() {
-        HashArrayMappedTrie<Integer, Integer> empty = HashArrayMappedTrie.empty(Equal.intEqual, Hash.intHash);
-        return empty;
+        return HashArrayMappedTrie.emptyKeyInteger();
     }
 
     @Test

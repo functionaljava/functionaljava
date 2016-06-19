@@ -51,6 +51,10 @@ public final class HashArrayMappedTrie<K, V> {
         return new HashArrayMappedTrie<>(BitSet.empty(), Seq.empty(), e, h);
     }
 
+    public static <V> HashArrayMappedTrie<Integer, V> emptyKeyInteger() {
+        return empty(Equal.intEqual, Hash.intHash);
+    }
+
     private static <K, V> HashArrayMappedTrie<K, V> hamt(final BitSet bs, final Seq<Node<K, V>> s, final Equal<K> e, final Hash<K> h) {
         return new HashArrayMappedTrie<>(bs, s, e, h);
     }

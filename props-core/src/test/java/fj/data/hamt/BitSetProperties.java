@@ -206,12 +206,6 @@ public class BitSetProperties {
         });
     }
 
-    Property toStringTest() {
-        return property(arbNaturalLong, l -> {
-            return prop(stringEqual.eq(longBitSet(l).toString(), Long.toBinaryString(l)));
-        });
-    }
-
     Property xorTest() {
         return property(arbNaturalLong, arbNaturalLong, (a, b) -> {
             return prop(longBitSet(a).xor(longBitSet(b)).longValue() == (a ^ b));
