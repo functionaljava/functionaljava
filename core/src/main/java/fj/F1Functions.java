@@ -677,4 +677,11 @@ public final class F1Functions {
         return andThen(f, target);
     }
 
+    /**
+     * Both map (with g) and contramap (with f) the target function. (Profunctor pattern)
+     */
+    public static <A, B, C, D> F<C, D> dimap(F<A, B> target, F<C, A> f, F<B, D> g) {
+        return c -> g.f(target.f(f.f(c)));
+    }
+
 }
