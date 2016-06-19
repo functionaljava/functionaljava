@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Comparator;
 
+import static fj.Function.apply;
+import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Semigroup.semigroup;
 
@@ -27,6 +29,8 @@ public final class Ord<A> {
 
   private Ord(final F<A, F<A, Ordering>> f) {
     this.f = f;
+    this.max = a1 -> apply((a2, o) -> o == Ordering.GT ? a1 : a2, f.f(a1));
+    this.min = a1 -> apply((a2, o) -> o == Ordering.LT ? a1 : a2, f.f(a1));
   }
 
   /**
@@ -66,7 +70,7 @@ public final class Ord<A> {
    * @return An <code>Equal</code> for this order.
    */
   public Equal<A> equal() {
-    return Equal.equal(curry(this::eq));
+    return Equal.equal(a -> compose(o -> o == Ordering.EQ, f.f(a)));
   }
 
   /**
@@ -102,7 +106,7 @@ public final class Ord<A> {
      *         <code>false</code> otherwise.
      */
     public boolean isLessThanOrEqualTo(final A a1, final A a2) {
-        return isLessThan(a1, a2) || eq(a1, a2);
+        return compare(a1, a2) != Ordering.GT;
     }
 
   /**
@@ -125,7 +129,7 @@ public final class Ord<A> {
    * @return A function that returns true if its argument is less than the argument to this method.
    */
   public F<A, Boolean> isLessThan(final A a) {
-    return a2 -> compare(a2, a) == Ordering.LT;
+    return compose(o -> o != Ordering.LT, f.f(a));
   }
 
   /**
@@ -135,7 +139,7 @@ public final class Ord<A> {
    * @return A function that returns true if its argument is greater than the argument to this method.
    */
   public F<A, Boolean> isGreaterThan(final A a) {
-    return a2 -> compare(a2, a) == Ordering.GT;
+    return compose(o -> o != Ordering.GT, f.f(a));
   }
 
   /**
@@ -164,19 +168,19 @@ public final class Ord<A> {
   /**
    * A function that returns the greater of its two arguments.
    */
-  public final F<A, F<A, A>> max = curry(this::max);
+  public final F<A, F<A, A>> max;
 
   /**
    * A function that returns the lesser of its two arguments.
    */
-  public final F<A, F<A, A>> min = curry(this::min);
+  public final F<A, F<A, A>> min;
 
   public final Semigroup<A> minSemigroup() {
-      return semigroup(this::min);
+      return semigroup(min);
   }
 
   public final Semigroup<A> maxSemigroup() {
-      return semigroup(this::max);
+      return semigroup(max);
   }
 
   public final Ord<A> reverse() { return ord(Function.flip(f)); }
@@ -194,92 +198,52 @@ public final class Ord<A> {
   /**
    * An order instance for the <code>boolean</code> type.
    */
-  public static final Ord<Boolean> booleanOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Boolean> booleanOrd = comparableOrd();
 
   /**
    * An order instance for the <code>byte</code> type.
    */
-  public static final Ord<Byte> byteOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Byte> byteOrd = comparableOrd();
 
   /**
    * An order instance for the <code>char</code> type.
    */
-  public static final Ord<Character> charOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Character> charOrd = comparableOrd();
 
   /**
    * An order instance for the <code>double</code> type.
    */
-  public static final Ord<Double> doubleOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Double> doubleOrd = comparableOrd();
 
   /**
    * An order instance for the <code>float</code> type.
    */
-  public static final Ord<Float> floatOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Float> floatOrd = comparableOrd();
 
   /**
    * An order instance for the <code>int</code> type.
    */
-  public static final Ord<Integer> intOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Integer> intOrd = comparableOrd();
 
   /**
    * An order instance for the <code>BigInteger</code> type.
    */
-  public static final Ord<BigInteger> bigintOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<BigInteger> bigintOrd = comparableOrd();
 
   /**
    * An order instance for the <code>BigDecimal</code> type.
    */
-  public static final Ord<BigDecimal> bigdecimalOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<BigDecimal> bigdecimalOrd = comparableOrd();
 
   /**
    * An order instance for the <code>long</code> type.
    */
-  public static final Ord<Long> longOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Long> longOrd = comparableOrd();
 
   /**
    * An order instance for the <code>short</code> type.
    */
-  public static final Ord<Short> shortOrd = ord(
-          a1 -> a2 -> {
-            final int x = a1.compareTo(a2);
-            return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<Short> shortOrd = comparableOrd();
 
   /**
    * An order instance for the {@link Ordering} type.
@@ -297,23 +261,17 @@ public final class Ord<A> {
   /**
    * An order instance for the {@link String} type.
    */
-  public static final Ord<String> stringOrd = ord(
-          a1 -> a2 -> {
-              final int x = a1.compareTo(a2);
-              return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
-          });
+  public static final Ord<String> stringOrd = comparableOrd();
 
   /**
    * An order instance for the {@link StringBuffer} type.
    */
-  public static final Ord<StringBuffer> stringBufferOrd =
-      ord(a1 -> a2 -> stringOrd.compare(a1.toString(), a2.toString()));
+  public static final Ord<StringBuffer> stringBufferOrd = stringOrd.contramap(StringBuffer::toString);
 
   /**
    * An order instance for the {@link StringBuffer} type.
    */
-  public static final Ord<StringBuilder> stringBuilderOrd =
-      ord(a1 -> a2 -> stringOrd.compare(a1.toString(), a2.toString()));
+  public static final Ord<StringBuilder> stringBuilderOrd = stringOrd.contramap(StringBuilder::toString);
 
   /**
    * An order instance for the {@link Option} type.
@@ -527,9 +485,9 @@ public final class Ord<A> {
    * @see #hashEqualsOrd()
    */
   public static <A> Ord<A> hashOrd() {
-    return ord(a -> a2 -> {
-        final int x = a.hashCode() - a2.hashCode();
-        return x < 0 ? Ordering.LT : x == 0 ? Ordering.EQ : Ordering.GT;
+    return ord(a -> {
+      int aHash = a.hashCode();
+      return a2 -> Ordering.fromInt(Integer.compare(aHash, a2.hashCode()));
     });
   }
 
@@ -541,9 +499,12 @@ public final class Ord<A> {
    * @return An order instance that is based on {@link Object#hashCode()} and {@link Object#equals}.
    */
   public static <A> Ord<A> hashEqualsOrd() {
-    return ord(a -> a2 -> {
-        final int x = a.hashCode() - a2.hashCode();
-        return x < 0 ? Ordering.LT : x == 0 && a.equals(a2) ? Ordering.EQ : Ordering.GT;
+    return ord(a -> {
+      int aHash = a.hashCode();
+      return a2 -> {
+        final int a2Hash = a2.hashCode();
+        return aHash < a2Hash ? Ordering.LT : aHash == a2Hash && a.equals(a2) ? Ordering.EQ : Ordering.GT;
+      };
     });
   }
 
