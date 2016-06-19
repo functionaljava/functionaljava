@@ -718,7 +718,18 @@ public final class Function {
    * @return A new function after applying the given higher-order function to the given function.
    */
   public static <A, B, C> F<C, B> apply(final F<C, F<A, B>> cab, final F<C, A> ca) {
-    return bind(cab, f -> compose(f, ca));
+    return apply(uncurryF2(cab), ca);
+  }
+
+  /**
+   * Performs function application within a higher-order function (applicative functor pattern).
+   *
+   * @param cab The higher-order function to apply a function to.
+   * @param ca  A function to apply within a higher-order function.
+   * @return A new function after applying the given higher-order function to the given function.
+   */
+  public static <A, B, C> F<C, B> apply(final F2<C, A, B> cab, final F<C, A> ca) {
+    return c -> cab.f(c, ca.f(c));
   }
 
   /**

@@ -962,7 +962,7 @@ public abstract class List<A> implements Iterable<A> {
             final A x = xs.head();
             final A y = ys.head();
 
-            if (o.isLessThan(x, y)) {
+            if (o.isLessThanOrEqualTo(x, y)) {
               buf.snoc(x);
               xs = xs.tail();
             } else {

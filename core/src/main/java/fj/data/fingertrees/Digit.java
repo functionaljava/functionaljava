@@ -2,6 +2,7 @@ package fj.data.fingertrees;
 
 import fj.*;
 import fj.data.Option;
+import fj.data.Stream;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -161,5 +162,12 @@ public abstract class Digit<V, A> {
   public abstract P2<Integer, A> lookup(final F<V, Integer> o, final int i);
 
     public abstract int length();
+
+    public String toString() {
+        return Show.digitShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+    }
+
+    public abstract Stream<A> toStream();
+
 
 }

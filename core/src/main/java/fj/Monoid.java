@@ -402,6 +402,16 @@ public final class Monoid<A> {
   }
 
   /**
+   * A monoid for the maximum of two integers.
+   */
+  public static final Monoid<Integer> intMaxMonoid = monoid(Semigroup.intMaximumSemigroup, Integer.MIN_VALUE);
+
+  /**
+   * A monoid for the minimum of two integers.
+   */
+  public static final Monoid<Integer> intMinMonoid = monoid(Semigroup.intMinimumSemigroup, Integer.MAX_VALUE);
+
+  /**
    * A monoid for the Unit value.
    */
   public static final Monoid<Unit> unitMonoid = monoid(Semigroup.unitSemigroup, Unit.unit());
@@ -414,6 +424,17 @@ public final class Monoid<A> {
    */
   public static <A> Monoid<Set<A>> setMonoid(final Ord<A> o) {
     return monoid(Semigroup.setSemigroup(), Set.empty(o));
+  }
+
+
+  /**
+   * A monoid for the maximum of elements with ordering o.
+   *
+   * @param o An ordering of elements.
+   * @param zero The minimum element.
+   */
+  public static <A> Monoid<A> ordMaxMonoid(final Ord<A> o, final A zero) {
+    return monoid(o.max, zero);
   }
 
 }

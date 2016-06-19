@@ -1,5 +1,7 @@
 package fj.data.fingertrees;
 
+import fj.P2;
+import fj.data.Stream;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
 import fj.test.runner.PropertyTestRunner;
@@ -17,10 +19,18 @@ import static fj.test.Property.property;
 @CheckParams(maxSize = 10000)
 public class FingerTreeProperties {
 
-    public Property size() {
+    Property size() {
         return property(arbList(arbInteger), list ->
             prop(list.foldLeft((acc, i) -> acc.snoc(i), FingerTree.<Integer>emptyIntAddition()).length() == list.length())
         );
+    }
+
+    Property stream() {
+        return property(arbList(arbInteger), list -> {
+            Stream<Integer> s1 = list.foldLeft((acc, i) -> acc.snoc(i), FingerTree.<Integer>emptyIntAddition()).toStream();
+            Stream<Integer> s2 = list.toStream();
+            return prop(s1.equals(s2));
+    });
     }
 
 }

@@ -3,7 +3,9 @@ package fj.data.fingertrees;
 import fj.P;
 import fj.P2;
 import fj.P3;
+import fj.Show;
 import fj.data.Option;
+import fj.data.Stream;
 import fj.data.vector.V2;
 import fj.F;
 
@@ -69,5 +71,13 @@ public final class Two<V, A> extends Digit<V, A> {
     public int length() {
         return 2;
     }
+
+  public String toString() {
+    return Show.digitShow(Show.<V>anyShow(), Show.<A>anyShow()).showS(this);
+  }
+
+  public Stream<A> toStream() {
+    return values().toStream();
+  }
 
 }
