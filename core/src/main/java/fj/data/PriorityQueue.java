@@ -2,15 +2,17 @@ package fj.data;
 
 import fj.Equal;
 import fj.F;
+import fj.F2;
 import fj.Monoid;
 import fj.Ord;
 import fj.P;
 import fj.P2;
-import fj.P3;
 import fj.Show;
 import fj.data.fingertrees.FingerTree;
 
-import static fj.data.List.list;
+import static fj.Function.compose;
+import static fj.data.Option.none;
+import static fj.data.Option.some;
 
 /**
  * A priority queue implementation backed by a
@@ -91,22 +93,17 @@ public final class PriorityQueue<K, A> {
      * If the tree is not empty, returns the node with highest priority otherwise returns nothing.
      */
     public Option<P2<K, A>> top() {
-        K top = ftree.measure();
-        P2<FingerTree<K, P2<K, A>>, FingerTree<K, P2<K, A>>> p = ftree.split(k -> equal.eq(top, k));
-        return p._2().headOption();
+        return unqueue(none(), (top, tail) -> some(top));
     }
 
     /**
      * Returns all the elements of the queue with the highest (same) priority.
      */
     public List<P2<K, A>> topN() {
-        Stream<P2<K, A>> s = toStream();
-        if (s.isEmpty()) {
-            return List.nil();
-        } else {
-            final K k = s.head()._1();
-            return s.takeWhile(p -> equal.eq(k, p._1())).toList();
-        }
+        return toStream().uncons(
+            List.nil(),
+            top -> tail -> List.cons(top, tail._1().takeWhile(compose(equal.eq(top._1()), P2.__1())).toList())
+        );
     }
 
     /**
@@ -127,7 +124,7 @@ public final class PriorityQueue<K, A> {
      * Does the priority k exist already?
      */
     public boolean contains(final K k) {
-        return !ftree.split(k2 -> equal.eq(k, k2))._2().isEmpty();
+        return !ftree.split(equal.eq(k))._2().isEmpty();
     }
 
     /**
@@ -152,17 +149,30 @@ public final class PriorityQueue<K, A> {
      * Removes the node with the highest priority.
      */
     public PriorityQueue<K, A> dequeue() {
-        K top = ftree.measure();
-        P2<FingerTree<K, P2<K, A>>, FingerTree<K, P2<K, A>>> p = ftree.split(k -> equal.eq(k, top));
-        FingerTree<K, P2<K, A>> right = p._2();
-        return right.isEmpty() ? this : priorityQueue(equal, p._1().append(right.tail()));
+        return unqueue(this, (top, tail) -> tail);
     }
 
     /**
      * Returns a tuple of the node with the highest priority and the rest of the priority queue.
      */
     public P2<Option<P2<K, A>>, PriorityQueue<K, A>> topDequeue() {
-        return P.p(top(), dequeue());
+        return unqueue(P.p(none(), this), (top, tail) -> P.p(some(top), tail));
+    }
+
+    /**
+     * Performs a reduction on this priority queue using the given arguments.
+     *
+     * @param empty  The value to return if this queue is empty.
+     * @param topDequeue The function to apply to the top priority element and the tail of the queue (without its top element).
+     * @return A reduction on this queue.
+     */
+    public <B> B unqueue(B empty, F2<P2<K, A>, PriorityQueue<K, A>, B> topDequeue) {
+        K top = ftree.measure();
+        P2<FingerTree<K, P2<K, A>>, FingerTree<K, P2<K, A>>> p = ftree.split(equal.eq(top));
+        return p._2().uncons(
+            empty,
+            (head, tail) -> topDequeue.f(head, priorityQueue(equal, p._1().append(tail)))
+        );
     }
 
     /**
@@ -182,22 +192,22 @@ public final class PriorityQueue<K, A> {
      * Does the top of the queue have lower priority than k?
      */
     public boolean isLessThan(Ord<K> ok, K k) {
-        return top().map(p -> ok.isLessThan(p._1(), k)).orSome(true);
+        return top().option(true, p -> ok.isLessThan(p._1(), k));
     }
 
     public boolean isGreaterThan(Ord<K> ok, K k) {
-        return top().map(p -> ok.isGreaterThan(p._1(), k)).orSome(false);
+        return top().option(false, p -> ok.isGreaterThan(p._1(), k));
     }
 
     public boolean isEqual(Ord<K> ok, K k) {
-        return top().map(p -> ok.eq(p._1(), k)).orSome(false);
+        return top().option(false, p -> ok.eq(p._1(), k));
     }
 
     /**
      * Returns a stream of products with priority k and value a.
      */
     public Stream<P2<K, A>> toStream() {
-        return top().map(p -> Stream.cons(p, () -> dequeue().toStream())).orSome(() -> Stream.nil());
+        return unqueue(Stream.nil(), (top, tail) -> Stream.cons(top, () -> tail.toStream()));
     }
 
     /**

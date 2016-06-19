@@ -168,6 +168,18 @@ public abstract class FingerTree<V, A> {
   }
 
   /**
+   * Performs a reduction on this finger tree using the given arguments.
+   *
+   * @param nil  The value to return if this finger tree is empty.
+   * @param cons The function to apply to the head and tail of this finger tree  if it is not empty.
+   * @return A reduction on this finger tree.
+   */
+  public final <B> B uncons(B nil, F2<A, FingerTree<V, A>, B> cons) {
+    return isEmpty() ? nil : cons.f(head(), tail());
+  }
+
+
+  /**
    * The last element of this tree. This is an O(1) operation.
    *
    * @return The last element if this tree is nonempty, otherwise throws an error.
