@@ -7,6 +7,8 @@ import fj.data.Seq;
 
 /**
  * Created by maperr on 6/06/2016.
+ *
+ * TODO: This is a temporary solution.  These methods should be added to Seq.
  */
 public class SeqUtil {
 
