@@ -672,7 +672,7 @@ public final class Show<A> {
   }
 
   public static final Show<BitSet> bitSetShow = Show.showS(
-          bs -> "BitSet(" + Long.toBinaryString(bs.longValue()) + ")"
+          bs -> "BitSet(" + bs.asString() + ")"
   );
 
 }

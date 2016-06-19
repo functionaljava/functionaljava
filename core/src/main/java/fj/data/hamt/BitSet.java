@@ -175,7 +175,7 @@ public final class BitSet {
     }
 
     public String asString() {
-        return Show.bitSetShow.showS(this);
+        return Long.toBinaryString(value);
     }
 
 }
