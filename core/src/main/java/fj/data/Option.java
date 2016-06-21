@@ -689,6 +689,18 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   /**
+   * First-class catamorphism for Option: return a function that will performs
+   * a reduction on an optional value using the given arguments.
+   *
+   * @param none The value to return if this optional value has no value.
+   * @param some The function to apply to the value of this optional value.
+   * @return the reducing function.
+   */
+  public static final <A, B> F<Option<A>, B> cata(final B none, final F<A, B> some) {
+    return o -> o.option(none, some);
+  }
+
+  /**
    * Joins the given optional value of optional value using a bind operation.
    *
    * @param o The optional value of optional value to join.
