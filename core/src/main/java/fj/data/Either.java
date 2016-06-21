@@ -738,6 +738,17 @@ public abstract class Either<A, B> {
   }
 
   /**
+   * First class catamorphism for either. Folds over this either breaking into left or right.
+   *
+   * @param left  The function to call if this is left.
+   * @param right The function to call if this is right.
+   * @return The reducing function.
+   */
+  public static <A, B, X> F<Either<A,B>, X> cata(final F<A, X> left, final F<B, X> right) {
+    return e -> e.either(left, right);
+  }
+
+  /**
    * @return A function that maps another function across an either's left projection.
    */
   public static <A, B, X> F<F<A, X>, F<Either<A, B>, Either<X, B>>> leftMap_() {
