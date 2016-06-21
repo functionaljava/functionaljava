@@ -22,11 +22,7 @@ import fj.function.Effect1;
 import java.util.*;
 
 import static fj.Bottom.error;
-import static fj.Function.compose;
-import static fj.Function.constant;
-import static fj.Function.curry;
-import static fj.Function.flip;
-import static fj.Function.identity;
+import static fj.Function.*;
 import static fj.P.p;
 import static fj.P.p2;
 import static fj.Unit.unit;
@@ -167,12 +163,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final <B> B foldLeft(final F<B, F<A, B>> f, final B b) {
-    B x = b;
-
-    for (Stream<A> xs = this; !xs.isEmpty(); xs = xs.tail()._1())
-      x = f.f(x).f(xs.head());
-
-    return x;
+    return foldLeft(uncurryF2(f), b);
   }
 
   /**
@@ -183,7 +174,12 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final <B> B foldLeft(final F2<B, A, B> f, final B b) {
-    return foldLeft(curry(f), b);
+    B x = b;
+
+    for (Stream<A> xs = this; !xs.isEmpty(); xs = xs.tail()._1())
+      x = f.f(x, xs.head());
+
+    return x;
   }
 
   /**
@@ -194,7 +190,9 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final A foldLeft1(final F2<A, A, A> f) {
-    return foldLeft1(curry(f));
+    if (isEmpty())
+      throw error("Undefined: foldLeft1 on empty list");
+    return tail()._1().foldLeft(f, head());
   }
 
   /**
@@ -205,9 +203,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final A foldLeft1(final F<A, F<A, A>> f) {
-    if (isEmpty())
-      throw error("Undefined: foldLeft1 on empty list");
-    return tail()._1().foldLeft(f, head());
+    return foldLeft1(uncurryF2(f));
   }
 
   /**
@@ -1188,7 +1184,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return A new stream that is the reverse of this one.
    */
   public final Stream<A> reverse() {
-    return foldLeft(as -> a -> cons(a, () -> as), Stream.nil());
+    return foldLeft((as, a) -> cons(a, () -> as), Stream.nil());
   }
 
   /**

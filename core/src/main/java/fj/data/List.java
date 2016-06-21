@@ -751,13 +751,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final <B> B foldLeft(final F<B, F<A, B>> f, final B b) {
-    B x = b;
-
-    for (List<A> xs = this; !xs.isEmpty(); xs = xs.tail()) {
-      x = f.f(x).f(xs.head());
-    }
-
-    return x;
+    return foldLeft(uncurryF2(f), b);
   }
 
   /**
@@ -768,7 +762,13 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final <B> B foldLeft(final F2<B, A, B> f, final B b) {
-    return foldLeft(curry(f), b);
+    B x = b;
+
+    for (List<A> xs = this; !xs.isEmpty(); xs = xs.tail()) {
+      x = f.f(x, xs.head());
+    }
+
+    return x;
   }
 
   /**
@@ -779,7 +779,9 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final A foldLeft1(final F2<A, A, A> f) {
-    return foldLeft1(curry(f));
+    if (isEmpty())
+      throw error("Undefined: foldLeft1 on empty list");
+    return tail().foldLeft(f, head());
   }
 
   /**
@@ -790,9 +792,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final A foldLeft1(final F<A, F<A, A>> f) {
-    if (isEmpty())
-      throw error("Undefined: foldLeft1 on empty list");
-    return tail().foldLeft(f, head());
+    return foldLeft1(uncurryF2(f));
   }
 
   /**
@@ -801,7 +801,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that is the reverse of this one.
    */
   public final List<A> reverse() {
-    return foldLeft(as -> a -> cons(a, as), List.nil());
+    return foldLeft((as, a) -> cons(a, as), nil());
   }
 
   /**
@@ -904,7 +904,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param f Predicate function.
    */
   public final P2<List<A>, List<A>> partition(F<A, Boolean> f) {
-    P2<List<A>, List<A>> p2 = foldLeft(acc -> a ->
+    P2<List<A>, List<A>> p2 = foldLeft((acc, a) ->
       f.f(a) ? p(acc._1().cons(a), acc._2()) : p(acc._1(), acc._2().cons(a)),
       p(nil(), nil())
     );
@@ -1393,7 +1393,7 @@ public abstract class List<A> implements Iterable<A> {
       final D groupingIdentity,
       final F2<C, D, D> groupingAcc,
       final Ord<B> keyOrd) {
-    return this.foldLeft(map -> element -> {
+    return this.foldLeft((map, element) -> {
           final B key = keyFunction.f(element);
           final C value = valueFunction.f(element);
           return map.set(key, map.get(key)
