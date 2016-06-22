@@ -40,7 +40,7 @@ public final class Equal<A> {
   /**
    * Primitives functions of Equal: minimal definition and overridable methods.
    */
-  interface Definition<A> {
+  public interface Definition<A> {
 
     F<A, Boolean> equal(A a);
 
@@ -52,7 +52,7 @@ public final class Equal<A> {
   /**
    * Primitives functions of Equal: alternative minimal definition and overridable methods.
    */
-  interface AlternateDefinition<A> extends Definition<A> {
+  public interface AlternateDefinition<A> extends Definition<A> {
 
     @Override
     boolean equal(A a1, A a2);
