@@ -55,12 +55,12 @@ public final class Equal<A> {
   interface AlternateDefinition<A> extends Definition<A> {
 
     @Override
+    boolean equal(A a1, A a2);
+
+    @Override
     default F<A, Boolean> equal(A a) {
       return a2 -> equal(a, a2);
     }
-
-    @Override
-    boolean equal(A a1, A a2);
   }
 
   private final Definition<A> def;
@@ -144,7 +144,7 @@ public final class Equal<A> {
   /**
    * Constructs an equal instance from the given definition.
    *
-   * @param definition The minimal definition of the equal instance.
+   * @param definition a definition of the equal instance.
    * @return An equal instance from the given function.
    */
   public static <A> Equal<A> equalDef(final Definition<A> definition) {
@@ -152,12 +152,12 @@ public final class Equal<A> {
   }
 
   /**
-   * Constructs an equal instance from the given definition.
+   * Constructs an equal instance from the given (alternative) definition.
    *
-   * @param definition The minimal definition of the equal instance.
+   * @param definition a definition of the equal instance.
    * @return An equal instance from the given function.
    */
-  public static <A> Equal<A> equalAltDef(final AlternateDefinition<A> definition) {
+  public static <A> Equal<A> equalDef(final AlternateDefinition<A> definition) {
     return new Equal<>(definition);
   }
 
@@ -246,7 +246,7 @@ public final class Equal<A> {
    * An equal instance for the {@link StringBuffer} type.
    */
   public static final Equal<StringBuffer> stringBufferEqual =
-      equalAltDef((sb1, sb2) -> {
+      equalDef((sb1, sb2) -> {
         if (sb1.length() == sb2.length()) {
           for (int i = 0; i < sb1.length(); i++)
             if (sb1.charAt(i) != sb2.charAt(i))
@@ -260,7 +260,7 @@ public final class Equal<A> {
    * An equal instance for the {@link StringBuilder} type.
    */
   public static final Equal<StringBuilder> stringBuilderEqual =
-      equalAltDef((sb1, sb2) -> {
+      equalDef((sb1, sb2) -> {
         if (sb1.length() == sb2.length()) {
           for (int i = 0; i < sb1.length(); i++)
             if (sb1.charAt(i) != sb2.charAt(i))
@@ -305,7 +305,7 @@ public final class Equal<A> {
    */
   public static <A> Equal<List<A>> listEqual(final Equal<A> ea) {
     Definition<A> eaDef = ea.def;
-    return equalAltDef((a1, a2) -> {
+    return equalDef((a1, a2) -> {
       List<A> x1 = a1;
       List<A> x2 = a2;
 
@@ -357,7 +357,7 @@ public final class Equal<A> {
    */
   public static <A> Equal<Stream<A>> streamEqual(final Equal<A> ea) {
     Definition<A> eaDef = ea.def;
-    return equalAltDef((a1, a2) -> {
+    return equalDef((a1, a2) -> {
       Stream<A> x1 = a1;
       Stream<A> x2 = a2;
 
@@ -381,7 +381,7 @@ public final class Equal<A> {
    */
   public static <A> Equal<Array<A>> arrayEqual(final Equal<A> ea) {
     Definition<A> eaDef = ea.def;
-    return equalAltDef((a1, a2) -> {
+    return equalDef((a1, a2) -> {
       if (a1.length() == a2.length()) {
         for (int i = 0; i < a1.length(); i++) {
           if (!eaDef.equal(a1.get(i), a2.get(i)))
@@ -400,7 +400,18 @@ public final class Equal<A> {
    * @return An equal instance for the {@link Tree} type.
    */
   public static <A> Equal<Tree<A>> treeEqual(final Equal<A> ea) {
-    return equalAltDef((t1, t2) -> ea.eq(t1.root(), t2.root()) && p1Equal(streamEqual(treeEqual(ea))).eq(t2.subForest(), t1.subForest()));
+    Definition<A> eaDef = ea.def;
+    return equalDef(new AlternateDefinition<Tree<A>>() {
+
+      final Definition<P1<Stream<Tree<A>>>> subForestEqDef = p1Equal(streamEqual(equalDef(this))).def;
+
+      @Override
+      public boolean equal(Tree<A> t1, Tree<A> t2) {
+        return eaDef.equal(t1.root(), t2.root())
+            && subForestEqDef.equal(t1.subForest(), t2.subForest());
+
+      }
+    });
   }
 
   /**
@@ -410,7 +421,7 @@ public final class Equal<A> {
    * @return An equal instance for a product-1.
    */
   public static <A> Equal<P1<A>> p1Equal(final Equal<A> ea) {
-    return equalAltDef((p1, p2) -> ea.eq(p1._1(), p2._1()));
+    return ea.contramap(P1.__1());
   }
 
   /**
@@ -421,7 +432,9 @@ public final class Equal<A> {
    * @return An equal instance for a product-2.
    */
   public static <A, B> Equal<P2<A, B>> p2Equal(final Equal<A> ea, final Equal<B> eb) {
-    return equalAltDef((p1, p2)-> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    return equalDef((p1, p2)-> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()));
   }
 
   /**
@@ -433,7 +446,10 @@ public final class Equal<A> {
    * @return An equal instance for a product-3.
    */
   public static <A, B, C> Equal<P3<A, B, C>> p3Equal(final Equal<A> ea, final Equal<B> eb, final Equal<C> ec) {
-    return equalAltDef((p1, p2) -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    Definition<C> ecDef = ec.def;
+    return equalDef((p1, p2) -> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()) && ecDef.equal(p1._3(), p2._3()));
   }
 
   /**
@@ -447,8 +463,12 @@ public final class Equal<A> {
    */
   public static <A, B, C, D> Equal<P4<A, B, C, D>> p4Equal(final Equal<A> ea, final Equal<B> eb, final Equal<C> ec,
                                                            final Equal<D> ed) {
-    return equalAltDef((p1, p2) -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
-           ed.eq(p1._4(), p2._4()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    Definition<C> ecDef = ec.def;
+    Definition<D> edDef = ed.def;
+    return equalDef((p1, p2) -> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()) && ecDef.equal(p1._3(), p2._3()) &&
+        edDef.equal(p1._4(), p2._4()));
   }
 
   /**
@@ -464,8 +484,13 @@ public final class Equal<A> {
   public static <A, B, C, D, E> Equal<P5<A, B, C, D, E>> p5Equal(final Equal<A> ea, final Equal<B> eb,
                                                                  final Equal<C> ec, final Equal<D> ed,
                                                                  final Equal<E> ee) {
-    return equalAltDef((p1, p2) -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
-           ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    Definition<C> ecDef = ec.def;
+    Definition<D> edDef = ed.def;
+    Definition<E> eeDef = ee.def;
+    return equalDef((p1, p2) -> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()) && ecDef.equal(p1._3(), p2._3()) &&
+        edDef.equal(p1._4(), p2._4()) && eeDef.equal(p1._5(), p2._5()));
   }
 
   /**
@@ -482,8 +507,14 @@ public final class Equal<A> {
   public static <A, B, C, D, E, F$> Equal<P6<A, B, C, D, E, F$>> p6Equal(final Equal<A> ea, final Equal<B> eb,
                                                                          final Equal<C> ec, final Equal<D> ed,
                                                                          final Equal<E> ee, final Equal<F$> ef) {
-    return equalAltDef((p1, p2) -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
-           ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()) && ef.eq(p1._6(), p2._6()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    Definition<C> ecDef = ec.def;
+    Definition<D> edDef = ed.def;
+    Definition<E> eeDef = ee.def;
+    Definition<F$> efDef = ef.def;
+    return equalDef((p1, p2) -> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()) && ecDef.equal(p1._3(), p2._3()) &&
+        edDef.equal(p1._4(), p2._4()) && eeDef.equal(p1._5(), p2._5()) && efDef.equal(p1._6(), p2._6()));
   }
 
   /**
@@ -502,9 +533,16 @@ public final class Equal<A> {
                                                                                final Equal<C> ec, final Equal<D> ed,
                                                                                final Equal<E> ee, final Equal<F$> ef,
                                                                                final Equal<G> eg) {
-    return equalAltDef((p1, p2) -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
-           ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()) && ef.eq(p1._6(), p2._6()) &&
-           eg.eq(p1._7(), p2._7()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    Definition<C> ecDef = ec.def;
+    Definition<D> edDef = ed.def;
+    Definition<E> eeDef = ee.def;
+    Definition<F$> efDef = ef.def;
+    Definition<G> egDef = eg.def;
+    return equalDef((p1, p2) -> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()) && ecDef.equal(p1._3(), p2._3()) &&
+        edDef.equal(p1._4(), p2._4()) && eeDef.equal(p1._5(), p2._5()) && efDef.equal(p1._6(), p2._6()) &&
+        egDef.equal(p1._7(), p2._7()));
   }
 
   /**
@@ -528,10 +566,18 @@ public final class Equal<A> {
                                                                                      final Equal<F$> ef,
                                                                                      final Equal<G> eg,
                                                                                      final Equal<H> eh) {
-    return equalAltDef(
-        (p1, p2) -> ea.eq(p1._1(), p2._1()) && eb.eq(p1._2(), p2._2()) && ec.eq(p1._3(), p2._3()) &&
-                   ed.eq(p1._4(), p2._4()) && ee.eq(p1._5(), p2._5()) && ef.eq(p1._6(), p2._6()) &&
-                   eg.eq(p1._7(), p2._7()) && eh.eq(p1._8(), p2._8()));
+    Definition<A> eaDef = ea.def;
+    Definition<B> ebDef = eb.def;
+    Definition<C> ecDef = ec.def;
+    Definition<D> edDef = ed.def;
+    Definition<E> eeDef = ee.def;
+    Definition<F$> efDef = ef.def;
+    Definition<G> egDef = eg.def;
+    Definition<H> ehDef = eh.def;
+    return equalDef(
+        (p1, p2) -> eaDef.equal(p1._1(), p2._1()) && ebDef.equal(p1._2(), p2._2()) && ecDef.equal(p1._3(), p2._3()) &&
+            edDef.equal(p1._4(), p2._4()) && eeDef.equal(p1._5(), p2._5()) && efDef.equal(p1._6(), p2._6()) &&
+            egDef.equal(p1._7(), p2._7()) && ehDef.equal(p1._8(), p2._8()));
   }
 
   /**
@@ -622,7 +668,9 @@ public final class Equal<A> {
    * @return an equal instance for a heterogeneous list.
    */
   public static <E, L extends HList<L>> Equal<HList.HCons<E, L>> hListEqual(final Equal<E> e, final Equal<L> l) {
-    return equal(curry((HList.HCons<E, L> c1, HList.HCons<E, L> c2) -> e.eq(c1.head(), c2.head()) && l.eq(c1.tail(), c2.tail())));
+    Definition<E> eDef = e.def;
+    Definition<L> lDef = l.def;
+    return equalDef((c1, c2) -> eDef.equal(c1.head(), c2.head()) && lDef.equal(c1.tail(), c2.tail()));
   }
 
   /**
@@ -632,15 +680,15 @@ public final class Equal<A> {
    * @return An equal instance for sets.
    */
   public static <A> Equal<Set<A>> setEqual(final Equal<A> e) {
-    return equal(curry((Set<A> a, Set<A> b) -> streamEqual(e).eq(a.toStream(), b.toStream())));
+    return streamEqual(e).contramap(Set::toStream);
   }
 
   public static <K, V> Equal<TreeMap<K, V>> treeMapEqual(Equal<K> k, Equal<V> v) {
-    return equal(t1 -> t2 -> streamEqual(p2Equal(k, v)).eq(t1.toStream(), t2.toStream()));
+    return streamEqual(p2Equal(k, v)).contramap(TreeMap::toStream);
   }
 
   public static <A, B> Equal<Writer<A, B>> writerEqual(Equal<A> eq1, Equal<B> eq2) {
-    return equal(w1 -> w2 -> p2Equal(eq1, eq2).eq(w1.run(), w2.run()));
+    return p2Equal(eq1, eq2).contramap(Writer::run);
   }
   
   /**
