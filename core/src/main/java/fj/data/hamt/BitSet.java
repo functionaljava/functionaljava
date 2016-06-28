@@ -104,6 +104,10 @@ public final class BitSet {
         return toStream().length();
     }
 
+    public int bitsOn() {
+        return toStream().foldLeft((acc, b) -> acc + (b ? 1 : 0), 0);
+    }
+
     /**
      * Returns a stream of boolean where the head is the most significant bit
      * (the bit with the largest value)

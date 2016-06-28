@@ -3,6 +3,7 @@ package fj.data.hamt;
 import fj.Equal;
 import fj.F2;
 import fj.Hash;
+import fj.Ord;
 import fj.P2;
 import fj.Show;
 import fj.data.List;
@@ -13,6 +14,7 @@ import fj.data.Stream;
 import static fj.P.p;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static fj.data.hamt.BitSet.longBitSet;
 
 /**
  * A hash array mapped trie (HAMT) is an implementation of an associative
@@ -53,6 +55,10 @@ public final class HashArrayMappedTrie<K, V> {
 
     public static <V> HashArrayMappedTrie<Integer, V> emptyKeyInteger() {
         return empty(Equal.intEqual, Hash.intHash);
+    }
+
+    public boolean isEmpty() {
+        return bitSet.isEmpty();
     }
 
     private static <K, V> HashArrayMappedTrie<K, V> hamt(final BitSet bs, final Seq<Node<K, V>> s, final Equal<K> e, final Hash<K> h) {
@@ -102,22 +108,32 @@ public final class HashArrayMappedTrie<K, V> {
      * Sets the key-value pair (k, v) for the bit range [lowIndex, highIndex).
      */
     private HashArrayMappedTrie<K, V> set(final K k, final V v, final int lowIndex, final int highIndex) {
-        final int bsIndex = bitsBetween(hash.hash(k), lowIndex, highIndex);
-        if (!bitSet.isSet(bsIndex)) {
+        BitSet bs1 = longBitSet(hash.hash(k)).range(lowIndex, highIndex);
+        int i = (int) bs1.longValue();
+        boolean b = bitSet.isSet(i);
+//        final int bsIndex = bitsBetween(hash.hash(k), lowIndex, highIndex);
+        final int index = bitSet.bitsToRight(i);
+
+        if (!b) {
             // append new node
             final Node<K, V> sn1 = Node.p2Node(p(k, v));
-            return HashArrayMappedTrie.hamt(bitSet.set(bsIndex), SeqUtil.insert(seq, bsIndex, sn1), equal, hash);
+            return HashArrayMappedTrie.hamt(bitSet.set(i), SeqUtil.insert(seq, index, sn1), equal, hash);
         } else {
-            final int index = bitSet.bitsToRight(bsIndex);
+//            int index = bs1.bitsToRight(i);
+
             final Node<K, V> oldNode = seq.index(index);
             final Node<K, V> newNode = oldNode.match(n -> {
                 if (equal.eq(n._1(), k)) {
                     return Node.p2Node(p(k, v));
                 } else {
-                    final HashArrayMappedTrie<K, V> hamt = HashArrayMappedTrie.<K, V>empty(equal, hash)
-                        .set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
-                        .set(n._1(), n._2(), lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
-                    return Node.hamtNode(hamt);
+                    final HashArrayMappedTrie<K, V> e = HashArrayMappedTrie.<K, V>empty(equal, hash);
+                    final HashArrayMappedTrie<K, V> h1 =  e.set(n._1(), n._2(), lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
+                    final HashArrayMappedTrie<K, V> h2 = h1.set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
+//
+//                    .set(n._1(), n._2(), lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
+//                        .set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
+//                        ;
+                    return Node.hamtNode(h2);
                 }
             }, hamt -> Node.hamtNode(hamt.set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX))
             );
@@ -129,7 +145,7 @@ public final class HashArrayMappedTrie<K, V> {
      * Returns the bits between [low, high) for the bit set from the value n.
      */
     public static int bitsBetween(final int n, final int low, final int high) {
-        return (int) BitSet.longBitSet(n).range(high, low).longValue();
+        return (int) longBitSet(n).range(high, low).bitsOn();
     }
 
     /**
@@ -137,6 +153,14 @@ public final class HashArrayMappedTrie<K, V> {
      */
     public Stream<P2<K, V>> toStream() {
         return seq.toStream().bind(sn -> sn.toStream());
+    }
+
+    public List<P2<K, V>> toList(Ord<K> o) {
+        return toStream().sort(Ord.p2Ord1(o)).toList();
+    }
+
+    public List<P2<K, V>> toList() {
+        return toStream().toList();
     }
 
     public String toString() {
