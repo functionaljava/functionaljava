@@ -22,7 +22,7 @@ import static fj.data.hamt.BitSet.longBitSet;
  * mapped trie.  It is a refined version of the more general notion of
  * a hash tree.
  *
- * Created by maperr on 31/05/2016.
+ * @author Mark Perry
  *
  * Based on "Ideal Hash Trees" by Phil Bagwell, available from
  * http://lampwww.epfl.ch/papers/idealhashtrees.pdf
@@ -39,6 +39,14 @@ public final class HashArrayMappedTrie<K, V> {
     public static final int MIN_INDEX = 0;
     public static final int MAX_INDEX = SIZE - 1;
 
+    /**
+     * Creates an empty trie for the bitset, sequence of nodes, equal and hash.
+     *
+     * @param bs - The set of bits to indicate which of the SIZE nodes in the sequence are used.
+     * @param s - The sequence of HAMT nodes - either a HAMT or a key-value pair.
+     * @param e - Equality instance for keys.
+     * @param h - Hash instance for keys.
+     */
     private HashArrayMappedTrie(final BitSet bs, final Seq<Node<K, V>> s, final Equal<K> e, final Hash<K> h) {
         bitSet = bs;
         seq = s;
@@ -53,14 +61,23 @@ public final class HashArrayMappedTrie<K, V> {
         return new HashArrayMappedTrie<>(BitSet.empty(), Seq.empty(), e, h);
     }
 
+    /**
+     * Create and empty trie keyed by integer.
+     */
     public static <V> HashArrayMappedTrie<Integer, V> emptyKeyInteger() {
         return empty(Equal.intEqual, Hash.intHash);
     }
 
+    /**
+     * Returns if the trie is empty.
+     */
     public boolean isEmpty() {
         return bitSet.isEmpty();
     }
 
+    /**
+     * Static constructor for a HAMT instance.
+     */
     private static <K, V> HashArrayMappedTrie<K, V> hamt(final BitSet bs, final Seq<Node<K, V>> s, final Equal<K> e, final Hash<K> h) {
         return new HashArrayMappedTrie<>(bs, s, e, h);
     }
@@ -77,16 +94,19 @@ public final class HashArrayMappedTrie<K, V> {
      * lowIndex (inclusive) and highIndex (exclusive).
      */
     public Option<V> find(final K k, final int lowIndex, final int highIndex) {
-        final int bitIndex = bitsBetween(hash.hash(k), lowIndex, highIndex);
-        // look up the bit bitmap
-        final int seqIndex = bitSet.bitsToRight(bitIndex);
-        if (seqIndex >= seq.length()) {
+        BitSet bs1 = longBitSet(hash.hash(k)).range(lowIndex, highIndex);
+        int i = (int) bs1.longValue();
+        boolean b = bitSet.isSet(i);
+        final int index = bitSet.bitsToRight(i);
+        if (!b) {
             return none();
         } else {
-            return seq.index(seqIndex).find(n -> {
-                final boolean b = equal.eq(n._1(), k);
-                return b ? some(n._2()) : none();
-            }, hamt -> hamt.find(k, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX));
+            final Node<K, V> oldNode = seq.index(index);
+            Option<V> o = oldNode.match(
+                    n -> equal.eq(n._1(), k) ? some(n._2()) : none(),
+                    hamt -> hamt.find(k, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
+            );
+            return o;
         }
     }
 
@@ -105,13 +125,12 @@ public final class HashArrayMappedTrie<K, V> {
     }
 
     /**
-     * Sets the key-value pair (k, v) for the bit range [lowIndex, highIndex).
+     * Sets the key-value pair (k, v) for the bit range lowIndex (inclusive) to highIndex (exclusive).
      */
     private HashArrayMappedTrie<K, V> set(final K k, final V v, final int lowIndex, final int highIndex) {
-        BitSet bs1 = longBitSet(hash.hash(k)).range(lowIndex, highIndex);
-        int i = (int) bs1.longValue();
-        boolean b = bitSet.isSet(i);
-//        final int bsIndex = bitsBetween(hash.hash(k), lowIndex, highIndex);
+        final BitSet bs1 = longBitSet(hash.hash(k)).range(lowIndex, highIndex);
+        final int i = (int) bs1.longValue();
+        final boolean b = bitSet.isSet(i);
         final int index = bitSet.bitsToRight(i);
 
         if (!b) {
@@ -119,8 +138,6 @@ public final class HashArrayMappedTrie<K, V> {
             final Node<K, V> sn1 = Node.p2Node(p(k, v));
             return HashArrayMappedTrie.hamt(bitSet.set(i), SeqUtil.insert(seq, index, sn1), equal, hash);
         } else {
-//            int index = bs1.bitsToRight(i);
-
             final Node<K, V> oldNode = seq.index(index);
             final Node<K, V> newNode = oldNode.match(n -> {
                 if (equal.eq(n._1(), k)) {
@@ -129,10 +146,6 @@ public final class HashArrayMappedTrie<K, V> {
                     final HashArrayMappedTrie<K, V> e = HashArrayMappedTrie.<K, V>empty(equal, hash);
                     final HashArrayMappedTrie<K, V> h1 =  e.set(n._1(), n._2(), lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
                     final HashArrayMappedTrie<K, V> h2 = h1.set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
-//
-//                    .set(n._1(), n._2(), lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
-//                        .set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
-//                        ;
                     return Node.hamtNode(h2);
                 }
             }, hamt -> Node.hamtNode(hamt.set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX))
@@ -142,23 +155,22 @@ public final class HashArrayMappedTrie<K, V> {
     }
 
     /**
-     * Returns the bits between [low, high) for the bit set from the value n.
-     */
-    public static int bitsBetween(final int n, final int low, final int high) {
-        return (int) longBitSet(n).range(high, low).bitsOn();
-    }
-
-    /**
      * Returns a stream of key-value pairs.
      */
     public Stream<P2<K, V>> toStream() {
         return seq.toStream().bind(sn -> sn.toStream());
     }
 
+    /**
+     * Returns the list of key-value pairs, ordered by key.
+     */
     public List<P2<K, V>> toList(Ord<K> o) {
         return toStream().sort(Ord.p2Ord1(o)).toList();
     }
 
+    /**
+     * Returns a list of key-value pairs.
+     */
     public List<P2<K, V>> toList() {
         return toStream().toList();
     }
@@ -170,8 +182,22 @@ public final class HashArrayMappedTrie<K, V> {
     /**
      * Performs a left-fold reduction across this trie.
      */
-    public <B> B foldLeft(F2<B, Node<K, V>, B> f, B b) {
+    public <B> B foldLeftOnNode(F2<B, Node<K, V>, B> f, B b) {
         return seq.foldLeft(f, b);
+    }
+
+    /**
+     * Performs a left-fold reduction across this trie.
+     */
+    public <B> B foldLeft(F2<B, P2<K, V>, B> f, F2<B, HashArrayMappedTrie<K, V>, B> g, B b) {
+        return foldLeftOnNode((acc, n) -> n.match(p -> f.f(acc, p), h -> g.f(acc, h)), b);
+    }
+
+    /**
+     * Performs a left-fold reduction across this trie.
+     */
+    public <B> B foldLeft(F2<B, P2<K, V>, B> f, B b) {
+        return foldLeftOnNode((acc, n) -> n.match(p -> f.f(acc, p), h -> h.foldLeft(f, acc)), b);
     }
 
     public BitSet getBitSet() {
