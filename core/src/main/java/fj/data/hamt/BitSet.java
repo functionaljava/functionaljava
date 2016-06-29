@@ -125,6 +125,17 @@ public final class BitSet {
     }
 
 
+    public static int countPopulation(int map) {
+        int SK5=0x55555555,SK3=0x33333333;
+        int SKF0=0xF0F0F0F,SKFF=0xFF00FF;
+
+        map-=((map>>1)&SK5);
+        map=(map&SK3)+((map>>2)&SK3);
+        map=(map&SKF0)+((map>>4)&SKF0);
+        map+=map>>8;
+        return (map+(map>>16))&0x3F;
+    }
+
     public int bitsToRight(final int index) {
         if (index >= MAX_BIT_SIZE) {
             throw new IllegalArgumentException("Does not support an index " +
