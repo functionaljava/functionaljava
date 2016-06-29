@@ -3,8 +3,11 @@ package fj.data.fingertrees;
 import fj.*;
 import fj.data.Option;
 import fj.data.Seq;
+import fj.data.Stream;
 
 import static fj.Monoid.intAdditionMonoid;
+import static fj.Monoid.intMaxMonoid;
+import static fj.data.Stream.nil;
 
 /**
  * Provides 2-3 finger trees, a functional representation of persistent sequences supporting access to the ends in
@@ -96,8 +99,8 @@ public abstract class FingerTree<V, A> {
   public final boolean isEmpty() {
     return this instanceof Empty;
   }
-
-  final Measured<V, A> measured() {
+  
+  public final Measured<V, A> measured() {
     return m;
   }
 
@@ -165,6 +168,18 @@ public abstract class FingerTree<V, A> {
   }
 
   /**
+   * Performs a reduction on this finger tree using the given arguments.
+   *
+   * @param nil  The value to return if this finger tree is empty.
+   * @param cons The function to apply to the head and tail of this finger tree  if it is not empty.
+   * @return A reduction on this finger tree.
+   */
+  public final <B> B uncons(B nil, F2<A, FingerTree<V, A>, B> cons) {
+    return isEmpty() ? nil : cons.f(head(), tail());
+  }
+
+
+  /**
    * The last element of this tree. This is an O(1) operation.
    *
    * @return The last element if this tree is nonempty, otherwise throws an error.
@@ -225,7 +240,29 @@ public abstract class FingerTree<V, A> {
     public abstract int length();
 
     public static <A> FingerTree<Integer, A> emptyIntAddition() {
-        return mkTree(FingerTree.<Integer, A>measured(intAdditionMonoid, Function.constant(1))).empty();
+      return empty(intAdditionMonoid, Function.constant(1));
     }
+
+  /**
+   * Creates an empty finger tree with elements of type A and node annotations
+   * of type V.
+   *
+   * @param m A monoid to combine node annotations
+   * @param f Function to convert node element to annotation.
+   * @return An empty finger tree.
+   */
+  public static <V, A> FingerTree<V, A> empty(Monoid<V> m, F<A, V> f) {
+    return FingerTree.mkTree(measured(m, f)).empty();
+  }
+
+  /**
+   * Returns a finger tree which combines the integer node annotations with the
+   * maximum function.  A priority queue with integer priorities.
+   */
+  public static <A> FingerTree<Integer, P2<Integer, A>> emptyIntMax() {
+    return empty(intMaxMonoid, (P2<Integer, A> p) -> p._1());
+  }
+
+  public abstract Stream<A> toStream();
 
 }

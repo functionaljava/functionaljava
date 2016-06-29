@@ -3,7 +3,7 @@ package fj;
 import fj.data.*;
 import fj.data.hamt.BitSet;
 import fj.data.hamt.HashArrayMappedTrie;
-import fj.data.hamt.Node;
+import fj.data.fingertrees.FingerTree;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -304,6 +304,44 @@ public final class Show<A> {
     });
   }
 
+  public static <V, A> Show<fj.data.fingertrees.Digit<V, A>> digitShow(final Show<V> sv, final Show<A> sa) {
+    return show(d -> {
+      String s = d.match(
+              o -> "One(" + o.measure() + " -> " + o.value() + ")",
+              two -> "Two(" + two.measure() + " -> " + v2Show(sa).showS(two.values()) + ")",
+              three -> "Three(" + three.measure() + " -> " + v3Show(sa).showS(three.values()) + ")",
+              four -> "Four(" + four.measure() + " -> " + v4Show(sa).showS(four.values()) + ")"
+      );
+      return Stream.fromString(s);
+    });
+  }
+
+  public static <V, A> Show<fj.data.fingertrees.Node<V, A>> nodeShow(final Show<V> sv, final Show<A> sa) {
+    return show(n -> {
+      final String s = n.match(
+          n2 -> "Node2(" + n2.measure() + " -> " + v2Show(sa).showS(n2.toVector()) + ")",
+          n3 -> "Node3(" + n3.measure() + " -> " + v3Show(sa).showS(n3.toVector()) + ")");
+      return Stream.fromString(s);
+    });
+  }
+
+  public static <V, A> Show<FingerTree<V, A>> fingerTreeShow(final Show<V> sv, final Show<A> sa) {
+
+    return show(ft -> {
+      String sep = ", ";
+      String str = ft.match(e -> "Empty()",
+              s -> "Single(" + sv.showS(ft.measure()) + " -> " + sa.showS(s.value()) + ")",
+              d -> "Deep(" + d.measure() + " -> " +
+                      digitShow(sv, sa).showS(d.prefix()) + sep +
+                      fingerTreeShow(sv, nodeShow(sv, sa)).showS(d.middle()) + sep +
+                      digitShow(sv, sa).showS(d.suffix()) +
+                      ")"
+      );
+      return Stream.fromString(str);
+    });
+  }
+
+
   public static <A> Show<Seq<A>> seqShow(final Show<A> sa) {
     return show(s -> streamShow(sa, "Seq(", ",", ")").show(s.toStream()));
   }
@@ -340,7 +378,7 @@ public final class Show<A> {
    * @return A show instance for the {@link P2 tuple-2} type.
    */
   public static <A, B> Show<P2<A, B>> p2MapShow(final Show<A> sa, final Show<B> sb) {
-    return p2Show(sa, sb, "(", ":", ")");
+    return p2Show(sa, sb, "(", ": ", ")");
   }
 
   /**
@@ -553,6 +591,12 @@ public final class Show<A> {
         .append(sg.show(p._7())).snoc(',').append(sh.show(p._8())).snoc(')'));
   }
 
+  public static <K, V> Show<PriorityQueue<K, V>> priorityQueueShow(Show<K> sk, Show<V> sv) {
+    return show(pq -> {
+      return streamShow(p2MapShow(sk, sv), "PriorityQueue(", ", ", ")").show(pq.toStream());
+    });
+  }
+
   /**
    * A show instance for a vector-2.
    *
@@ -659,8 +703,8 @@ public final class Show<A> {
     return show(c -> fromString("HList(").append(e.show(c.head())).append(l.show(c.tail())).append(fromString(")")));
   }
 
-  public static <K, V> Show<Node<K, V>> hamtNodeShow(Show<K> sk, Show<V> sv) {
-    F<Node<K, V>, String> f = n -> n.match(p -> p2Show(sk, sv).showS(p), h -> hamtShow(sk, sv).showS(h));
+  public static <K, V> Show<fj.data.hamt.Node<K, V>> hamtNodeShow(Show<K> sk, Show<V> sv) {
+    F<fj.data.hamt.Node<K, V>, String> f = n -> n.match(p -> p2Show(sk, sv).showS(p), h -> hamtShow(sk, sv).showS(h));
     return Show.showS(f);
   }
 
