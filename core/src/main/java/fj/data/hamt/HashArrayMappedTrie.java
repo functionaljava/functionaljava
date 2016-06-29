@@ -136,7 +136,7 @@ public final class HashArrayMappedTrie<K, V> {
         if (!b) {
             // append new node
             final Node<K, V> sn1 = Node.p2Node(p(k, v));
-            return HashArrayMappedTrie.hamt(bitSet.set(i), SeqUtil.insert(seq, index, sn1), equal, hash);
+            return HashArrayMappedTrie.hamt(bitSet.set(i), seq.insert(index, sn1), equal, hash);
         } else {
             final Node<K, V> oldNode = seq.index(index);
             final Node<K, V> newNode = oldNode.match(n -> {
