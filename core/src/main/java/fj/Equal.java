@@ -281,8 +281,8 @@ public final class Equal<A> {
     Definition<A> eaDef = ea.def;
     Definition<B> ebDef = eb.def;
     return equalDef(e1 -> e1.either(
-        a1 -> Either.cata(eaDef.equal(a1), (B __) -> false),
-        b1 -> Either.cata((A __)-> false, ebDef.equal(b1))
+        a1 -> Either.either_(eaDef.equal(a1), (B __) -> false),
+        b1 -> Either.either_((A __)-> false, ebDef.equal(b1))
     ));
   }
 
@@ -341,7 +341,7 @@ public final class Equal<A> {
     Definition<A> eaDef = ea.def;
     return equalDef(o1 -> o1.option(
         Option.isNone_(),
-        a1 -> Option.cata(false, eaDef.equal(a1))
+        a1 -> Option.option_(false, eaDef.equal(a1))
     ));
   }
 

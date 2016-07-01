@@ -744,7 +744,7 @@ public abstract class Either<A, B> {
    * @param right The function to call if this is right.
    * @return The reducing function.
    */
-  public static <A, B, X> F<Either<A,B>, X> cata(final F<A, X> left, final F<B, X> right) {
+  public static <A, B, X> F<Either<A,B>, X> either_(final F<A, X> left, final F<B, X> right) {
     return e -> e.either(left, right);
   }
 
