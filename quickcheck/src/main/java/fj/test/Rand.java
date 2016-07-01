@@ -97,7 +97,9 @@ public final class Rand {
    * result.
    * <p>
    * Calling {@link #reseed(long)} on an instance returned from this method will
-   * result in an exception being thrown. Use {@link #rand(F, F, F)} instead.
+   * result in an exception being thrown.
+   *
+   * @deprecated As of release 4.6, use {@link #rand(F, F, F)}.
    *
    * @param f The integer random generator.
    * @param g The floating-point random generator.
