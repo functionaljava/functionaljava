@@ -1,7 +1,7 @@
 
 = Release 4.6
 
-Proposed release: June 2016
+Proposed release: July 2016
 
 == Enhancements
 
