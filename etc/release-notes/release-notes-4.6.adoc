@@ -58,7 +58,7 @@ Proposed release: July 2016
 
 == Documentation
 
-* TODO.
+* Added IO walkthrough (as per enhancements, #254).
 
 == Contributors
 
