@@ -1,23 +1,60 @@
 
 = Release 4.6
 
-Proposed release: Jun 2016
+Proposed release: June 2016
 
 == Enhancements
 
-* TODO.
+* Added various list permutation generation for Gen (#235).
+* Reduced memory for hard memos (#257).
+* Added a priority queue based on finger trees (#261).
+* Construct a database action from a Connection to a value (#267).
+* Added methods and instances on Natural for Equal, Hash, Arbitrary, Shirnk, equals, hashCode and toString (#274).
+* Use BigIntegers for Natural Gen and Shrink, instead of Long (#278).
+* Various optics for Option (#244).
+* First class catamorphism for Either and Option (#286).
+* Added IO walkthrough (#254).
+* Added numerous Semigroup methods, Monoid.dual, conversion from Ord to Semigroup and NonEmptyList folds (#251).
+* Added ignored Optional optic (#250).
+* Added IO methods: as, voided, when and unless (#245).
+* Added monoid instances for io and unit; added semigroup instances for first, last and io (#246).
 
 == Fixes
 
-* TODO.
+* Fixed Gen.pick (#235).  Affects Gen.variant, Coarbitrary and dependencies.
+* Fixed Rand.reseed (#237).
+* IOFunctions.bracket runs finaliser (#240).
+* Fixed backwards List.traverseIO (#248).
+* Run IOW map, bind and append lazily (#252, 253).
+* Make State class stack safe (#259).
+* Removed extra type parameters in P2.Optic (#273).
+* Fixed BigInteger.shrink (#276, 277).
 
 == Internal
 
-* TODO.
+* Upgrade to Gradle 2.13 (#243).
+* Document version deprecated for all deprecated methods (#264).
+* Fixed various unchecked conversion warnings (#269).
+* Added tests for DbState (#234).
+* Added test for quickcheck Bool (#233).
+* Various improvements (using final classes, method references, diamond operators, type inference, import lists, replace anonymous classes with lambdas etc. - #238).
+* Use Either catamorphism internally (#285).
+* Use uncurried foldLeft as default implementation (#283).
+* Removed workarounds for fixed javac bugs (#282).
+* Added IO test (#272).
+* Exclude the demo subproject from Coveralls code coverage metrics (#268).
+* Added tests for fj.Class (#262).
+* Use method reference in IOWalkthrough (#255).
+* Update retro lambda plugin version from 3.2.0 to 3.2.5 (#247).
 
 == Breaking Changes
 
-* TODO.
+* Removed deprecated Equal.shallowEquals0 (#239).
+* Removed use of Arbitrary wrapper (#271).
+
+== Deprecations
+
+* Array.toJavaArray (#241).
 
 == Documentation
 
@@ -25,4 +62,13 @@ Proposed release: Jun 2016
 
 == Contributors
 
-* TODO.
+* Mark Perry
+* JB Giraudeau
+* @mrbackend
+* Brian McKenna
+* Clinton Selke
+* Gabor Liptak
+* Ryan Johnson
+* Charles O'Farrell
+* Fabian Kramer
+
