@@ -487,7 +487,7 @@ public final class Ord<A> {
   public static <A> Ord<A> hashOrd() {
     return ord(a -> {
       int aHash = a.hashCode();
-      return a2 -> Ordering.fromInt(Integer.compare(aHash, a2.hashCode()));
+      return a2 -> Ordering.fromInt(Integer.valueOf(aHash).compareTo(a2.hashCode()));
     });
   }
 
