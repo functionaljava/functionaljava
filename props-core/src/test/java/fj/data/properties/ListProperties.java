@@ -255,7 +255,7 @@ public class ListProperties {
 
   public Property groupBy() {
     return property(arbList(arbInteger), list -> {
-      final TreeMap<Boolean, List<Integer>> map = list.groupBy(i -> i % 2 == 0);
+      final TreeMap<Boolean, List<Integer>> map = list.groupBy(i -> i % 2 == 0, Ord.booleanOrd);
       final List<Integer> list1 = map.get(true).orSome(nil());
       final List<Integer> list2 = map.get(false).orSome(nil());
       return prop(list.length() == list1.length() + list2.length())
