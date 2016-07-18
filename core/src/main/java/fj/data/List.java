@@ -1398,14 +1398,15 @@ public abstract class List<A> implements Iterable<A> {
       final D groupingIdentity,
       final F2<C, D, D> groupingAcc,
       final Ord<B> keyOrd) {
-    return this.foldLeft((map, element) -> {
-          final B key = keyFunction.f(element);
-          final C value = valueFunction.f(element);
-          return map.set(key, map.get(key)
-              .map(existing -> groupingAcc.f(value, existing))
-              .orSome(groupingAcc.f(value, groupingIdentity)));
-        }, TreeMap.empty(keyOrd)
-    );
+    java.util.TreeMap<B, D> buffer = new java.util.TreeMap<>(keyOrd.toComparator());
+    foreachDoEffect(element -> {
+      final B key = keyFunction.f(element);
+      final C value = valueFunction.f(element);
+      buffer.put(key, buffer.containsKey(key)
+          ? groupingAcc.f(value, buffer.get(key))
+          : groupingAcc.f(value, groupingIdentity));
+    });
+    return TreeMap.fromMutableMap(keyOrd, buffer);
   }
 
 
