@@ -1299,13 +1299,16 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
-   * The ordering of the keys is determined by {@link fj.Ord#hashOrd()}.
+   * The ordering of the keys is determined by {@link fj.Ord#hashEqualsOrd()} (ie. Object#hasCode/equals).
+   * This is not safe and therefore this method is now deprecated.
    *
    * @param keyFunction The function to select the keys for the map.
    * @return A TreeMap containing the keys with the accumulated list of matched elements.
+   *
+   * @deprecated As of release 4.7, use {@link #groupBy(F, Ord)}
    */
   public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
-    return groupBy(keyFunction, Ord.hashOrd());
+    return groupBy(keyFunction, Ord.hashEqualsOrd());
   }
 
   /**

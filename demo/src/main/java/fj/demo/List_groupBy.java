@@ -18,7 +18,7 @@ public final class List_groupBy {
   private static void keyDemo() {
     System.out.println("KeyDemo");
     final List<String> words = list("Hello", "World", "how", "are", "your", "doing");
-    final TreeMap<Integer, List<String>> lengthMap = words.groupBy(String::length);
+    final TreeMap<Integer, List<String>> lengthMap = words.groupBy(String::length, Ord.intOrd);
 
     lengthMap.forEach(entry -> System.out.println(String.format("Words with %d chars: %s", entry._1(), entry._2())));
   }
