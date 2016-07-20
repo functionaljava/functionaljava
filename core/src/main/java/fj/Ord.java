@@ -478,12 +478,14 @@ public final class Ord<A> {
 
   /**
    * An order instance that uses {@link Object#hashCode()} for computing the order and equality,
-   * thus objects returning the same hashCode are considered to be equals (check {@link #hashEqualsOrd()}
-   * for an additional check on {@link Object#equals(Object)}).
+   * thus objects returning the same hashCode are considered to be equals.
+   * This is not safe and therefore this method is deprecated.
    *
    * @return An order instance that is based on {@link Object#hashCode()}.
-   * @see #hashEqualsOrd()
+   *
+   * @deprecated As of release 4.7.
    */
+  @Deprecated
   public static <A> Ord<A> hashOrd() {
     return ord(a -> {
       int aHash = a.hashCode();
@@ -495,9 +497,13 @@ public final class Ord<A> {
    * An order instance that uses {@link Object#hashCode()} and {@link Object#equals} for computing
    * the order and equality. First the hashCode is compared, if this is equal, objects are compared
    * using {@link Object#equals}.
+   * WARNING: This ordering violate antisymmetry on hash collisions.
    *
    * @return An order instance that is based on {@link Object#hashCode()} and {@link Object#equals}.
+   *
+   * @deprecated As of release 4.7.
    */
+  @Deprecated
   public static <A> Ord<A> hashEqualsOrd() {
     return ord(a -> {
       int aHash = a.hashCode();
