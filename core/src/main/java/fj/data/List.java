@@ -1299,16 +1299,17 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
-   * The ordering of the keys is determined by {@link fj.Ord#hashEqualsOrd()} (ie. Object#hasCode/equals).
-   * This is not safe and therefore this method is now deprecated.
+   * The ordering of the keys is determined by {@link fj.Ord#hashOrd()} (ie. Object#hasCode).
+   * This is not safe and therefore this method is deprecated.
    *
    * @param keyFunction The function to select the keys for the map.
    * @return A TreeMap containing the keys with the accumulated list of matched elements.
    *
    * @deprecated As of release 4.7, use {@link #groupBy(F, Ord)}
    */
+  @Deprecated
   public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
-    return groupBy(keyFunction, Ord.hashEqualsOrd());
+    return groupBy(keyFunction, Ord.hashOrd());
   }
 
   /**
@@ -1325,12 +1326,16 @@ public abstract class List<A> implements Iterable<A> {
   /**
    * Groups the elements of this list by a given keyFunction into a {@link TreeMap} and transforms
    * the matching elements with the given valueFunction. The ordering of the keys is determined by
-   * {@link fj.Ord#hashOrd()}.
+   * {@link fj.Ord#hashOrd()} (ie. Object#hasCode).
+   * This is not safe and therefore this method is deprecated.
    *
    * @param keyFunction The function to select the keys for the map.
    * @param valueFunction The function to apply on each matching value.
    * @return A TreeMap containing the keys with the accumulated list of matched and mapped elements.
+   *
+   * @deprecated As of release 4.7, use {@link #groupBy(F, F, Ord)}
    */
+  @Deprecated
   public final <B, C> TreeMap<B, List<C>> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction) {
@@ -1393,14 +1398,15 @@ public abstract class List<A> implements Iterable<A> {
       final D groupingIdentity,
       final F2<C, D, D> groupingAcc,
       final Ord<B> keyOrd) {
-    return this.foldLeft((map, element) -> {
-          final B key = keyFunction.f(element);
-          final C value = valueFunction.f(element);
-          return map.set(key, map.get(key)
-              .map(existing -> groupingAcc.f(value, existing))
-              .orSome(groupingAcc.f(value, groupingIdentity)));
-        }, TreeMap.empty(keyOrd)
-    );
+    java.util.TreeMap<B, D> buffer = new java.util.TreeMap<>(keyOrd.toComparator());
+    foreachDoEffect(element -> {
+      final B key = keyFunction.f(element);
+      final C value = valueFunction.f(element);
+      buffer.put(key, buffer.containsKey(key)
+          ? groupingAcc.f(value, buffer.get(key))
+          : groupingAcc.f(value, groupingIdentity));
+    });
+    return TreeMap.fromMutableMap(keyOrd, buffer);
   }
 
 
