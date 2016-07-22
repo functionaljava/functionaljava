@@ -129,7 +129,7 @@ public final class Ord<A> {
    * @return A function that returns true if its argument is less than the argument to this method.
    */
   public F<A, Boolean> isLessThan(final A a) {
-    return compose(o -> o != Ordering.LT, f.f(a));
+    return compose(o -> o == Ordering.GT, f.f(a));
   }
 
   /**
@@ -139,7 +139,7 @@ public final class Ord<A> {
    * @return A function that returns true if its argument is greater than the argument to this method.
    */
   public F<A, Boolean> isGreaterThan(final A a) {
-    return compose(o -> o != Ordering.GT, f.f(a));
+    return compose(o -> o == Ordering.LT, f.f(a));
   }
 
   /**
