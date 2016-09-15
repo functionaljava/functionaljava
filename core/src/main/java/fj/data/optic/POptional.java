@@ -6,6 +6,7 @@ import fj.Monoid;
 import fj.P;
 import fj.P1;
 import fj.P2;
+import fj.Semigroup;
 import fj.control.Trampoline;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
@@ -345,7 +346,7 @@ public abstract class POptional<S, T, A, B> {
       }
 
       @Override
-      public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
+      public <E> F<S, Validation<E, T>> modifyValidationF(Semigroup<E> s, final F<A, Validation<E, B>> f) {
         return self.modifyValidationF(f);
       }
 
