@@ -8,6 +8,7 @@ import fj.F6;
 import fj.F7;
 import fj.Monoid;
 import fj.P1;
+import fj.Semigroup;
 import fj.control.Trampoline;
 import fj.control.parallel.Promise;
 import fj.data.Either;
@@ -72,8 +73,8 @@ public final class Traversal<S, A> extends PTraversal<S, S, A, A> {
   }
 
   @Override
-  public <E> F<S, Validation<E, S>> modifyValidationF(final F<A, Validation<E, A>> f) {
-    return pTraversal.modifyValidationF(f);
+  public <E> F<S, Validation<E, S>> modifyValidationF(Semigroup<E> s, final F<A, Validation<E, A>> f) {
+    return pTraversal.modifyValidationF(s, f);
   }
 
   @Override

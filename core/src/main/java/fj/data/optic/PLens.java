@@ -4,6 +4,7 @@ import fj.F;
 import fj.Function;
 import fj.Monoid;
 import fj.P1;
+import fj.Semigroup;
 import fj.control.Trampoline;
 import fj.control.parallel.Promise;
 import fj.data.Either;
@@ -320,7 +321,7 @@ public abstract class PLens<S, T, A, B> {
       }
 
       @Override
-      public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
+      public <E> F<S, Validation<E, T>> modifyValidationF(Semigroup<E> s, final F<A, Validation<E, B>> f) {
         return self.modifyValidationF(f);
       }
 

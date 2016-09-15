@@ -10,6 +10,7 @@ import fj.Ord;
 import fj.Ordering;
 import fj.P;
 import fj.P1;
+import fj.Semigroup;
 import fj.Show;
 import fj.Unit;
 import fj.P2;
@@ -676,10 +677,8 @@ public abstract class List<A> implements Iterable<A> {
         single(List.nil()));
   }
 
-  public final <E, B> Validation<E, List<B>> traverseValidation(final F<A, Validation<E, B>> f) {
-    return foldRight(
-        (a, acc) -> f.f(a).bind(b -> acc.map(bs -> bs.cons(b))),
-        Validation.success(List.nil()));
+  public final <E, B> Validation<E, List<B>> traverseValidation(Semigroup<E> s, final F<A, Validation<E, B>> f) {
+    return Validation.sequence(s, map(f));
   }
 
   public final <B> V2<List<B>> traverseV2(final F<A, V2<B>> f) {
@@ -2166,8 +2165,8 @@ public abstract class List<A> implements Iterable<A> {
         }
 
         @Override
-        public <E> F<List<A>, Validation<E, List<B>>> modifyValidationF(F<A, Validation<E, B>> f) {
-          return l -> l.traverseValidation(f);
+        public <E> F<List<A>, Validation<E, List<B>>> modifyValidationF(Semigroup<E> s, F<A, Validation<E, B>> f) {
+          return l -> l.traverseValidation(s, f);
         }
 
         @Override
