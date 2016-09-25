@@ -32,7 +32,7 @@ public final class P {
       @Override public A _1() {
         return a;
       }
-      @Override public P1<A> memo() { return this; }
+      @Override public P1<A> hardMemo() { return this; }
       @Override public P1<A> weakMemo() { return this; }
       @Override public P1<A> softMemo() { return this; }
     };
