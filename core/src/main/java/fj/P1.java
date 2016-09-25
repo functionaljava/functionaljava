@@ -262,11 +262,11 @@ public abstract class P1<A> implements F0<A> {
     public P1<A> softMemo() { return new SoftReferenceMemo<>(this); }
 
     public static <A> P1<A> memo(F<Unit, A> f) {
-        return P.lazy(f).memo();
+        return P.lazy(f).weakMemo();
     }
 
 	public static <A> P1<A> memo(F0<A> f) {
-		return P.lazy(f).memo();
+		return P.lazy(f).weakMemo();
 	}
 
     static final class Memo<A> extends P1<A> {
