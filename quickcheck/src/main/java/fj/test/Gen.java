@@ -2,6 +2,7 @@ package fj.test;
 
 import fj.F;
 import fj.Function;
+import fj.Ord;
 import fj.P2;
 import fj.Unit;
 import fj.control.Trampoline;
@@ -506,6 +507,8 @@ public final class Gen<A> {
    * <p>
    * Note: pick is synonymous with combinationOf
    *
+   * @deprecated As of release 4.6, use {@link #combinationOf}
+   *
    * @param n  The number of elements to pick from the given list.
    * @param as The list from which to pick elements.
    * @return A generator of lists that picks the given number of elements from the given list.
@@ -643,6 +646,8 @@ public final class Gen<A> {
    * Returns a generator of lists that produces some of the values of the given list.
    * <p>
    * Note: someOf is synonymous with someCombinationOf
+   *
+   * @deprecated As of release 4.6, use {@link #someCombinationOf}
    *
    * @param as The list from which to pick values.
    * @return A generator of lists that produces some of the values of the given list.

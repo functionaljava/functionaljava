@@ -117,7 +117,7 @@ public final class PriorityQueue<K, A> {
      * Adds nodes using the list of products with priority k and value a.  This operation takes O(list.length()).
      */
     public PriorityQueue<K, A> enqueue(List<P2<K, A>> list) {
-        return list.foldLeft(pq -> p -> pq.enqueue(p._1(), p._2()), this);
+        return list.foldLeft((pq, p) -> pq.enqueue(p._1(), p._2()), this);
     }
 
     /**

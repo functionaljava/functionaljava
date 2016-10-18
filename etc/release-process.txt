@@ -2,6 +2,8 @@
 Current Release Process
 =======================
 
+Go through the issues and pull requests and set the Label and Milestone field.  Add information to /etc/release-notes/release-notes-<version>.adoc.
+
 Update build.gradle:
 * set isSnapshot to false
 * set useRetroLambda to true

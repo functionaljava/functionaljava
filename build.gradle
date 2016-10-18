@@ -49,11 +49,11 @@ allprojects {
 
 	ext {
         isSnapshot = true
-        fjBaseVersion = "4.6"
+        fjBaseVersion = "4.7"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "4.5"
+        fjConsumeVersion = "4.6"
 
         signModule = false
         useRetroLambda = false

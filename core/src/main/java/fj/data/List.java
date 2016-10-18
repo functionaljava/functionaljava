@@ -88,10 +88,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The length of this list.
    */
   public final int length() {
-    // WARNING: In JDK 8, update 25 (current version) the following code triggers an internal JDK compiler error, likely due to https://bugs.openjdk.java.net/browse/JDK-8062253.   The code below is a workaround for this compiler bug.
-    //    return foldLeft(i -> a -> i + 1, 0);
-    F2<Integer, A, Integer> f = (i, a) -> i + 1;
-    return foldLeft(f, 0);
+    return foldLeft((i, a) -> i + 1, 0);
   }
 
   /**
@@ -751,13 +748,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final <B> B foldLeft(final F<B, F<A, B>> f, final B b) {
-    B x = b;
-
-    for (List<A> xs = this; !xs.isEmpty(); xs = xs.tail()) {
-      x = f.f(x).f(xs.head());
-    }
-
-    return x;
+    return foldLeft(uncurryF2(f), b);
   }
 
   /**
@@ -768,7 +759,13 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final <B> B foldLeft(final F2<B, A, B> f, final B b) {
-    return foldLeft(curry(f), b);
+    B x = b;
+
+    for (List<A> xs = this; !xs.isEmpty(); xs = xs.tail()) {
+      x = f.f(x, xs.head());
+    }
+
+    return x;
   }
 
   /**
@@ -779,7 +776,9 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final A foldLeft1(final F2<A, A, A> f) {
-    return foldLeft1(curry(f));
+    if (isEmpty())
+      throw error("Undefined: foldLeft1 on empty list");
+    return tail().foldLeft(f, head());
   }
 
   /**
@@ -790,9 +789,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the left-fold reduction.
    */
   public final A foldLeft1(final F<A, F<A, A>> f) {
-    if (isEmpty())
-      throw error("Undefined: foldLeft1 on empty list");
-    return tail().foldLeft(f, head());
+    return foldLeft1(uncurryF2(f));
   }
 
   /**
@@ -801,7 +798,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A new list that is the reverse of this one.
    */
   public final List<A> reverse() {
-    return foldLeft(as -> a -> cons(a, as), List.nil());
+    return foldLeft((as, a) -> cons(a, as), nil());
   }
 
   /**
@@ -904,7 +901,7 @@ public abstract class List<A> implements Iterable<A> {
    * @param f Predicate function.
    */
   public final P2<List<A>, List<A>> partition(F<A, Boolean> f) {
-    P2<List<A>, List<A>> p2 = foldLeft(acc -> a ->
+    P2<List<A>, List<A>> p2 = foldLeft((acc, a) ->
       f.f(a) ? p(acc._1().cons(a), acc._2()) : p(acc._1(), acc._2().cons(a)),
       p(nil(), nil())
     );
@@ -1302,11 +1299,15 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
-   * The ordering of the keys is determined by {@link fj.Ord#hashOrd()}.
+   * The ordering of the keys is determined by {@link fj.Ord#hashOrd()} (ie. Object#hasCode).
+   * This is not safe and therefore this method is deprecated.
    *
    * @param keyFunction The function to select the keys for the map.
    * @return A TreeMap containing the keys with the accumulated list of matched elements.
+   *
+   * @deprecated As of release 4.7, use {@link #groupBy(F, Ord)}
    */
+  @Deprecated
   public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
     return groupBy(keyFunction, Ord.hashOrd());
   }
@@ -1325,12 +1326,16 @@ public abstract class List<A> implements Iterable<A> {
   /**
    * Groups the elements of this list by a given keyFunction into a {@link TreeMap} and transforms
    * the matching elements with the given valueFunction. The ordering of the keys is determined by
-   * {@link fj.Ord#hashOrd()}.
+   * {@link fj.Ord#hashOrd()} (ie. Object#hasCode).
+   * This is not safe and therefore this method is deprecated.
    *
    * @param keyFunction The function to select the keys for the map.
    * @param valueFunction The function to apply on each matching value.
    * @return A TreeMap containing the keys with the accumulated list of matched and mapped elements.
+   *
+   * @deprecated As of release 4.7, use {@link #groupBy(F, F, Ord)}
    */
+  @Deprecated
   public final <B, C> TreeMap<B, List<C>> groupBy(
       final F<A, B> keyFunction,
       final F<A, C> valueFunction) {
@@ -1393,14 +1398,15 @@ public abstract class List<A> implements Iterable<A> {
       final D groupingIdentity,
       final F2<C, D, D> groupingAcc,
       final Ord<B> keyOrd) {
-    return this.foldLeft(map -> element -> {
-          final B key = keyFunction.f(element);
-          final C value = valueFunction.f(element);
-          return map.set(key, map.get(key)
-              .map(existing -> groupingAcc.f(value, existing))
-              .orSome(groupingAcc.f(value, groupingIdentity)));
-        }, TreeMap.empty(keyOrd)
-    );
+    java.util.TreeMap<B, D> buffer = new java.util.TreeMap<>(keyOrd.toComparator());
+    foreachDoEffect(element -> {
+      final B key = keyFunction.f(element);
+      final C value = valueFunction.f(element);
+      buffer.put(key, buffer.containsKey(key)
+          ? groupingAcc.f(value, buffer.get(key))
+          : groupingAcc.f(value, groupingIdentity));
+    });
+    return TreeMap.fromMutableMap(keyOrd, buffer);
   }
 
 
