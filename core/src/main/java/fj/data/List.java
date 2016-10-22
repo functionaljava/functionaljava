@@ -716,7 +716,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F<A, F<B, B>> f, final B b) {
-    return reverse().foldLeft(flip(f), b);
+    return foldRight(uncurryF2(f), b);
   }
 
   /**
@@ -727,7 +727,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F2<A, B, B> f, final B b) {
-    return foldRight(curry(f), b);
+    return reverse().foldLeft(flip(f), b);
   }
 
   /**
