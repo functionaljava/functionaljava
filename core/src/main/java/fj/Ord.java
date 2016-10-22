@@ -19,6 +19,7 @@ import static fj.Function.compose;
 import static fj.Function.compose2;
 import static fj.Function.curry;
 import static fj.Semigroup.semigroup;
+import static fj.Semigroup.semigroupDef;
 
 /**
  * Tests for ordering between two objects.
@@ -30,7 +31,7 @@ public final class Ord<A> {
   /**
    * Primitives functions of Ord: minimal definition and overridable methods.
    */
-  public interface Definition<A> extends Equal.Definition<A> {
+  public interface Definition<A> extends Equal.Definition<A>, Semigroup.Definition<A> {
 
     F<A, Ordering> compare(A a);
 
@@ -38,6 +39,7 @@ public final class Ord<A> {
       return compare(a1).f(a2);
     }
 
+    // equal:
     @Override
     default boolean equal(A a1, A a2) {
       return compare(a1, a2) == Ordering.EQ;
@@ -46,6 +48,42 @@ public final class Ord<A> {
     @Override
     default F<A, Boolean> equal(A a) {
       return compose(o -> o == Ordering.EQ, compare(a));
+    }
+
+    // max semigroup:
+    @Override
+    default A append(A a1, A a2) {
+      return compare(a1, a2) == Ordering.GT ? a1 : a2;
+    }
+
+    @Override
+    default A multiply1p(int n, A a) {
+      return a;
+    }
+
+    @Override
+    default F<A, A> prepend(A a1) {
+      return apply((a2, o) -> o == Ordering.GT ? a1 : a2, compare(a1));
+    }
+
+    @Override
+    default Definition<A> dual() {
+      return new Definition<A>() {
+        @Override
+        public F<A, Ordering> compare(A a) {
+          return compose(Ordering::reverse, Definition.this.compare(a));
+        }
+
+        @Override
+        public Ordering compare(A a1, A a2) {
+          return Definition.this.compare(a2, a1);
+        }
+
+        @Override
+        public Definition<A> dual() {
+          return Definition.this;
+        }
+      };
     }
   }
 
@@ -58,6 +96,11 @@ public final class Ord<A> {
 
     default F<A, Ordering> compare(A a1) {
       return a2 -> compare(a1, a2);
+    }
+
+    @Override
+    default F<A, A> prepend(A a1) {
+      return a2 -> append(a1, a2);
     }
 
   }
@@ -199,7 +242,7 @@ public final class Ord<A> {
    * @return The greater of the two values.
    */
   public A max(final A a1, final A a2) {
-    return isGreaterThan(a1, a2) ? a1 : a2;
+    return def.append(a1, a2);
   }
 
 
@@ -216,6 +259,7 @@ public final class Ord<A> {
 
   /**
    * A function that returns the greater of its two arguments.
+   *
    */
   public final F<A, F<A, A>> max;
 
@@ -225,34 +269,33 @@ public final class Ord<A> {
   public final F<A, F<A, A>> min;
 
   public final Semigroup<A> minSemigroup() {
-      return semigroup(min);
+      return semigroupDef(def.dual());
+  }
+
+  public final Monoid<A> minMonoid(A zero) {
+    return Monoid.monoidDef(def.dual(), zero);
   }
 
   public final Semigroup<A> maxSemigroup() {
-      return semigroup(max);
+      return semigroupDef(def);
+  }
+
+  public final Monoid<A> maxMonoid(A zero) {
+    return Monoid.monoidDef(def, zero);
   }
 
   public final Ord<A> reverse() {
-    Definition<A> selfDef = def;
-    return ordDef(new Definition<A>() {
-      @Override
-      public F<A, Ordering> compare(A a) {
-        return compose(Ordering::reverse, selfDef.compare(a));
-      }
-
-      @Override
-      public Ordering compare(A a1, A a2) {
-        return selfDef.compare(a2, a1);
-      }
-    });
+    return ordDef(def.dual());
   }
 
   /**
    * Returns an order instance that uses the given equality test and ordering function.
    *
+   * @deprecated since 4.7. Use {@link #ordDef(Definition)}.
    * @param f The order function.
    * @return An order instance.
    */
+  @Deprecated
   public static <A> Ord<A> ord(final F<A, F<A, Ordering>> f) {
     return new Ord<>(f::f);
   }

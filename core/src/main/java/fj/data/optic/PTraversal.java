@@ -104,7 +104,7 @@ public abstract class PTraversal<S, T, A, B> {
 
   /** find the first target of a {@link PTraversal} matching the predicate */
   public final F<S, Option<A>> find(final F<A, Boolean> p) {
-    return foldMap(Monoid.optionMonoid(), a -> p.f(a) ? Option.some(a) : Option.none());
+    return foldMap(Monoid.firstOptionMonoid(), a -> p.f(a) ? Option.some(a) : Option.none());
   }
 
   /** get the first target of a {@link PTraversal} */

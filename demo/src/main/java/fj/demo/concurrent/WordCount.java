@@ -1,6 +1,7 @@
 package fj.demo.concurrent;
 
 import static fj.Monoid.monoid;
+import static fj.Monoid.monoidDef;
 import static fj.control.parallel.ParModule.parModule;
 import static fj.data.List.nil;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -14,6 +15,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -307,10 +309,7 @@ public class WordCount {
   // Read documents and extract words and word counts of documents
   public static Promise<Map<String, Integer>> getWordsAndCountsFromFiles(
       final List<String> fileNames, final F<String, Map<String, Integer>> fileNameToWordsAndCounts, final ParModule m) {
-    final F<Map<String, Integer>, F<Map<String, Integer>, Map<String, Integer>>> MapSum =
-        a -> b -> plus(a, b);
-    final Monoid<Map<String, Integer>> monoid = monoid(MapSum,
-        new HashMap<String, Integer>());
+    final Monoid<Map<String, Integer>> monoid = monoidDef(WordCount::plus, Collections.emptyMap());
     return m.parFoldMap(fileNames, fileNameToWordsAndCounts, monoid);
   }
   
