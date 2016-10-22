@@ -35,7 +35,7 @@ public final class HashArrayMappedTrie<K, V> {
     private final Equal<K> equal;
 
     public static final int BITS_IN_INDEX = 5;
-    public static final int SIZE = (int) Math.pow(2, BITS_IN_INDEX);
+    public static final int SIZE = (int) StrictMath.pow(2, BITS_IN_INDEX);
     public static final int MIN_INDEX = 0;
     public static final int MAX_INDEX = SIZE - 1;
 
@@ -102,11 +102,10 @@ public final class HashArrayMappedTrie<K, V> {
             return none();
         } else {
             final Node<K, V> oldNode = seq.index(index);
-            Option<V> o = oldNode.match(
-                    n -> equal.eq(n._1(), k) ? some(n._2()) : none(),
-                    hamt -> hamt.find(k, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
+            return oldNode.match(
+                n -> equal.eq(n._1(), k) ? some(n._2()) : none(),
+                hamt -> hamt.find(k, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX)
             );
-            return o;
         }
     }
 
@@ -136,14 +135,14 @@ public final class HashArrayMappedTrie<K, V> {
         if (!b) {
             // append new node
             final Node<K, V> sn1 = Node.p2Node(p(k, v));
-            return HashArrayMappedTrie.hamt(bitSet.set(i), seq.insert(index, sn1), equal, hash);
+            return hamt(bitSet.set(i), seq.insert(index, sn1), equal, hash);
         } else {
             final Node<K, V> oldNode = seq.index(index);
             final Node<K, V> newNode = oldNode.match(n -> {
                 if (equal.eq(n._1(), k)) {
                     return Node.p2Node(p(k, v));
                 } else {
-                    final HashArrayMappedTrie<K, V> e = HashArrayMappedTrie.<K, V>empty(equal, hash);
+                    final HashArrayMappedTrie<K, V> e = HashArrayMappedTrie.empty(equal, hash);
                     final HashArrayMappedTrie<K, V> h1 =  e.set(n._1(), n._2(), lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
                     final HashArrayMappedTrie<K, V> h2 = h1.set(k, v, lowIndex + BITS_IN_INDEX, highIndex + BITS_IN_INDEX);
                     return Node.hamtNode(h2);
@@ -158,7 +157,7 @@ public final class HashArrayMappedTrie<K, V> {
      * Returns a stream of key-value pairs.
      */
     public Stream<P2<K, V>> toStream() {
-        return seq.toStream().bind(sn -> sn.toStream());
+        return seq.toStream().bind(Node::toStream);
     }
 
     /**
@@ -175,6 +174,7 @@ public final class HashArrayMappedTrie<K, V> {
         return toStream().toList();
     }
 
+    @Override
     public String toString() {
         return Show.hamtShow(Show.<K>anyShow(), Show.<V>anyShow()).showS(this);
     }

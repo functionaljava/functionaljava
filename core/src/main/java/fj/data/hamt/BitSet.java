@@ -6,7 +6,6 @@ import fj.Monoid;
 import fj.Show;
 import fj.data.List;
 import fj.data.Stream;
-import fj.function.Strings;
 
 /**
  * A sequence of bits representing a value.  The most significant bit (the
@@ -57,7 +56,7 @@ public final class BitSet {
     }
 
     public static BitSet stringBitSet(final String s) {
-        return streamBitSet(Stream.fromString(s).map(c -> toBoolean(c)));
+        return streamBitSet(Stream.fromString(s).map(BitSet::toBoolean));
     }
 
     public boolean isSet(final int index) {
@@ -113,27 +112,17 @@ public final class BitSet {
      * (the bit with the largest value)
      */
     public Stream<Boolean> toStream() {
-        return Stream.fromString(Long.toBinaryString(value)).map(c -> toBoolean(c)).dropWhile(b -> !b);
+        return Stream.fromString(Long.toBinaryString(value)).map(BitSet::toBoolean).dropWhile(b -> !b);
     }
 
+    @Override
     public String toString() {
         return Show.bitSetShow.showS(this);
     }
 
+    @Override
     public boolean equals(Object obj) {
         return Equal.equals0(BitSet.class, this, obj, () -> Equal.bitSetSequal);
-    }
-
-
-    public static int countPopulation(int map) {
-        int SK5=0x55555555,SK3=0x33333333;
-        int SKF0=0xF0F0F0F,SKFF=0xFF00FF;
-
-        map-=((map>>1)&SK5);
-        map=(map&SK3)+((map>>2)&SK3);
-        map=(map&SKF0)+((map>>4)&SKF0);
-        map+=map>>8;
-        return (map+(map>>16))&0x3F;
     }
 
     public int bitsToRight(final int index) {
@@ -164,7 +153,7 @@ public final class BitSet {
     }
 
     public <A> A foldLeft(final F2<A, Boolean, A> f, A acc) {
-        return toStream().foldLeft((a, b) -> f.f(a, b), acc);
+        return toStream().foldLeft(f, acc);
     }
 
     public BitSet xor(final BitSet bs) {
@@ -198,7 +187,7 @@ public final class BitSet {
     }
 
     public static boolean toBoolean(final char c) {
-        return Character.toString(c).equals(Integer.toString(TRUE_BIT));
+        return c != '0';
     }
 
     public static boolean toBoolean(final int i) {
