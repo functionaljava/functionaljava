@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import static fj.Function.flip;
 import static fj.Function.identity;
+import static fj.Function.uncurryF2;
 import static fj.data.Option.some;
 import static fj.data.Option.somes;
 
@@ -79,6 +80,16 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @param as The list to append.
    * @return A new list with the given list appended.
    */
+  public NonEmptyList<A> append(final List<A> as) {
+    return nel(head, tail.append(as));
+  }
+
+  /**
+   * Appends the given list to this list.
+   *
+   * @param as The list to append.
+   * @return A new list with the given list appended.
+   */
   public NonEmptyList<A> append(final NonEmptyList<A> as) {
     final List.Buffer<A> b = new List.Buffer<>();
     b.append(tail);
@@ -96,13 +107,27 @@ public final class NonEmptyList<A> implements Iterable<A> {
   }
 
   /**
+   * Performs a right-fold reduction across this list. This function uses O(length) stack space.
+   */
+  public final A foldRight1(final F2<A, A, A> f) {
+    return reverse().foldLeft1(flip(f));
+  }
+
+  /**
    * Performs a left-fold reduction across this list. This function runs in constant space.
    */
   public final A foldLeft1(final F<A, F<A, A>> f) {
+    return foldLeft1(uncurryF2(f));
+  }
+
+  /**
+   * Performs a left-fold reduction across this list. This function runs in constant space.
+   */
+  public final A foldLeft1(final F2<A, A, A> f) {
     A x = head;
 
     for (List<A> xs = tail; !xs.isEmpty(); xs = xs.tail()) {
-      x = f.f(x).f(xs.head());
+      x = f.f(x, xs.head());
     }
 
     return x;
