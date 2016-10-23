@@ -112,8 +112,11 @@ public final class Java8 {
         return Java8::Optional_Option;
     }
 
+    /**
+     * Convert an Option to {@link Optional}. Will throw a {@link NullPointerException} if the Option is some(null).
+     */
     public static <A> Optional<A> Option_Optional(final Option<A> o) {
-        return o.option(Optional.empty(), Optional::ofNullable);
+        return o.option(Optional.empty(), Optional::of);
     }
 
     public static <A> F<Option<A>, Optional<A>> Option_Optional() {
