@@ -20,6 +20,7 @@ public final class BitSet {
 
     public static final int TRUE_BIT = 1;
     public static final int FALSE_BIT = 0;
+    public static final BitSet EMPTY = new BitSet(FALSE_BIT);
 
     public static final long BASE_LONG = 1L;
     public static final int MAX_BIT_SIZE = Long.SIZE;
@@ -32,7 +33,7 @@ public final class BitSet {
     }
 
     public static BitSet empty() {
-        return new BitSet(FALSE_BIT);
+        return EMPTY;
     }
 
     public static BitSet longBitSet(final long l) {
@@ -130,7 +131,6 @@ public final class BitSet {
             throw new IllegalArgumentException("Does not support an index " +
                     "greater than or equal to " + MAX_BIT_SIZE + " bits, actual argument is " + index);
         }
-        //  stringBitSet("10101111").bitsRoRight(2)= 2
         int pos = index - 1;
         long mask = BASE_LONG << (pos);
         int result = 0;
@@ -183,7 +183,7 @@ public final class BitSet {
     public BitSet range(final int highIndex, final int lowIndex) {
         int max = Math.max(lowIndex, highIndex);
         int min = Math.min(lowIndex, highIndex);
-        return streamBitSet(toStream().reverse().drop(min).take(max - min).reverse());
+        return new BitSet(max == min ? 0L : (value << (64 - max)) >>> (64 - max + min));
     }
 
     public static boolean toBoolean(final char c) {
@@ -201,5 +201,4 @@ public final class BitSet {
     public String asString() {
         return Long.toBinaryString(value);
     }
-
 }
