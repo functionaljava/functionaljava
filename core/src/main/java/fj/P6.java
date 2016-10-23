@@ -1,5 +1,7 @@
 package fj;
 
+import static fj.P.weakMemo;
+
 /**
  * A product-6.
  *
@@ -315,12 +317,12 @@ public abstract class P6<A, B, C, D, E, F> {
   public final P6<A, B, C, D, E, F> memo() {
       P6<A, B, C, D, E, F> self = this;
     return new P6<A, B, C, D, E, F>() {
-      private final P1<A> a = P1.memo(u -> self._1());
-      private final P1<B> b = P1.memo(u -> self._2());
-      private final P1<C> c = P1.memo(u -> self._3());
-      private final P1<D> d = P1.memo(u -> self._4());
-      private final P1<E> e = P1.memo(u -> self._5());
-      private final P1<F> f = P1.memo(u -> self._6());
+      private final P1<A> a = weakMemo(self::_1);
+      private final P1<B> b = weakMemo(self::_2);
+      private final P1<C> c = weakMemo(self::_3);
+      private final P1<D> d = weakMemo(self::_4);
+      private final P1<E> e = weakMemo(self::_5);
+      private final P1<F> f = weakMemo(self::_6);
 
       public A _1() {
         return a._1();

@@ -12,6 +12,7 @@ import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 import static fj.P.p;
+import static fj.Unit.unit;
 //import fj.data.*;
 
 
@@ -240,6 +241,10 @@ public abstract class P1<A> implements F0<A> {
         return P.lazy(() -> f.f(self._1()));
       }
 
+    /**
+     * @deprecated since 4.7. Use {@link P1#weakMemo()} instead.
+     */
+    @Deprecated
     public final P1<A> memo() {
         return weakMemo();
     }
@@ -261,29 +266,37 @@ public abstract class P1<A> implements F0<A> {
      */
     public P1<A> softMemo() { return new SoftReferenceMemo<>(this); }
 
+    /**
+     * @deprecated since 4.7. Use {@link P#weakMemo(F0)} instead.
+     */
+    @Deprecated
     public static <A> P1<A> memo(F<Unit, A> f) {
-        return P.lazy(f).weakMemo();
+        return P.weakMemo(() -> f.f(unit()));
     }
 
-	public static <A> P1<A> memo(F0<A> f) {
-		return P.lazy(f).weakMemo();
+  /**
+   * @deprecated since 4.7. Use {@link P#weakMemo(F0)} instead.
+   */
+  @Deprecated
+  public static <A> P1<A> memo(F0<A> f) {
+		return P.weakMemo(f);
 	}
 
     static final class Memo<A> extends P1<A> {
-      private volatile P1<A> self;
+      private volatile F0<A> fa;
       private A value;
 
-      Memo(P1<A> self) { this.self = self; }
+      Memo(F0<A> fa) { this.fa = fa; }
 
       @Override public final A _1() {
-        return (self == null) ? value : computeValue();
+        return (fa == null) ? value : computeValue();
       }
 
       private synchronized A computeValue() {
-        P1<A> self = this.self;
-        if (self != null) {
-          value = self._1();
-          this.self = null;
+        F0<A> fa = this.fa;
+        if (fa != null) {
+          value = fa.f();
+          this.fa = null;
         }
         return value;
       }
@@ -294,10 +307,10 @@ public abstract class P1<A> implements F0<A> {
     }
 
     abstract static class ReferenceMemo<A> extends P1<A> {
-      private final P1<A> self;
+      private final F0<A> fa;
       private volatile Reference<P1<A>> v = null;
 
-      ReferenceMemo(final P1<A> self) { this.self = self; }
+      ReferenceMemo(final F0<A> fa) { this.fa = fa; }
 
       @Override public final A _1() {
         Reference<P1<A>> v = this.v;
@@ -309,7 +322,7 @@ public abstract class P1<A> implements F0<A> {
         Reference<P1<A>> v = this.v;
         P1<A> p1 = v != null ? v.get() : null;
         if (p1 == null) {
-          A a = self._1();
+          A a = fa.f();
           this.v = newReference(p(a));
           return a;
         }
@@ -320,14 +333,14 @@ public abstract class P1<A> implements F0<A> {
     }
 
     static final class WeakReferenceMemo<A> extends ReferenceMemo<A> {
-      WeakReferenceMemo(P1<A> self) { super(self); }
+      WeakReferenceMemo(F0<A> fa) { super(fa); }
       @Override
       <B> Reference<B> newReference(final B ref) { return new WeakReference<>(ref); }
       @Override public P1<A> weakMemo() { return this; }
     }
 
     static final class SoftReferenceMemo<A> extends ReferenceMemo<A> {
-      SoftReferenceMemo(P1<A> self) { super(self); }
+      SoftReferenceMemo(F0<A> self) { super(self); }
       @Override
       <B> Reference<B> newReference(final B ref) { return new SoftReference<>(ref); }
       @Override public P1<A> softMemo() { return this; }
