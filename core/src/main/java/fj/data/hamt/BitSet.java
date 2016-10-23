@@ -123,7 +123,7 @@ public final class BitSet {
 
     @Override
     public boolean equals(Object obj) {
-        return Equal.equals0(BitSet.class, this, obj, () -> Equal.bitSetSequal);
+        return Equal.equals0(BitSet.class, this, obj, Equal.bitSetSequal);
     }
 
     public int bitsToRight(final int index) {
