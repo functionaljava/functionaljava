@@ -1,5 +1,6 @@
 
 archivesBaseName = "${project.projectName}-${project.name}"
+configureAllRetroLambda()
 
 ext {
     signModule = true
@@ -12,5 +13,6 @@ dependencies {
 
 performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)
+
 
 uploadArchives.enabled = true

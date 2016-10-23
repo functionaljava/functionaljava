@@ -3,9 +3,9 @@ ext {
     signModule = true
 }
 
-configureAllRetroLambda()
-
 archivesBaseName = "${project.projectName}-${project.name}"
+
+configureAllRetroLambda()
 
 dependencies {
 	compile project(":core")
