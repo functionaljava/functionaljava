@@ -25,6 +25,7 @@ import static fj.Bottom.error;
 import static fj.Function.*;
 import static fj.P.p;
 import static fj.P.p2;
+import static fj.P.weakMemo;
 import static fj.Unit.unit;
 import static fj.control.parallel.Promise.promise;
 import static fj.data.Array.mkArray;
@@ -1442,7 +1443,7 @@ public abstract class Stream<A> implements Iterable<A> {
 
     Cons(final A head, final F0<Stream<A>> tail) {
       this.head = head;
-      this.tail = P1.memo(tail);
+      this.tail = weakMemo(tail);
     }
 
     public A head() {

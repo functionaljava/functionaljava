@@ -19,14 +19,14 @@ public class MemoisationTest {
 
     public Property test1() {
         return property(arbInteger, a -> {
-            P1<Integer> t = P.lazy(() -> a).weakMemo();
+            P1<Integer> t = P.weakMemo(() -> a);
             return prop(t._1().equals(t._1())).and(prop(t._1().equals(a)));
         });
     }
 
     public Property test1_hardMemo() {
         return property(arbInteger, a -> {
-            P1<Integer> t = P.lazy(() -> new Integer(a)).hardMemo();
+            P1<Integer> t = P.hardMemo(() -> new Integer(a));
             return prop(t._1() == t._1()).and(prop(t._1().equals(a)));
         });
     }
