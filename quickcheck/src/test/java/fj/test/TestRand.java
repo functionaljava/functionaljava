@@ -20,7 +20,7 @@ public class TestRand {
         int max = 10;
         int n = 100;
         Stream<Integer> s = Stream.range(0, n).map(i -> Rand.standard.choose(min, max)).sort(Ord.intOrd);
-//        System.out.println(s);
+//        System.out.println(s.toList());
         assertTrue(s.head() == min && s.last() == max);
     }
 
