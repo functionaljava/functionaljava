@@ -18,6 +18,7 @@ import static fj.Function.apply;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Semigroup.semigroup;
+import static fj.Semigroup.semigroupDef;
 
 /**
  * Tests for ordering between two objects.
@@ -25,12 +26,91 @@ import static fj.Semigroup.semigroup;
  * @version %build.number%
  */
 public final class Ord<A> {
-  private final F<A, F<A, Ordering>> f;
 
-  private Ord(final F<A, F<A, Ordering>> f) {
-    this.f = f;
-    this.max = a1 -> apply((a2, o) -> o == Ordering.GT ? a1 : a2, f.f(a1));
-    this.min = a1 -> apply((a2, o) -> o == Ordering.LT ? a1 : a2, f.f(a1));
+  /**
+   * Primitives functions of Ord: minimal definition and overridable methods.
+   */
+  public interface Definition<A> extends Equal.Definition<A>, Semigroup.Definition<A> {
+
+    F<A, Ordering> compare(A a);
+
+    default Ordering compare(A a1, A a2) {
+      return compare(a1).f(a2);
+    }
+
+    // equal:
+    @Override
+    default boolean equal(A a1, A a2) {
+      return compare(a1, a2) == Ordering.EQ;
+    }
+
+    @Override
+    default F<A, Boolean> equal(A a) {
+      return compose(o -> o == Ordering.EQ, compare(a));
+    }
+
+    // max semigroup:
+    @Override
+    default A append(A a1, A a2) {
+      return compare(a1, a2) == Ordering.GT ? a1 : a2;
+    }
+
+    @Override
+    default A multiply1p(int n, A a) {
+      return a;
+    }
+
+    @Override
+    default F<A, A> prepend(A a1) {
+      return apply((a2, o) -> o == Ordering.GT ? a1 : a2, compare(a1));
+    }
+
+    @Override
+    default Definition<A> dual() {
+      return new Definition<A>() {
+        @Override
+        public F<A, Ordering> compare(A a) {
+          return compose(Ordering::reverse, Definition.this.compare(a));
+        }
+
+        @Override
+        public Ordering compare(A a1, A a2) {
+          return Definition.this.compare(a2, a1);
+        }
+
+        @Override
+        public Definition<A> dual() {
+          return Definition.this;
+        }
+      };
+    }
+  }
+
+  /**
+   * Primitives functions of Ord: alternative minimal definition and overridable methods.
+   */
+  public interface AltDefinition<A> extends Definition<A> {
+
+    Ordering compare(A a1, A a2);
+
+    default F<A, Ordering> compare(A a1) {
+      return a2 -> compare(a1, a2);
+    }
+
+    @Override
+    default F<A, A> prepend(A a1) {
+      return a2 -> append(a1, a2);
+    }
+
+  }
+
+
+  private final Definition<A> def;
+
+  private Ord(final Definition<A> def) {
+    this.def = def;
+    this.max = a1 -> apply((a2, o) -> o == Ordering.GT ? a1 : a2, def.compare(a1));
+    this.min = a1 -> apply((a2, o) -> o == Ordering.LT ? a1 : a2, def.compare(a1));
   }
 
   /**
@@ -39,7 +119,7 @@ public final class Ord<A> {
    * @return A function that returns an ordering for its arguments.
    */
   public F<A, F<A, Ordering>> compare() {
-    return f;
+    return def::compare;
   }
 
   /**
@@ -50,7 +130,7 @@ public final class Ord<A> {
    * @return An ordering for the given arguments.
    */
   public Ordering compare(final A a1, final A a2) {
-    return f.f(a1).f(a2);
+    return def.compare(a1, a2);
   }
 
   /**
@@ -61,7 +141,7 @@ public final class Ord<A> {
    * @return <code>true</code> if the given arguments are equal, <code>false</code> otherwise.
    */
   public boolean eq(final A a1, final A a2) {
-    return compare(a1, a2) == Ordering.EQ;
+    return def.compare(a1, a2) == Ordering.EQ;
   }
 
   /**
@@ -70,7 +150,7 @@ public final class Ord<A> {
    * @return An <code>Equal</code> for this order.
    */
   public Equal<A> equal() {
-    return Equal.equal(a -> compose(o -> o == Ordering.EQ, f.f(a)));
+    return Equal.equalDef(def);
   }
 
   /**
@@ -80,7 +160,18 @@ public final class Ord<A> {
    * @return A new ord.
    */
   public <B> Ord<B> contramap(final F<B, A> f) {
-    return ord(F1Functions.o(F1Functions.o(F1Functions.andThen(f), this.f), f));
+    Definition<A> selfDef = def;
+    return ordDef(new Definition<B>() {
+      @Override
+      public F<B, Ordering> compare(B b) {
+        return compose(selfDef.compare(f.f(b)), f);
+      }
+
+      @Override
+      public Ordering compare(B b1, B b2) {
+        return selfDef.compare(f.f(b1), f.f(b2));
+      }
+    });
   }
 
   /**
@@ -93,7 +184,7 @@ public final class Ord<A> {
    *         <code>false</code> otherwise.
    */
   public boolean isLessThan(final A a1, final A a2) {
-    return compare(a1, a2) == Ordering.LT;
+    return def.compare(a1, a2) == Ordering.LT;
   }
 
     /**
@@ -106,7 +197,7 @@ public final class Ord<A> {
      *         <code>false</code> otherwise.
      */
     public boolean isLessThanOrEqualTo(final A a1, final A a2) {
-        return compare(a1, a2) != Ordering.GT;
+        return def.compare(a1, a2) != Ordering.GT;
     }
 
   /**
@@ -119,7 +210,7 @@ public final class Ord<A> {
    *         argument, <code>false</code> otherwise.
    */
   public boolean isGreaterThan(final A a1, final A a2) {
-    return compare(a1, a2) == Ordering.GT;
+    return def.compare(a1, a2) == Ordering.GT;
   }
 
   /**
@@ -129,7 +220,7 @@ public final class Ord<A> {
    * @return A function that returns true if its argument is less than the argument to this method.
    */
   public F<A, Boolean> isLessThan(final A a) {
-    return compose(o -> o == Ordering.GT, f.f(a));
+    return compose(o -> o == Ordering.GT, def.compare(a));
   }
 
   /**
@@ -139,7 +230,7 @@ public final class Ord<A> {
    * @return A function that returns true if its argument is greater than the argument to this method.
    */
   public F<A, Boolean> isGreaterThan(final A a) {
-    return compose(o -> o == Ordering.LT, f.f(a));
+    return compose(o -> o == Ordering.LT, def.compare(a));
   }
 
   /**
@@ -150,7 +241,7 @@ public final class Ord<A> {
    * @return The greater of the two values.
    */
   public A max(final A a1, final A a2) {
-    return isGreaterThan(a1, a2) ? a1 : a2;
+    return def.append(a1, a2);
   }
 
 
@@ -167,6 +258,7 @@ public final class Ord<A> {
 
   /**
    * A function that returns the greater of its two arguments.
+   *
    */
   public final F<A, F<A, A>> max;
 
@@ -176,24 +268,69 @@ public final class Ord<A> {
   public final F<A, F<A, A>> min;
 
   public final Semigroup<A> minSemigroup() {
-      return semigroup(min);
+      return semigroupDef(def.dual());
+  }
+
+  public final Monoid<A> minMonoid(A zero) {
+    return Monoid.monoidDef(def.dual(), zero);
   }
 
   public final Semigroup<A> maxSemigroup() {
-      return semigroup(max);
+      return semigroupDef(def);
   }
 
-  public final Ord<A> reverse() { return ord(Function.flip(f)); }
+  public final Monoid<A> maxMonoid(A zero) {
+    return Monoid.monoidDef(def, zero);
+  }
+
+  public final Ord<A> reverse() {
+    return ordDef(def.dual());
+  }
 
   /**
    * Returns an order instance that uses the given equality test and ordering function.
+   *
+   * Java 8+ users: use {@link #ordDef(Definition)} instead.
    *
    * @param f The order function.
    * @return An order instance.
    */
   public static <A> Ord<A> ord(final F<A, F<A, Ordering>> f) {
-    return new Ord<>(f);
+    return new Ord<>(f::f);
   }
+
+  /**
+   * Returns an order instance that uses the given equality test and ordering function.
+   *
+   * Java 8+ users: use {@link #ordDef(AltDefinition)} instead.
+   *
+   * @param f The order function.
+   * @return An order instance.
+   */
+  public static <A> Ord<A> ord(final F2<A, A, Ordering> f) {
+    return ordDef(f::f);
+  }
+
+  /**
+   * Returns an order instance that uses the given minimal equality test and ordering definition.
+   *
+   * @param def The order definition.
+   * @return An order instance.
+   */
+  public static <A> Ord<A> ordDef(final Definition<A> def) {
+    return new Ord<>(def);
+  }
+
+  /**
+   * Returns an order instance that uses the given minimal equality test and ordering definition.
+   *
+   * @param def The order definition.
+   * @return An order instance.
+   */
+  public static <A> Ord<A> ordDef(final AltDefinition<A> def) {
+    return new Ord<>(def);
+  }
+
 
   /**
    * An order instance for the <code>boolean</code> type.
@@ -248,7 +385,7 @@ public final class Ord<A> {
   /**
    * An order instance for the {@link Ordering} type.
    */
-  public static final Ord<Ordering> orderingOrd = Ord.ord(curry((o1, o2) -> o1 == o2 ?
+  public static final Ord<Ordering> orderingOrd = ordDef((o1, o2) -> o1 == o2 ?
          Ordering.EQ :
          o1 == Ordering.LT ?
          Ordering.LT :
@@ -256,7 +393,7 @@ public final class Ord<A> {
          Ordering.GT :
          o1 == Ordering.EQ ?
          Ordering.LT :
-         Ordering.GT));
+         Ordering.GT);
 
   /**
    * An order instance for the {@link String} type.
@@ -280,13 +417,14 @@ public final class Ord<A> {
    * @return An order instance for the {@link Option} type.
    */
   public static <A> Ord<Option<A>> optionOrd(final Ord<A> oa) {
-    return ord(o1 -> o2 -> o1.isNone() ?
+    Definition<A> oaDef = oa.def;
+    return ordDef((o1, o2) -> o1.isNone() ?
             o2.isNone() ?
                     Ordering.EQ :
                     Ordering.LT :
             o2.isNone() ?
                     Ordering.GT :
-                    oa.f.f(o1.some()).f(o2.some()));
+                oaDef.compare(o1.some()).f(o2.some()));
   }
 
   /**
@@ -297,13 +435,15 @@ public final class Ord<A> {
    * @return An order instance for the {@link Either} type.
    */
   public static <A, B> Ord<Either<A, B>> eitherOrd(final Ord<A> oa, final Ord<B> ob) {
-    return ord(e1 -> e2 -> e1.isLeft() ?
+    Definition<A> oaDef = oa.def;
+    Definition<B> obDef = ob.def;
+    return ordDef((e1, e2) -> e1.isLeft() ?
             e2.isLeft() ?
-                    oa.f.f(e1.left().value()).f(e2.left().value()) :
-                    Ordering.LT :
+                oaDef.compare(e1.left().value()).f(e2.left().value()) :
+                Ordering.LT :
             e2.isLeft() ?
-                    Ordering.GT :
-                    ob.f.f(e1.right().value()).f(e2.right().value()));
+                Ordering.GT :
+                obDef.compare(e1.right().value()).f(e2.right().value()));
   }
 
   /**
@@ -324,7 +464,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link List} type.
    */
   public static <A> Ord<List<A>> listOrd(final Ord<A> oa) {
-    return ord(l1 -> l2 -> {
+    return ordDef((l1, l2) -> {
       List<A> x1 = l1;
       List<A> x2 = l2;
 
@@ -364,14 +504,15 @@ public final class Ord<A> {
    * @return An order instance for the {@link Stream} type.
    */
   public static <A> Ord<Stream<A>> streamOrd(final Ord<A> oa) {
-    return ord(s1 -> s2 -> {
+    return ordDef((s1, s2) -> {
         if (s1.isEmpty())
             return s2.isEmpty() ? Ordering.EQ : Ordering.LT;
         else if (s2.isEmpty())
             return s1.isEmpty() ? Ordering.EQ : Ordering.GT;
         else {
             final Ordering c = oa.compare(s1.head(), s2.head());
-            return c == Ordering.EQ ? streamOrd(oa).f.f(s1.tail()._1()).f(s2.tail()._1()) : c;
+          // FIXME: not stack safe
+            return c == Ordering.EQ ? streamOrd(oa).def.compare(s1.tail()._1()).f(s2.tail()._1()) : c;
         }
     });
   }
@@ -383,7 +524,7 @@ public final class Ord<A> {
    * @return An order instance for the {@link Array} type.
    */
   public static <A> Ord<Array<A>> arrayOrd(final Ord<A> oa) {
-    return ord(a1 -> a2 -> {
+    return ordDef((a1, a2) -> {
         int i = 0;
         //noinspection ForLoopWithMissingComponent
         for (; i < a1.length() && i < a2.length(); i++) {
@@ -414,7 +555,7 @@ public final class Ord<A> {
   /**
    * An order instance for the {@link Unit} type.
    */
-  public static final Ord<Unit> unitOrd = ord(curry((Unit u1, Unit u2) -> Ordering.EQ));
+  public static final Ord<Unit> unitOrd = ordDef((u1, u2) -> Ordering.EQ);
 
   /**
    * An order instance for a product-1.
@@ -435,15 +576,15 @@ public final class Ord<A> {
    * @return An order instance for a product-2, with the first factor considered most significant.
    */
   public static <A, B> Ord<P2<A, B>> p2Ord(final Ord<A> oa, final Ord<B> ob) {
-    return ord(curry((P2<A, B> a, P2<A, B> b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa.compare(a._1(), b._1())));
+    return ordDef((a, b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa.compare(a._1(), b._1()));
   }
 
     public static <A, B> Ord<P2<A, B>> p2Ord1(Ord<A> oa) {
-        return ord(p1 -> p2 -> oa.compare(p1._1(), p2._1()));
+        return ordDef((p1, p2) -> oa.compare(p1._1(), p2._1()));
     }
 
     public static <A, B> Ord<P2<A, B>> p2Ord2(Ord<B> ob) {
-        return ord(p1 -> p2 -> ob.compare(p1._2(), p2._2()));
+        return ordDef((p1, p2) -> ob.compare(p1._2(), p2._2()));
     }
 
   /**
@@ -455,9 +596,9 @@ public final class Ord<A> {
    * @return An order instance for a product-3, with the first factor considered most significant.
    */
   public static <A, B, C> Ord<P3<A, B, C>> p3Ord(final Ord<A> oa, final Ord<B> ob, final Ord<C> oc) {
-    return ord(curry((P3<A, B, C> a, P3<A, B, C> b) -> oa.eq(a._1(), b._1()) ?
+    return ordDef((a, b) -> oa.eq(a._1(), b._1()) ?
            p2Ord(ob, oc).compare(P.p(a._2(), a._3()), P.p(b._2(), b._3()))
-                                 : oa.compare(a._1(), b._1())));
+                                 : oa.compare(a._1(), b._1()));
   }
 
   /**
@@ -472,8 +613,7 @@ public final class Ord<A> {
    * @return An order instance for the <code>Comparable</code> interface.
    */
   public static <A extends Comparable<A>> Ord<A> comparableOrd() {
-
-    return ord(a1 -> a2 -> Ordering.fromInt(a1.compareTo(a2)));
+    return ordDef((a1, a2) -> Ordering.fromInt(a1.compareTo(a2)));
   }
 
   /**
@@ -487,7 +627,7 @@ public final class Ord<A> {
    */
   @Deprecated
   public static <A> Ord<A> hashOrd() {
-    return ord(a -> {
+    return ordDef(a -> {
       int aHash = a.hashCode();
       return a2 -> Ordering.fromInt(Integer.valueOf(aHash).compareTo(a2.hashCode()));
     });
@@ -505,7 +645,7 @@ public final class Ord<A> {
    */
   @Deprecated
   public static <A> Ord<A> hashEqualsOrd() {
-    return ord(a -> {
+    return ordDef(a -> {
       int aHash = a.hashCode();
       return a2 -> {
         final int a2Hash = a2.hashCode();

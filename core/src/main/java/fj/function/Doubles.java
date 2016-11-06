@@ -6,11 +6,8 @@ import fj.data.List;
 import fj.data.Option;
 
 import static fj.Function.curry;
-import static fj.Semigroup.doubleAdditionSemigroup;
-import static fj.Semigroup.doubleMultiplicationSemigroup;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-import static java.lang.Math.abs;
 
 /**
  * Curried functions over Doubles.
@@ -25,17 +22,17 @@ public final class Doubles {
   /**
    * Curried Double addition.
    */
-  public static final F<Double, F<Double, Double>> add = doubleAdditionSemigroup.sum();
+  public static final F<Double, F<Double, Double>> add = x -> y -> x + y;
 
   /**
    * Curried Double multiplication.
    */
-  public static final F<Double, F<Double, Double>> multiply = doubleMultiplicationSemigroup.sum();
+  public static final F<Double, F<Double, Double>> multiply = x -> y -> x * y;
 
   /**
    * Curried Double subtraction.
    */
-  public static final F<Double, F<Double, Double>> subtract = curry((x, y) -> x - y);
+  public static final F<Double, F<Double, Double>> subtract = x -> y -> x - y;
 
   /**
    * Negation.
@@ -50,12 +47,12 @@ public final class Doubles {
   /**
    * Remainder.
    */
-  public static final F<Double, F<Double, Double>> remainder = curry((a, b) -> a % b);
+  public static final F<Double, F<Double, Double>> remainder = x -> y -> x % y;
 
   /**
    * Power.
    */
-  public static final F<Double, F<Double, Double>> power = curry(StrictMath::pow);
+  public static final F<Double, F<Double, Double>> power = x -> y -> StrictMath.pow(x, y);
 
   /**
    * Evenness.
@@ -69,7 +66,7 @@ public final class Doubles {
    * @return The sum of the doubless in the list.
    */
   public static double sum(final List<Double> doubles) {
-    return Monoid.doubleAdditionMonoid.sumLeft(doubles);
+    return doubles.foldLeft((x, y) -> x + y, 0.0);
   }
 
   /**
@@ -79,7 +76,7 @@ public final class Doubles {
    * @return The product of the doubles in the list.
    */
   public static double product(final List<Double> doubles) {
-    return Monoid.doubleMultiplicationMonoid.sumLeft(doubles);
+    return doubles.foldLeft((x, y) -> x * y, 1.0);
   }
 
   /**

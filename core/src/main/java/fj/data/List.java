@@ -715,7 +715,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F<A, F<B, B>> f, final B b) {
-    return reverse().foldLeft(flip(f), b);
+    return foldRight(uncurryF2(f), b);
   }
 
   /**
@@ -726,7 +726,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F2<A, B, B> f, final B b) {
-    return foldRight(curry(f), b);
+    return reverse().foldLeft(flip(f), b);
   }
 
   /**
@@ -1462,7 +1462,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The maximum element in this list according to the given ordering.
    */
   public final A maximum(final Ord<A> o) {
-    return foldLeft1(o.max);
+    return foldLeft1(o::max);
   }
 
   /**
@@ -1472,7 +1472,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The minimum element in this list according to the given ordering.
    */
   public final A minimum(final Ord<A> o) {
-    return foldLeft1(o.min);
+    return foldLeft1(o::min);
   }
 
   public final java.util.List<A> toJavaList() {

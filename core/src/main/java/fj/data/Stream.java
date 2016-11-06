@@ -120,7 +120,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F<A, F<P1<B>, B>> f, final B b) {
-    return isEmpty() ? b : f.f(head()).f(P.lazy(() -> tail()._1().foldRight(f, b)));
+    return foldRight(uncurryF2(f), b);
   }
 
   /**
@@ -131,7 +131,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight(final F2<A, P1<B>, B> f, final B b) {
-    return foldRight(curry(f), b);
+    return isEmpty() ? b : f.f(head(), P.lazy(() -> tail()._1().foldRight(f, b)));
   }
 
   /**
@@ -142,7 +142,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight1(final F<A, F<B, B>> f, final B b) {
-    return foldRight(compose(Function.<P1<B>, B, B>andThen().f(P1.__1()), f), b);
+    return foldRight1(uncurryF2(f), b);
   }
 
   /**
@@ -153,7 +153,7 @@ public abstract class Stream<A> implements Iterable<A> {
    * @return The final result after the right-fold reduction.
    */
   public final <B> B foldRight1(final F2<A, B, B> f, final B b) {
-    return foldRight1(curry(f), b);
+    return isEmpty() ? b : f.f(head(), tail()._1().foldRight1(f, b));
   }
 
   /**
