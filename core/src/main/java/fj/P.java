@@ -32,16 +32,51 @@ public final class P {
       @Override public A _1() {
         return a;
       }
-      @Override public P1<A> memo() { return this; }
+      @Override public P1<A> hardMemo() { return this; }
       @Override public P1<A> weakMemo() { return this; }
       @Override public P1<A> softMemo() { return this; }
     };
   }
 
+  /**
+   * Convert a F0 into a P1, using call-by-need semantic:
+   * function f is evaluated at most once, at first to {@link P1#_1()}.
+   */
+  public static <A> P1<A> hardMemo(F0<A> f) {
+    return new P1.Memo<>(f);
+  }
 
-    public static <A> P1<A> lazy(final P1<A> pa) {
-        return pa;
-    }
+  /**
+   * Convert a F0 into a P1, using weak call-by-need semantic:
+   * function f is evaluated at first call to {@link P1#_1()}
+   * and at each subsequent call if and only if the reference have been garbage collected.
+   */
+  public static <A> P1<A> weakMemo(F0<A> f) {
+    return new P1.WeakReferenceMemo<>(f);
+  }
+
+  /**
+   * Convert a F0 into a P1, using soft call-by-need semantic:
+   * function f is evaluated at first call to {@link P1#_1()}
+   * and at each subsequent call if and only if the reference have been garbage collected
+   * due of shortage of memory (ie. to avoid OutOfMemoryErrors).
+   */
+  public static <A> P1<A> sofMemo(F0<A> f) {
+    return new P1.SoftReferenceMemo<>(f);
+  }
+
+  /**
+   * Convert a F0 into a P1, using call-by-name semantic:
+   * function f is evaluated at each call to {@link P1#_1()}.
+   */
+  public static <A> P1<A> lazy(F0<A> f) {
+    return new P1<A>() {
+      @Override
+      public A _1() {
+        return f.f();
+      }
+    };
+  }
 
     public static <A, B> P2<A, B> lazy(final F0<A> pa, final F0<B> pb) {
         return new P2<A, B>() {
@@ -537,15 +572,6 @@ public final class P {
       }
     };
   }
-
-    public static <A> P1<A> lazy(F0<A> f) {
-        return new P1<A>() {
-            @Override
-            public A _1() {
-                return f.f();
-            }
-        };
-    }
 
     public static <A> P1<A> lazy(F<Unit, A> f) {
         return lazy(() -> f.f(unit()));

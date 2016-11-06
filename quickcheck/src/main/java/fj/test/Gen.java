@@ -363,6 +363,12 @@ public final class Gen<A> {
     return parameterised(curry((i, r) -> value(r.choose(f, t))));
   }
 
+  public static Gen<Long> choose(final long from, final long to) {
+    final long f = min(from, to);
+    final long t = max(from, to);
+    return parameterised(i -> r -> value(r.choose(f, t)));
+  }
+
   /**
    * Returns a generator that produces values between the given range (inclusive).
    *
@@ -466,6 +472,10 @@ public final class Gen<A> {
    */
   public static <A> Gen<List<A>> listOf(final Gen<A> g, final int x) {
     return sized(size -> choose(x, max(x, size)).bind(n -> sequenceN(n, g)));
+  }
+
+  public static <A> Gen<List<A>> listOfSorted(final Gen<A> g, final int x, Ord<A> ord) {
+    return listOf(g, x).map(l -> l.sort(ord));
   }
 
   /**

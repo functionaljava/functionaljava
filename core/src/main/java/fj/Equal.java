@@ -14,6 +14,7 @@ import fj.data.Tree;
 import fj.data.TreeMap;
 import fj.data.Validation;
 import fj.data.Writer;
+import fj.data.hamt.BitSet;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -269,6 +270,11 @@ public final class Equal<A> {
         } else
           return false;
       });
+
+  /**
+   * An equal instance for the {@link BitSet} type.
+   */
+  public static final Equal<BitSet> bitSetSequal = equalDef((bs1, bs2) -> bs1.longValue() == bs2.longValue());
 
   /**
    * An equal instance for the {@link Either} type.

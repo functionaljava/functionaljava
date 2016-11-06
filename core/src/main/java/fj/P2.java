@@ -1,6 +1,7 @@
 package fj;
 
 import static fj.Function.*;
+import static fj.P.weakMemo;
 import static fj.data.optic.PLens.pLens;
 import fj.data.*;
 import fj.data.optic.Lens;
@@ -185,8 +186,8 @@ public abstract class P2<A, B> {
     public final P2<A, B> memo() {
         P2<A, B> self = this;
         return new P2<A, B>() {
-            private final P1<A> a = P1.memo(u -> self._1());
-            private final P1<B> b = P1.memo(u -> self._2());
+            private final P1<A> a = weakMemo(self::_1);
+            private final P1<B> b = weakMemo(self::_2);
 
             public A _1() {
                 return a._1();

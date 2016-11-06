@@ -21,7 +21,7 @@ public final class Collectors {
         List.Buffer::new,
         List.Buffer::snoc,
         (acc1, acc2) -> acc1.append(acc2.toList()),
-        (buf) -> Array.iterableArray(buf.toList())
+        (buf) -> buf.toList().toArray()
     );
   }
 
@@ -30,7 +30,7 @@ public final class Collectors {
         List.Buffer::new,
         List.Buffer::snoc,
         (acc1, acc2) -> acc1.append(acc2.toList()),
-        (buf) -> Stream.iterableStream(buf.toList())
+        (buf) -> buf.toList().toStream()
     );
   }
 }

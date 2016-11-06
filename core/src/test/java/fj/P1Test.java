@@ -11,7 +11,7 @@ public final class P1Test {
 
   @Test
   public void bug105() throws Exception {
-    final P1<String> p1 = P.p("Foo").memo();
+    final P1<String> p1 = P.weakMemo(() -> "Foo");
     final AtomicInteger nullCounter = new AtomicInteger();
     ExecutorService executorService = Executors.newCachedThreadPool();
 

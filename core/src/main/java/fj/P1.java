@@ -1,15 +1,18 @@
 package fj;
 
+import fj.data.Array;
+import fj.data.Either;
+import fj.data.List;
+import fj.data.Option;
+import fj.data.Stream;
+import fj.data.Validation;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
-import fj.data.Array;
-import fj.data.List;
-import fj.data.Stream;
-import fj.data.Either;
-import fj.data.Option;
-import fj.data.Validation;
+import static fj.P.p;
+import static fj.Unit.unit;
 //import fj.data.*;
 
 
@@ -138,7 +141,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given List.
      */
     public static <A> P1<List<A>> sequence(final List<P1<A>> as) {
-        return as.foldRight(liftM2(List.cons()), P.p(List.nil()));
+        return as.foldRight(liftM2(List.cons()), p(List.nil()));
     }
 
     /**
@@ -157,7 +160,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given stream.
      */
     public static <A> P1<Stream<A>> sequence(final Stream<P1<A>> as) {
-        return as.foldRight(liftM2(Stream.cons()), P.p(Stream.nil()));
+        return as.foldRight(liftM2(Stream.cons()), p(Stream.nil()));
     }
 
 	/**
@@ -238,7 +241,11 @@ public abstract class P1<A> implements F0<A> {
         return P.lazy(() -> f.f(self._1()));
       }
 
-    public P1<A> memo() {
+    /**
+     * @deprecated since 4.7. Use {@link P1#weakMemo()} instead.
+     */
+    @Deprecated
+    public final P1<A> memo() {
         return weakMemo();
     }
 
@@ -247,7 +254,7 @@ public abstract class P1<A> implements F0<A> {
      *
      * @return A P1 that calls this P1 once and remembers the value for subsequent calls.
      */
-    public final P1<A> hardMemo() { return new Memo<>(this); }
+    public P1<A> hardMemo() { return new Memo<>(this); }
 
     /**
      * Like <code>memo</code>, but the memoized value is wrapped into a <code>WeakReference</code>
@@ -259,73 +266,85 @@ public abstract class P1<A> implements F0<A> {
      */
     public P1<A> softMemo() { return new SoftReferenceMemo<>(this); }
 
+    /**
+     * @deprecated since 4.7. Use {@link P#weakMemo(F0)} instead.
+     */
+    @Deprecated
     public static <A> P1<A> memo(F<Unit, A> f) {
-        return P.lazy(f).memo();
+        return P.weakMemo(() -> f.f(unit()));
     }
 
-	public static <A> P1<A> memo(F0<A> f) {
-		return P.lazy(f).memo();
+  /**
+   * @deprecated since 4.7. Use {@link P#weakMemo(F0)} instead.
+   */
+  @Deprecated
+  public static <A> P1<A> memo(F0<A> f) {
+		return P.weakMemo(f);
 	}
 
-    static class Memo<A> extends P1<A> {
-      private volatile P1<A> self;
+    static final class Memo<A> extends P1<A> {
+      private volatile F0<A> fa;
       private A value;
 
-      Memo(P1<A> self) { this.self = self; }
+      Memo(F0<A> fa) { this.fa = fa; }
 
       @Override public final A _1() {
-        if (self != null) {
-          synchronized (this) {
-            if (self != null) {
-              A a = self._1();
-              value = a;
-              self = null;
-              return a;
-            }
-          }
+        return (fa == null) ? value : computeValue();
+      }
+
+      private synchronized A computeValue() {
+        F0<A> fa = this.fa;
+        if (fa != null) {
+          value = fa.f();
+          this.fa = null;
         }
         return value;
       }
 
-      @Override public final P1<A> memo() { return this; }
+      @Override public P1<A> hardMemo() { return this; }
+      @Override public P1<A> softMemo() { return this; }
+      @Override public P1<A> weakMemo() { return this; }
     }
 
     abstract static class ReferenceMemo<A> extends P1<A> {
-      private final P1<A> self;
-      private final Object latch = new Object();
-      private volatile Reference<Option<A>> v = null;
+      private final F0<A> fa;
+      private volatile Reference<P1<A>> v = null;
 
-      ReferenceMemo(final P1<A> self) { this.self = self; }
+      ReferenceMemo(final F0<A> fa) { this.fa = fa; }
 
       @Override public final A _1() {
-        Option<A> o = v != null ? v.get() : null;
-        if (o == null) {
-          synchronized (latch) {
-            o = v != null ? v.get() : null;
-            if (o == null) {
-              o = Option.some(self._1());
-              v = newReference(o);
-            }
-          }
-        }
-        return o.some();
+        Reference<P1<A>> v = this.v;
+        P1<A> p1 = v != null ? v.get() : null;
+        return p1 != null ? p1._1() : computeValue();
       }
 
-      abstract Reference<Option<A>> newReference(Option<A> o);
+      private synchronized A computeValue() {
+        Reference<P1<A>> v = this.v;
+        P1<A> p1 = v != null ? v.get() : null;
+        if (p1 == null) {
+          A a = fa.f();
+          this.v = newReference(p(a));
+          return a;
+        }
+        return p1._1();
+      }
+
+      abstract <B> Reference<B> newReference(B ref);
     }
 
-    static class WeakReferenceMemo<A> extends ReferenceMemo<A> {
-      WeakReferenceMemo(P1<A> self) { super(self); }
+    static final class WeakReferenceMemo<A> extends ReferenceMemo<A> {
+      WeakReferenceMemo(F0<A> fa) { super(fa); }
       @Override
-      final Reference<Option<A>> newReference(final Option<A> o) { return new WeakReference<>(o); }
-      @Override public final P1<A> weakMemo() { return this; }
+      <B> Reference<B> newReference(final B ref) { return new WeakReference<>(ref); }
+      @Override public P1<A> weakMemo() { return this; }
     }
 
-    static class SoftReferenceMemo<A> extends ReferenceMemo<A> {
-      SoftReferenceMemo(P1<A> self) { super(self); }
+    static final class SoftReferenceMemo<A> extends ReferenceMemo<A> {
+      SoftReferenceMemo(F0<A> self) { super(self); }
       @Override
-      final Reference<Option<A>> newReference(final Option<A> o) { return new SoftReference<>(o); }
-      @Override public final P1<A> softMemo() { return this; }
+      <B> Reference<B> newReference(final B ref) { return new SoftReference<>(ref); }
+      @Override public P1<A> softMemo() { return this; }
+      @Override public P1<A> weakMemo() { return this; }
     }
 
     /**

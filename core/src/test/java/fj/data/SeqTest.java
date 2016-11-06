@@ -1,5 +1,6 @@
 package fj.data;
 
+import fj.P2;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -34,4 +35,12 @@ public class SeqTest {
         expected.append(')');
         assertEquals(expected.toString(), Seq.seq(Array.range(0, 10000).array()).toString());
     }
+
+
+    @Test
+    public void test() {
+        P2<Seq<Integer>, Seq<Integer>> p2 = Seq.single(1).split(5);
+        System.out.println(p2);
+    }
+
 }

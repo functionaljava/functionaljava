@@ -10,6 +10,7 @@ import fj.Function;
 import fj.Monoid;
 import fj.P;
 import fj.P1;
+import fj.Semigroup;
 import fj.control.Trampoline;
 import fj.control.parallel.Promise;
 import fj.data.Either;
@@ -82,7 +83,7 @@ public abstract class PTraversal<S, T, A, B> {
   /**
    * modify polymorphically the target of a {@link PTraversal} with an Applicative function
    */
-  public abstract <E> F<S, Validation<E, T>> modifyValidationF(F<A, Validation<E, B>> f);
+  public abstract <E> F<S, Validation<E, T>> modifyValidationF(Semigroup<E> s, F<A, Validation<E, B>> f);
 
   /**
    * modify polymorphically the target of a {@link PTraversal} with an Applicative function
@@ -218,10 +219,10 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override
-      public <E> F<Either<S, S1>, Validation<E, Either<T, T1>>> modifyValidationF(final F<A, Validation<E, B>> f) {
+      public <E> F<Either<S, S1>, Validation<E, Either<T, T1>>> modifyValidationF(Semigroup<E> se, final F<A, Validation<E, B>> f) {
         return ss1 -> ss1.either(
-            s -> self.modifyValidationF(f).f(s).map(Either.left_()),
-            s1 -> other.modifyValidationF(f).f(s1).map(Either.right_())
+            s -> self.modifyValidationF(se, f).f(s).map(Either.left_()),
+            s1 -> other.modifyValidationF(se, f).f(s1).map(Either.right_())
             );
       }
 
@@ -307,8 +308,8 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override
-      public <E> F<S, Validation<E, T>> modifyValidationF(final F<C, Validation<E, D>> f) {
-        return self.modifyValidationF(other.modifyValidationF(f));
+      public <E> F<S, Validation<E, T>> modifyValidationF(Semigroup<E> s, final F<C, Validation<E, D>> f) {
+        return self.modifyValidationF(s, other.modifyValidationF(s, f));
       }
 
       @Override
@@ -450,7 +451,7 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override
-      public <E> F<Either<S, S>, Validation<E, Either<T, T>>> modifyValidationF(final F<S, Validation<E, T>> f) {
+      public <E> F<Either<S, S>, Validation<E, Either<T, T>>> modifyValidationF(Semigroup<E> se, final F<S, Validation<E, T>> f) {
         return s -> s.bimap(f, f).either(
             v -> v.map(Either.left_()),
             v -> v.map(Either.right_())
@@ -520,8 +521,8 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override
-      public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
-        return s -> f.f(get2.f(s)).apply(f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
+      public <E> F<S, Validation<E, T>> modifyValidationF(Semigroup<E> se, final F<A, Validation<E, B>> f) {
+        return s -> f.f(get2.f(s)).accumapply(se, f.f(get1.f(s)).<F<B, T>> map(b1 -> b2 -> set.f(b1, b2, s)));
       }
 
       @Override
@@ -611,8 +612,8 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override
-      public <E> F<S, Validation<E, T>> modifyValidationF(final F<A, Validation<E, B>> f) {
-        return s -> f.f(lastGet.f(s)).apply(curriedTraversal.modifyValidationF(f).f(s));
+      public <E> F<S, Validation<E, T>> modifyValidationF(Semigroup<E> se, final F<A, Validation<E, B>> f) {
+        return s -> f.f(lastGet.f(s)).accumapply(se, curriedTraversal.modifyValidationF(se, f).f(s));
       }
 
       @Override
