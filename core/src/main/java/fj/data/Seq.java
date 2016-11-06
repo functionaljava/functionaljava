@@ -276,6 +276,18 @@ public final class Seq<A> implements Iterable<A> {
   }
 
   /**
+   * Inserts the element at the given index. This is an O(log(n)) operation.
+   *
+   * @param index The index of the element to return.
+   * @return The sequence with the element inserted at the given index,
+   * or throws an error if the index is out of bounds.
+   */
+  public Seq<A> insert(int index, A a) {
+    final P2<Seq<A>, Seq<A>> p = split(index);
+    return p._1().append(single(a)).append(p._2());
+  }
+
+  /**
    * Checks if this sequence is not empty.
    *
    * @return True if this sequence is not empty, otherwise false.
@@ -369,6 +381,11 @@ public final class Seq<A> implements Iterable<A> {
     public <B> B foldRight(final F2<A, B, B> f, final B z) {
         return ftree.foldRight(f, z);
     }
+
+
+  public Seq<A> filter(F<A, Boolean> f) {
+    return foldLeft((acc, a) -> f.f(a) ? acc.snoc(a) : acc, empty());
+  }
 
     @Override
     public int hashCode() {

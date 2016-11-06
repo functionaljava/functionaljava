@@ -55,6 +55,9 @@ public final class Rand {
     return f.f(Option.none()).f(from).f(to);
   }
 
+  public long choose(final long from, final long to) {
+    return g.f(Option.none()).f((double) from).f((double) to).longValue();
+  }
   /**
    * Randomly chooses a value between the given range (inclusive).
    *
