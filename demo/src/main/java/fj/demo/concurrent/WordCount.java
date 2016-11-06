@@ -1,10 +1,18 @@
 package fj.demo.concurrent;
 
-import static fj.Monoid.monoid;
-import static fj.Monoid.monoidDef;
-import static fj.control.parallel.ParModule.parModule;
-import static fj.data.List.nil;
-import static java.util.concurrent.Executors.newFixedThreadPool;
+import fj.F;
+import fj.Monoid;
+import fj.P;
+import fj.P1;
+import fj.P2;
+import fj.control.parallel.ParModule;
+import fj.control.parallel.Promise;
+import fj.control.parallel.Strategy;
+import fj.data.IOFunctions;
+import fj.data.Iteratee.Input;
+import fj.data.Iteratee.IterV;
+import fj.data.List;
+import fj.data.Option;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,35 +22,25 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import fj.F;
-import fj.Monoid;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.Unit;
-import fj.control.parallel.ParModule;
-import fj.control.parallel.Promise;
-import fj.control.parallel.Strategy;
-import fj.data.*;
-import fj.data.Iteratee.Input;
-import fj.data.Iteratee.IterV;
-import fj.function.Effect1;
+import static fj.Monoid.monoid;
+import static fj.control.parallel.ParModule.parModule;
+import static fj.data.List.nil;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * Reads words and their counts from files ({@link #getWordsAndCountsFromFiles} in a single thread
  * and {@link #getWordsAndCountsFromFilesInParallel} in multiple threads). The files are created
  * initially and populated with some sample content.
- * 
+ *
  * @author Martin Grotzke
  */
 public class WordCount {
-  
+
   // Integers.add.f(1) caused an SOE...
   private static final F<Integer,Integer> addOne = a -> a.intValue() + 1;
 
@@ -55,7 +53,7 @@ public class WordCount {
     map.put(key, valueFunction.f(value));
     return map;
   }
-  
+
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunkIteratee = fileName -> {
       try {
         return IOFunctions.enumFileCharChunks(new File(fileName), Option.none(), wordCountsFromCharChunks()).run().run();
@@ -63,7 +61,7 @@ public class WordCount {
         throw new RuntimeException(e);
       }
   };
-  
+
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharChunk2Iteratee = fileName -> {
       try {
         return IOFunctions.enumFileChars(new File(fileName), Option.none(), wordCountsFromChars()).run().run();
@@ -71,7 +69,7 @@ public class WordCount {
         throw new RuntimeException(e);
       }
   };
-  
+
   private static final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithCharIteratee = fileName -> {
       try {
         return IOFunctions.enumFileChars(new File(fileName), Option.none(), wordCountsFromChars()).run().run();
@@ -181,7 +179,7 @@ public class WordCount {
     final Map<String, Integer> expectedWordsAndCounts = result._2();
     long avgSize = fileNames.foldLeft((a, file) -> a.longValue() + new File(file).length(), 0l) / fileNames.length();
     System.out.println("Processing " + numFiles + " files with ~"+numSharedWords+" words and an avg size of " + avgSize + " bytes.");
-    
+
     // warmup
     for(int i = 0; i < 1; i++) {
       // getWordsAndCountsFromFiles(fileNames.take(1)).size();
@@ -211,7 +209,7 @@ public class WordCount {
     assertTrue(wordsAndCountsFromFiles != null);
     assertEquals(wordsAndCountsFromFiles.size(), numFiles + numSharedWords);
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
-    
+
     System.gc();
 
     // get word counts sequentially / single threaded \w iteratee
@@ -223,7 +221,7 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
 
     System.gc();
-    
+
     // get word counts sequentially / single threaded \w iteratee
     start = System.currentTimeMillis();
     wordsAndCountsFromFiles = getWordsAndCountsFromFilesWithIteratee(fileNames, fileNameToWordsAndCountsWithCharChunk2Iteratee);
@@ -233,7 +231,7 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
 
     System.gc();
-    
+
 //    start = System.currentTimeMillis();
 //    wordsAndCountsFromFiles = getWordsAndCountsFromFilesInParallel(fileNames, fileNameToWordsAndCounts, 8);
 //    System.out.println("Getting word counts in 8 threads took " + (System.currentTimeMillis() - start) + " ms.");
@@ -249,14 +247,14 @@ public class WordCount {
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
 
     System.gc();
-    
+
     start = System.currentTimeMillis();
     wordsAndCountsFromFiles = getWordsAndCountsFromFilesInParallel(fileNames, fileNameToWordsAndCountsWithCharChunkIteratee, 32);
     System.out.println("Getting word counts in 32 threads with char chunk iteratee took " + (System.currentTimeMillis() - start) + " ms.");
     assertTrue(wordsAndCountsFromFiles != null);
     assertEquals(wordsAndCountsFromFiles.size(), numFiles + numSharedWords);
     assertEquals(wordsAndCountsFromFiles, expectedWordsAndCounts);
-    
+
     // we have tmpfiles, but still want to be sure not to leave rubbish
     fileNames.foreachDoEffect(a -> new File(a).delete());
   }
@@ -286,13 +284,13 @@ public class WordCount {
     }
     return P.p(fileNames, expectedWordsAndCounts);
   }
-  
+
   public static Map<String, Integer> getWordsAndCountsFromFilesWithIteratee(final List<String> fileNames,
       final F<String, Map<String, Integer>> fileNameToWordsAndCountsWithIteratee) {
     final List<Map<String, Integer>> maps = fileNames.map(fileNameToWordsAndCountsWithIteratee);
     return maps.foldLeft(WordCount::plus, new HashMap<String, Integer>());
   }
-  
+
   public static Map<String, Integer> getWordsAndCountsFromFilesInParallel(
       final List<String> fileNames, final F<String, Map<String, Integer>> fileNameToWordsAndCounts, int numThreads) {
     final ExecutorService pool = newFixedThreadPool(numThreads);
@@ -305,14 +303,14 @@ public class WordCount {
 
     return result;
   }
-  
+
   // Read documents and extract words and word counts of documents
   public static Promise<Map<String, Integer>> getWordsAndCountsFromFiles(
       final List<String> fileNames, final F<String, Map<String, Integer>> fileNameToWordsAndCounts, final ParModule m) {
-    final Monoid<Map<String, Integer>> monoid = monoidDef(WordCount::plus, Collections.emptyMap());
+    final Monoid<Map<String, Integer>> monoid = monoid(WordCount::plus, Collections.emptyMap());
     return m.parFoldMap(fileNames, fileNameToWordsAndCounts, monoid);
   }
-  
+
   private static Map<String, Integer> plus(Map<String, Integer> a, Map<String, Integer> b) {
     final Map<String, Integer> result = new HashMap<>(a);
     for(Map.Entry<String, Integer> entry : b.entrySet()) {
@@ -321,7 +319,7 @@ public class WordCount {
     }
     return result;
   }
-  
+
   @SuppressWarnings("unused")
   private static String readFileToString(File file) throws IOException {
         Reader reader = null;
@@ -342,13 +340,13 @@ public class WordCount {
         writer.write(buffer, 0, n);
     }
   }
-  
+
   static void assertTrue(boolean condition) {
     if (!condition) {
       throw new AssertionError();
     }
   }
-  
+
   static void assertEquals(Object actual, Object expected) {
     if (!expected.equals(actual)) {
       throw new IllegalArgumentException("Not equals. Expected: " + expected + ", actual: " + actual);

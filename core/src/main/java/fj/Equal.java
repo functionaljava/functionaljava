@@ -135,11 +135,26 @@ public final class Equal<A> {
   /**
    * Constructs an equal instance from the given function.
    *
+   * Java 8+ users: use {@link #equalDef(Definition)} instead.
+   *
    * @param f The function to construct the equal with.
    * @return An equal instance from the given function.
    */
   public static <A> Equal<A> equal(final F<A, F<A, Boolean>> f) {
     return new Equal<>(f::f);
+  }
+
+
+  /**
+   * Constructs an equal instance from the given function.
+   *
+   * Java 8+ users: use {@link #equalDef(AltDefinition)} instead.
+   *
+   * @param f The function to construct the equal with.
+   * @return An equal instance from the given function.
+   */
+  public static <A> Equal<A> equal(final F2<A, A, Boolean> f) {
+    return equalDef(f::f);
   }
 
   /**

@@ -290,13 +290,25 @@ public final class Ord<A> {
   /**
    * Returns an order instance that uses the given equality test and ordering function.
    *
-   * @deprecated since 4.7. Use {@link #ordDef(Definition)}.
+   * Java 8+ users: use {@link #ordDef(Definition)} instead.
+   *
    * @param f The order function.
    * @return An order instance.
    */
-  @Deprecated
   public static <A> Ord<A> ord(final F<A, F<A, Ordering>> f) {
     return new Ord<>(f::f);
+  }
+
+  /**
+   * Returns an order instance that uses the given equality test and ordering function.
+   *
+   * Java 8+ users: use {@link #ordDef(AltDefinition)} instead.
+   *
+   * @param f The order function.
+   * @return An order instance.
+   */
+  public static <A> Ord<A> ord(final F2<A, A, Ordering> f) {
+    return ordDef(f::f);
   }
 
   /**

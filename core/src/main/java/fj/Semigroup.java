@@ -31,6 +31,9 @@ import static fj.data.Option.some;
  */
 public final class Semigroup<A> {
 
+  /**
+   * Primitives functions of Semigroup: minimal definition and overridable methods.
+   */
   public interface Definition<A> {
 
     A append(A a1, A a2);
@@ -79,6 +82,9 @@ public final class Semigroup<A> {
     }
   }
 
+  /**
+   * Primitives functions of Semigroup: alternative minimal definition and overridable methods.
+   */
   public interface AltDefinition<A> extends Definition<A> {
     @Override
     F<A, A> prepend(A a);
@@ -285,24 +291,22 @@ public final class Semigroup<A> {
 
   /**
    * Constructs a semigroup from the given function.
-   * @deprecated since 4.7. Use {@link #semigroupDef(Definition)}.
+   * Java 8+ users: use {@link #semigroupDef(AltDefinition)} instead.
    *
    * @param sum The function to construct this semigroup with.
    * @return A semigroup from the given function.
    */
-  @Deprecated
   public static <A> Semigroup<A> semigroup(final F<A, F<A, A>> sum) {
     return semigroupDef(sum::f);
   }
 
   /**
    * Constructs a semigroup from the given function.
-   * @deprecated since 4.7. Use {@link #semigroupDef(Definition)}.
+   * Java 8+ users: use {@link #semigroupDef(Definition)} instead.
    *
    * @param sum The function to construct this semigroup with.
    * @return A semigroup from the given function.
    */
-  @Deprecated
   public static <A> Semigroup<A> semigroup(final F2<A, A, A> sum) {
     return new Semigroup<>(sum::f);
   }

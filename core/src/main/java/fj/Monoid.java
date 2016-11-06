@@ -38,6 +38,9 @@ public final class Monoid<A> {
 
   private final Definition<A> def;
 
+  /**
+   * Primitives functions of Monoid: minimal definition and overridable methods.
+   */
   public interface Definition<A> extends Semigroup.Definition<A> {
 
     A empty();
@@ -91,6 +94,10 @@ public final class Monoid<A> {
     }
   }
 
+
+  /**
+   * Primitives functions of Monoid: alternative minimal definition and overridable methods.
+   */
   public interface AltDefinition<A> extends Definition<A> {
 
     @Override
@@ -423,13 +430,12 @@ public final class Monoid<A> {
   /**
    * Constructs a monoid from the given sum function and zero value, which must follow the monoidal
    * laws.
-   * @deprecated since 4.7. Use {@link #monoidDef(Semigroup.Definition, Object)} instead.
+   * Java 8+ users: use {@link #monoidDef(Semigroup.Definition, Object)} instead.
    *
    * @param sum  The sum function for the monoid.
    * @param zero The zero for the monoid.
    * @return A monoid instance that uses the given sun function and zero value.
    */
-  @Deprecated
   public static <A> Monoid<A> monoid(final F<A, F<A, A>> sum, final A zero) {
     return new Monoid<>(new AltDefinition<A>() {
       @Override
@@ -447,13 +453,13 @@ public final class Monoid<A> {
   /**
    * Constructs a monoid from the given sum function and zero value, which must follow the monoidal
    * laws.
-   * @deprecated since 4.7. Use {@link #monoidDef(Semigroup.Definition, Object)} instead.
+   *
+   * Java 8+ users: use {@link #monoidDef(Semigroup.Definition, Object)} instead.
    *
    * @param sum  The sum function for the monoid.
    * @param zero The zero for the monoid.
    * @return A monoid instance that uses the given sun function and zero value.
    */
-  @Deprecated
   public static <A> Monoid<A> monoid(final F2<A, A, A> sum, final A zero) {
     return new Monoid<>(new Definition<A>() {
       @Override
