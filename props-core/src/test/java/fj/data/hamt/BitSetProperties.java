@@ -153,8 +153,8 @@ public class BitSetProperties {
     Property rangeTest() {
         return property(arbNaturalLong, bitSetIndices(4), (x, list) -> {
             int l = list.index(0);
-            int m = list.index(1);
             int h = list.index(2);
+            int m = Math.max(l, Math.min(list.index(1), h - 1));
             int vh = list.index(3);
 
             BitSet bs1 = longBitSet(x);
