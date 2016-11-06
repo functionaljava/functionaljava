@@ -19,6 +19,6 @@ public class Problem4 {
     intShow.println(tdl.tails().bind(tdl.zipWith(multiply)).filter(i -> {
         final Stream<Character> s = intShow.show(i);
         return streamEqual(charEqual).eq(s.reverse().take(3), s.take(3));
-    }).foldLeft1(intOrd.max));
+    }).foldLeft1(intOrd::max));
   }
 }
