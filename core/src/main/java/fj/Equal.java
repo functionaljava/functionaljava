@@ -53,7 +53,7 @@ public final class Equal<A> {
   /**
    * Primitives functions of Equal: alternative minimal definition and overridable methods.
    */
-  public interface AlternateDefinition<A> extends Definition<A> {
+  public interface AltDefinition<A> extends Definition<A> {
 
     @Override
     boolean equal(A a1, A a2);
@@ -158,7 +158,7 @@ public final class Equal<A> {
    * @param definition a definition of the equal instance.
    * @return An equal instance from the given function.
    */
-  public static <A> Equal<A> equalDef(final AlternateDefinition<A> definition) {
+  public static <A> Equal<A> equalDef(final AltDefinition<A> definition) {
     return new Equal<>(definition);
   }
 
@@ -407,7 +407,7 @@ public final class Equal<A> {
    */
   public static <A> Equal<Tree<A>> treeEqual(final Equal<A> ea) {
     Definition<A> eaDef = ea.def;
-    return equalDef(new AlternateDefinition<Tree<A>>() {
+    return equalDef(new AltDefinition<Tree<A>>() {
 
       final Definition<P1<Stream<Tree<A>>>> subForestEqDef = p1Equal(streamEqual(equalDef(this))).def;
 

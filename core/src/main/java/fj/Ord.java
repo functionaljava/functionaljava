@@ -16,7 +16,6 @@ import java.util.Comparator;
 
 import static fj.Function.apply;
 import static fj.Function.compose;
-import static fj.Function.compose2;
 import static fj.Function.curry;
 import static fj.Semigroup.semigroup;
 import static fj.Semigroup.semigroupDef;
@@ -90,7 +89,7 @@ public final class Ord<A> {
   /**
    * Primitives functions of Ord: alternative minimal definition and overridable methods.
    */
-  public interface AlternateDefinition<A> extends Definition<A> {
+  public interface AltDefinition<A> extends Definition<A> {
 
     Ordering compare(A a1, A a2);
 
@@ -301,7 +300,7 @@ public final class Ord<A> {
   }
 
   /**
-   * Returns an order instance that uses the given minimal equality test and ordering definiion.
+   * Returns an order instance that uses the given minimal equality test and ordering definition.
    *
    * @param def The order definition.
    * @return An order instance.
@@ -311,12 +310,12 @@ public final class Ord<A> {
   }
 
   /**
-   * Returns an order instance that uses the given minimal equality test and ordering definiion.
+   * Returns an order instance that uses the given minimal equality test and ordering definition.
    *
    * @param def The order definition.
    * @return An order instance.
    */
-  public static <A> Ord<A> ordDef(final AlternateDefinition<A> def) {
+  public static <A> Ord<A> ordDef(final AltDefinition<A> def) {
     return new Ord<>(def);
   }
 
