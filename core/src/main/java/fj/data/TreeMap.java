@@ -129,8 +129,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    * @return A potential value for the given key.
    */
   public Option<V> get(final K k) {
-    final Option<P2<K, Option<V>>> x = tree.split(p(k, Option.none()))._2();
-    return x.bind(P2.__2());
+    return tree.lookup(p(k, Option.none())).bind(P2::_2);
   }
 
   /**
