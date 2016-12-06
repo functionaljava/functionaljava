@@ -516,6 +516,129 @@ public abstract class Set<A> implements Iterable<A> {
   }
 
   /**
+   * Find element equal to the given one.
+   *
+   * @param a An element to compare with.
+   * @return Some element in this set equal to the given one, or None.
+   */
+  public final Option<A> lookup(final A a) {
+    Set<A> s = this;
+    while (true)
+      if (s.isEmpty())
+        return none();
+      else {
+        final A h = s.head();
+        final Ordering i = ord.compare(a, h);
+        if (i == LT)
+          s = s.l();
+        else if (i == GT)
+          s = s.r();
+        else
+          return some(h);
+      }
+  }
+
+  /**
+   * Find largest element smaller than the given one.
+   *
+   * @param a An element to compare with.
+   * @return Some largest element in this set smaller than the given one, or None.
+   */
+  public final Option<A> lookupLT(final A a) {
+    Set<A> s = this;
+    Option<A> r = none();
+    while (true)
+      if (s.isEmpty())
+        return r;
+      else {
+        final A h = s.head();
+        final Ordering i = ord.compare(a, h);
+        if (i == GT) {
+          r = some(h);
+          s = s.r();
+        }
+        else
+          s = s.l();
+      }
+  }
+
+  /**
+   * Find smallest element greater than the given one.
+   *
+   * @param a An element to compare with.
+   * @return Some smallest element in this set greater than the given one, or None.
+   */
+  public final Option<A> lookupGT(final A a) {
+    Set<A> s = this;
+    Option<A> r = none();
+    while (true)
+      if (s.isEmpty())
+        return r;
+      else {
+        final A h = s.head();
+        final Ordering i = ord.compare(a, h);
+        if (i == LT) {
+          r = some(h);
+          s = s.l();
+        }
+        else
+          s = s.r();
+      }
+  }
+
+  /**
+   * Find largest element smaller or equal to the given one.
+   *
+   * @param a An element to compare with.
+   * @return Some largest element in this set smaller or equal to the given one, or None.
+   */
+  public final Option<A> lookupLE(final A a) {
+    Set<A> s = this;
+    Option<A> r = none();
+    while (true)
+      if (s.isEmpty())
+        return r;
+      else {
+        final A h = s.head();
+        final Ordering i = ord.compare(a, h);
+        if (i == LT)
+          s = s.l();
+        else if (i == GT) {
+          r = some(h);
+          s = s.r();
+        }
+        else
+          return some(h);
+      }
+  }
+
+  /**
+   * Find smallest element greater or equal to the given one.
+   *
+   * @param a An element to compare with.
+   * @return Some smallest element in this set greater or equal to the given one, or None.
+   */
+  public final Option<A> lookupGE(final A a) {
+    Set<A> s = this;
+    Option<A> r = none();
+    while (true)
+      if (s.isEmpty())
+        return r;
+      else {
+        final A h = s.head();
+        final Ordering i = ord.compare(a, h);
+        if (i == LT) {
+          r = some(h);
+          s = s.l();
+        }
+        else if (i == GT)
+          s = s.r();
+        else
+          return some(h);
+      }
+  }
+
+  /**
    * Returns true if this set is a subset of the given set.
    *
    * @param s A set which is a superset of this set if this method returns true.
