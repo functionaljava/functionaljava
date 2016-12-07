@@ -20,7 +20,7 @@ buildscript {
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
         classpath "me.tatarka:gradle-retrolambda:$retrolambdaPluginVersion"
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.7.1'
     }
 }
 
