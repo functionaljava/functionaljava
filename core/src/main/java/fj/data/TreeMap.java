@@ -360,7 +360,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
    */
   @SuppressWarnings("unchecked")
   public <W> TreeMap<K, W> map(final F<V, W> f) {
-    final F<P2<K, Option<V>>, P2<K, Option<W>>> g = P2.map2_(F1Functions.mapOption(f));
+    final F<P2<K, Option<V>>, P2<K, Option<W>>> g = compose(p2 -> p(p2._1(), p2._2()), P2.map2_(F1Functions.mapOption(f)));
     final F<K, P2<K, Option<V>>> coord = flip(P.<K, Option<V>>p2()).f(Option.none());
     final Ord<K> o = tree.ord().contramap(coord);
     return new TreeMap<>(tree.map(TreeMap.ord(o), g));
