@@ -1,7 +1,7 @@
 = Functional Java
 
 image:https://travis-ci.org/functionaljava/functionaljava.svg?branch=master["Build Status", link="https://travis-ci.org/functionaljava/functionaljava"]
-image:https://coveralls.io/repos/github/functionaljava/functionaljava/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/functionaljava/functionaljava?branch=master"]
+image:https://codecov.io/gh/functionaljava/functionaljava/branch/master/graph/badge.svg["Code Coverage", link="https://codecov.io/gh/functionaljava/functionaljava"]
 image:https://badges.gitter.im/functionaljava/functionaljava.svg[link="https://gitter.im/functionaljava/functionaljava?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
 
 image::http://www.functionaljava.org/img/logo-600x144.png[]

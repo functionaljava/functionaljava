@@ -30,4 +30,4 @@ script:
   - ./gradlew build coverage -s -i
 
 after_success:
-  - ./gradlew jacocoRootReport coveralls
+  - bash <(curl -s https://codecov.io/bash)
