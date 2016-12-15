@@ -129,27 +129,26 @@ subprojects {
         reports {
             html.enabled = true
             xml.enabled = true
-            csv.enabled = false
-//        html.destination "${buildDir}/jacocoHtml"
         }
     }
 
-
-    task coverage(dependsOn: ["test", "jacocoTestReport"]) << {
-
-    }
+    task coverage(dependsOn: ["test", "jacocoTestReport"]) << {}
 
 }
 
 task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
-    dependsOn = subprojects.test
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories =  files(subprojects.sourceSets.main.output)
-    executionData = files(subprojects.jacocoTestReport.executionData)
+    dependsOn = subprojects.coverage
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+    subprojects.each {
+        // We only care about coverage of published artefacts:
+        if (it.uploadArchives.enabled) {
+            sourceSets it.sourceSets.main
+        }
+    }
+
     reports {
         html.enabled = true
         xml.enabled = true
-        csv.enabled = false
     }
 }
 
@@ -209,24 +208,4 @@ configure(subprojects.findAll { it.name != "props-core" }) {
 
 task env << {
 	println System.getenv()
-}
-
-task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
-	dependsOn = subprojects.jacocoTestReport
-	sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-	classDirectories = files(subprojects.sourceSets.main.output)
-	executionData = files(subprojects.jacocoTestReport.executionData)
-	reports {
-		xml.enabled true
-		xml.destination ="${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-	}
-	// We could remove the following setOnlyIf line, but then
-	// jacocoRootReport would silently be SKIPPED if something with
-	// the projectsWithUnitTests is wrong (e.g. a project is missing
-	// in there).
-	setOnlyIf { true }
-}
-
-coveralls {
-	sourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs).files.absolutePath
 }
