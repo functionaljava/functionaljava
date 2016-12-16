@@ -20,12 +20,10 @@ buildscript {
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
         classpath "me.tatarka:gradle-retrolambda:$retrolambdaPluginVersion"
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
 
 apply plugin: "jacoco"
-apply plugin: 'com.github.kt3k.coveralls'
 
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
@@ -139,12 +137,10 @@ subprojects {
 task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     dependsOn = subprojects.coverage
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-    subprojects.each {
-        // We only care about coverage of published artefacts:
-        if (it.uploadArchives.enabled) {
-            sourceSets it.sourceSets.main
-        }
-    }
+    // We only care about coverage of:
+    def projectForFoverage = ["core", "java8", "quickcheck", "java-core"]
+    classDirectories = files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.output)
+    sourceDirectories = files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.allSource.srcDirs)
 
     reports {
         html.enabled = true
