@@ -1472,7 +1472,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The optional maximum element in this list according to the given ordering.
    */
   public final Option<A> maximumOption(final Ord<A> o) {
-	  return headOption().map(x -> maximum(o));
+	  return NonEmptyList.fromList(this).map(nel -> nel.maximum(o));
   }
   
   /**
@@ -1492,7 +1492,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return The optional minimum element in this list according to the given ordering.
    */
   public final Option<A> minimumOption(final Ord<A> o) {
-	  return headOption().map(x -> minimum(o));
+	  return NonEmptyList.fromList(this).map(nel -> nel.minimum(o));
   }
 
   public final java.util.List<A> toJavaList() {
