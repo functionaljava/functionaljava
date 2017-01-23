@@ -226,6 +226,28 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return nel(list.head(), list.tail());
   }
 
+  
+  /**
+   * Returns the minimum element in this non empty list according to the given ordering.
+   *
+   * @param o An ordering for the elements of this non empty list.
+   * @return The minimum element in this list according to the given ordering.
+   */
+  public final A minimum(final Ord<A> o) {
+    return foldLeft1(o::min);
+  }
+  
+  /**
+   * Returns the maximum element in this non empty list according to the given ordering.
+   *
+   * @param o An ordering for the elements of this non empty list.
+   * @return The maximum element in this list according to the given ordering.
+   */
+  public final A maximum(final Ord<A> o) {
+    return foldLeft1(o::max);
+  }
+  
+  
   /**
    * Zips this non empty list with the given non empty list to produce a list of pairs. If this list and the given list
    * have different lengths, then the longer list is normalised so this function never fails.
