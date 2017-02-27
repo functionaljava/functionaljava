@@ -16,3 +16,5 @@ configureUpload(signingEnabled, signModule)
 
 
 uploadArchives.enabled = true
+
+configureAllRetroLambda()
