@@ -61,7 +61,7 @@ public final class P {
    * and at each subsequent call if and only if the reference have been garbage collected
    * due of shortage of memory (ie. to avoid OutOfMemoryErrors).
    */
-  public static <A> P1<A> sofMemo(F0<A> f) {
+  public static <A> P1<A> softMemo(F0<A> f) {
     return new P1.SoftReferenceMemo<>(f);
   }
 
