@@ -1,28 +1,58 @@
 
 = Release 4.7
 
-Proposed release: September 2016
+Released: unknown, potentially 25 March 2017
 
 == Enhancements
 
-* TODO.
+* Added Hash Array Mapped Trie (#284).
+* Improve performance of List#groupBy via a mutable buffer (#288).
+* Avoid unnecessary wrapping of F0 into P1.lazy where applicable.  Use static P factories for this (#284).
+* Added semigroup constraint to List.traverseValidation (#287).
+* Added first class fold for either (catamorphism) (#284).
+* Added first class fold for Option (catamorphism) (#284).
+* Added optimisable definitions for Equal (#284).
+* Added uncurried version of foldRight, foldLeft and append to NonEmptyList (#284).
+* Added optimisable definitions for Monoid and Semigroup (#284).
+* Improved performance of List.minimum and maximum by using uncurried Ord.max and Ord.min (#284).
+* Removed deprecation of Monoid, Ord and Semigroup constructors for non Java 8 versions (#284).
+* Added safe List minimumOption and maximumOption and NonEmptyList minimum and maximum.
+* Added  Set.lookup, Set.lookupLT, Set.lookupGT, Set.lookupLE and Set.lookupGE from Haskell (#305).
 
 == Fixes
 
-* TODO.
+* Make Stream conversions respect laziness (#284).
+* Fixed Ord#isGreaterThan(A)/isLesserThan(A) not using strict inequality (#293).
+* Correctly convert Option.some(null) to Optional (#284).
+* Fixed override in P.p(A) (#284).
+* Avoid unnecessary currying in uncurried version of foldRight (#284).
 
 == Internal
 
-* TODO.
+* Deprecated unsafe Ord instance and List#groupBy without an Ord parameter (#290).
+* Added tests for Strings class (#295).
+* Use more method references (#284).
+* Converted memoisation tests from JUnit to PropertyTestRunner (#284) for hard memoisation.
+* Improved implementation of P1#_1 method (#284).
+* Make use of weak memoisation explicit (#284).
+* Enable backport of default methods using Retro Lambda (#284).
+* Upgrade to Gradle 2.14.1 (#310).
+* Switch from Coveralls to cover.io (#308).
+* Force strict evaluation in TreeMap.map (#309).
 
 == Breaking Changes
 
-* TODO.
+* none.
 
 == Documentation
 
-* TODO.
+* none.
 
 == Contributors
 
-* TODO.
+* Jean-Baptiste Giradeau
+* Mark Perry
+* Gabor Liptak
+* Shimi Bandiel
+* Siro Mateos
+
