@@ -4,14 +4,10 @@ archivesBaseName = "${project.projectName}-${project.name}"
 apply plugin: 'scala'
 
 ext {
-    scalaVersion = "2.11.7"
+    scalaVersion = "2.11.8"
     scalacheckScalaVersion = "2.11"
-    scalacheckVersion = "1.12.4"
+    scalacheckVersion = "1.12.5"
     signModule = true
-}
-
-tasks.withType(ScalaCompile) {
-    scalaCompileOptions.useAnt = false
 }
 
 dependencies {
@@ -21,8 +17,6 @@ dependencies {
 
     testCompile dependencyJunit
 }
-
-sourceCompatibility = "1.7"
 
 performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)

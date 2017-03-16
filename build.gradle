@@ -6,9 +6,9 @@ ext {
 
 buildscript {
     ext {
-		uptodateVersion = "1.6.0"
-        retrolambdaPluginVersion = "3.2.5"
-        retrolambdaVersion = "2.3.0"
+		uptodateVersion = "1.6.2"
+        retrolambdaPluginVersion = "3.5.0"
+        retrolambdaVersion = "2.5.1"
     }
 
     repositories {
@@ -77,8 +77,8 @@ allprojects {
         displayCompilerWarnings = true
 
         newJdkEnvVar = "JAVA8_HOME"
-        oldJdkEnvVar = "JAVA6_HOME"
-        retroLambdaTarget = JavaVersion.VERSION_1_6
+        oldJdkEnvVar = "JAVA7_HOME"
+        retroLambdaTarget = JavaVersion.VERSION_1_7
     }
 
     repositories {

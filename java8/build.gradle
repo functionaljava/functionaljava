@@ -13,4 +13,6 @@ dependencies {
 performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)
 
-uploadArchives.enabled = true
+if (!useRetroLambda) {
+    uploadArchives.enabled = true
+}

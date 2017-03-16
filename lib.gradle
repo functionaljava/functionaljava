@@ -94,6 +94,8 @@ void configureRetroLambda(boolean useRetroLambda, String newJdkEnvVar, String ol
         dependencies {
             retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:$retrolambdaVersion"
         }
+    } else {
+        project.archivesBaseName = "${project.archivesBaseName}_1.8"
     }
 }
 
