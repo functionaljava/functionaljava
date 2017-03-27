@@ -1,7 +1,7 @@
 
 = Release 4.7
 
-Released: unknown, potentially 25 March 2017
+Released: 27 March 2017
 
 == Enhancements
 
