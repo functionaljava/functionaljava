@@ -534,7 +534,7 @@ public final class Semigroup<A> {
     return semigroupDef(new Definition<NonEmptyList<A>>() {
       @Override
       public NonEmptyList<A> append(NonEmptyList<A> a1, NonEmptyList<A> a2) {
-        return a1.append(a1);
+        return a1.append(a2);
       }
 
       @Override
