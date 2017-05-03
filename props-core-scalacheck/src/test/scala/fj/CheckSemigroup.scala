@@ -11,12 +11,13 @@ import fj.data.ArbitraryNonEmptyList.arbitraryNonEmptyList
 import fj.data.ArbitraryOption.arbitraryOption
 import fj.data.ArbitrarySet.arbitrarySet
 import fj.data.ArbitraryStream.arbitraryStream
+import fj.data.IO
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
 import org.scalacheck.{Arbitrary, Properties}
 
 /**
-  * Scalacheck [[Properties]] for [[Semigroup]] implementations.
+  * Scalacheck [[Properties]] parameterized for [[Semigroup]] implementations.
   *
   * @param s         a Semigroup implementation.
   * @param desc      a description of the Semigroup implementation.
@@ -44,9 +45,59 @@ case class SemigroupProperties[T](s: Semigroup[T], desc: String)(implicit val ar
 
 }
 
+/**
+  * A specialized Scalacheck [[Properties]] object for testing the [[Semigroup.ioSemigroup()]] method.
+  */
+object CheckIOSemigroup extends Properties("ioSemigroup") {
+
+  val s = Semigroup.ioSemigroup(Semigroup.stringSemigroup)
+
+  property("sum(x,y)") = forAll((x: IO[String], y: IO[String], z: IO[String]) =>
+    s.sum(s.sum(x, y), z).run() == s.sum(x, s.sum(y, z)).run())
+
+  property("sum()") = forAll((x: IO[String], y: IO[String], z: IO[String]) => {
+    val sf = s.sum()
+    sf.f(sf.f(x).f(y)).f(z).run() == sf.f(x).f(sf.f(y).f(z)).run()
+  })
+
+  property("dual()") = forAll((x: IO[String], y: IO[String], z: IO[String]) => {
+    val sd = s.dual()
+    sd.sum(sd.sum(x, y), z).run() == sd.sum(x, sd.sum(y, z)).run()
+  })
+
+  property("sum(x)") = forAll((x: IO[String], y: IO[String]) =>
+    s.sum(x).f(y).run() == s.sum(x, y).run())
+
+}
+
+object CheckStringBuilder extends Properties("stringBuilderSemigroup") {
+
+  val s: Semigroup[java.lang.StringBuilder] = Semigroup.stringBuilderSemigroup
+
+  implicit def toStringBuilder(str: String): java.lang.StringBuilder = new java.lang.StringBuilder(str)
+
+  property("sum(x,y)") = forAll((x: String, y: String, z: String) =>
+    s.sum(s.sum(x, y), z).toString == s.sum(x, s.sum(y, z)).toString
+  )
+
+  property("sum()") = forAll((x: String, y: String, z: String) => {
+    val sf = s.sum()
+    sf.f(sf.f(x).f(y)).f(z).toString == sf.f(x).f(sf.f(y).f(z.toString))
+  })
+
+  property("dual()") = forAll((x: String, y: String, z: String) => {
+    val sd = s.dual()
+    sd.sum(sd.sum(x, y), z).toString == sd.sum(x, sd.sum(y, z).toString)
+  })
+
+  property("sum(x)") = forAll((x: String, y: String) =>
+    s.sum(x).f(y).toString == s.sum(x, y).toString)
+
+}
+
 
 /**
-  *
+  * A Scalacheck [[Properties]] object that aggregates the tests for all [[Semigroup]] implementations.
   */
 object CheckSemigroup extends Properties("Semigroup") {
 
@@ -107,7 +158,7 @@ object CheckSemigroup extends Properties("Semigroup") {
   include(SemigroupProperties(Semigroup.intMaximumSemigroup, "intMaximumSemigroup"))
   include(SemigroupProperties(Semigroup.intMinimumSemigroup, "intMinimumSemigroup"))
 
-  include(SemigroupProperties(Semigroup.ioSemigroup[String](Semigroup.stringSemigroup), "ioSemigroup(Semigroup)"))
+  include(CheckIOSemigroup)
 
   include(SemigroupProperties(Semigroup.lastOptionSemigroup[Int](), "lastOptionSemigroup()"))
   include(SemigroupProperties(Semigroup.lastSemigroup[Int](), "lastSemigroup()"))
