@@ -70,27 +70,36 @@ object CheckIOSemigroup extends Properties("ioSemigroup") {
 
 }
 
-object CheckStringBuilder extends Properties("stringBuilderSemigroup") {
+/**
+  * A [[Properties]] implementation for testing [[Semigroup]] implementations that
+  * apply to mutable builder style classes such as [[java.lang.StringBuilder]] and
+  * [[java.lang.StringBuffer]].
+  *
+  * @param s          a Semigroup implementation to test.
+  * @param desc       a description of the Semigroup implementation under test.
+  * @param conversion a function that converts a value of type T to a new instance of type S.
+  * @tparam T the type that the builder constructs.
+  * @tparam S the type to which the Semigroup applies.
+  */
+case class CheckMutableBuilder[S, T](s: Semigroup[S], desc: String, conversion: T => S)(implicit val arbitrary: Arbitrary[T]) extends Properties(desc) {
 
-  val s: Semigroup[java.lang.StringBuilder] = Semigroup.stringBuilderSemigroup
+  implicit def toBuilder(t: T): S = conversion(t)
 
-  implicit def toStringBuilder(str: String): java.lang.StringBuilder = new java.lang.StringBuilder(str)
-
-  property("sum(x,y)") = forAll((x: String, y: String, z: String) =>
+  property("sum(x,y)") = forAll((x: T, y: T, z: T) =>
     s.sum(s.sum(x, y), z).toString == s.sum(x, s.sum(y, z)).toString
   )
 
-  property("sum()") = forAll((x: String, y: String, z: String) => {
+  property("sum()") = forAll((x: T, y: T, z: T) => {
     val sf = s.sum()
-    sf.f(sf.f(x).f(y)).f(z).toString == sf.f(x).f(sf.f(y).f(z.toString))
+    sf.f(sf.f(x).f(y)).f(z).toString == sf.f(x).f(sf.f(y).f(z)).toString
   })
 
-  property("dual()") = forAll((x: String, y: String, z: String) => {
+  property("dual()") = forAll((x: T, y: T, z: T) => {
     val sd = s.dual()
-    sd.sum(sd.sum(x, y), z).toString == sd.sum(x, sd.sum(y, z).toString)
+    sd.sum(sd.sum(x, y), z).toString == sd.sum(x, sd.sum(y, z)).toString
   })
 
-  property("sum(x)") = forAll((x: String, y: String) =>
+  property("sum(x)") = forAll((x: T, y: T) =>
     s.sum(x).f(y).toString == s.sum(x, y).toString)
 
 }
@@ -193,8 +202,8 @@ object CheckSemigroup extends Properties("Semigroup") {
   include(SemigroupProperties(Semigroup.streamSemigroup[Int](), "streamSemigroup"))
 
   include(SemigroupProperties(Semigroup.stringSemigroup, "stringSemigroup"))
-  include(SemigroupProperties(Semigroup.stringBufferSemigroup, "stringBufferSemigroup"))
-  include(SemigroupProperties(Semigroup.stringBuilderSemigroup, "stringBuilderSemigroup"))
+  include(CheckMutableBuilder(Semigroup.stringBufferSemigroup, "stringBufferSemigroup", (s: String) => new java.lang.StringBuffer(s)))
+  include(CheckMutableBuilder(Semigroup.stringBuilderSemigroup, "stringBuilderSemigroup", (s: String) => new java.lang.StringBuilder(s)))
 
 
   include(SemigroupProperties(Semigroup.unitSemigroup, "unitSemigroup"))
