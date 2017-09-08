@@ -11,7 +11,7 @@ import static fj.data.Stream.join;
 import static fj.function.Booleans.or;
 import static fj.function.Characters.isSpaceChar;
 import static fj.Equal.charEqual;
-import static fj.Equal.streamEqual;
+import static fj.Equal.streamCharacterEqual;
 
 import java.util.regex.Pattern;
 
@@ -234,7 +234,7 @@ public final class LazyString implements CharSequence {
    * @return The first index of the given substring in this lazy string, or None if there is no such substring.
    */
   public Option<Integer> indexOf(final LazyString cs) {
-    return s.substreams().indexOf(eqS.eq(cs.s));
+    return s.substreams().indexOf(streamCharacterEqual.eq(cs.s));
   }
 
   /**
@@ -341,7 +341,5 @@ public final class LazyString implements CharSequence {
    */
   public static final F<Stream<Character>, LazyString> fromStream =
           LazyString::fromStream;
-
-  private static final Equal<Stream<Character>> eqS = streamEqual(charEqual);
 
 }
