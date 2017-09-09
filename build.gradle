@@ -6,7 +6,7 @@ ext {
 
 buildscript {
     ext {
-		uptodateVersion = "1.6.2"
+        uptodateVersion = "1.6.3"
         retrolambdaPluginVersion = "3.5.0"
         retrolambdaVersion = "2.5.1"
     }
