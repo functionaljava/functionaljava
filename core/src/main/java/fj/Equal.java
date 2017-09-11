@@ -292,11 +292,6 @@ public final class Equal<A> {
   public static final Equal<BitSet> bitSetSequal = equalDef((bs1, bs2) -> bs1.longValue() == bs2.longValue());
 
   /**
-   * An equal instance for the {@link Stream} of {@link Character}.
-   */
-  public static final Equal<Stream<Character>> streamCharacterEqual = streamEqual(charEqual);
-
-  /**
    * An equal instance for the {@link Either} type.
    *
    * @param ea Equality across the left side of {@link Either}.
