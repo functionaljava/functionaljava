@@ -674,7 +674,7 @@ public final class Equal<A> {
   /**
    * An equal instance for lazy strings.
    */
-  public static final Equal<LazyString> eq = streamEqual(charEqual).contramap(LazyString.toStream);
+  public static final Equal<LazyString> eq = streamEqual(charEqual).contramap(LazyString::toStream);
 
   /**
    * An equal instance for the empty heterogeneous list.
