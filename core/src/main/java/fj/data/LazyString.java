@@ -234,7 +234,7 @@ public final class LazyString implements CharSequence {
    * @return The first index of the given substring in this lazy string, or None if there is no such substring.
    */
   public Option<Integer> indexOf(final LazyString cs) {
-    return s.substreams().indexOf(Consts.eqS.eq(cs.s));
+    return s.substreams().indexOf(eqS.eq(cs.s));
   }
 
   /**
@@ -342,15 +342,6 @@ public final class LazyString implements CharSequence {
   public static final F<Stream<Character>, LazyString> fromStream =
           LazyString::fromStream;
 
-  /**
-   * Static constants that should be placed in different class to prevent cycle references
-   * in static initializer
-   */
-  private static class Consts {
-    private Consts() {
-      throw new UnsupportedOperationException();
-    }
+  private static final Equal<Stream<Character>> eqS = streamEqual(charEqual);
 
-    public static final Equal<Stream<Character>> eqS = streamEqual(charEqual);
-  }
 }
