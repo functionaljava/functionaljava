@@ -1,12 +1,11 @@
 package fj;
 
-import fj.data.*;
-import fj.data.optic.Lens;
-import fj.data.optic.PLens;
-
 import static fj.Function.*;
 import static fj.P.weakMemo;
 import static fj.data.optic.PLens.pLens;
+import fj.data.*;
+import fj.data.optic.Lens;
+import fj.data.optic.PLens;
 
 /**
  * A product-2.
