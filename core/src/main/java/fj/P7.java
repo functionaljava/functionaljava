@@ -388,6 +388,16 @@ public abstract class P7<A, B, C, D, E, F, G> {
   }
 
   /**
+   * Creates a {@link P8} by adding the given element to the current {@link P7}
+   *
+   * @param el the element to append
+   * @return A {@link P8} containing the original {@link P7} with the extra element added at the end
+   */
+  public final <H> P8<A, B, C, D, E, F, G, H> append(H el) {
+    return P.p(_1(), _2(), _3(), _4(), _5(), _6(), _7(), el);
+  }
+
+  /**
    * Provides a memoising P7 that remembers its values.
    *
    * @return A P7 that calls this P7 once for any given element and remembers the value for subsequent calls.

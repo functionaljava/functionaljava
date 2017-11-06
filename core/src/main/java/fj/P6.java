@@ -310,6 +310,26 @@ public abstract class P6<A, B, C, D, E, F> {
   }
 
   /**
+   * Creates a {@link P7} by adding the given element to the current {@link P6}
+   *
+   * @param el the element to append
+   * @return A {@link P7} containing the original {@link P6} with the extra element added at the end
+   */
+  public final <G> P7<A, B, C, D, E, F, G> append(G el) {
+    return P.p(_1(), _2(), _3(), _4(), _5(), _6(), el);
+  }
+
+  /**
+   * Creates a {@link P8} by adding the given element to the current {@link P6}
+   *
+   * @param el the element to append
+   * @return A {@link P8} containing the original {@link P6} with the extra element added at the end
+   */
+  public final <G, H> P8<A, B, C, D, E, F, G, H> append(P2<G, H> el) {
+    return P.p(_1(), _2(), _3(), _4(), _5(), _6(), el._1(), el._2());
+  }
+
+  /**
    * Provides a memoising P6 that remembers its values.
    *
    * @return A P6 that calls this P6 once for any given element and remembers the value for subsequent calls.

@@ -239,6 +239,36 @@ public abstract class P5<A, B, C, D, E> {
   }
 
   /**
+   * Creates a {@link P6} by adding the given element to the current {@link P5}
+   *
+   * @param el the element to append
+   * @return A {@link P6} containing the original {@link P5} with the extra element added at the end
+   */
+  public final <F> P6<A, B, C, D, E, F> append(F el) {
+    return P.p(_1(), _2(), _3(), _4(), _5(), el);
+  }
+
+  /**
+   * Creates a {@link P7} by adding the given element to the current {@link P5}
+   *
+   * @param el the element to append
+   * @return A {@link P7} containing the original {@link P5} with the extra element added at the end
+   */
+  public final <F, G> P7<A, B, C, D, E, F, G> append(P2<F, G> el) {
+    return P.p(_1(), _2(), _3(), _4(), _5(), el._1(), el._2());
+  }
+
+  /**
+   * Creates a {@link P8} by adding the given element to the current {@link P5}
+   *
+   * @param el the element to append
+   * @return A {@link P8} containing the original {@link P5} with the extra element added at the end
+   */
+  public final <F, G, H> P8<A, B, C, D, E, F, G, H> append(P3<F, G, H> el) {
+    return P.p(_1(), _2(), _3(), _4(), _5(), el._1(), el._2(), el._3());
+  }
+
+  /**
    * Provides a memoising P5 that remembers its values.
    *
    * @return A P5 that calls this P5 once for any given element and remembers the value for subsequent calls.

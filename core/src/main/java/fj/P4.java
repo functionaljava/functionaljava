@@ -176,6 +176,50 @@ public abstract class P4<A, B, C, D> {
     return F1Functions.lazy(P4.<A, B, C, D>__4()).f(this);
   }
 
+
+  /**
+   * Creates a {@link P5} by adding the given element to the current {@link P4}
+   *
+   * @param el the element to append
+   * @return A {@link P5} containing the original {@link P4} with the extra element added at the end
+   */
+  public final <E> P5<A, B, C, D, E> append(E el) {
+    return P.p(_1(), _2(), _3(), _4(), el);
+  }
+
+  /**
+   * Creates a {@link P6} by adding the given element to the current {@link P4}
+   *
+   * @param el the element to append
+   * @return A {@link P6} containing the original {@link P4} with the extra element added at the end
+   */
+  public final <E, F> P6<A, B, C, D, E, F> append(P2<E, F> el) {
+    return P.p(_1(), _2(), _3(), _4(), el._1(), el._2());
+  }
+
+  /**
+   * Creates a {@link P7} by adding the given element to the current {@link P4}
+   *
+   * @param el the element to append
+   * @return A {@link P7} containing the original {@link P4} with the extra element added at the end
+   */
+  public final <E, F, G> P7<A, B, C, D, E, F, G> append(P3<E, F, G> el) {
+    return P.p(_1(), _2(), _3(), _4(), el._1(), el._2(), el._3());
+  }
+
+  /**
+   * Creates a {@link P8} by adding the given element to the current {@link P4}
+   *
+   * @param el the element to append
+   * @return A {@link P8} containing the original {@link P4} with the extra element added at the end
+   */
+  public final <E, F, G, H> P8<A, B, C, D, E, F, G, H> append(P4<E, F, G, H> el) {
+    return P.p(_1(), _2(), _3(), _4(), el._1(), el._2(), el._3(), el._4());
+  }
+
+
+
+
   /**
    * Provides a memoising P4 that remembers its values.
    *
