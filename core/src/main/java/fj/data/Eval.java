@@ -3,6 +3,7 @@ package fj.data;
 import fj.F;
 import fj.F0;
 import fj.P;
+import fj.P1;
 import fj.control.Trampoline;
 
 /**
@@ -94,18 +95,14 @@ public abstract class Eval<A> {
    * @return a transformed evaluation.
    */
   public <B> Eval<B> bind(final F<A, Eval<B>> f) {
-    if (isTrampoline()) {
-      return bindTrampoline(f, (TrampolineEval<A>) this);
-    } else {
-      return bindTrampoline(f, pureTrampoline(this));
-    }
+    return bindTrampoline(f, asTrampoline());
   }
 
   /**
-   * True if the current instance is a trampoline instance, false - otherwise.
+   * Transforms the current instance into a trampoline instance.
    */
-  boolean isTrampoline() {
-    return false;
+  TrampolineEval<A> asTrampoline() {
+    return pureTrampoline(this);
   }
 
   /**
@@ -128,20 +125,15 @@ public abstract class Eval<A> {
    * Represents a lazy computation that is evaluated only once.
    */
   private static final class Later<A> extends Eval<A> {
-    private F0<A> producer;
-    private A a;
+    private final P1<A> memo;
 
     private Later(F0<A> producer) {
-      this.producer = producer;
+      this.memo = P.hardMemo(producer);
     }
 
     @Override
     public A value() {
-      if (producer != null) {
-        a = producer.f();
-        producer = null;
-      }
-      return a;
+      return memo._1();
     }
   }
 
@@ -149,7 +141,7 @@ public abstract class Eval<A> {
    * Represents a lazy computation that is evaluated every time when it's requested.
    */
   private static final class Always<A> extends Eval<A> {
-    private F0<A> supplier;
+    private final F0<A> supplier;
 
     private Always(F0<A> supplier) {
       this.supplier = supplier;
@@ -174,8 +166,8 @@ public abstract class Eval<A> {
     }
 
     @Override
-    boolean isTrampoline() {
-      return true;
+    TrampolineEval<A> asTrampoline() {
+      return this;
     }
   }
 
