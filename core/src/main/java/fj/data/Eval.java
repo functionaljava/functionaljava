@@ -72,14 +72,14 @@ public abstract class Eval<A> {
    * @param f the transformation function.
    * @return a transformed evaluation.
    */
-  public <B> Eval<B> map(final F<A, B> f) {
+  public final <B> Eval<B> map(final F<A, B> f) {
     return bind(a -> now(f.f(a)));
   }
 
   /**
    * Alias for {@link #bind(F)}.
    */
-  public <B> Eval<B> flatMap(final F<A, Eval<B>> f) {
+  public final <B> Eval<B> flatMap(final F<A, Eval<B>> f) {
     return bind(f);
   }
 
@@ -94,16 +94,14 @@ public abstract class Eval<A> {
    * @param f the transformation function.
    * @return a transformed evaluation.
    */
-  public <B> Eval<B> bind(final F<A, Eval<B>> f) {
-    return bindTrampoline(f, asTrampoline());
+  public final <B> Eval<B> bind(final F<A, Eval<B>> f) {
+    return new BindTrampolineEval<>(f, asTrampoline());
   }
 
   /**
    * Transforms the current instance into a trampoline instance.
    */
-  TrampolineEval<A> asTrampoline() {
-    return pureTrampoline(this);
-  }
+  abstract TrampolineEval<A> asTrampoline();
 
   /**
    * Represents an eager computation.
@@ -111,13 +109,18 @@ public abstract class Eval<A> {
   private static final class Now<A> extends Eval<A> {
     private final A a;
 
-    private Now(A a) {
+    Now(A a) {
       this.a = a;
     }
 
     @Override
-    public A value() {
+    public final A value() {
       return a;
+    }
+
+    @Override
+    final TrampolineEval<A> asTrampoline() {
+      return new PureTrampolineEval<>(this);
     }
   }
 
@@ -127,13 +130,18 @@ public abstract class Eval<A> {
   private static final class Later<A> extends Eval<A> {
     private final P1<A> memo;
 
-    private Later(F0<A> producer) {
+    Later(F0<A> producer) {
       this.memo = P.hardMemo(producer);
     }
 
     @Override
-    public A value() {
+    public final A value() {
       return memo._1();
+    }
+
+    @Override
+    final TrampolineEval<A> asTrampoline() {
+      return new PureTrampolineEval<>(this);
     }
   }
 
@@ -143,13 +151,18 @@ public abstract class Eval<A> {
   private static final class Always<A> extends Eval<A> {
     private final F0<A> supplier;
 
-    private Always(F0<A> supplier) {
+    Always(F0<A> supplier) {
       this.supplier = supplier;
     }
 
     @Override
-    public A value() {
-      return supplier != null ? supplier.f() : null;
+    public final A value() {
+      return supplier.f();
+    }
+
+    @Override
+    final TrampolineEval<A> asTrampoline() {
+      return new PureTrampolineEval<>(this);
     }
   }
 
@@ -161,12 +174,12 @@ public abstract class Eval<A> {
     protected abstract Trampoline<A> trampoline();
 
     @Override
-    public A value() {
+    public final A value() {
       return trampoline().run();
     }
 
     @Override
-    TrampolineEval<A> asTrampoline() {
+    final TrampolineEval<A> asTrampoline() {
       return this;
     }
   }
@@ -174,12 +187,12 @@ public abstract class Eval<A> {
   private static final class PureTrampolineEval<A> extends TrampolineEval<A> {
     private final Eval<A> start;
 
-    private PureTrampolineEval(Eval<A> start) {
+    PureTrampolineEval(Eval<A> start) {
       this.start = start;
     }
 
     @Override
-    protected Trampoline<A> trampoline() {
+    protected final Trampoline<A> trampoline() {
       return Trampoline.suspend(P.lazy(() -> Trampoline.pure(start.value())));
     }
   }
@@ -188,22 +201,14 @@ public abstract class Eval<A> {
     private final TrampolineEval<A> next;
     private final F<A, Eval<B>> f;
 
-    private BindTrampolineEval(F<A, Eval<B>> f, TrampolineEval<A> next) {
+    BindTrampolineEval(F<A, Eval<B>> f, TrampolineEval<A> next) {
       this.next = next;
       this.f = f;
     }
 
     @Override
-    protected Trampoline<B> trampoline() {
+    protected final Trampoline<B> trampoline() {
       return Trampoline.suspend(P.lazy(() -> next.trampoline().map(v -> f.f(v).value())));
     }
-  }
-
-  private static <A> TrampolineEval<A> pureTrampoline(Eval<A> start) {
-    return new PureTrampolineEval<>(start);
-  }
-
-  private static <A, B> TrampolineEval<B> bindTrampoline(F<A, Eval<B>> f, TrampolineEval<A> next) {
-    return new BindTrampolineEval<>(f, next);
   }
 }
