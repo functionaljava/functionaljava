@@ -39,6 +39,20 @@ public class EvalTest {
     Assert.assertEquals(tracker.getInvocationCounter(), 3);
   }
 
+  @Test
+  public void testDefer() {
+    // Make sure that a recursive computation is actually stack-safe.
+    Assert.assertEquals(even(200000).value(), "done");
+  }
+
+  private static Eval<String> even(int n) {
+    return Eval.now(n <= 0).flatMap(b -> b ? Eval.now("done") : Eval.defer(() -> odd(n - 1)));
+  }
+
+  private static Eval<String> odd(int n) {
+    return Eval.defer(() -> even(n - 1));
+  }
+
   private static class InvocationTrackingF<A> implements F0<A> {
 
     private final A value;

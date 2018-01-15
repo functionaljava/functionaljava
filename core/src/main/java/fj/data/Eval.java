@@ -53,6 +53,17 @@ public abstract class Eval<A> {
   }
 
   /**
+   * Constructs a lazy evaluation of an expression that produces <code>Eval<A></code>.
+   * This operation is stack-safe and can be used for recursive computations.
+   *
+   * @param a the supplier that produces an <code>Eval<A></code>.
+   * @return a lazily evaluated nested evaluation.
+   */
+  public static <A> Eval<A> defer(F0<Eval<A>> a) {
+    return new DeferEval<>(a);
+  }
+
+  /**
    * Evaluates the computation and return its result.
    * Depending on whether the current instance is lazy or eager the
    * computation may or may not happen at this point.
@@ -208,7 +219,20 @@ public abstract class Eval<A> {
 
     @Override
     protected final Trampoline<B> trampoline() {
-      return Trampoline.suspend(P.lazy(() -> next.trampoline().map(v -> f.f(v).value())));
+      return Trampoline.suspend(P.lazy(() -> next.trampoline().bind(v -> f.f(v).asTrampoline().trampoline())));
+    }
+  }
+
+  private static final class DeferEval<A> extends TrampolineEval<A> {
+    private final P1<Eval<A>> memo;
+
+    DeferEval(F0<Eval<A>> producer) {
+      this.memo = P.hardMemo(producer);
+    }
+
+    @Override
+    protected final Trampoline<A> trampoline() {
+      return memo._1().asTrampoline().trampoline();
     }
   }
 }
