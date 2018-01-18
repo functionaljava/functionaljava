@@ -1,8 +1,11 @@
 package fj.data;
 
 import fj.F0;
+import fj.F2;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Iterator;
 
 public class EvalTest {
 
@@ -42,15 +45,19 @@ public class EvalTest {
   @Test
   public void testDefer() {
     // Make sure that a recursive computation is actually stack-safe.
-    Assert.assertEquals(even(200000).value(), "done");
+    int targetValue = 200000;
+    Iterator<Integer> it = Enumerator.intEnumerator.toStream(0).iterator();
+    Eval<Boolean> result = foldRight(it, (v, acc) -> v == targetValue ? Eval.now(true) : acc, false);
+    Assert.assertTrue(result.value());
   }
 
-  private static Eval<String> even(int n) {
-    return Eval.now(n <= 0).flatMap(b -> b ? Eval.now("done") : Eval.defer(() -> odd(n - 1)));
-  }
-
-  private static Eval<String> odd(int n) {
-    return Eval.defer(() -> even(n - 1));
+  private static <A, T> Eval<A> foldRight(Iterator<T> iterator,
+                                          F2<T, Eval<A>, Eval<A>> f,
+                                          A zero) {
+    if (!iterator.hasNext()) {
+      return Eval.now(zero);
+    }
+    return f.f(iterator.next(), Eval.defer(() -> foldRight(iterator, f, zero)));
   }
 
   private static class InvocationTrackingF<A> implements F0<A> {
