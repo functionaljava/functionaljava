@@ -232,7 +232,7 @@ public abstract class Eval<A> {
 
     @Override
     protected final Trampoline<A> trampoline() {
-      return memo._1().asTrampoline().trampoline();
+      return Trampoline.suspend(P.lazy(() -> memo._1().asTrampoline().trampoline()));
     }
   }
 }
