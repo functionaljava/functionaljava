@@ -139,7 +139,7 @@ public final class Equal<A> {
    * @param eq Equality for the mapped object
    * @return A new equal instance
    */
-  public <B> Equal<A> andThen(final F<A, B> f, Equal<B> eq) {
+  public final <B> Equal<A> andThen(final F<A, B> f, final Equal<B> eq) {
     return and(eq.contramap(f));
   }
 
@@ -149,7 +149,7 @@ public final class Equal<A> {
    * @param eq Another equality for self
    * @return A new equal instance
    */
-  public Equal<A> and(Equal<A> eq) {
+  public final Equal<A> and(final Equal<A> eq) {
     return equalDef((a1, a2) -> def.equal(a1, a2) && eq.def.equal(a1, a2));
   }
 
@@ -159,7 +159,7 @@ public final class Equal<A> {
    * @param eq Another equality for self
    * @return A new equal instance
    */
-  public Equal<A> or(Equal<A> eq) {
+  public final Equal<A> or(final Equal<A> eq) {
     return equalDef((a1, a2) -> def.equal(a1, a2) || eq.def.equal(a1, a2));
   }
 
@@ -168,7 +168,7 @@ public final class Equal<A> {
    *
    * @return A new equal instance
    */
-  public Equal<A> not() {
+  public final Equal<A> not() {
     return equalDef((a1, a2) -> !def.equal(a1, a2));
   }
 
@@ -182,21 +182,21 @@ public final class Equal<A> {
   /**
    * Static version of {@link #and(Equal)}
    */
-  public static <A> Equal<A> and(Equal<A> eq1, Equal<A> eq2) {
+  public static <A> Equal<A> and(final Equal<A> eq1, final Equal<A> eq2) {
     return eq1.and(eq2);
   }
 
   /**
    * Static version of {@link #or(Equal)}
    */
-  public static <A> Equal<A> or(Equal<A> eq1, Equal<A> eq2) {
+  public static <A> Equal<A> or(final Equal<A> eq1, final Equal<A> eq2) {
     return eq1.or(eq2);
   }
 
   /**
    * Static version of {@link #not()}
    */
-  public static <A> Equal<A> not(Equal<A> eq) {
+  public static <A> Equal<A> not(final Equal<A> eq) {
     return eq.not();
   }
 
