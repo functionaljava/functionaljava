@@ -288,6 +288,39 @@ public final class Ord<A> {
   }
 
   /**
+   * Constructs an ord instance, which compares using self and if objects are equal compares using <code>ord</code>
+   *
+   * @param ord Ord for subsequent comparison
+   * @return A new equal instance
+   */
+  public final Ord<A> andThen(final Ord<A> ord) {
+    return ordDef((a1, a2) -> {
+      final Ordering compareResult = compare(a1, a2);
+      if(compareResult == Ordering.EQ)
+        return ord.compare(a1, a2);
+      return compareResult;
+    });
+  }
+
+  /**
+   * Constructs an ord instance, which compares using self and if objects are equal compares the mapped objects
+   *
+   * @param f The function to map the original object
+   * @param ord Ord for the mapped object
+   * @return A new equal instance
+   */
+  public final <B> Ord<A> andThen(final F<A, B> f, final Ord<B> ord) {
+    return andThen(ord.contramap(f));
+  }
+
+  /**
+   * Static version of {@link #contramap(F)}
+   */
+  public static <A, B> Ord<A> contramap(final F<A, B> f, final Ord<B> ord) {
+    return ord.contramap(f);
+  }
+
+  /**
    * Returns an order instance that uses the given equality test and ordering function.
    *
    * Java 8+ users: use {@link #ordDef(Definition)} instead.
