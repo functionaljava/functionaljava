@@ -24,4 +24,22 @@ public class OrdTest {
     assertThat(pred.f(1L), is(false));
     assertThat(pred.f(2L), is(false));
   }
+
+  @Test
+  public void contramapShouldWork() {
+    Ord<String> lengthOrd = Ord.contramap(String::length, Ord.intOrd);
+
+    assertThat(lengthOrd.compare("str", "rts"), is(Ordering.EQ));
+    assertThat(lengthOrd.compare("strlong", "str"), is(Ordering.GT));
+  }
+
+  @Test
+  public void andThenShouldWork() {
+    Ord<String> lengthThenLastDigitOrd = Ord.contramap(String::length, Ord.intOrd)
+                                            .andThen(s -> s.charAt(s.length() - 1), Ord.charOrd);
+
+    assertThat(lengthThenLastDigitOrd.compare("str", "dyr"), is(Ordering.EQ));
+    assertThat(lengthThenLastDigitOrd.compare("stt", "str"), is(Ordering.GT));
+    assertThat(lengthThenLastDigitOrd.compare("str", "strr"), is(Ordering.LT));
+  }
 }
