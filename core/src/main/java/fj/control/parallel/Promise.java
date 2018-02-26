@@ -14,6 +14,7 @@ import fj.data.Option;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
 import fj.function.Effect1;
 
 import java.util.LinkedList;
@@ -307,8 +308,9 @@ public final class Promise<A> {
                                                            final B b) {
     return new F<Stream<A>, Promise<B>>() {
       public Promise<B> f(final Stream<A> as) {
-        return as.isEmpty() ? promise(s, p(b)) : liftM2(f).f(promise(s, p(as.head()))).f(
-                Promise.join(s, P.lazy(() -> f(as.tail()._1()).fmap(P.p1()))));
+        EvaluatedStream<A> eval = as.eval();
+        return eval.isEmpty() ? promise(s, p(b)) : liftM2(f).f(promise(s, p(eval.unsafeHead()))).f(
+                Promise.join(s, P.lazy(() -> f(eval.unsafeTail()).fmap(P.p1()))));
       }
     };
   }
@@ -380,9 +382,7 @@ public final class Promise<A> {
    * @return A stream of the results of applying the given stream of functions to this promise.
    */
   public <B> Stream<B> sequenceW(final Stream<F<Promise<A>, B>> fs) {
-    return fs.isEmpty()
-           ? Stream.nil()
-           : Stream.cons(fs.head().f(this), () -> sequenceW(fs.tail()._1()));
+    return Stream.byName(() -> fs.uncons(Stream.nil(), (fp, fps) -> Stream.cons(fp.f(this), sequenceW(fps))));
   }
 
 }

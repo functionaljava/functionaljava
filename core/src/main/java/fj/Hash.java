@@ -3,6 +3,7 @@ package fj;
 import static fj.Function.compose;
 
 import fj.data.*;
+import fj.data.Stream.EvaluatedStream;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -232,11 +233,12 @@ public final class Hash<A> {
     return hash(as -> {
         final int p = 419;
         int r = 239;
-        Stream<A> aas = as;
+
+        EvaluatedStream<A> aas = as.eval();
 
         while (!aas.isEmpty()) {
-            r = p * r + ha.hash(aas.head());
-            aas = aas.tail()._1();
+            r = p * r + ha.hash(aas.unsafeHead());
+            aas = aas.unsafeTail().eval();
         }
 
         return r;

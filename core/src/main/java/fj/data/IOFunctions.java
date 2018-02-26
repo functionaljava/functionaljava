@@ -17,6 +17,7 @@ import java.util.Arrays;
 import fj.*;
 import fj.data.Iteratee.Input;
 import fj.data.Iteratee.IterV;
+import fj.data.Stream.EvaluatedStream;
 import fj.function.Try0;
 import fj.function.Try1;
 
@@ -379,17 +380,17 @@ public final class IOFunctions {
     public static <A> IO<Stream<A>> sequenceWhileEager(final Stream<IO<A>> stream, final F<A, Boolean> f) {
         return () -> {
             boolean loop = true;
-            Stream<IO<A>> input = stream;
+            EvaluatedStream<IO<A>> input = stream.eval();
             Stream<A> result = Stream.nil();
             while (loop) {
                 if (input.isEmpty()) {
                     loop = false;
                 } else {
-                    A a = input.head().run();
+                    A a = input.unsafeHead().run();
                     if (!f.f(a)) {
                         loop = false;
                     } else {
-                        input = input.tail()._1();
+                        input = input.unsafeTail().eval();
                         result = result.cons(a);
                     }
                 }
@@ -400,15 +401,16 @@ public final class IOFunctions {
 
     public static <A> IO<Stream<A>> sequenceWhile(final Stream<IO<A>> stream, final F<A, Boolean> f) {
         return () -> {
-            if (stream.isEmpty()) {
+            EvaluatedStream<IO<A>> eval = stream.eval();
+            if (eval.isEmpty()) {
                 return Stream.nil();
             } else {
-                IO<A> io = stream.head();
+                IO<A> io = eval.unsafeHead();
                 A a = io.run();
                 if (!f.f(a)) {
                     return Stream.nil();
                 } else {
-                    IO<Stream<A>> io2 = sequenceWhile(stream.tail()._1(), f);
+                    IO<Stream<A>> io2 = sequenceWhile(eval.unsafeTail(), f);
                     SafeIO<Stream<A>> s3 = toSafe(io2::run);
                     return Stream.cons(a, s3::run);
                 }

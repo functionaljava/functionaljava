@@ -741,7 +741,19 @@ public final class Function {
    * @return A new function after performing the composition, then application.
    */
   public static <A, B, C, D> F<D, C> bind(final F<D, A> ca, final F<D, B> cb, final F<A, F<B, C>> f) {
-    return apply(compose(f, ca), cb);
+    return d -> f.f(ca.f(d)).f(cb.f(d));
+  }
+
+  /**
+   * Binds the given function <em>f</em> to the values of the given functions, with a final join.
+   *
+   * @param ca A function to bind <em>f</em> function to.
+   * @param cb A function to bind <em>f</em> function to.
+   * @param f  The bound function to be composed with <em>ca</em> and then applied with <em>cb</em>
+   * @return A new function after performing the composition, then application.
+   */
+  public static <A, B, C, D> F<D, C> bind(final F<D, A> ca, final F<D, B> cb, final F2<A, B, C> f) {
+    return d -> f.f(ca.f(d), cb.f(d));
   }
 
   /**

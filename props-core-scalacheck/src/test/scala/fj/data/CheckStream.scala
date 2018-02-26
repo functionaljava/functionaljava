@@ -22,11 +22,11 @@ object CheckStream extends Properties("Stream") {
 
   property("orHead") = forAll((a: Stream[Int], n: P1[Int]) =>
     a.isNotEmpty ==>
-    (a.orHead(n) == a.head))
+    (a.orHead(n) == a.eval().unsafeHead()))
 
   property("orTail") = forAll((a: Stream[String], n: P1[Stream[String]]) =>
     a.isNotEmpty ==>
-    (streamEqual(stringEqual).eq(a.orTail(n)._1, a.tail._1)))
+    (streamEqual(stringEqual).eq(a.orTail(n)._1, a.eval().unsafeTail())))
 
   property("toOption") = forAll((a: Stream[Int]) =>
     a.toOption.isNone || a.toOption.some == a.head)
@@ -114,12 +114,12 @@ object CheckStream extends Properties("Stream") {
       a.cons(b)))
 
   property("foldRight") = forAll((a: Stream[String]) => streamEqual(stringEqual).eq(
-      a.foldRight((a: String, b: P1[Stream[String]]) => b._1.cons(a), nil[String]), a))
+      a.foldRight((a: String, b: F0[Stream[String]]) => b.f().cons(a), nil[String]), a))
                                      
   property("foldLeft") = forAll((a: Stream[String], s: String) =>
     streamEqual(stringEqual).eq(
       a.foldLeft(((a: Stream[String], b: String) => single(b).append(a)), nil[String]),
-      a.reverse.foldRight((a: String, b: P1[Stream[String]]) => single(a).append(b._1), nil[String])))
+      a.reverse.foldRight((a: String, b: F0[Stream[String]]) => single(a).append(b), nil[String])))
 
   property("length") = forAll((a: Stream[String]) =>
     a.length != 0 ==>
@@ -151,7 +151,7 @@ object CheckStream extends Properties("Stream") {
 
   property("join") = forAll((a: Stream[Stream[String]]) =>
     streamEqual(stringEqual).eq(
-      a.foldRight((a: Stream[String], b: P1[Stream[String]]) => a.append(b._1), nil[String]),
+      a.foldRight((a: Stream[String], b: F0[Stream[String]]) => a.append(b), nil[String]),
       join(a)))
                   /*
   property("sort") = forAll((a: Stream[String]) => {

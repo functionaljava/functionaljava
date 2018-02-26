@@ -42,10 +42,10 @@ public class StreamTest {
     public void iterableStreamWithStructureUpdate() {
         java.util.List<Integer> list = List.list(1, 2, 3).toJavaList();
         Stream<Integer> s1 = Stream.iterableStream(list);
-        int x = s1.head();
+        int x = s1.eval().unsafeHead();
         list.remove(1);
-        Stream<Integer> s2 = s1.tail()._1();
-        x = s2.head();
+        Stream<Integer> s2 = s1.eval().unsafeTail();
+        x = s2.eval().unsafeHead();
     }
 
 

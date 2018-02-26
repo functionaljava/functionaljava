@@ -8,6 +8,7 @@ import fj.data.NonEmptyList;
 import fj.data.Option;
 import fj.data.Set;
 import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
 import fj.data.Validation;
 
 import java.math.BigDecimal;
@@ -16,8 +17,6 @@ import java.util.Comparator;
 
 import static fj.Function.apply;
 import static fj.Function.compose;
-import static fj.Function.curry;
-import static fj.Semigroup.semigroup;
 import static fj.Semigroup.semigroupDef;
 
 /**
@@ -505,15 +504,21 @@ public final class Ord<A> {
    */
   public static <A> Ord<Stream<A>> streamOrd(final Ord<A> oa) {
     return ordDef((s1, s2) -> {
-        if (s1.isEmpty())
-            return s2.isEmpty() ? Ordering.EQ : Ordering.LT;
-        else if (s2.isEmpty())
-            return s1.isEmpty() ? Ordering.EQ : Ordering.GT;
-        else {
-            final Ordering c = oa.compare(s1.head(), s2.head());
-          // FIXME: not stack safe
-            return c == Ordering.EQ ? streamOrd(oa).def.compare(s1.tail()._1()).f(s2.tail()._1()) : c;
-        }
+      EvaluatedStream<A> evalS1 = s1.eval();
+      EvaluatedStream<A> evalS2 = s2.eval();
+      while (true) {
+        if (evalS1.isEmpty())
+          return evalS2.isEmpty() ? Ordering.EQ : Ordering.LT;
+        if (evalS2.isEmpty())
+          return Ordering.GT;
+
+        final Ordering c = oa.compare(evalS1.unsafeHead(), evalS2.unsafeHead());
+        if (c != Ordering.EQ)
+          return c;
+
+        evalS1 = evalS1.eval();
+        evalS2 = evalS2.eval();
+      }
     });
   }
 

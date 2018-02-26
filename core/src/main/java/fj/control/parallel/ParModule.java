@@ -12,6 +12,7 @@ import fj.data.List;
 import fj.data.NonEmptyList;
 import fj.data.Option;
 import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
 import fj.data.Tree;
 import fj.data.TreeZipper;
 import fj.data.Zipper;
@@ -345,7 +346,7 @@ public final class ParModule {
    * @return A promise of a new Tree with the given function applied to each element.
    */
   public <A, B> Promise<Tree<B>> parMap(final Tree<A> ta, final F<A, B> f) {
-    return mapM(ta.subForest(), this.<Tree<A>, Tree<B>>mapStream().f(this.<A, B>parMapTree().f(f)))
+    return mapM(P.p(ta.subforest()), this.<Tree<A>, Tree<B>>mapStream().f(this.<A, B>parMapTree().f(f)))
         .apply(promise(f).f(ta.root()).fmap(Tree.node()));
   }
 
@@ -478,7 +479,8 @@ public final class ParModule {
    * @return A promise of a result of mapping and folding in parallel.
    */
   public <A, B> Promise<B> parFoldMap(final Stream<A> as, final F<A, B> map, final Monoid<B> reduce) {
-    return as.isEmpty() ? promise(p(reduce.zero())) : as.map(promise(map)).foldLeft1(liftM2(reduce.sum()));
+    EvaluatedStream<A> eval = as.eval();
+    return eval.isEmpty() ? promise(p(reduce.zero())) : eval.map(promise(map)).foldLeft1(liftM2(reduce.sum()));
   }
 
   /**
@@ -496,7 +498,10 @@ public final class ParModule {
    */
   public <A, B> Promise<B> parFoldMap(final Stream<A> as, final F<A, B> map, final Monoid<B> reduce,
                                       final F<Stream<A>, P2<Stream<A>, Stream<A>>> chunking) {
-    return parMap(Stream.unfold(stream -> stream.isEmpty() ? Option.none() : some(chunking.f(stream)), as), Stream.<A, B>map_().f(map)).bind(stream -> parMap(stream, reduce.sumLeftS()).fmap(reduce.sumLeftS()));
+    return parMap(Stream.unfold(stream -> {
+      EvaluatedStream<A> eval = stream.eval();
+      return eval.isEmpty() ? Option.none() : some(chunking.f(eval));
+    }, as), Stream.<A, B>map_().f(map)).bind(stream -> parMap(stream, reduce.sumLeftS()).fmap(reduce.sumLeftS()));
   }
 
   /**

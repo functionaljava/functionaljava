@@ -25,9 +25,7 @@ public class Comonad_example {
     Stream<Stream<Character>> r = single(Stream.nil());
     for (final Zipper<Character> z : fromStream(s))
       r = join(z.cobind(zp ->
-            perms(zp.lefts().reverse().append(zp.rights())).map(
-                F1Functions.o(Stream.<Character>cons().f(zp.focus()), P.p1())
-            )
+            perms(zp.lefts().reverse().append(zp.rights())).map(cs -> Stream.cons(zp.focus(), cs))
       ).toStream());
     return r;
   }

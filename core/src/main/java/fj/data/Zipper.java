@@ -8,15 +8,14 @@ import fj.F3;
 import fj.Function;
 import fj.Ord;
 import fj.P;
-import fj.P1;
 import fj.P2;
 import fj.P3;
 import fj.Show;
+import fj.data.Stream.EvaluatedStream;
 import fj.function.Integers;
 
 import java.util.Iterator;
 
-import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Function.flip;
 import static fj.Function.join;
@@ -140,6 +139,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
 
   /**
    * Performs a right-fold reduction across this zipper.
+   * This function uses O(right.length) stack space.
    *
    * @param f The function to apply on each element of this zipper.
    * @param z The beginning value to start the application from.
@@ -147,8 +147,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    */
   public <B> B foldRight(final F<A, F<B, B>> f, final B z) {
     return left.foldLeft(flip(f),
-                         right.cons(focus).foldRight(compose(
-                             Function.<P1<B>, B, B>andThen().f(P1.__1()), f), z));
+                         right.cons(focus).foldRight1(f, z));
   }
 
   /**
@@ -171,10 +170,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    */
   @SuppressWarnings("IfMayBeConditional")
   public static <A> Option<Zipper<A>> fromStream(final Stream<A> a) {
-    if (a.isEmpty())
-      return none();
-    else
-      return some(zipper(Stream.nil(), a.head(), a.tail()._1()));
+    return a.uncons(none(), (head, tail) -> some(zipper(Stream.nil(), head, tail)));
   }
 
   /**
@@ -186,11 +182,12 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return a new zipper if the provided stream has at least one element, otherwise None.
    */
   public static <A> Option<Zipper<A>> fromStreamEnd(final Stream<A> a) {
-    if (a.isEmpty())
+    EvaluatedStream<A> eval = a.eval();
+    if (eval.isEmpty())
       return none();
     else {
-      final Stream<A> xs = a.reverse();
-      return some(zipper(xs.tail()._1(), xs.head(), Stream.nil()));
+      final EvaluatedStream<A> xs = eval.reverse().eval();
+      return some(zipper(xs.unsafeTail(), xs.unsafeHead(), Stream.nil()));
     }
   }
 
@@ -210,7 +207,10 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         focus, otherwise None.
    */
   public Option<Zipper<A>> next() {
-    return right.isEmpty() ? Option.none() : some(tryNext());
+    return right.uncons(
+        none(),
+        (head, tail) -> some(zipper(left.cons(focus), head, tail))
+    );
   }
 
   /**
@@ -220,10 +220,11 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         focus, otherwise throws an error.
    */
   public Zipper<A> tryNext() {
-    if (right.isEmpty())
+    EvaluatedStream<A> rightEval = right.eval();
+    if (rightEval.isEmpty())
       throw new Error("Tried next at the end of a zipper.");
     else
-      return zipper(left.cons(focus), right.head(), right.tail()._1());
+      return zipper(left.cons(focus), rightEval.unsafeHead(), rightEval.unsafeTail());
   }
 
   /**
@@ -233,7 +234,10 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         focus, otherwise None.
    */
   public Option<Zipper<A>> previous() {
-    return left.isEmpty() ? Option.none() : some(tryPrevious());
+    return left.uncons(
+        none(),
+        (head, tail) -> some(zipper(tail, head, right.cons(focus)))
+    );
   }
 
   /**
@@ -243,10 +247,11 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         focus, otherwise throws an error.
    */
   public Zipper<A> tryPrevious() {
-    if (left.isEmpty())
+    EvaluatedStream<A> leftEval = left.eval();
+    if (leftEval.isEmpty())
       throw new Error("Tried previous at the beginning of a zipper.");
     else
-      return zipper(left.tail()._1(), left.head(), right.cons(focus));
+      return zipper(leftEval.unsafeTail(), leftEval.unsafeHead(), right.cons(focus));
   }
 
   /**
@@ -296,11 +301,14 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         would cause the zipper to be empty.
    */
   public Option<Zipper<A>> deleteLeft() {
-    return left.isEmpty() && right.isEmpty()
-           ? Option.none()
-           : some(zipper(left.isEmpty() ? left : left.tail()._1(),
-                         left.isEmpty() ? right.head() : left.head(),
-                         left.isEmpty() ? right.tail()._1() : right));
+    EvaluatedStream<A> leftEval = left.eval();
+    EvaluatedStream<A> rightEval = right.eval();
+    return leftEval.isEmpty() && rightEval.isEmpty()
+        ? Option.none()
+        : some(leftEval.isEmpty()
+            ? zipper(leftEval, rightEval.unsafeHead(), rightEval.unsafeTail())
+            : zipper(leftEval.unsafeTail(), leftEval.unsafeHead(), rightEval)
+          );
   }
 
   /**
@@ -312,11 +320,14 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         would cause the zipper to be empty.
    */
   public Option<Zipper<A>> deleteRight() {
-    return left.isEmpty() && right.isEmpty()
-           ? Option.none()
-           : some(zipper(right.isEmpty() ? left.tail()._1() : left,
-                         right.isEmpty() ? left.head() : right.head(),
-                         right.isEmpty() ? right : right.tail()._1()));
+    EvaluatedStream<A> leftEval = left.eval();
+    EvaluatedStream<A> rightEval = right.eval();
+    return leftEval.isEmpty() && rightEval.isEmpty()
+        ? Option.none()
+        : some(rightEval.isEmpty()
+            ? zipper(leftEval.unsafeTail(), leftEval.unsafeHead(), rightEval)
+            : zipper(leftEval, rightEval.unsafeHead(),  rightEval.unsafeTail())
+          );
   }
 
   /**
@@ -454,13 +465,15 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         the first element becomes focused.
    */
   public Zipper<A> cycleNext() {
-    if (left.isEmpty() && right.isEmpty())
+    EvaluatedStream<A> leftEval = left.eval();
+    EvaluatedStream<A> rightEval = right.eval();
+    if (leftEval.isEmpty() && rightEval.isEmpty())
       return this;
-    else if (right.isEmpty()) {
-      final Stream<A> xs = left.reverse();
-      return zipper(Stream.nil(), xs.head(), xs.tail()._1().snoc(P.p(focus)));
+    else if (rightEval.isEmpty()) {
+      final EvaluatedStream<A> xs = leftEval.reverse().eval();
+      return zipper(Stream.nil(), xs.unsafeHead(), xs.unsafeTail().snoc(focus));
     } else
-      return tryNext();
+      return zipper(leftEval.cons(focus), rightEval.unsafeHead(), rightEval.unsafeTail());
   }
 
   /**
@@ -470,13 +483,15 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         in which case the last element becomes focused.
    */
   public Zipper<A> cyclePrevious() {
-    if (left.isEmpty() && right.isEmpty())
+    EvaluatedStream<A> leftEval = left.eval();
+    EvaluatedStream<A> rightEval = right.eval();
+    if (leftEval.isEmpty() && rightEval.isEmpty())
       return this;
-    else if (left.isEmpty()) {
-      final Stream<A> xs = right.reverse();
-      return zipper(xs.tail()._1().snoc(P.p(focus)), xs.head(), Stream.nil());
+    else if (leftEval.isEmpty()) {
+      final EvaluatedStream<A> xs = rightEval.reverse().eval();
+      return zipper(xs.unsafeTail().snoc(focus), xs.unsafeHead(), Stream.nil());
     } else
-      return tryPrevious();
+      return zipper(leftEval.unsafeTail(), leftEval.unsafeHead(), rightEval.cons(focus));
   }
 
   /**
@@ -487,13 +502,15 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         element if there is no element to the left.
    */
   public Option<Zipper<A>> deleteLeftCycle() {
-    if (left.isEmpty() && right.isEmpty())
+    EvaluatedStream<A> leftEval = left.eval();
+    EvaluatedStream<A> rightEval = right.eval();
+    if (leftEval.isEmpty() && rightEval.isEmpty())
       return none();
-    else if (left.isNotEmpty())
-      return some(zipper(left.tail()._1(), left.head(), right));
+    else if (!leftEval.isEmpty())
+      return some(zipper(leftEval.unsafeTail(), leftEval.unsafeHead(), rightEval));
     else {
-      final Stream<A> xs = right.reverse();
-      return some(zipper(xs.tail()._1(), xs.head(), Stream.nil()));
+      final EvaluatedStream<A> xs = rightEval.reverse().eval();
+      return some(zipper(xs.unsafeTail(), xs.unsafeHead(), Stream.nil()));
     }
   }
 
@@ -505,13 +522,15 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    *         element if there is no element to the right.
    */
   public Option<Zipper<A>> deleteRightCycle() {
-    if (left.isEmpty() && right.isEmpty())
+    EvaluatedStream<A> leftEval = left.eval();
+    EvaluatedStream<A> rightEval = right.eval();
+    if (leftEval.isEmpty() && rightEval.isEmpty())
       return none();
-    else if (right.isNotEmpty())
-      return some(zipper(left, right.head(), right.tail()._1()));
+    else if (!rightEval.isEmpty())
+      return some(zipper(leftEval, rightEval.unsafeHead(), rightEval.unsafeTail()));
     else {
-      final Stream<A> xs = left.reverse();
-      return some(zipper(Stream.nil(), xs.head(), xs.tail()._1()));
+      final EvaluatedStream<A> xs = leftEval.reverse().eval();
+      return some(zipper(Stream.nil(), xs.unsafeHead(), xs.unsafeTail()));
     }
   }
 

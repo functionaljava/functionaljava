@@ -10,6 +10,7 @@ import fj.data.Option;
 import fj.data.Seq;
 import fj.data.Set;
 import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
 import fj.data.Tree;
 import fj.data.TreeMap;
 import fj.data.Validation;
@@ -379,18 +380,20 @@ public final class Equal<A> {
   public static <A> Equal<Stream<A>> streamEqual(final Equal<A> ea) {
     Definition<A> eaDef = ea.def;
     return equalDef((a1, a2) -> {
-      Stream<A> x1 = a1;
-      Stream<A> x2 = a2;
+      EvaluatedStream<A> x1 = a1.eval();
+      EvaluatedStream<A> x2 = a2.eval();
 
-      while (x1.isNotEmpty() && x2.isNotEmpty()) {
-        if (!eaDef.equal(x1.head(), x2.head()))
+      while(true) {
+        if (x1.isEmpty())
+          return x2.isEmpty();
+        if (x2.isEmpty())
           return false;
-
-        x1 = x1.tail()._1();
-        x2 = x2.tail()._1();
+        if (eaDef.equal(x1.unsafeHead(), x2.unsafeHead())) {
+          x1 = x1.unsafeTail().eval();
+          x2 = x2.unsafeTail().eval();
+        } else
+          return false;
       }
-
-      return x1.isEmpty() && x2.isEmpty();
     });
   }
 
@@ -424,12 +427,12 @@ public final class Equal<A> {
     Definition<A> eaDef = ea.def;
     return equalDef(new AltDefinition<Tree<A>>() {
 
-      final Definition<P1<Stream<Tree<A>>>> subForestEqDef = p1Equal(streamEqual(equalDef(this))).def;
+      final Definition<Stream<Tree<A>>> subForestEqDef = streamEqual(equalDef(this)).def;
 
       @Override
       public boolean equal(Tree<A> t1, Tree<A> t2) {
         return eaDef.equal(t1.root(), t2.root())
-            && subForestEqDef.equal(t1.subForest(), t2.subForest());
+            && subForestEqDef.equal(t1.subforest(), t2.subforest());
 
       }
     });

@@ -6,6 +6,7 @@ import static fj.Function.curry;
 import static fj.P.p;
 
 import fj.data.*;
+import fj.data.Stream.EvaluatedStream;
 
 import static fj.data.Array.array;
 import static fj.data.Array.iterableArray;
@@ -444,9 +445,10 @@ public abstract class Cogen<A> {
   public static <A> Cogen<Stream<A>> cogenStream(final Cogen<A> ca) {
     return new Cogen<Stream<A>>() {
       public <B> Gen<B> cogen(final Stream<A> as, final Gen<B> g) {
-        return as.isEmpty() ?
+        EvaluatedStream<A> eval = as.eval();
+        return eval.isEmpty() ?
             variant(0, g) :
-            variant(1, ca.cogen(as.head(), cogen(as.tail()._1(), g)));
+            variant(1, ca.cogen(eval.unsafeHead(), cogen(eval.unsafeTail(), g)));
       }
     };
   }

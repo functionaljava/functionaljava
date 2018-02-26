@@ -1,9 +1,23 @@
 package fj;
 
-import fj.data.*;
+import fj.data.Array;
+import fj.data.Either;
+import fj.data.LazyString;
+import fj.data.List;
+import fj.data.Natural;
+import fj.data.NonEmptyList;
+import fj.data.Option;
+import fj.data.PriorityQueue;
+import fj.data.Seq;
+import fj.data.Set;
+import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
+import fj.data.Tree;
+import fj.data.TreeMap;
+import fj.data.Validation;
+import fj.data.fingertrees.FingerTree;
 import fj.data.hamt.BitSet;
 import fj.data.hamt.HashArrayMappedTrie;
-import fj.data.fingertrees.FingerTree;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -115,8 +129,8 @@ public final class Show<A> {
   public Unit print(final A a) {
     final char[] buffer = new char[8192];
     int c = 0;
-    for (Stream<Character> cs = show(a); cs.isNotEmpty(); cs = cs.tail()._1()) {
-      buffer[c] = cs.head();
+    for (EvaluatedStream<Character> cs = show(a).eval(); !cs.isEmpty(); cs = cs.unsafeTail().eval()) {
+      buffer[c] = cs.unsafeHead();
       c++;
       if (c == 8192) {
         System.out.print(buffer);
@@ -295,13 +309,20 @@ public final class Show<A> {
    * @return A show instance for the {@link Tree} type.
    */
   public static <A> Show<Tree<A>> treeShow(final Show<A> sa) {
-    return show(a -> {
-      Stream<Character> result = sa.f.f(a.root());
-      if (!a.subForest()._1().isEmpty()) {
-        result = result.append(fromString(",")).append(streamShow(treeShow(sa), "", ",", "").f.f(a.subForest()._1()));
-      }
-      return fromString("Tree(").append(p(result)).append(fromString(")"));
-    });
+
+    return new Object() {
+
+      final Show<Tree<A>> treeShow = show(a -> {
+        Stream<Character> result = sa.f.f(a.root());
+        EvaluatedStream<Tree<A>> subForest = a.subforest().eval();
+        if (!subForest.isEmpty()) {
+          result = result.append(fromString(",")).append(this.streamShow.f(subForest));
+        }
+        return fromString("Tree(").append(result).append(fromString(")"));
+      });
+
+      final F<Stream<Tree<A>>, Stream<Character>> streamShow = streamShow(this.treeShow, "", ",", "").f;
+    }.treeShow;
   }
 
   public static <V, A> Show<fj.data.fingertrees.Digit<V, A>> digitShow(final Show<V> sv, final Show<A> sa) {
@@ -422,7 +443,7 @@ public final class Show<A> {
    * Returns the transformation equivalent for the stream show.
    */
   public static <A> F<Stream<A>, Stream<Character>> streamShow_(final Show<A> sa, String start, String sep, String end) {
-    return as -> join(as.map(sa.show_()).intersperse(fromString(sep)).cons(fromString(start)).snoc(p(fromString(end))));
+    return as -> join(as.map(sa.show_()).intersperse(fromString(sep)).cons(fromString(start)).snoc(fromString(end)));
   }
 
   /**

@@ -192,7 +192,7 @@ public class StreamProperties {
   @CheckParams(maxSize = 500)
   public Property join() {
     return property(arbStream(arbStream(arbInteger)), (Stream<Stream<Integer>> stream) ->
-      prop(eq.eq(stream.foldRight((Stream<Integer> i, P1<Stream<Integer>> s) -> i.append(s._1()), nil()),
+      prop(eq.eq(stream.foldRight((Stream<Integer> i, F0<Stream<Integer>> s) -> i.append(s), nil()),
         Stream.join(stream))));
   }
 
@@ -200,5 +200,11 @@ public class StreamProperties {
   public Property sort() {
     return property(arbStream(arbInteger), (Stream<Integer> stream) ->
       prop(eq.eq(stream.sort(intOrd), stream.toList().sort(intOrd).toStream())));
+  }
+
+  @CheckParams(maxSize = 1000)
+  public Property cycle() {
+    return property(arbStream(arbInteger), (Stream<Integer> stream) ->
+        prop(eq.eq(Stream.cycle(Stream.cons(0, stream.take(3))).take(2 + stream.take(3).length() * 2), Stream.cons(0, stream.take(3)).append(Stream.cons(0, stream.take(3))))));
   }
 }

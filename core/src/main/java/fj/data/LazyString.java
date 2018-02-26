@@ -35,9 +35,8 @@ public final class LazyString implements CharSequence {
     return new LazyString(Stream.unfold(o -> {
         final String s2 = o._1();
         final int n = o._2();
-        final Option<P2<Character, P2<String, Integer>>> none = none();
-        return s2.length() <= n ? none : some(p(s2.charAt(n), p(s2, n + 1)));
-      }, p(s, 0)));
+        return s2.length() <= n ? none() : some(p(s2.charAt(n), p(s2, n + 1)));
+      }, p(s, 0)).weakMemo());
   }
 
   /**
@@ -52,7 +51,7 @@ public final class LazyString implements CharSequence {
    * @return A lazy string with the characters from the given stream.
    */
   public static LazyString fromStream(final Stream<Character> s) {
-    return new LazyString(s);
+    return new LazyString(s.weakMemo());
   }
 
   /**
@@ -109,7 +108,7 @@ public final class LazyString implements CharSequence {
   }
 
   public String toStringLazy() {
-    return s.isEmpty() ? "" : "LazyString(" + Show.charShow.showS(s.head()) + ", ?)";
+    return s.uncons("", (head, tail) -> "LazyString(" + Show.charShow.showS(head) + ", ?)");
   }
 
   @Override

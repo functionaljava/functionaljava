@@ -7,6 +7,7 @@ import static fj.Unit.unit;
 import fj.data.List;
 import static fj.data.List.cons_;
 import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
 import fj.data.Validation;
 import static fj.data.Validation.success;
 import static fj.parser.Result.result;
@@ -364,9 +365,12 @@ public final class Parser<I, A, E> {
      * @return A parser that produces an element from the stream if it is available and fails otherwise.
      */
     public static <I, E> Parser<Stream<I>, I, E> element(final F0<E> e) {
-      return parser(is -> is.isEmpty() ?
-          Validation.fail(e.f()) :
-          Validation.success(result(is.tail()._1(), is.head())));
+      return parser(is -> {
+        EvaluatedStream<I> eval = is.eval();
+        return eval.isEmpty() ?
+            Validation.fail(e.f()) :
+            Validation.success(result(eval.unsafeTail(), eval.unsafeHead()));
+      });
     }
 
     /**
@@ -496,9 +500,10 @@ public final class Parser<I, A, E> {
     public static <E> Parser<Stream<Character>, Stream<Character>, E> characters(final F0<E> missing,
                                                                                  final F<Character, E> sat,
                                                                                  final Stream<Character> cs) {
-      return cs.isEmpty() ?
+      EvaluatedStream<Character> eval = cs.eval();
+      return eval.isEmpty() ?
           Parser.value(Stream.nil()) :
-          character(missing, sat, cs.head()).bind(characters(missing, sat, cs.tail()._1()), Stream.cons_());
+          character(missing, sat, eval.unsafeHead()).bind(characters(missing, sat, eval.unsafeTail()), Stream.cons_());
     }
 
     /**

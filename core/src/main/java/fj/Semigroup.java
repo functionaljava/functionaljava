@@ -38,12 +38,16 @@ public final class Semigroup<A> {
 
     A append(A a1, A a2);
 
+    default A append(A a1, F0<A> a2) {
+      return append(a1, a2.f());
+    }
+
     default F<A, A> prepend(A a) {
       return a2 -> append(a, a2);
     }
 
-    default A sum(A a, F0<Stream<A>> as) {
-      return as.f().foldLeft(this::append, a);
+    default A sum(A a, Stream<A> as) {
+      return as.foldLeft(this::append, a);
     }
 
     default A multiply1p(int n, A a) {
@@ -158,7 +162,7 @@ public final class Semigroup<A> {
    * Sums the given values with left-fold, shortcutting the computation as early as possible.
    */
   public A sumStream(A a, F0<Stream<A>> as) {
-    return def.sum(a, as);
+    return def.sum(a, Stream.byName(as));
   }
 
   /**
@@ -190,9 +194,9 @@ public final class Semigroup<A> {
       }
 
       @Override
-      public Option<A> sum(F0<Stream<Option<A>>> oas) {
-        Stream<A> as = oas.f().bind(Option::toStream);
-        return as.uncons(none(), h -> tail ->  some(def.sum(h, tail::_1)));
+      public Option<A> sum(Stream<Option<A>> oas) {
+        Stream<A> as = oas.bind(Option::toStream);
+        return as.uncons(none(), (h, tail) ->  some(def.sum(h, tail)));
       }
     });
   }
@@ -224,8 +228,8 @@ public final class Semigroup<A> {
       }
 
       @Override
-      public B sum(B b, F0<Stream<B>> bs) {
-        return f.f(def.sum(g.f(b), () -> bs.f().map(g)));
+      public B sum(B b, Stream<B> bs) {
+        return f.f(def.sum(g.f(b), bs.map(g)));
       }
     });
   }
@@ -253,8 +257,8 @@ public final class Semigroup<A> {
       }
 
       @Override
-      public C sum(C c1, F0<Stream<C>> cs) {
-        return c.f(saDef.sum(a.f(c1), () -> cs.f().map(a)), sbDef.sum(b.f(c1), () -> cs.f().map(b)));
+      public C sum(C c1, Stream<C> cs) {
+        return c.f(saDef.sum(a.f(c1), cs.map(a)), sbDef.sum(b.f(c1), cs.map(b)));
       }
     });
   }
@@ -476,7 +480,7 @@ public final class Semigroup<A> {
         }
 
         @Override
-        public A sum(A a, F0<Stream<A>> as) {
+        public A sum(A a, Stream<A> as) {
           return a;
         }
       });
@@ -538,8 +542,8 @@ public final class Semigroup<A> {
       }
 
       @Override
-      public NonEmptyList<A> sum(NonEmptyList<A> nea, F0<Stream<NonEmptyList<A>>> neas) {
-        List<A> tail = neas.f().map(nel -> listDList(nel.toList())).foldLeft(DList::append, DList.<A>nil()).run();
+      public NonEmptyList<A> sum(NonEmptyList<A> nea, Stream<NonEmptyList<A>> neas) {
+        List<A> tail = neas.map(nel -> listDList(nel.toList())).foldLeft(DList::append, DList.<A>nil()).run();
         return nea.append(tail);
       }
     });
@@ -611,8 +615,8 @@ public final class Semigroup<A> {
       }
 
       @Override
-      public P1<A> sum(P1<A> ap1, F0<Stream<P1<A>>> as) {
-        return P.lazy(() -> def.sum(ap1._1(), () -> as.f().map(P1.__1())));
+      public P1<A> sum(P1<A> ap1, Stream<P1<A>> as) {
+        return P.lazy(() -> def.sum(ap1._1(), as.map(P1.__1())));
       }
     });
   }

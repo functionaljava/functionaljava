@@ -144,7 +144,7 @@ public final class F2Functions {
         return new F2<Tree<A>, Tree<B>, Tree<C>>() {
             public Tree<C> f(final Tree<A> as, final Tree<B> bs) {
                 final F2<Tree<A>, Tree<B>, Tree<C>> self = this;
-                return node(f.f(as.root(), bs.root()), P.lazy(() -> streamM(self).f(as.subForest()._1(), bs.subForest()._1())));
+                return node(f.f(as.root(), bs.root()), Stream.byName(() -> streamM(self).f(as.subforest(), bs.subforest())));
             }
         };
     }
@@ -215,7 +215,7 @@ public final class F2Functions {
         return new F2<Tree<A>, Tree<B>, Tree<C>>() {
             public Tree<C> f(final Tree<A> ta, final Tree<B> tb) {
                 final F2<Tree<A>, Tree<B>, Tree<C>> self = this;
-                return node(f.f(ta.root(), tb.root()), P.lazy(() -> zipStreamM(self).f(ta.subForest()._1(), tb.subForest()._1())));
+                return node(f.f(ta.root(), tb.root()), Stream.byName(() -> zipStreamM(self).f(ta.subforest(), tb.subforest())));
             }
         };
     }

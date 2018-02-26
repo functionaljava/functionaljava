@@ -149,7 +149,7 @@ public final class BitSet {
     }
 
     public <A> A foldRight(final F2<Boolean, A, A> f, A acc) {
-        return toStream().foldRight(b -> p -> f.f(b, p._1()), acc);
+        return toStream().foldRight1(b -> a -> f.f(b, a), acc);
     }
 
     public <A> A foldLeft(final F2<A, Boolean, A> f, A acc) {

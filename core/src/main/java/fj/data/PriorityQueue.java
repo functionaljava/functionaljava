@@ -102,7 +102,7 @@ public final class PriorityQueue<K, A> {
     public List<P2<K, A>> topN() {
         return toStream().uncons(
             List.nil(),
-            top -> tail -> List.cons(top, tail._1().takeWhile(compose(equal.eq(top._1()), P2.__1())).toList())
+            (top, tail) -> List.cons(top, tail.takeWhile(compose(equal.eq(top._1()), P2.__1())).toList())
         );
     }
 

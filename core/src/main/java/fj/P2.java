@@ -155,9 +155,7 @@ public abstract class P2<A, B> {
    * @return A stream of the results of applying the given stream of functions to this product.
    */
   public final <C> Stream<C> sequenceW(final Stream<F<P2<A, B>, C>> fs) {
-    return fs.isEmpty()
-           ? Stream.nil()
-           : Stream.cons(fs.head().f(this), () -> sequenceW(fs.tail()._1()));
+    return fs.uncons(Stream.nil(), (h, tail) -> Stream.cons(h.f(this), () -> sequenceW(tail)));
   }
 
   /**

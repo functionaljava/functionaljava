@@ -402,12 +402,13 @@ public final class Property {
             return result.toOption().map(result1 -> p(a, result1.provenAsUnfalsified().addArg(arg(a, shrinks))));
           });
 
-          if (results.isEmpty())
-            return none();
-          else return results.find(this::failed).orSome(results::head);
+          return results.uncons(
+              none(),
+              (head, tail) -> Stream.cons(head, tail).find(this::failed).orSome(head)
+          );
         }
 
-        public boolean failed(final Option<P2<A, Result>> o) {
+        boolean failed(final Option<P2<A, Result>> o) {
           return o.isSome() && o.some()._2().failed();
         }
       }

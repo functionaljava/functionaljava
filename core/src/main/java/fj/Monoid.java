@@ -1,26 +1,26 @@
 package fj;
 
-import static fj.F1Functions.dimap;
-
 import fj.data.Array;
 import fj.data.DList;
-import fj.data.List;
 import fj.data.IO;
+import fj.data.List;
 import fj.data.Natural;
 import fj.data.Option;
 import fj.data.Set;
 import fj.data.Stream;
+import fj.data.Stream.EvaluatedStream;
 
-import static fj.Function.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static fj.F1Functions.dimap;
+import static fj.Function.identity;
 import static fj.Semigroup.semigroupDef;
 import static fj.Unit.unit;
 import static fj.data.List.nil;
 import static fj.data.Natural.natural;
 import static fj.data.Option.none;
 import static fj.data.Stream.iterableStream;
-
-import java.math.BigInteger;
-import java.math.BigDecimal;
 
 /**
  * A monoid abstraction to be defined across types of the given type argument. Implementations must
@@ -46,13 +46,13 @@ public final class Monoid<A> {
     A empty();
 
 
-    default A sum(F0<Stream<A>> as) {
-      return as.f().foldLeft(this::append, empty());
+    default A sum(Stream<A> as) {
+      return as.foldLeft(this::append, empty());
     }
 
     @Override
-    default A sum(A a, F0<Stream<A>> as) {
-      return sum(() -> Stream.cons(a, as));
+    default A sum(A a, Stream<A> as) {
+      return sum(Stream.cons(a, as));
     }
 
     default A multiply(int n, A a) {
@@ -161,8 +161,8 @@ public final class Monoid<A> {
       }
 
       @Override
-      public B sum(F0<Stream<B>> as) {
-        return f.f(def.sum(() -> as.f().map(g)));
+      public B sum(Stream<B> as) {
+        return f.f(def.sum(as.map(g)));
       }
     });
   }
@@ -197,8 +197,8 @@ public final class Monoid<A> {
       }
 
       @Override
-      public C sum(F0<Stream<C>> cs) {
-        return c.f(maDef.sum(() -> cs.f().map(a)), mbDef.sum(() -> cs.f().map(b)));
+      public C sum(Stream<C> cs) {
+        return c.f(maDef.sum(cs.map(a)), mbDef.sum(cs.map(b)));
       }
     });
   }
@@ -274,7 +274,7 @@ public final class Monoid<A> {
    * @return The sum of the given values.
    */
   public A sumRight(final Stream<A> as) {
-    return as.foldRight1(def::append, def.empty());
+    return as.foldRight(def::append, def.empty());
   }
 
   /**
@@ -294,7 +294,7 @@ public final class Monoid<A> {
    * @return The sum of the given values.
    */
   public A sumLeft(final Stream<A> as) {
-    return def.sum(() -> as);
+    return def.sum(as);
   }
 
   /**
@@ -334,9 +334,7 @@ public final class Monoid<A> {
   public A join(final Iterable<A> as, final A a) {
     final Stream<A> s = iterableStream(as);
     F<A, A> prependA = def.prepend(a);
-    return s.isEmpty()
-           ? def.empty()
-           : s.foldLeft1((a1, a2) -> def.append(a1, prependA.f(a2)));
+    return s.uncons(def.empty(), (head, tail) -> tail.foldLeft((a1, a2) -> def.append(a1, prependA.f(a2)), head));
   }
 
   /**
@@ -383,12 +381,12 @@ public final class Monoid<A> {
       }
 
       @Override
-      public A sum(F0<Stream<A>> as) {
+      public A sum(Stream<A> as) {
         return s.sum(zero, as);
       }
 
       @Override
-      public A sum(A a, F0<Stream<A>> as) {
+      public A sum(A a, Stream<A> as) {
         return s.sum(a, as);
       }
 
@@ -523,10 +521,10 @@ public final class Monoid<A> {
     }
 
     @Override
-    public Integer sum(F0<Stream<Integer>> as) {
+    public Integer sum(Stream<Integer> as) {
       int x = 1;
-      for (Stream<Integer> xs = as.f(); x != 0 && !xs.isEmpty(); xs = xs.tail()._1()) {
-        x *= xs.head();
+      for (EvaluatedStream<Integer> xs = as.eval(); x != 0 && !xs.isEmpty(); xs = xs.unsafeTail().eval()) {
+        x *= xs.unsafeHead();
       }
       return x;
     }
@@ -706,10 +704,10 @@ public final class Monoid<A> {
     }
 
     @Override
-    public Long sum(F0<Stream<Long>> as) {
+    public Long sum(Stream<Long> as) {
       long x = 1L;
-      for (Stream<Long> xs = as.f(); x != 0L && !xs.isEmpty(); xs = xs.tail()._1()) {
-        x *= xs.head();
+      for (EvaluatedStream<Long> xs = as.eval(); x != 0L && !xs.isEmpty(); xs = xs.unsafeTail().eval()) {
+        x *= xs.unsafeHead();
       }
       return x;
     }
@@ -735,8 +733,8 @@ public final class Monoid<A> {
     }
 
     @Override
-    public Boolean sum(F0<Stream<Boolean>> as) {
-      return as.f().filter(identity()).isNotEmpty();
+    public Boolean sum(Stream<Boolean> as) {
+      return !as.filter(identity()).isEmpty();
     }
 
     @Override
@@ -785,8 +783,8 @@ public final class Monoid<A> {
     }
 
     @Override
-    public Boolean sum(F0<Stream<Boolean>> as) {
-      return as.f().filter(a -> !a).isEmpty();
+    public Boolean sum(Stream<Boolean> as) {
+      return as.forall(identity());
     }
   });
 
@@ -805,9 +803,9 @@ public final class Monoid<A> {
     }
 
     @Override
-    public String sum(F0<Stream<String>> as) {
+    public String sum(Stream<String> as) {
       StringBuilder sb = new StringBuilder();
-      as.f().foreachDoEffect(sb::append);
+      as.foreachDoEffect(sb::append);
       return sb.toString();
     }
   });
@@ -861,8 +859,8 @@ public final class Monoid<A> {
       }
 
       @Override
-      public List<A> sum(F0<Stream<List<A>>> as) {
-        return as.f().map(DList::listDList).foldLeft(DList::append, DList.<A>nil()).run();
+      public List<A> sum(Stream<List<A>> as) {
+        return as.map(DList::listDList).foldLeft(DList::append, DList.<A>nil()).run();
       }
     });
   }
@@ -906,8 +904,8 @@ public final class Monoid<A> {
       }
 
       @Override
-      public Option<A> sum(F0<Stream<Option<A>>> as) {
-        return as.f().filter(Option.isSome_()).orHead(Option::none);
+      public Option<A> sum(Stream<Option<A>> as) {
+        return as.filter(Option.isSome_()).orHead(Option::none);
       }
     });
   }
@@ -959,8 +957,13 @@ public final class Monoid<A> {
       }
 
       @Override
-      public Stream<A> sum(F0<Stream<Stream<A>>> as) {
-        return Stream.join(as.f());
+      public Stream<A> append(Stream<A> a1, F0<Stream<A>> a2) {
+        return a1.append(a2);
+      }
+
+      @Override
+      public Stream<A> sum(Stream<Stream<A>> as) {
+        return Stream.join(as);
       }
     });
   }

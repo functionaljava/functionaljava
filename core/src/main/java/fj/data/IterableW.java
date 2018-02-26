@@ -8,6 +8,7 @@ import fj.F2;
 import fj.P2;
 import static fj.Function.curry;
 import static fj.Function.identity;
+import static fj.data.Stream.nonReusableIterableStream;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -127,13 +128,13 @@ public final class IterableW<A> implements Iterable<A> {
    */
   public static <A, T extends Iterable<A>> IterableW<IterableW<A>> sequence(final Iterable<T> as) {
     final Stream<T> ts = iterableStream(as);
-    return ts.isEmpty() ?
-        iterable(wrap(Option.none())) :
-        wrap(ts.head()).bind(a ->
-            sequence(ts.tail().map(IterableW.wrap())._1()).bind(as2 ->
-                iterable(wrap(Stream.cons(a, () -> iterableStream(as2))))
+    return ts.uncons(
+        iterable(wrap(Option.none())), (head, tail) ->
+        wrap(head).bind(a ->
+            sequence(wrap(tail)).bind(as2 ->
+                iterable(wrap(Stream.cons(a, iterableStream(as2)))
             )
-        );
+        )));
   }
 
   /**
@@ -315,16 +316,16 @@ public final class IterableW<A> implements Iterable<A> {
     return new List<A>() {
 
       public int size() {
-        return iterableStream(IterableW.this).length();
+        return nonReusableIterableStream(IterableW.this).length();
       }
 
       public boolean isEmpty() {
-        return iterableStream(IterableW.this).isEmpty();
+        return nonReusableIterableStream(IterableW.this).isEmpty();
       }
 
       @SuppressWarnings("unchecked")
       public boolean contains(final Object o) {
-        return iterableStream(IterableW.this).exists(Equal.<A>anyEqual().eq((A) o));
+        return nonReusableIterableStream(IterableW.this).exists(Equal.<A>anyEqual().eq((A) o));
       }
 
       public Iterator<A> iterator() {
@@ -332,7 +333,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public Object[] toArray() {
-        return Array.iterableArray(iterableStream(IterableW.this)).array();
+        return Array.iterableArray(IterableW.this).array();
       }
 
       @SuppressWarnings("SuspiciousToArrayCall")
@@ -373,7 +374,7 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public A get(final int index) {
-        return iterableStream(IterableW.this).index(index);
+        return nonReusableIterableStream(IterableW.this).index(index);
       }
 
       public A set(final int index, final A element) {
@@ -389,22 +390,22 @@ public final class IterableW<A> implements Iterable<A> {
       }
 
       public int indexOf(final Object o) {
-        int i = -1;
+        int i = 0;
         for (final A a : IterableW.this) {
-          i++;
           if (a.equals(o))
             return i;
+          i++;
         }
-        return i;
+        return -1;
       }
 
       public int lastIndexOf(final Object o) {
-        int i = -1;
+        int i = 0;
         int last = -1;
         for (final A a : IterableW.this) {
-          i++;
           if (a.equals(o))
             last = i;
+          i++;
         }
         return last;
       }

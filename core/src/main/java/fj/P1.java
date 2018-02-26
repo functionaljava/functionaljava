@@ -160,7 +160,7 @@ public abstract class P1<A> implements F0<A> {
      * @return A single P1 for the given stream.
      */
     public static <A> P1<Stream<A>> sequence(final Stream<P1<A>> as) {
-        return as.foldRight(liftM2(Stream.cons()), p(Stream.nil()));
+        return P.p(as.map(P1.__1()));
     }
 
 	/**
