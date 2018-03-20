@@ -34,9 +34,9 @@ public class OrdTest {
   }
 
   @Test
-  public void andThenShouldWork() {
-    Ord<String> lengthThenLastDigitOrd = Ord.contramap(String::length, Ord.intOrd)
-                                            .andThen(s -> s.charAt(s.length() - 1), Ord.charOrd);
+  public void thenShouldWork() {
+    Ord<String> lengthThenLastDigitOrd = Ord.on(String::length, Ord.intOrd)
+                                            .then(s -> s.charAt(s.length() - 1), Ord.charOrd).ord();
 
     assertThat(lengthThenLastDigitOrd.compare("str", "dyr"), is(Ordering.EQ));
     assertThat(lengthThenLastDigitOrd.compare("stt", "str"), is(Ordering.GT));

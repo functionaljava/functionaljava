@@ -15,31 +15,9 @@ public class EqualTest {
   }
 
   @Test
-  public void andShouldWork() {
-    Equal<String> equalByLengthAndLastDigit = Equal.and(Equal.contramap(String::length, Equal.intEqual),
-                                                        Equal.contramap(s -> s.charAt(s.length() - 1),
-                                                                        Equal.charEqual));
-
-    assertThat(equalByLengthAndLastDigit.eq("str1", "spr1"), is(true));
-    assertThat(equalByLengthAndLastDigit.eq("str1", "str2"), is(false));
-    assertThat(equalByLengthAndLastDigit.eq("str1", "strr1"), is(false));
-  }
-
-  @Test
-  public void orShouldWork() {
-    Equal<String> equalByLengthOrLastDigit = Equal.or(Equal.contramap(String::length, Equal.intEqual),
-                                                      Equal.contramap(s -> s.charAt(s.length() - 1),
-                                                                      Equal.charEqual));
-
-    assertThat(equalByLengthOrLastDigit.eq("str1", "str2"), is(true));
-    assertThat(equalByLengthOrLastDigit.eq("str1", "strr1"), is(true));
-    assertThat(equalByLengthOrLastDigit.eq("str1", "strr2"), is(false));
-  }
-
-  @Test
   public void thenShouldWork() {
-    Equal<String> equalByLengthThenLastDigit = Equal.contramap(String::length, Equal.intEqual)
-                                                    .andThen(s -> s.charAt(s.length() - 1), Equal.charEqual);
+    Equal<String> equalByLengthThenLastDigit = Equal.on(String::length, Equal.intEqual)
+                                                    .then(s -> s.charAt(s.length() - 1), Equal.charEqual).equal();
 
     assertThat(equalByLengthThenLastDigit.eq("str1", "spr1"), is(true));
     assertThat(equalByLengthThenLastDigit.eq("str1", "str2"), is(false));

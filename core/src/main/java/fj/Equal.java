@@ -48,6 +48,39 @@ public final class Equal<A> {
     default boolean equal(A a1, A a2) {
       return equal(a1).f(a2);
     }
+
+    /**
+     * Refine this equal definition, to tests equality of self and the mapped object in "and" manner.
+     * @see #equal()
+     *
+     * @param f The function to map the original object
+     * @param eq Equality for the mapped object
+     * @return A new equal definition
+     */
+    default <B> Definition<A> then(final F<A, B> f, final Equal<B> eq) {
+      Definition<B> bEqDef = eq.def;
+      return new Definition<A>() {
+        @Override
+        public F<A, Boolean> equal(A a1) {
+          F<A, Boolean> fa = Definition.this.equal(a1);
+          F<B, Boolean> fb = bEqDef.equal(f.f(a1));
+          return a2 -> fa.f(a2) && fb.f(f.f(a2));
+        }
+
+        @Override
+        public boolean equal(A a1, A a2) {
+          return Definition.this.equal(a1, a2) && bEqDef.equal(f.f(a1), f.f(a2));
+        }
+      };
+    }
+
+    /**
+     * Build an equal instance from this definition.
+     * to be called after some successive {@link #then(F, Equal)} calls.
+     */
+    default Equal<A> equal() {
+      return equalDef(this);
+    }
   }
 
   /**
@@ -118,49 +151,7 @@ public final class Equal<A> {
    * @return A new equal.
    */
   public <B> Equal<B> contramap(final F<B, A> f) {
-    Definition<A> eaDef = def;
-    return equalDef(new Definition<B>(){
-      @Override
-      public F<B, Boolean> equal(B b) {
-        return compose(eaDef.equal(f.f(b)), f);
-      }
-
-      @Override
-      public boolean equal(B b1, B b2) {
-        return eaDef.equal(f.f(b1), f.f(b2));
-      }
-    });
-  }
-
-  /**
-   * Constructs an equal instance, which tests equality of self and the mapped object in "and" manner
-   *
-   * @param f The function to map the original object
-   * @param eq Equality for the mapped object
-   * @return A new equal instance
-   */
-  public final <B> Equal<A> andThen(final F<A, B> f, final Equal<B> eq) {
-    return and(eq.contramap(f));
-  }
-
-  /**
-   * An equal instance, which executes two Equality of self in "and" manner
-   *
-   * @param eq Another equality for self
-   * @return A new equal instance
-   */
-  public final Equal<A> and(final Equal<A> eq) {
-    return equalDef((a1, a2) -> def.equal(a1, a2) && eq.def.equal(a1, a2));
-  }
-
-  /**
-   * An equal instance, which executes two Equality of self in "or" manner
-   *
-   * @param eq Another equality for self
-   * @return A new equal instance
-   */
-  public final Equal<A> or(final Equal<A> eq) {
-    return equalDef((a1, a2) -> def.equal(a1, a2) || eq.def.equal(a1, a2));
+    return equalDef(contramapDef(f, def));
   }
 
   /**
@@ -172,6 +163,21 @@ public final class Equal<A> {
     return equalDef((a1, a2) -> !def.equal(a1, a2));
   }
 
+
+  private static <A, B> Definition<B> contramapDef(F<B, A> f, Definition<A> aEqDef) {
+    return new Definition<B>(){
+      @Override
+      public F<B, Boolean> equal(B b) {
+        return compose(aEqDef.equal(f.f(b)), f);
+      }
+
+      @Override
+      public boolean equal(B b1, B b2) {
+        return aEqDef.equal(f.f(b1), f.f(b2));
+      }
+    };
+  }
+
   /**
    * Static version of {@link #contramap(F)}
    */
@@ -180,24 +186,11 @@ public final class Equal<A> {
   }
 
   /**
-   * Static version of {@link #and(Equal)}
+   * Begin definition of an equal instance.
+   * @see Definition#then(F, Equal)
    */
-  public static <A> Equal<A> and(final Equal<A> eq1, final Equal<A> eq2) {
-    return eq1.and(eq2);
-  }
-
-  /**
-   * Static version of {@link #or(Equal)}
-   */
-  public static <A> Equal<A> or(final Equal<A> eq1, final Equal<A> eq2) {
-    return eq1.or(eq2);
-  }
-
-  /**
-   * Static version of {@link #not()}
-   */
-  public static <A> Equal<A> not(final Equal<A> eq) {
-    return eq.not();
+  public static <A, B> Definition<A> on(final F<A, B> f, final Equal<B> eq) {
+    return contramapDef(f, eq.def);
   }
 
   /**

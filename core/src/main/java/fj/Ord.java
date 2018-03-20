@@ -84,6 +84,42 @@ public final class Ord<A> {
         }
       };
     }
+
+    /**
+     * Refine this ord definition:  compares using self and if objects are equal compares using given <code>Ord</code>.
+     * @see #ord()
+     *
+     * @param bOrd Ord for subsequent comparison
+     * @return A new ord definition.
+     */
+    default <B> Definition<A> then(final F<A, B> f, final Ord<B> bOrd) {
+      Definition<B> bOrdDef = bOrd.def;
+      return new Definition<A>() {
+        @Override
+        public F<A, Ordering> compare(A a1) {
+          F<A, Ordering> fa = Definition.this.compare(a1);
+          F<B, Ordering> fb = bOrdDef.compare(f.f(a1));
+          return a2 -> {
+            Ordering aOrdering = fa.f(a2);
+            return aOrdering != Ordering.EQ ? aOrdering : fb.f(f.f(a2));
+          };
+        }
+
+        @Override
+        public Ordering compare(A a1, A a2) {
+          Ordering aOrdering = Definition.this.compare(a1, a2);
+          return aOrdering != Ordering.EQ ? aOrdering : bOrdDef.compare(f.f(a1), f.f(a2));
+        }
+      };
+    }
+
+    /**
+     * Build an ord instance from this definition.
+     * to be called after some successive {@link #then(F, Ord)} calls.
+     */
+    default Ord<A> ord() {
+      return ordDef(this);
+    }
   }
 
   /**
@@ -160,18 +196,7 @@ public final class Ord<A> {
    * @return A new ord.
    */
   public <B> Ord<B> contramap(final F<B, A> f) {
-    Definition<A> selfDef = def;
-    return ordDef(new Definition<B>() {
-      @Override
-      public F<B, Ordering> compare(B b) {
-        return compose(selfDef.compare(f.f(b)), f);
-      }
-
-      @Override
-      public Ordering compare(B b1, B b2) {
-        return selfDef.compare(f.f(b1), f.f(b2));
-      }
-    });
+    return ordDef(contramapDef(f, def));
   }
 
   /**
@@ -288,36 +313,32 @@ public final class Ord<A> {
   }
 
   /**
-   * Constructs an ord instance, which compares using self and if objects are equal compares using <code>ord</code>
-   *
-   * @param ord Ord for subsequent comparison
-   * @return A new equal instance
+   * Begin definition of an ord instance.
+   * @see Definition#then(F, Equal)
    */
-  public final Ord<A> andThen(final Ord<A> ord) {
-    return ordDef((a1, a2) -> {
-      final Ordering compareResult = compare(a1, a2);
-      if(compareResult == Ordering.EQ)
-        return ord.compare(a1, a2);
-      return compareResult;
-    });
-  }
-
-  /**
-   * Constructs an ord instance, which compares using self and if objects are equal compares the mapped objects
-   *
-   * @param f The function to map the original object
-   * @param ord Ord for the mapped object
-   * @return A new equal instance
-   */
-  public final <B> Ord<A> andThen(final F<A, B> f, final Ord<B> ord) {
-    return andThen(ord.contramap(f));
+  public static <A, B> Definition<A> on(final F<A, B> f, final Ord<B> ord) {
+    return contramapDef(f, ord.def);
   }
 
   /**
    * Static version of {@link #contramap(F)}
    */
   public static <A, B> Ord<A> contramap(final F<A, B> f, final Ord<B> ord) {
-    return ord.contramap(f);
+    return ordDef(contramapDef(f, ord.def));
+  }
+
+  private static <A, B> Definition<B> contramapDef(F<B, A> f, Definition<A> def) {
+    return new Definition<B>() {
+      @Override
+      public F<B, Ordering> compare(B b) {
+        return compose(def.compare(f.f(b)), f);
+      }
+
+      @Override
+      public Ordering compare(B b1, B b2) {
+        return def.compare(f.f(b1), f.f(b2));
+      }
+    };
   }
 
   /**
@@ -609,15 +630,15 @@ public final class Ord<A> {
    * @return An order instance for a product-2, with the first factor considered most significant.
    */
   public static <A, B> Ord<P2<A, B>> p2Ord(final Ord<A> oa, final Ord<B> ob) {
-    return ordDef((a, b) -> oa.eq(a._1(), b._1()) ? ob.compare(a._2(), b._2()) : oa.compare(a._1(), b._1()));
+    return on(P2.<A, B>__1(), oa).then(P2.__2(), ob).ord();
   }
 
     public static <A, B> Ord<P2<A, B>> p2Ord1(Ord<A> oa) {
-        return ordDef((p1, p2) -> oa.compare(p1._1(), p2._1()));
+        return on(P2.<A, B>__1(), oa).ord();
     }
 
     public static <A, B> Ord<P2<A, B>> p2Ord2(Ord<B> ob) {
-        return ordDef((p1, p2) -> ob.compare(p1._2(), p2._2()));
+        return on(P2.<A, B>__2(), ob).ord();
     }
 
   /**
@@ -629,9 +650,7 @@ public final class Ord<A> {
    * @return An order instance for a product-3, with the first factor considered most significant.
    */
   public static <A, B, C> Ord<P3<A, B, C>> p3Ord(final Ord<A> oa, final Ord<B> ob, final Ord<C> oc) {
-    return ordDef((a, b) -> oa.eq(a._1(), b._1()) ?
-           p2Ord(ob, oc).compare(P.p(a._2(), a._3()), P.p(b._2(), b._3()))
-                                 : oa.compare(a._1(), b._1()));
+    return on(P3.<A, B, C>__1(), oa).then(P3.__2(), ob).then(P3.__3(), oc).ord();
   }
 
   /**
