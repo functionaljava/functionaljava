@@ -316,7 +316,7 @@ public abstract class Either<A, B> {
        * @return An either after traversing through this projection.
        */
       public <C> IO<Either<C, B>> traverseIO(final F<A, IO<C>> f) {
-          return e.isRight() ?
+          return e.isLeft() ?
                   IOFunctions.map(f.f(value()), Either::<C, B>left) :
                   IOFunctions.unit(Either.right(e.right().value()));
       }
