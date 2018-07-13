@@ -72,7 +72,7 @@ allprojects {
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
         primaryEmail = "functionaljava@googlegroups.com"
 
-        dependencyJunit = "junit:junit:4.12"
+        dependencyJunit = "org.junit.vintage:junit-vintage-engine:5.2.0"
 
         displayCompilerWarnings = true
 
