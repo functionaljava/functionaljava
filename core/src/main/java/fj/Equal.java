@@ -133,6 +133,74 @@ public final class Equal<A> {
   }
 
   /**
+   * Constructs an equal instance, which tests equality of self and the mapped object in "and" manner
+   *
+   * @param f The function to map the original object
+   * @param eq Equality for the mapped object
+   * @return A new equal instance
+   */
+  public final <B> Equal<A> andThen(final F<A, B> f, final Equal<B> eq) {
+    return and(eq.contramap(f));
+  }
+
+  /**
+   * An equal instance, which executes two Equality of self in "and" manner
+   *
+   * @param eq Another equality for self
+   * @return A new equal instance
+   */
+  public final Equal<A> and(final Equal<A> eq) {
+    return equalDef((a1, a2) -> def.equal(a1, a2) && eq.def.equal(a1, a2));
+  }
+
+  /**
+   * An equal instance, which executes two Equality of self in "or" manner
+   *
+   * @param eq Another equality for self
+   * @return A new equal instance
+   */
+  public final Equal<A> or(final Equal<A> eq) {
+    return equalDef((a1, a2) -> def.equal(a1, a2) || eq.def.equal(a1, a2));
+  }
+
+  /**
+   * An equal instance, which reverts equality for self
+   *
+   * @return A new equal instance
+   */
+  public final Equal<A> not() {
+    return equalDef((a1, a2) -> !def.equal(a1, a2));
+  }
+
+  /**
+   * Static version of {@link #contramap(F)}
+   */
+  public static <A, B> Equal<A> contramap(final F<A, B> f, final Equal<B> eq) {
+    return eq.contramap(f);
+  }
+
+  /**
+   * Static version of {@link #and(Equal)}
+   */
+  public static <A> Equal<A> and(final Equal<A> eq1, final Equal<A> eq2) {
+    return eq1.and(eq2);
+  }
+
+  /**
+   * Static version of {@link #or(Equal)}
+   */
+  public static <A> Equal<A> or(final Equal<A> eq1, final Equal<A> eq2) {
+    return eq1.or(eq2);
+  }
+
+  /**
+   * Static version of {@link #not()}
+   */
+  public static <A> Equal<A> not(final Equal<A> eq) {
+    return eq.not();
+  }
+
+  /**
    * Constructs an equal instance from the given function.
    *
    * Java 8+ users: use {@link #equalDef(Definition)} instead.
