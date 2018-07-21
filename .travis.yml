@@ -1,30 +1,13 @@
-language: java
+# Use faster, Docker-based container (instead of OpenVZ)
+sudo: false
 
-sudo: required
+language: java
 
 jdk:
   - oraclejdk8
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-
-before_script:
-  - sudo service postgresql stop || true
-  - sudo service mysql stop || true
-  - sudo service memcached stop || true
-  - sudo service bootlogd stop || true
-  - sudo service elasticsearch stop || true
-  - sudo service mongodb stop || true
-  - sudo service neo4j stop || true
-  - sudo service cassandra stop || true
-  - sudo service riak stop || true
-  - sudo service rsync stop || true
-  - sudo service x11-common stop || true
-
 script:
-  - jdk_switcher use oraclejdk7 && export JAVA7_HOME=$JAVA_HOME
+  - jdk_switcher use openjdk7 && export JAVA7_HOME=$JAVA_HOME
   - jdk_switcher use oraclejdk8 && export JAVA8_HOME=$JAVA_HOME
   - ./gradlew build coverage -s -i
 
