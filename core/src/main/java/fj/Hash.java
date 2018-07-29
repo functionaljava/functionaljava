@@ -263,6 +263,26 @@ public final class Hash<A> {
   }
 
   /**
+   * A hash instance for the {@link Zipper} type.
+   *
+   * @param ha A hash for the elements of the zipper.
+   * @return A hash instance for the {@link Zipper} type.
+   */
+  public static <A> Hash<Zipper<A>> zipperHash(final Hash<A> ha) {
+    Hash<Stream<A>> sh = streamHash(ha);
+    return hash(as -> {
+        final int p = 419;
+        int r = 239;
+
+        r = p * r + sh.hash(as.lefts());
+        r = p * r + ha.hash(as.focus());
+        r = p * r + sh.hash(as.rights());
+
+        return r;
+    });
+  }
+
+  /**
    * A hash instance for the {@link Tree} type.
    *
    * @param ha A hash for the elements of the tree.

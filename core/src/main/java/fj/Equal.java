@@ -1,19 +1,6 @@
 package fj;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.LazyString;
-import fj.data.List;
-import fj.data.Natural;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Seq;
-import fj.data.Set;
-import fj.data.Stream;
-import fj.data.Tree;
-import fj.data.TreeMap;
-import fj.data.Validation;
-import fj.data.Writer;
+import fj.data.*;
 import fj.data.hamt.BitSet;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
@@ -453,6 +440,21 @@ public final class Equal<A> {
 
       return x1.isEmpty() && x2.isEmpty();
     });
+  }
+
+  /**
+   * An equal instance for the {@link Zipper} type.
+   *
+   * @param ea Equality across the elements of the zipper.
+   * @return An equal instance for the {@link Zipper} type.
+   */
+  public static <A> Equal<Zipper<A>> zipperEqual(final Equal<A> ea) {
+    Equal<Stream<A>> se = Equal.streamEqual(ea);
+    return equalDef((a1, a2) ->
+        se.eq(a1.lefts(), a2.lefts()) &&
+        ea.eq(a1.focus(), a2.focus()) &&
+        se.eq(a1.rights(), a2.rights())
+    );
   }
 
   /**
