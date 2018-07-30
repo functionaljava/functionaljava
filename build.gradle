@@ -7,8 +7,8 @@ ext {
 buildscript {
     ext {
         uptodateVersion = "1.6.3"
-        retrolambdaPluginVersion = "3.5.0"
-        retrolambdaVersion = "2.5.1"
+        retrolambdaPluginVersion = "3.7.0"
+        retrolambdaVersion = "2.5.4"
     }
 
     repositories {
