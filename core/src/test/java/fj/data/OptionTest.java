@@ -23,7 +23,6 @@ public class OptionTest {
         int max = 3;
         List<Option<Integer>> actual = some(max).traverseList(a -> List.range(1, a + 1));
         List<Option<Integer>> expected = List.range(1, max + 1).map(i -> some(i));
-        System.out.println(String.format("actual: %s, expected: %s", actual.toString(), expected.toString()));
         assertTrue(actual.equals(expected));
     }
 

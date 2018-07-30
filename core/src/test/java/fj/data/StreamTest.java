@@ -107,9 +107,16 @@ public class StreamTest {
     }
 
     @Test
-    public void testSort() {
+    public void testSortSeq() {
         Stream<Integer> s = range(Enumerator.intEnumerator, 99, -99, -1);
         assertThat(s.sort(Ord.intOrd, Strategy.seqStrategy()),
+                is(s.sort(Ord.intOrd)));
+    }
+
+    @Test
+    public void testSortThread() {
+        Stream<Integer> s = range(Enumerator.intEnumerator, 99, -99, -1);
+        assertThat(s.sort(Ord.intOrd, Strategy.simpleThreadStrategy()),
                 is(s.sort(Ord.intOrd)));
     }
 }
