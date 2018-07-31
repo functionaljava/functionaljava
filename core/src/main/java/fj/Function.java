@@ -863,4 +863,38 @@ public final class Function {
       final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>> f, final H h) {
     return a -> b -> c -> d -> e -> f$ -> g -> uncurryF8(f).f(a, b, c, d, e, f$, g, h);
   }
+
+  /**
+   * Unite functions into a function on a sum-type.
+   */
+  public static <result, _1, _2> F<S2<_1, _2>, result> sum(
+    F<_1, result> projection1,
+    F<_2, result> projection2
+  ) {
+    return s -> s.match(projection1, projection2);
+  }
+
+  /**
+   * Unite functions into a function on a sum-type.
+   */
+  public static <result, _1, _2, _3> F<S3<_1, _2, _3>, result> sum(
+    F<_1, result> projection1,
+    F<_2, result> projection2,
+    F<_3, result> projection3
+  ) {
+    return s -> s.match(projection1, projection2, projection3);
+  }
+
+  /**
+   * Unite functions into a function on a sum-type.
+   */
+  public static <result, _1, _2, _3, _4> F<S4<_1, _2, _3, _4>, result> sum(
+    F<_1, result> projection1,
+    F<_2, result> projection2,
+    F<_3, result> projection3,
+    F<_4, result> projection4
+  ) {
+    return s -> s.match(projection1, projection2, projection3, projection4);
+  }
+
 }
