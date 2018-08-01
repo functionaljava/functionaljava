@@ -38,10 +38,6 @@ public class TreeMapTest {
         Show<Set<String>> ss = Show.setShow(Show.stringShow);
         Show<Option<String>> so = Show.optionShow(Show.stringShow);
         Show<P3<Set<String>, Option<String>, Set<String>>> sp3 = Show.p3Show(ss, so, ss);
-        if (true) {
-            st.println(m2);
-            sp3.println(p);
-        }
 
         // assert equals
         Equal<Set<String>> seq = Equal.setEqual(Equal.stringEqual);
@@ -69,13 +65,6 @@ public class TreeMapTest {
         TreeMap<Integer, String> leftMap = iterableTreeMap(Ord.intOrd, leftList.zip(leftList.map(i -> i.toString())));
         List<Integer> rightList = List.range(pivot + 1, max + 1);
         TreeMap<Integer, String> rightMap = iterableTreeMap(Ord.intOrd, rightList.zip(rightList.map(i -> i.toString())));
-
-        // debug info
-        if (true) {
-            Show<TreeMap<Integer, String>> st = Show.treeMapShow(Show.intShow, Show.stringShow);
-            Show<P3<TreeMap<Integer, String>, Option<String>, TreeMap<Integer, String>>> sp3 = Show.p3Show(st, Show.optionShow(Show.stringShow), st);
-            sp3.println(p3);
-        }
 
         // do the assert
         Equal<TreeMap<Integer, String>> tme = Equal.treeMapEqual(Equal.intEqual, Equal.stringEqual);

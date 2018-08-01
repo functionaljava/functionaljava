@@ -3,6 +3,8 @@ package fj.data;
 import fj.P2;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +42,8 @@ public class SeqTest {
     @Test
     public void test() {
         P2<Seq<Integer>, Seq<Integer>> p2 = Seq.single(1).split(5);
-        System.out.println(p2);
+        assertThat(p2._1(), is(Seq.single(1)));
+        assertThat(p2._2(), is(Seq.empty()));
     }
 
 }
