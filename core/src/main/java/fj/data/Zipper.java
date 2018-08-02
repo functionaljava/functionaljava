@@ -1,17 +1,6 @@
 package fj.data;
 
-import fj.Equal;
-import fj.F;
-import fj.F2;
-import fj.F2Functions;
-import fj.F3;
-import fj.Function;
-import fj.Ord;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.Show;
+import fj.*;
 import fj.function.Integers;
 
 import java.util.Iterator;
@@ -104,6 +93,16 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
   public static <A> Ord<Zipper<A>> ord(final Ord<A> o) {
     final Ord<Stream<A>> so = Ord.streamOrd(o);
     return Ord.p3Ord(so, o, so).contramap(Zipper.p_());
+  }
+
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(Zipper.class, this, other, () -> Equal.zipperEqual(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.zipperHash(Hash.<A>anyHash()).hash(this);
   }
 
   /**
