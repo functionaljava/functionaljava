@@ -10,6 +10,7 @@ import fj.data.vector.V5;
 import fj.data.vector.V6;
 import fj.data.vector.V7;
 import fj.data.vector.V8;
+import fj.parser.Result;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -160,6 +161,25 @@ public final class Hash<A> {
    */
   public static <A, B> Hash<Either<A, B>> eitherHash(final Hash<A> ha, final Hash<B> hb) {
     return hash(e -> e.isLeft() ? ha.hash(e.left().value()) : hb.hash(e.right().value()));
+  }
+
+  /**
+   * A hash instance for the {@link Result} type.
+   *
+   * @param ha Hash the <code>Result</code> value.
+   * @param hi Hash the <code>Result</code> remainder.
+   * @return A hash instance for the {@link Result} type.
+   */
+  public static <I, A> Hash<Result<I, A>> resultHash(Hash<A> ha, Hash<I> hi) {
+    return hash(res -> {
+      final int p = 419;
+      int r = 239;
+
+      r = p * r + ha.hash(res.value());
+      r = p * r + hi.hash(res.rest());
+
+      return r;
+    });
   }
 
   /**

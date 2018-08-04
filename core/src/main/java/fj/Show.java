@@ -12,6 +12,7 @@ import fj.data.vector.V5;
 import fj.data.vector.V6;
 import fj.data.vector.V7;
 import fj.data.vector.V8;
+import fj.parser.Result;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -253,6 +254,19 @@ public final class Show<A> {
     return show(e -> e.isLeft() ?
            fromString("Left(").append(sa.f.f(e.left().value())).append(single(')')) :
            fromString("Right(").append(sb.f.f(e.right().value())).append(single(')')));
+  }
+
+  /**
+   * A show instance for the {@link Result} type.
+   *
+   * @param sa Show for the {@link Result} value.
+   * @param si Show for the {@link Result} remainder.
+   * @return A show instance for the {@link Result} type.
+   */
+  public static <I, A> Show<Result<I, A>> resultShow(Show<A> sa, Show<I> si) {
+    return show(res ->
+            fromString("Result(").append(sa.f.f(res.value()))
+                    .append(single(',')).append(si.f.f(res.rest())).append(single(')')));
   }
 
   /**
