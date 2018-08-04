@@ -23,6 +23,16 @@ public final class V7<A> implements Iterable<A> {
     this.tail = tail;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V7.class, this, other, () -> Equal.v7Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v7Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-7 from a homogeneous product-7.
    *

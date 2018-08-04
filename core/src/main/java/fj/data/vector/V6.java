@@ -23,6 +23,16 @@ public final class V6<A> implements Iterable<A> {
     this.tail = tail;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V6.class, this, other, () -> Equal.v6Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v6Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-6 from a homogeneous product-6.
    *

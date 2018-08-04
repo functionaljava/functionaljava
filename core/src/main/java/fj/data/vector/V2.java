@@ -23,6 +23,16 @@ public final class V2<A> implements Iterable<A> {
     this.inner = inner;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V2.class, this, other, () -> Equal.v2Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v2Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-2 from a homogeneous product-2.
    *
