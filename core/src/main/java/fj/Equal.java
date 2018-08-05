@@ -10,6 +10,7 @@ import fj.data.vector.V5;
 import fj.data.vector.V6;
 import fj.data.vector.V7;
 import fj.data.vector.V8;
+import fj.parser.Result;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -354,6 +355,13 @@ public final class Equal<A> {
         b1 -> Either.either_((A __)-> false, ebDef.equal(b1))
     ));
   }
+
+  public static <I, A> Equal<Result<I, A>> resultEqual(final Equal<A> ea, final Equal<I> ei) {
+    Definition<A> eaDef = ea.def;
+    Definition<I> eiDef= ei.def;
+    return equalDef((r1, r2) -> eaDef.equal(r1.value(), r2.value()) && eiDef.equal(r1.rest(), r2.rest()));
+  }
+
 
   /**
    * An equal instance for the {@link Validation} type.

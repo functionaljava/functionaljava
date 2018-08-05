@@ -1,6 +1,9 @@
 package fj.parser;
 
+import fj.Equal;
 import fj.F;
+import fj.Hash;
+import fj.Show;
 
 import static fj.Function.curry;
 
@@ -20,6 +23,22 @@ public final class Result<I, A> implements Iterable<A> {
     this.i = i;
     this.a = a;
   }
+
+  @Override
+  public final int hashCode() {
+    return Hash.resultHash(Hash.<A>anyHash(), Hash.<I>anyHash()).hash(this);
+  }
+
+  @Override
+  public final String toString() {
+    return Show.resultShow(Show.<A>anyShow(), Show.<I>anyShow()).showS(this);
+  }
+
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(Result.class, this, other, () -> Equal.resultEqual(Equal.anyEqual(), Equal.anyEqual()));
+  }
+
 
   /**
    * The remainder of the parse input.
