@@ -23,6 +23,16 @@ public final class V8<A> implements Iterable<A> {
     this.tail = tail;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V8.class, this, other, () -> Equal.v8Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v8Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-8 from a homogeneous product-8.
    *

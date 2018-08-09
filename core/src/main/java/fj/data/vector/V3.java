@@ -23,6 +23,16 @@ public final class V3<A> implements Iterable<A> {
     this.tail = tail;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V3.class, this, other, () -> Equal.v3Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v3Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-3 from a homogeneous product-3.
    *

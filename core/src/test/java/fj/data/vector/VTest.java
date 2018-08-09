@@ -1,13 +1,6 @@
 package fj.data.vector;
 
-import fj.P;
-import fj.P2;
-import fj.P3;
-import fj.P4;
-import fj.P5;
-import fj.P6;
-import fj.P7;
-import fj.P8;
+import fj.*;
 import fj.data.Array;
 import org.junit.Test;
 
@@ -59,4 +52,55 @@ public class VTest {
         assertThat(v8.toArray(), is(Array.range(1, 9)));
         assertThat(v8.p(), is(p8));
     }
+
+    @Test
+    public void testVectorFunc2() {
+        V2<Integer> v2 = V.v(() -> 2, () -> 1);
+        F2<Integer, Integer, V2<Integer>> fv2 = V.v2();
+        V2<Integer> vf2 = fv2.f(2, 1);
+        assertThat(vf2, is(v2));
+    }
+
+    @Test
+    public void testVectorFunc3() {
+        V3<Integer> v3 = V.v(P.p(3), () -> 2, () -> 1);
+        F3<Integer, Integer, Integer, V3<Integer>> fv3 = V.v3();
+        V3<Integer> vf3 = fv3.f(3, 2, 1);
+        assertThat(vf3, is(v3));
+    }
+
+    @Test
+    public void testVectorFunc4() {
+        V4<Integer> v4 = V.v(P.p(4), P.p(3), () -> 2, () -> 1);
+        F4<Integer, Integer, Integer, Integer, V4<Integer>> fv4 = V.v4();
+        V4<Integer> vf4 = fv4.f(4, 3, 2, 1);
+        assertThat(vf4, is(v4));
+    }
+
+    @Test
+    public void testVectorFunc5() {
+        V5<Integer> v5 = V.v(P.p(5), P.p(4), P.p(3), () -> 2, () -> 1);
+        F5<Integer, Integer, Integer, Integer, Integer, V5<Integer>> fv5 = V.v5();
+        V5<Integer> vf5 = fv5.f(5, 4, 3, 2, 1);
+        assertThat(vf5, is(v5));
+    }
+
+    @Test
+    public void testVectorMap() {
+        final V2<Integer> v2 = V.v(() -> 2, () -> 1);
+        assertThat(v2, is(v2.map(i -> i * 1)));
+        final V3<Integer> v3 = V3.cons(P.p(3), v2);
+        assertThat(v3, is(v3.map(i -> i * 1)));
+        final V4<Integer> v4 = V4.cons(P.p(4), v3);
+        assertThat(v4, is(v4.map(i -> i * 1)));
+        final V5<Integer> v5 = V5.cons(P.p(5), v4);
+        assertThat(v5, is(v5.map(i -> i * 1)));
+        final V6<Integer> v6 = V6.cons(P.p(6), v5);
+        assertThat(v6, is(v6.map(i -> i * 1)));
+        final V7<Integer> v7 = V7.cons(P.p(7), v6);
+        assertThat(v7, is(v7.map(i -> i * 1)));
+        final V8<Integer> v8 = V8.cons(P.p(8), v7);
+        assertThat(v8, is(v8.map(i -> i * 1)));
+    }
+
 }

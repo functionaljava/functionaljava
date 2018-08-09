@@ -23,6 +23,16 @@ public final class V4<A> implements Iterable<A> {
     this.tail = tail;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V4.class, this, other, () -> Equal.v4Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v4Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-4 from a homogeneous product-4.
    *

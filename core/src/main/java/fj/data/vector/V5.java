@@ -23,6 +23,16 @@ public final class V5<A> implements Iterable<A> {
     this.tail = tail;
   }
 
+  @Override
+  public final boolean equals(Object other) {
+    return Equal.equals0(V5.class, this, other, () -> Equal.v5Equal(Equal.anyEqual()));
+  }
+
+  @Override
+  public final int hashCode() {
+    return Hash.v5Hash(Hash.<A>anyHash()).hash(this);
+  }
+
   /**
    * Creates a vector-5 from a homogeneous product-5.
    *
