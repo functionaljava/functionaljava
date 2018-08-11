@@ -2,7 +2,6 @@ package fj;
 
 import org.junit.Test;
 
-import fj.F1W;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
