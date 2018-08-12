@@ -54,7 +54,17 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
     this.parents = parents;
   }
 
-  /**
+    @Override
+    public final boolean equals(Object other) {
+        return Equal.equals0(TreeZipper.class, this, other, () -> Equal.treeZipperEqual(Equal.anyEqual()));
+    }
+
+    @Override
+    public final int hashCode() {
+        return Hash.treeZipperHash(Hash.<A>anyHash()).hash(this);
+    }
+
+    /**
    * Creates a new tree zipper given a currently selected tree, a forest on the left, a forest on the right,
    * and a stream of parent contexts.
    *
@@ -341,8 +351,17 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
    * @return the right siblings of the currently focused node.
    */
   public Stream<Tree<A>> rights() {
-    return rights;
-  }
+        return rights;
+    }
+
+  /**
+   * Returns the parents of the currently focused node.
+   *
+   * @return the parents of the currently focused node.
+   */
+  public Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>> parents() {
+        return parents;
+    }
 
   /**
    * Indicates whether the current node is at the top of the tree.

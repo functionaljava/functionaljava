@@ -1,5 +1,7 @@
 package fj;
 
+import fj.data.Tree;
+import fj.data.TreeZipper;
 import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -21,5 +23,21 @@ public class FFunctionsTest {
         F2<Integer, Integer, Integer> f2 = F3Functions.f(f3, 3);
         F<Integer, Integer> f1 = F2Functions.f(f2, 2);
         assertThat(F1Functions.f(f1, 1).f(), is(36));
+    }
+
+    @Test
+    public void testTreeK() {
+        final Tree<Integer> t1 = F1Functions.<Integer, Integer>treeK(Function.identity()).f(1);
+        final Tree<Integer> t2 = F1Functions.<Integer, Integer>treeK(Function.identity()).f(2);
+        assertThat(F1Functions.<Integer, Integer>mapTree(i -> i + 1).f(t1),
+                is(F1Functions.<Integer, Integer>mapTree(i -> i * 1).f(t2)));
+    }
+
+    @Test
+    public void testTreeZipperK() {
+        final TreeZipper<Integer> tz1 = F1Functions.<Integer, Integer>treeZipperK(Function.identity()).f(1);
+        final TreeZipper<Integer> tz2 = F1Functions.<Integer, Integer>treeZipperK(Function.identity()).f(2);
+        assertThat(F1Functions.<Integer, Integer>mapTreeZipper(i -> i + 1).f(tz1),
+                is(F1Functions.<Integer, Integer>mapTreeZipper(i -> i * 1).f(tz2)));
     }
 }
