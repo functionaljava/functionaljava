@@ -11,6 +11,8 @@ import static fj.test.Arbitrary.*;
 import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -24,7 +26,6 @@ public class ReaderTest {
         // example taken from http://learnyouahaskell.com/for-a-few-monads-more
         int x = Reader.unit((Integer i) -> i + 3).map(i -> i * 5).f(8);
         assertTrue(x == 55);
-//        System.out.println(x); // 55
     }
 
     @Test
@@ -106,6 +107,19 @@ public class ReaderTest {
                     return prop(b2);
                 });
         PropertyAssert.assertResult(p);
+    }
+
+    @Test
+    public void testAndThen() {
+        final int y = Reader.unit((Integer i) -> i * 2).andThen(i -> i + 10).f(10);
+        assertThat(y, is(30));
+    }
+
+    @Test
+    public void testBind() {
+        final int y = Reader.unit((Integer i) -> i * 2)
+                .bind(a -> Reader.unit(i -> a + i + 11)).f(10);
+        assertThat(y, is(41));
     }
 
     public Gen<Reader<Integer, Integer>> arbReader() {
