@@ -2,8 +2,7 @@ package fj.data;
 
 import fj.Equal;
 import fj.F;
-import fj.data.test.PropertyAssert;
-import fj.test.Arbitrary;
+import fj.P;
 import fj.test.Gen;
 import fj.test.Property;
 import org.junit.Assert;
@@ -14,7 +13,8 @@ import static fj.test.Arbitrary.*;
 import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * Created by MarkPerry on 17/12/2014.
@@ -107,7 +107,13 @@ public class WriterTest {
         assertResult(p);
     }
 
-
+    @Test
+    public void testUnit() {
+        Writer<String, String> w = Writer.unit("+").tell("foo").tell("bar");
+        assertThat(w.run(), is(P.p("foobar", "+")));
+        assertThat(w.log(), is("foobar"));
+        assertThat(w.value(), is("+"));
+    }
 
 
 }
