@@ -1,0 +1,14 @@
+changelogs:
+  - changelog: ChangeLog.md
+
+    ignore_files:
+      - "*ChangeLog*.md"
+      - .changelogged.yaml
+
+    ignore_commits: []
+
+branch: upstream/master
+
+entry_format: "  - %message% (see [%link%](%id%));"
+
+editor_command: "nano -EiT 2"
