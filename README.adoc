@@ -35,12 +35,12 @@ The Functional Java artifact is published to Maven Central using the group `org.
 * Java 8 specific support (`functionaljava-java8`)
 * property based testing (`functionaljava-quickcheck` or `functionaljava-quickcheck_1.8` if you use Java 8+)
 
-The latest stable version is `4.7`.  This can be added to your Gradle project by adding the dependencies:
+The latest stable version is `4.8`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.7"
-compile "org.functionaljava:functionaljava-java8:4.7"
-compile "org.functionaljava:functionaljava-quickcheck:4.7"
-compile "org.functionaljava:functionaljava-java-core:4.7"
+compile "org.functionaljava:functionaljava:4.8"
+compile "org.functionaljava:functionaljava-java8:4.8"
+compile "org.functionaljava:functionaljava-quickcheck:4.8"
+compile "org.functionaljava:functionaljava-java-core:4.8"
 ----
 
 and in Maven:
@@ -48,22 +48,22 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.7</version>
+    <version>4.8</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java8</artifactId>
-    <version>4.7</version>
+    <version>4.8</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-quickcheck</artifactId>
-    <version>4.7</version>
+    <version>4.8</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java-core</artifactId>
-    <version>4.7</version>
+    <version>4.8</version>
 </dependency>
 ----
 
