@@ -1,19 +1,19 @@
 package fj.data.fingertrees;
 
+import fj.Function;
 import fj.P;
 import fj.P2;
-import fj.Show;
 import fj.data.List;
-import fj.data.Stream;
+import fj.data.Option;
 import org.junit.Test;
 
-import static fj.P.p;
-import static fj.Show.intShow;
-import static fj.test.Property.prop;
-import static fj.test.Property.property;
-import static java.lang.System.out;
+import static fj.Monoid.intAdditionMonoid;
+import static fj.Monoid.intMinMonoid;
+import static fj.data.fingertrees.FingerTree.measured;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.Is.is;
+
 
 /**
  * Created by MarkPerry on 10/10/2015.
@@ -24,16 +24,33 @@ public class FingerTreeTest {
 
     @Test
     public void size() {
-        validateSize(List.list(-92, 68, 54, -77, -18, 67));
-        validateSize(List.list(-92, 68, 54, -77, -18, 67, -60, 23, -70, 99, 66, -79, -5));
+        validateOperations(List.list(-92, 68, 54, -77, -18, 67));
+        validateOperations(List.list(-92, 68, 54, -77, -18, 67, -60, 23, -70, 99, 66, -79, -5));
     }
 
-    void validateSize(List<Integer> list) {
+    void validateOperations(List<Integer> list) {
         FingerTree<Integer, Integer> ft = list.foldLeft(
             (acc, i) -> acc.snoc(i), FingerTree.<Integer>emptyIntAddition()
         );
         assertThat(ft.measure(), equalTo(list.length()));
+        assertThat(ft.foldLeft((s, i) -> s + 1, 0), equalTo(list.length()));
+        assertThat(ft.foldRight((i, s) -> 1 + s, 0), equalTo(list.length()));
+        assertThat(ft.filter(e -> e.equals(-77)).head(), equalTo(-77));
         assertThat(ft.length(), equalTo(list.length()));
+    }
+
+    @Test
+    public void testHeadOption() {
+        assertThat(Empty.emptyIntAddition().headOption(), is(Option.none()));
+        FingerTree<Integer, Integer> ft = new MakeTree(measured(intAdditionMonoid, Function.constant(1))).single(1);
+        assertThat(ft.headOption(), is(Option.some(1)));
+    }
+
+    @Test
+    public void testUncons() {
+        assertThat(Empty.emptyIntAddition().uncons(0, (h, t) -> h), is(0));
+        FingerTree<Integer, Integer> ft = new MakeTree(measured(intAdditionMonoid, Function.constant(1))).single(1);
+        assertThat(ft.uncons(0, (h, t) -> h), is(1));
     }
 
     public FingerTree<Integer, Integer> midSeq() {
