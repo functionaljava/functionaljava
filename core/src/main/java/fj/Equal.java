@@ -3,6 +3,7 @@ package fj;
 import fj.data.*;
 import fj.data.hamt.BitSet;
 import fj.data.hlist.HList;
+import fj.data.optic.Traversal;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
 import fj.data.vector.V4;
@@ -466,6 +467,25 @@ public final class Equal<A> {
   }
 
   /**
+   * An equal instance for the {@link TreeZipper} type.
+   *
+   * @param ea Equality across the elements of the tree zipper.
+   * @return An equal instance for the {@link TreeZipper} type.
+   */
+  public static <A> Equal<TreeZipper<A>> treeZipperEqual(final Equal<A> ea) {
+      final Equal<Tree<A>> te = Equal.treeEqual(ea);
+      final Equal<Stream<Tree<A>>> st = streamEqual(Equal.treeEqual(ea));
+      final Equal<Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>>> sp =
+              streamEqual(p3Equal(streamEqual(treeEqual(ea)), ea, streamEqual(treeEqual(ea))));
+      return equalDef((a1, a2) ->
+              te.eq(a1.focus(), a2.focus()) &&
+                      st.eq(a1.lefts(), a2.lefts()) &&
+                      st.eq(a1.rights(), a2.rights()) &&
+                      sp.eq(a1.parents(), a2.parents())
+      );
+  }
+
+    /**
    * An equal instance for the {@link Array} type.
    *
    * @param ea Equality across the elements of the array.

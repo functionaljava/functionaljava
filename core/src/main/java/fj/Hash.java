@@ -302,7 +302,31 @@ public final class Hash<A> {
     });
   }
 
-  /**
+    /**
+     * A hash instance for the {@link TreeZipper} type.
+     *
+     * @param ha A hash for the elements of the tree zipper.
+     * @return A hash instance for the {@link TreeZipper} type.
+     */
+    public static <A> Hash<TreeZipper<A>> treeZipperHash(final Hash<A> ha) {
+        Hash<Tree<A>> th = treeHash(ha);
+        Hash<Stream<Tree<A>>> sth = streamHash(treeHash(ha));
+        Hash<Stream<P3<Stream<Tree<A>>, A, Stream<Tree<A>>>>> tsp =
+                streamHash(p3Hash(streamHash(treeHash(ha)), ha, streamHash(treeHash(ha))));
+        return hash(as -> {
+            final int p = 419;
+            int r = 239;
+
+            r = p * r + th.hash(as.focus());
+            r = p * r + sth.hash(as.lefts());
+            r = p * r + sth.hash(as.rights());
+            r = p * r + tsp.hash(as.parents());
+
+            return r;
+        });
+    }
+
+    /**
    * A hash instance for the {@link Tree} type.
    *
    * @param ha A hash for the elements of the tree.
