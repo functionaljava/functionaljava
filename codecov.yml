@@ -1,3 +1,4 @@
 ignore:
   - "demo/.*"
+  - "consume/.*"
   - "performance/.*"
