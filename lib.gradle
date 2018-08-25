@@ -77,33 +77,9 @@ void configureUpload(String signingEnabled, Boolean signModule) {
     }
 }
 
-void configureAllRetroLambda() {
-    configureRetroLambda(useRetroLambda, newJdkEnvVar, oldJdkEnvVar, retroLambdaTarget)
-}
-
-void configureRetroLambda(boolean useRetroLambda, String newJdkEnvVar, String oldJdkEnvVar, JavaVersion retroLambdaTarget) {
-
-    if (useRetroLambda) {
-        apply plugin: 'me.tatarka.retrolambda'
-        retrolambda {
-            jdk System.getenv(newJdkEnvVar)
-            oldJdk System.getenv(oldJdkEnvVar)
-            javaVersion retroLambdaTarget
-            defaultMethods true
-        }
-        dependencies {
-            retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:$retrolambdaVersion"
-        }
-    } else {
-        project.archivesBaseName = "${project.archivesBaseName}_1.8"
-    }
-}
-
 ext {
     findJavaCommand = this.&findJavaCommand
     doSigning = this.&doSigning
     performSigning = this.&performSigning
     configureUpload = this.&configureUpload
-    configureRetroLambda = this.&configureRetroLambda
-    configureAllRetroLambda = this.&configureAllRetroLambda
 }

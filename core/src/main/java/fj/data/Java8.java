@@ -1,14 +1,5 @@
 package fj.data;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Spliterators;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.StreamSupport;
-
 import fj.F;
 import fj.F2;
 import fj.P;
@@ -18,6 +9,15 @@ import fj.Unit;
 import fj.function.Try0;
 import fj.function.Try1;
 import fj.function.Try2;
+
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Spliterators;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by mperry on 3/06/2014.
@@ -134,7 +134,7 @@ public final class Java8 {
         };
     }
 
-    public static <A> java.util.stream.Stream<A> Stream_JavaStream(final fj.data.Stream<A> s) {
+    public static <A> java.util.stream.Stream<A> Stream_JavaStream(final Stream<A> s) {
         return Iterable_JavaStream(s);
     }
 
@@ -146,7 +146,7 @@ public final class Java8 {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, 0), false);
     }
 
-    public static <A> F<fj.data.Stream<A>, java.util.stream.Stream<A>> Stream_JavaStream() {
+    public static <A> F<Stream<A>, java.util.stream.Stream<A>> Stream_JavaStream() {
         return Java8::Stream_JavaStream;
     }
 

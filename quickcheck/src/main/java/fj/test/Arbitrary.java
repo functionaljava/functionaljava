@@ -260,13 +260,13 @@ public final class Arbitrary {
    * @return An arbitrary for function-6.
    */
   public static <A, B, C, D, E, F$, G> Gen<F6<A, B, C, D, E, F$, G>> arbF6Invariant(final Gen<G> a) {
-    return a.map(compose(Function.<A, B, C, D, E, F$, G>uncurryF6(),
-        compose(Function.<A, F<B, F<C, F<D, F<E, F<F$, G>>>>>>constant(),
-            compose(Function.<B, F<C, F<D, F<E, F<F$, G>>>>>constant(),
-                compose(Function.<C, F<D, F<E, F<F$, G>>>>constant(),
-                    compose(Function.<D, F<E, F<F$, G>>>constant(),
-                        compose(Function.<E, F<F$, G>>constant(),
-                            Function.<F$, G>constant())))))));
+    return a.map(compose(Function.uncurryF6(),
+        compose(Function.constant(),
+            compose(Function.constant(),
+                compose(Function.constant(),
+                    compose(Function.constant(),
+                        compose(Function.constant(),
+                            Function.constant())))))));
   }
 
   /**
@@ -301,14 +301,14 @@ public final class Arbitrary {
    * @return An arbitrary for function-7.
    */
   public static <A, B, C, D, E, F$, G, H> Gen<F7<A, B, C, D, E, F$, G, H>> arbF7Invariant(final Gen<H> a) {
-    return a.map(compose(Function.<A, B, C, D, E, F$, G, H>uncurryF7(),
-        compose(Function.<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>>constant(),
-            compose(Function.<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>constant(),
-                compose(Function.<C, F<D, F<E, F<F$, F<G, H>>>>>constant(),
-                    compose(Function.<D, F<E, F<F$, F<G, H>>>>constant(),
-                        compose(Function.<E, F<F$, F<G, H>>>constant(),
-                            compose(Function.<F$, F<G, H>>constant(),
-                                Function.<G, H>constant()))))))));
+    return a.map(compose(Function.uncurryF7(),
+        compose(Function.constant(),
+            compose(Function.constant(),
+                compose(Function.constant(),
+                    compose(Function.constant(),
+                        compose(Function.constant(),
+                            compose(Function.constant(),
+                                Function.constant()))))))));
   }
 
   /**
@@ -346,17 +346,17 @@ public final class Arbitrary {
    */
   public static <A, B, C, D, E, F$, G, H, I> Gen<F8<A, B, C, D, E, F$, G, H, I>> arbF8Invariant(
       final Gen<I> a) {
-    return a.map(compose(Function.<A, B, C, D, E, F$, G, H, I>uncurryF8(),
-        compose(Function.<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>>constant(),
-            compose(Function.<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>constant(),
-                compose(Function.<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>constant(),
+    return a.map(compose(Function.uncurryF8(),
+        compose(Function.constant(),
+            compose(Function.constant(),
+                compose(Function.constant(),
                     compose(
-                        Function.<D, F<E, F<F$, F<G, F<H, I>>>>>constant(),
-                        compose(Function.<E, F<F$, F<G, F<H, I>>>>constant(),
+                        Function.constant(),
+                        compose(Function.constant(),
                             compose(
-                                Function.<F$, F<G, F<H, I>>>constant(),
-                                compose(Function.<G, F<H, I>>constant(),
-                                    Function.<H, I>constant())))))))));
+                                Function.constant(),
+                                compose(Function.constant(),
+                                    Function.constant())))))))));
   }
 
   /**
