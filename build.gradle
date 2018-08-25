@@ -23,8 +23,6 @@ buildscript {
     }
 }
 
-apply plugin: "jacoco"
-
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
@@ -35,11 +33,10 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 allprojects {
 
-
+    apply plugin: "jacoco"
 
     jacoco {
-        toolVersion = "0.8.1"
-
+        toolVersion = "0.8.2"
     }
 
 	defaultTasks "build"
@@ -100,8 +97,6 @@ subprojects {
         }
     }
 
-    apply plugin: "jacoco"
-
     apply from: "$rootDir/lib.gradle"
 	apply plugin: "java"
 	apply plugin: "eclipse"
@@ -123,9 +118,13 @@ subprojects {
 	}
 
     jacocoTestReport {
+        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(sourceSets.main.output)
         reports {
             html.enabled = true
             xml.enabled = true
+            csv.enabled = false
         }
     }
 

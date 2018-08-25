@@ -1,5 +1,6 @@
 package fj.test.reflect;
 
+import fj.F0;
 import fj.test.Property;
 
 import java.lang.annotation.Documented;

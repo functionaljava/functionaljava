@@ -1,6 +1,5 @@
 package fj.test;
 
-import fj.F;
 import fj.Show;
 
 import static fj.Show.anyShow;
@@ -52,10 +51,6 @@ public final class Arg<T> {
   /**
    * The rendering of an argument (uses {@link Object#toString()} for the argument value).
    */
-  public static final Show<Arg<?>> argShow = showS(new F<Arg<?>, String>() {
-    public String f(final Arg<?> arg) {
-      return anyShow().showS(arg.value) +
-          (arg.shrinks > 0 ? " (" + arg.shrinks + " shrink" + (arg.shrinks == 1 ? "" : 's') + ')' : "");
-    }
-  });
+  public static final Show<Arg<?>> argShow = showS(arg -> anyShow().showS(arg.value) +
+      (arg.shrinks > 0 ? " (" + arg.shrinks + " shrink" + (arg.shrinks == 1 ? "" : 's') + ')' : ""));
 }

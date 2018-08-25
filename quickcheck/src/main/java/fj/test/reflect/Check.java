@@ -1,6 +1,5 @@
 package fj.test.reflect;
 
-import fj.Class;
 import static fj.Class.clas;
 import fj.F;
 import fj.Function;
@@ -24,8 +23,7 @@ import fj.test.Rand;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+
 import static java.lang.reflect.Modifier.isStatic;
 
 /**
@@ -177,7 +175,7 @@ public final class Check {
    */
   public static <U, T extends U> List<P3<Property, String, Option<CheckParams>>> properties(final java.lang.Class<T> c, final String... categories) {
     //noinspection ClassEscapesDefinedScope
-    final Array<P3<Property, String, Option<CheckParams>>> propFields = properties(array(c.getDeclaredFields()).map((F<Field, PropertyMember>) f -> new PropertyMember() {
+    final Array<P3<Property, String, Option<CheckParams>>> propFields = properties(array(c.getDeclaredFields()).map(f -> new PropertyMember() {
       public java.lang.Class<?> type() {
         return f.getType();
       }
@@ -205,7 +203,7 @@ public final class Check {
     }), c, categories);
 
     //noinspection ClassEscapesDefinedScope
-    final Array<P3<Property, String, Option<CheckParams>>> propMethods = properties(array(c.getDeclaredMethods()).map((F<Method, PropertyMember>) m -> {
+    final Array<P3<Property, String, Option<CheckParams>>> propMethods = properties(array(c.getDeclaredMethods()).map(m -> {
       //noinspection ProhibitedExceptionDeclared
       return new PropertyMember() {
         public java.lang.Class<?> type() {

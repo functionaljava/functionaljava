@@ -404,27 +404,7 @@ public final class Java {
    * @return A function that converts streams to iterable.
    */
   public static <A> F<Stream<A>, Iterable<A>> Stream_Iterable() {
-    return as -> () -> new Iterator<A>() {
-      private Stream<A> x = as;
-
-      public boolean hasNext() {
-        return x.isNotEmpty();
-      }
-
-      public A next() {
-        if (x.isEmpty())
-          throw new NoSuchElementException("Empty iterator");
-        else {
-          final A a = x.head();
-          x = x.tail()._1();
-          return a;
-        }
-      }
-
-      public void remove() {
-        throw new UnsupportedOperationException();
-      }
-    };
+    return as -> as;
   }
 
   /**

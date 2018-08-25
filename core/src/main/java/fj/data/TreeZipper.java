@@ -628,21 +628,8 @@ public final class TreeZipper<A> implements Iterable<TreeZipper<A>> {
   }
 
   private static <A> F<TreeZipper<A>, P2<TreeZipper<A>, P1<Stream<TreeZipper<A>>>>> dwn() {
-    return tz -> P.p(tz, new P1<Stream<TreeZipper<A>>>() {
-      private F<Option<TreeZipper<A>>, Option<P2<TreeZipper<A>, Option<TreeZipper<A>>>>> fwd() {
-        return o -> {
-          Option<P2<TreeZipper<A>, Option<TreeZipper<A>>>> r = none();
-          for (final TreeZipper<A> c : o) {
-            r = some(P.p(c, c.right()));
-          }
-          return r;
-        };
-      }
-
-      public Stream<TreeZipper<A>> _1() {
-        return unfold(fwd(), tz.firstChild());
-      }
-    });
+    F<Option<TreeZipper<A>>, Option<P2<TreeZipper<A>, Option<TreeZipper<A>>>>> fwd = o -> o.map(c -> P.p(c, c.right()));
+    return tz -> P.p(tz, P.lazy(() -> unfold(fwd, tz.firstChild())));
   }
 
   /**

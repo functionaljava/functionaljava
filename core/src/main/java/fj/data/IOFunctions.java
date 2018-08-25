@@ -1,8 +1,19 @@
 package fj.data;
 
-import static fj.Bottom.errorF;
-import static fj.Function.constant;
-import static fj.Function.partialApply2;
+import fj.F;
+import fj.F0;
+import fj.F1Functions;
+import fj.F2;
+import fj.Function;
+import fj.P;
+import fj.P1;
+import fj.P2;
+import fj.Try;
+import fj.Unit;
+import fj.data.Iteratee.Input;
+import fj.data.Iteratee.IterV;
+import fj.function.Try0;
+import fj.function.Try1;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -14,11 +25,9 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import fj.*;
-import fj.data.Iteratee.Input;
-import fj.data.Iteratee.IterV;
-import fj.function.Try0;
-import fj.function.Try1;
+import static fj.Bottom.errorF;
+import static fj.Function.constant;
+import static fj.Function.partialApply2;
 
 /**
  * IO monad for processing files, with main methods {@link #enumFileLines },
@@ -170,38 +179,37 @@ public final class IOFunctions {
      * A function that feeds an iteratee with lines read from a {@link BufferedReader}.
      */
     public static <A> F<BufferedReader, F<IterV<String, A>, IO<IterV<String, A>>>> lineReader() {
-        final F<IterV<String, A>, Boolean> isDone =
-                new F<Iteratee.IterV<String, A>, Boolean>() {
-                    final F<P2<A, Input<String>>, P1<Boolean>> done = constant(P.p(true));
-                    final F<F<Input<String>, IterV<String, A>>, P1<Boolean>> cont = constant(P.p(false));
+        return LineReader::new;
+    }
 
-                    @Override
-                    public Boolean f(final IterV<String, A> i) {
-                        return i.fold(done, cont)._1();
+    private static class LineReader<A> implements F<IterV<String, A>, IO<IterV<String, A>>> {
+
+        private final BufferedReader r;
+
+        private final F<IterV<String, A>, Boolean> isDone = i -> i.fold(constant(P.p(true)), constant(P.p(false)))._1();
+        private final F<P2<A, Input<String>>, P1<IterV<String, A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
+
+        private LineReader(BufferedReader r) {
+            this.r = r;
+        }
+
+        @Override
+        public IO<IterV<String, A>> f(IterV<String, A> it) {
+            // use loop instead of recursion because of missing TCO
+            return () -> {
+                IterV<String, A> i = it;
+                while (!isDone.f(i)) {
+                    final String s = r.readLine();
+                    if (s == null) {
+                        return i;
                     }
-                };
-
-        return r -> new F<IterV<String, A>, IO<IterV<String, A>>>() {
-            final F<P2<A, Input<String>>, P1<IterV<String, A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
-
-            @Override
-            public IO<IterV<String, A>> f(final IterV<String, A> it) {
-                // use loop instead of recursion because of missing TCO
-                return () -> {
-                    IterV<String, A> i = it;
-                    while (!isDone.f(i)) {
-                        final String s = r.readLine();
-                        if (s == null) {
-                            return i;
-                        }
-                        final Input<String> input = Input.el(s);
-                        final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.apply(input));
-                        i = i.fold(done, cont)._1();
-                    }
-                    return i;
-                };
-            }
-        };
+                    final Input<String> input = Input.el(s);
+                    final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.apply(input));
+                    i = i.fold(done, cont)._1();
+                }
+                return i;
+            };
+        }
     }
 
     /**
@@ -209,91 +217,91 @@ public final class IOFunctions {
      * (char[] of size {@link #DEFAULT_BUFFER_SIZE}).
      */
     public static <A> F<Reader, F<IterV<char[], A>, IO<IterV<char[], A>>>> charChunkReader() {
-        final F<IterV<char[], A>, Boolean> isDone =
-                new F<Iteratee.IterV<char[], A>, Boolean>() {
-                    final F<P2<A, Input<char[]>>, P1<Boolean>> done = constant(P.p(true));
-                    final F<F<Input<char[]>, IterV<char[], A>>, P1<Boolean>> cont = constant(P.p(false));
-
-                    @Override
-                    public Boolean f(final IterV<char[], A> i) {
-                        return i.fold(done, cont)._1();
-                    }
-                };
-
-        return r -> new F<IterV<char[], A>, IO<IterV<char[], A>>>() {
-            final F<P2<A, Input<char[]>>, P1<IterV<char[], A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
-
-            @Override
-            public IO<IterV<char[], A>> f(final IterV<char[], A> it) {
-                // use loop instead of recursion because of missing TCO
-                return () -> {
-
-                    IterV<char[], A> i = it;
-                    while (!isDone.f(i)) {
-                        char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-                        final int numRead = r.read(buffer);
-                        if (numRead == -1) {
-                            return i;
-                        }
-                        if (numRead < buffer.length) {
-                            buffer = Arrays.copyOfRange(buffer, 0, numRead);
-                        }
-                        final Input<char[]> input = Input.el(buffer);
-                        final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
-                                F1Functions.lazy(Function.apply(input));
-                        i = i.fold(done, cont)._1();
-                    }
-                    return i;
-                };
-            }
-        };
+        return CharChunkReader::new;
     }
+
+    private static class CharChunkReader<A> implements F<IterV<char[], A>, IO<IterV<char[], A>>> {
+
+        private final Reader r;
+
+        private final F<IterV<char[], A>, Boolean> isDone = i -> i.fold(constant(P.p(true)), constant(P.p(false)))._1();
+        private final F<P2<A, Input<char[]>>, P1<IterV<char[], A>>> done = errorF("iteratee is done"); //$NON-NLS-1$
+
+        CharChunkReader(Reader r) {
+            this.r = r;
+        }
+
+        @Override
+        public IO<IterV<char[], A>> f(IterV<char[], A> it) {
+            // use loop instead of recursion because of missing TCO
+            return () -> {
+
+                IterV<char[], A> i = it;
+                while (!isDone.f(i)) {
+                    char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+                    final int numRead = r.read(buffer);
+                    if (numRead == -1) {
+                        return i;
+                    }
+                    if (numRead < buffer.length) {
+                        buffer = Arrays.copyOfRange(buffer, 0, numRead);
+                    }
+                    final Input<char[]> input = Input.el(buffer);
+                    final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
+                        F1Functions.lazy(Function.apply(input));
+                    i = i.fold(done, cont)._1();
+                }
+                return i;
+            };
+        }
+    }
+
+
 
     /**
      * A function that feeds an iteratee with characters read from a {@link Reader}
      * (chars are read in chunks of size {@link #DEFAULT_BUFFER_SIZE}).
      */
     public static <A> F<Reader, F<IterV<Character, A>, IO<IterV<Character, A>>>> charChunkReader2() {
-        final F<IterV<Character, A>, Boolean> isDone =
-                new F<Iteratee.IterV<Character, A>, Boolean>() {
-                    final F<P2<A, Input<Character>>, P1<Boolean>> done = constant(P.p(true));
-                    final F<F<Input<Character>, IterV<Character, A>>, P1<Boolean>> cont = constant(P.p(false));
+        return CharChunkReader2::new;
+    }
 
-                    @Override
-                    public Boolean f(final IterV<Character, A> i) {
-                        return i.fold(done, cont)._1();
+    private static class CharChunkReader2<A> implements F<IterV<Character, A>, IO<IterV<Character, A>>> {
+
+        private final Reader r;
+
+        private final F<IterV<Character, A>, Boolean> isDone = i -> i.fold(constant(P.p(true)), constant(P.p(false)))._1();
+        private final F<P2<A, Input<Character>>, IterV<Character, A>> done = errorF("iteratee is done"); //$NON-NLS-1$
+
+        CharChunkReader2(Reader r) {
+            this.r = r;
+        }
+
+        @Override
+        public IO<IterV<Character, A>> f(IterV<Character, A> it) {
+            // use loop instead of recursion because of missing TCO
+            return () -> {
+
+                IterV<Character, A> i = it;
+                while (!isDone.f(i)) {
+                    char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+                    final int numRead = r.read(buffer);
+                    if (numRead == -1) {
+                        return i;
                     }
-                };
-
-        return r -> new F<IterV<Character, A>, IO<IterV<Character, A>>>() {
-            final F<P2<A, Input<Character>>, IterV<Character, A>> done = errorF("iteratee is done"); //$NON-NLS-1$
-
-            @Override
-            public IO<IterV<Character, A>> f(final IterV<Character, A> it) {
-                // use loop instead of recursion because of missing TCO
-                return () -> {
-
-                    IterV<Character, A> i = it;
-                    while (!isDone.f(i)) {
-                        char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-                        final int numRead = r.read(buffer);
-                        if (numRead == -1) {
-                            return i;
-                        }
-                        if (numRead < buffer.length) {
-                            buffer = Arrays.copyOfRange(buffer, 0, numRead);
-                        }
-                        for (char c : buffer) {
-                            final Input<Character> input = Input.el(c);
-                            final F<F<Input<Character>, IterV<Character, A>>, IterV<Character, A>> cont =
-                                Function.apply(input);
-                            i = i.fold(done, cont);
-                        }
+                    if (numRead < buffer.length) {
+                        buffer = Arrays.copyOfRange(buffer, 0, numRead);
                     }
-                    return i;
-                };
-            }
-        };
+                    for (char c : buffer) {
+                        final Input<Character> input = Input.el(c);
+                        final F<F<Input<Character>, IterV<Character, A>>, IterV<Character, A>> cont =
+                            Function.apply(input);
+                        i = i.fold(done, cont);
+                    }
+                }
+                return i;
+            };
+        }
     }
 
     public static <A, B> IO<B> map(final IO<A> io, final F<A, B> f) {

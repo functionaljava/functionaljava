@@ -58,11 +58,10 @@ public class PropertyTestRunner extends Runner implements Filterable {
     }
 
   private static CheckResult checkProperty(Property prop, Option<CheckParams> params) {
-    for (CheckParams ps : params) {
-      return prop.check(ps.minSuccessful(), ps.maxDiscarded(), ps.minSize(), ps.maxSize());
-    }
-
-    return prop.check();
+    return params.<CheckResult>option(
+        prop::check,
+        ps -> prop.check(ps.minSuccessful(), ps.maxDiscarded(), ps.minSize(), ps.maxSize())
+    );
   }
 
   @Override

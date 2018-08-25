@@ -4,17 +4,22 @@ sudo: false
 language: java
 
 jdk:
-  - oraclejdk8
+ - openjdk11
+
+matrix:
+
+  include:
+  - jdk: openjdk8
+    script:
+      - ./gradlew build coverage -s -i
+    after_success:
+      - bash <(curl -s https://codecov.io/bash)
+      - '[ "$TRAVIS_BRANCH" = "series/4.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
+        && ./gradlew uploadArchives'
 
 script:
-  - jdk_switcher use openjdk7 && export JAVA7_HOME=$JAVA_HOME
-  - jdk_switcher use oraclejdk8 && export JAVA8_HOME=$JAVA_HOME
-  - ./gradlew build coverage -s -i
+  - ./gradlew clean test
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - '[ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
-  && ./gradlew uploadArchives'
 
 env:
   global:
