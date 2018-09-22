@@ -275,7 +275,7 @@ public final class Gen<A> {
    * @return A new generator after function application.
    */
   public <B> Gen<B> apply(final Gen<F<A, B>> gf) {
-    return gf.bind(f1 -> map(f1));
+    return gf.bind(this::map);
   }
 
   /**

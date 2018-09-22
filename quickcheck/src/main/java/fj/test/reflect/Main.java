@@ -1,10 +1,7 @@
 package fj.test.reflect;
 
-import fj.P2;
 import static fj.data.Array.array;
 
-import fj.function.Effect1;
-import fj.test.CheckResult;
 import static fj.test.CheckResult.summary;
 import static fj.test.reflect.Check.check;
 

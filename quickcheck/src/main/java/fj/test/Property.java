@@ -501,11 +501,7 @@ public final class Property {
    *         application of its arguments.
    */
   public static <A, B> Property propertyP(final Gen<A> aa, final Gen<B> ab, final Shrink<A> sa, final Shrink<B> sb, final F<A, F<B, P1<Property>>> f) {
-    return property(aa, sa, a -> {
-      return propertyP(ab, sb, b -> {
-        return f.f(a).f(b);
-      });
-    });
+    return property(aa, sa, a -> propertyP(ab, sb, b -> f.f(a).f(b)));
   }
 
   /**
@@ -633,9 +629,7 @@ public final class Property {
                                             final Shrink<B> sb,
                                             final Shrink<C> sc,
                                             final F<A, F<B, F<C, Property>>> f) {
-    return property(aa, ab, sa, sb, a -> b -> property(ac, sc, c -> {
-      return f.f(a).f(b).f(c);
-    }));
+    return property(aa, ab, sa, sb, a -> b -> property(ac, sc, c -> f.f(a).f(b).f(c)));
   }
 
   /**
@@ -723,9 +717,7 @@ public final class Property {
                                                final Shrink<C> sc,
                                                final Shrink<D> sd,
                                                final F<A, F<B, F<C, F<D, Property>>>> f) {
-    return property(aa, ab, ac, sa, sb, sc, a -> b -> c -> property(ad, sd, d -> {
-      return f.f(a).f(b).f(c).f(d);
-    }));
+    return property(aa, ab, ac, sa, sb, sc, a -> b -> c -> property(ad, sd, d -> f.f(a).f(b).f(c).f(d)));
   }
 
   /**
@@ -825,9 +817,7 @@ public final class Property {
                                                   final Shrink<D> sd,
                                                   final Shrink<E> se,
                                                   final F<A, F<B, F<C, F<D, F<E, Property>>>>> f) {
-    return property(aa, ab, ac, ad, sa, sb, sc, sd, a -> b -> c -> d -> property(ae, se, e -> {
-      return f.f(a).f(b).f(c).f(d).f(e);
-    }));
+    return property(aa, ab, ac, ad, sa, sb, sc, sd, a -> b -> c -> d -> property(ae, se, e -> f.f(a).f(b).f(c).f(d).f(e)));
   }
 
   /**
@@ -939,9 +929,7 @@ public final class Property {
                                                       final Shrink<E> se,
                                                       final Shrink<F$> sf,
                                                       final F<A, F<B, F<C, F<D, F<E, F<F$, Property>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, sa, sb, sc, sd, se, a -> b -> c -> d -> e -> property(af, sf, f$ -> {
-      return f.f(a).f(b).f(c).f(d).f(e).f(f$);
-    }));
+    return property(aa, ab, ac, ad, ae, sa, sb, sc, sd, se, a -> b -> c -> d -> e -> property(af, sf, f$ -> f.f(a).f(b).f(c).f(d).f(e).f(f$)));
   }
 
   /**
@@ -1065,9 +1053,7 @@ public final class Property {
                                                          final Shrink<F$> sf,
                                                          final Shrink<G> sg,
                                                          final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, Property>>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, af, sa, sb, sc, sd, se, sf, a -> b -> c -> d -> e -> f$ -> property(ag, sg, g -> {
-      return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g);
-    }));
+    return property(aa, ab, ac, ad, ae, af, sa, sb, sc, sd, se, sf, a -> b -> c -> d -> e -> f$ -> property(ag, sg, g -> f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g)));
   }
 
   /**
@@ -1203,9 +1189,7 @@ public final class Property {
                                                             final Shrink<G> sg,
                                                             final Shrink<H> sh,
                                                             final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, Property>>>>>>>> f) {
-    return property(aa, ab, ac, ad, ae, af, ag, sa, sb, sc, sd, se, sf, sg, a -> b -> c -> d -> e -> f$ -> g -> property(ah, sh, h -> {
-      return f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h);
-    }));
+    return property(aa, ab, ac, ad, ae, af, ag, sa, sb, sc, sd, se, sf, sg, a -> b -> c -> d -> e -> f$ -> g -> property(ah, sh, h -> f.f(a).f(b).f(c).f(d).f(e).f(f$).f(g).f(h)));
   }
 
   /**

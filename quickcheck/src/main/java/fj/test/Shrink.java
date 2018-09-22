@@ -23,7 +23,7 @@ import static fj.Primitive.Long_Float;
 import static fj.Primitive.Long_Integer;
 import static fj.Primitive.Long_Short;
 import static fj.Primitive.Short_Long;
-import static fj.data.Array.array;
+
 import fj.data.Conversions;
 import static fj.data.List.isNotEmpty_;
 import fj.data.Array;
@@ -38,7 +38,6 @@ import static fj.data.Stream.cons;
 import static fj.data.Stream.iterate;
 import static fj.data.Stream.nil;
 
-import static java.lang.System.arraycopy;
 import static java.math.BigInteger.ZERO;
 
 import java.math.BigDecimal;
@@ -683,7 +682,7 @@ public final class Shrink<A> {
       final Stream<BigInteger> is = cons(ZERO,
               () -> iterate(x -> x.divide(two), i)
                       .takeWhile(x2 -> eq.notEq(x2, ZERO))
-                      .map(i::subtract));
+                      .map(x2 -> i.subtract(x2)));
 
       return Ord.bigintOrd.isLessThan(i, ZERO) ? cons(i.negate(), () -> is) : is;
     }

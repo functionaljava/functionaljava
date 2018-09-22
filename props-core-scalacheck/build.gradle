@@ -4,7 +4,7 @@ archivesBaseName = "${project.projectName}-${project.name}"
 apply plugin: 'scala'
 
 ext {
-    scalaVersion = "2.11.11"
+    scalaVersion = "2.11.12"
     scalacheckScalaVersion = "2.11"
     scalacheckVersion = "1.12.6"
     signModule = true
@@ -20,5 +20,3 @@ dependencies {
 
 performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)
-
-

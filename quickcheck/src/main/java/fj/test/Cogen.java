@@ -7,7 +7,6 @@ import static fj.P.p;
 
 import fj.data.*;
 
-import static fj.data.Array.array;
 import static fj.data.Array.iterableArray;
 import static fj.data.List.fromString;
 import static fj.data.List.nil;
@@ -501,11 +500,7 @@ public abstract class Cogen<A> {
    * @return A cogen for throwables.
    */
   public static Cogen<Throwable> cogenThrowable(final Cogen<String> cs) {
-    return cs.contramap(new F<Throwable, String>() {
-      public String f(final Throwable t) {
-        return t.getMessage();
-      }
-    });
+    return cs.contramap(Throwable::getMessage);
   }
 
   /**

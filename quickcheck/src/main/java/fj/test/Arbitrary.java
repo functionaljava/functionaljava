@@ -1,8 +1,6 @@
 package fj.test;
 
-import fj.Equal;
 import fj.F;
-import fj.F1Functions;
 import fj.F2;
 import fj.F3;
 import fj.F4;
@@ -13,7 +11,6 @@ import fj.F8;
 import fj.Function;
 import fj.Bottom;
 
-import static fj.Equal.longEqual;
 import static fj.Function.compose;
 import static fj.P.p;
 
@@ -30,22 +27,14 @@ import fj.data.*;
 import fj.LcgRng;
 import fj.Ord;
 
-import static fj.data.Either.left;
-import static fj.data.Either.right;
 import static fj.data.Enumerator.charEnumerator;
 import static fj.data.List.asString;
 import static fj.data.List.list;
-import static fj.data.Option.some;
 
 import fj.data.List;
 import fj.data.Set;
-import fj.data.TreeMap;
-import fj.function.Booleans;
-import fj.function.Effect1;
-import fj.function.Longs;
 
 import static fj.data.Stream.range;
-import static fj.function.Booleans.not;
 import static fj.test.Gen.choose;
 import static fj.test.Gen.elements;
 import static fj.test.Gen.fail;
@@ -95,11 +84,7 @@ public final class Arbitrary {
    * @return An arbitrary for functions.
    */
   public static <A, B> Gen<F<A, B>> arbF(final Cogen<A> c, final Gen<B> a) {
-    return promote(new F<A, Gen<B>>() {
-      public Gen<B> f(final A x) {
-        return c.cogen(x, a);
-      }
-    });
+    return promote(x -> c.cogen(x, a));
   }
 
     public static <A, B> Gen<Reader<A, B>> arbReader(Cogen<A> aa, Gen<B> ab) {
@@ -389,19 +374,14 @@ public final class Arbitrary {
    * max, min, max - 1, min + 1)</code> with a frequency of 1% each then generates from {@link
    * #arbInteger} the remainder of the time (93%).
    */
-  public static final Gen<Integer> arbIntegerBoundaries = sized(new F<Integer, Gen<Integer>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Integer> f(final Integer i) {
-      return frequency(list(p(1, value(0)),
-                            p(1, value(1)),
-                            p(1, value(-1)),
-                            p(1, value(Integer.MAX_VALUE)),
-                            p(1, value(Integer.MIN_VALUE)),
-                            p(1, value(Integer.MAX_VALUE - 1)),
-                            p(1, value(Integer.MIN_VALUE + 1)),
-                            p(93, arbInteger)));
-    }
-  });
+  public static final Gen<Integer> arbIntegerBoundaries = sized(i -> frequency(list(p(1, value(0)),
+                        p(1, value(1)),
+                        p(1, value(-1)),
+                        p(1, value(Integer.MAX_VALUE)),
+                        p(1, value(Integer.MIN_VALUE)),
+                        p(1, value(Integer.MAX_VALUE - 1)),
+                        p(1, value(Integer.MIN_VALUE + 1)),
+                        p(93, arbInteger))));
 
   /**
    * An arbitrary implementation for long values.
@@ -414,19 +394,14 @@ public final class Arbitrary {
    * min, max - 1, min + 1)</code> with a frequency of 1% each then generates from {@link #arbLong}
    * the remainder of the time (93%).
    */
-  public static final Gen<Long> arbLongBoundaries = sized(new F<Integer, Gen<Long>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Long> f(final Integer i) {
-      return frequency(list(p(1, value(0L)),
-                            p(1, value(1L)),
-                            p(1, value(-1L)),
-                            p(1, value(Long.MAX_VALUE)),
-                            p(1, value(Long.MIN_VALUE)),
-                            p(1, value(Long.MAX_VALUE - 1L)),
-                            p(1, value(Long.MIN_VALUE + 1L)),
-                            p(93, arbLong)));
-    }
-  });
+  public static final Gen<Long> arbLongBoundaries = sized(i -> frequency(list(p(1, value(0L)),
+                        p(1, value(1L)),
+                        p(1, value(-1L)),
+                        p(1, value(Long.MAX_VALUE)),
+                        p(1, value(Long.MIN_VALUE)),
+                        p(1, value(Long.MAX_VALUE - 1L)),
+                        p(1, value(Long.MIN_VALUE + 1L)),
+                        p(93, arbLong))));
 
   /**
    * An arbitrary implementation for byte values.
@@ -438,19 +413,14 @@ public final class Arbitrary {
    * min, max - 1, min + 1)</code> with a frequency of 1% each then generates from {@link #arbByte}
    * the remainder of the time (93%).
    */
-  public static final Gen<Byte> arbByteBoundaries = sized(new F<Integer, Gen<Byte>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Byte> f(final Integer i) {
-      return frequency(list(p(1, value((byte) 0)),
-                            p(1, value((byte) 1)),
-                            p(1, value((byte) -1)),
-                            p(1, value(Byte.MAX_VALUE)),
-                            p(1, value(Byte.MIN_VALUE)),
-                            p(1, value((byte) (Byte.MAX_VALUE - 1))),
-                            p(1, value((byte) (Byte.MIN_VALUE + 1))),
-                            p(93, arbByte)));
-    }
-  });
+  public static final Gen<Byte> arbByteBoundaries = sized(i -> frequency(list(p(1, value((byte) 0)),
+                        p(1, value((byte) 1)),
+                        p(1, value((byte) -1)),
+                        p(1, value(Byte.MAX_VALUE)),
+                        p(1, value(Byte.MIN_VALUE)),
+                        p(1, value((byte) (Byte.MAX_VALUE - 1))),
+                        p(1, value((byte) (Byte.MIN_VALUE + 1))),
+                        p(93, arbByte))));
 
   /**
    * An arbitrary implementation for short values.
@@ -462,19 +432,14 @@ public final class Arbitrary {
    * min, max - 1, min + 1)</code> with a frequency of 1% each then generates from {@link #arbShort}
    * the remainder of the time (93%).
    */
-  public static final Gen<Short> arbShortBoundaries = sized(new F<Integer, Gen<Short>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Short> f(final Integer i) {
-      return frequency(list(p(1, value((short) 0)),
-                            p(1, value((short) 1)),
-                            p(1, value((short) -1)),
-                            p(1, value(Short.MAX_VALUE)),
-                            p(1, value(Short.MIN_VALUE)),
-                            p(1, value((short) (Short.MAX_VALUE - 1))),
-                            p(1, value((short) (Short.MIN_VALUE + 1))),
-                            p(93, arbShort)));
-    }
-  });
+  public static final Gen<Short> arbShortBoundaries = sized(i -> frequency(list(p(1, value((short) 0)),
+                        p(1, value((short) 1)),
+                        p(1, value((short) -1)),
+                        p(1, value(Short.MAX_VALUE)),
+                        p(1, value(Short.MIN_VALUE)),
+                        p(1, value((short) (Short.MAX_VALUE - 1))),
+                        p(1, value((short) (Short.MIN_VALUE + 1))),
+                        p(93, arbShort))));
 
   /**
    * An arbitrary implementation for character values.
@@ -486,16 +451,11 @@ public final class Arbitrary {
    * max - 1, min + 1)</code> with a frequency of 1% each then generates from {@link #arbCharacter}
    * the remainder of the time (96%).
    */
-  public static final Gen<Character> arbCharacterBoundaries = sized(new F<Integer, Gen<Character>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Character> f(final Integer i) {
-      return frequency(list(p(1, value(Character.MIN_VALUE)),
-                            p(1, value((char) (Character.MIN_VALUE + 1))),
-                            p(1, value(Character.MAX_VALUE)),
-                            p(1, value((char) (Character.MAX_VALUE - 1))),
-                            p(95, arbCharacter)));
-    }
-  });
+  public static final Gen<Character> arbCharacterBoundaries = sized(i -> frequency(list(p(1, value(Character.MIN_VALUE)),
+                        p(1, value((char) (Character.MIN_VALUE + 1))),
+                        p(1, value(Character.MAX_VALUE)),
+                        p(1, value((char) (Character.MAX_VALUE - 1))),
+                        p(95, arbCharacter))));
 
   /**
    * An arbitrary implementation for double values.
@@ -507,21 +467,16 @@ public final class Arbitrary {
    * min, min (normal), NaN, -infinity, infinity, max - 1)</code> with a frequency of 1% each then
    * generates from {@link #arbDouble} the remainder of the time (91%).
    */
-  public static final Gen<Double> arbDoubleBoundaries = sized(new F<Integer, Gen<Double>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Double> f(final Integer i) {
-      return frequency(list(p(1, value(0D)),
-                            p(1, value(1D)),
-                            p(1, value(-1D)),
-                            p(1, value(Double.MAX_VALUE)),
-                            p(1, value(Double.MIN_VALUE)),
-                            p(1, value(Double.NaN)),
-                            p(1, value(Double.NEGATIVE_INFINITY)),
-                            p(1, value(Double.POSITIVE_INFINITY)),
-                            p(1, value(Double.MAX_VALUE - 1D)),
-                            p(91, arbDouble)));
-    }
-  });
+  public static final Gen<Double> arbDoubleBoundaries = sized(i -> frequency(list(p(1, value(0D)),
+                        p(1, value(1D)),
+                        p(1, value(-1D)),
+                        p(1, value(Double.MAX_VALUE)),
+                        p(1, value(Double.MIN_VALUE)),
+                        p(1, value(Double.NaN)),
+                        p(1, value(Double.NEGATIVE_INFINITY)),
+                        p(1, value(Double.POSITIVE_INFINITY)),
+                        p(1, value(Double.MAX_VALUE - 1D)),
+                        p(91, arbDouble))));
 
   /**
    * An arbitrary implementation for float values.
@@ -533,21 +488,16 @@ public final class Arbitrary {
    * min, NaN, -infinity, infinity, max - 1)</code> with a frequency of 1% each then generates from
    * {@link #arbFloat} the remainder of the time (91%).
    */
-  public static final Gen<Float> arbFloatBoundaries = sized(new F<Integer, Gen<Float>>() {
-    @SuppressWarnings("unchecked")
-    public Gen<Float> f(final Integer i) {
-      return frequency(list(p(1, value(0F)),
-                            p(1, value(1F)),
-                            p(1, value(-1F)),
-                            p(1, value(Float.MAX_VALUE)),
-                            p(1, value(Float.MIN_VALUE)),
-                            p(1, value(Float.NaN)),
-                            p(1, value(Float.NEGATIVE_INFINITY)),
-                            p(1, value(Float.POSITIVE_INFINITY)),
-                            p(1, value(Float.MAX_VALUE - 1F)),
-                            p(91, arbFloat)));
-    }
-  });
+  public static final Gen<Float> arbFloatBoundaries = sized(i -> frequency(list(p(1, value(0F)),
+                        p(1, value(1F)),
+                        p(1, value(-1F)),
+                        p(1, value(Float.MAX_VALUE)),
+                        p(1, value(Float.MIN_VALUE)),
+                        p(1, value(Float.NaN)),
+                        p(1, value(Float.NEGATIVE_INFINITY)),
+                        p(1, value(Float.POSITIVE_INFINITY)),
+                        p(1, value(Float.MAX_VALUE - 1F)),
+                        p(91, arbFloat))));
 
   /**
    * An arbitrary implementation for string values.
@@ -670,7 +620,7 @@ public final class Arbitrary {
      * Returns an arbitrary Validation for the given arbitrary parameters.
      */
     public static <A, B> Gen<Validation<A, B>> arbValidation(final Gen<A> aa, final Gen<B> ab) {
-        return arbBoolean.bind(bool -> bool ? ab.map(Validation::<A, B>success) : aa.map(Validation::<A, B>fail));
+        return arbBoolean.bind(bool -> bool ? ab.map(Validation::success) : aa.map(Validation::fail));
     }
 
   /**
@@ -690,7 +640,7 @@ public final class Arbitrary {
    * @return An arbitrary implementation for arrays.
    */
   public static <A> Gen<Array<A>> arbArray(final Gen<A> aa) {
-    return arbList(aa).map(List<A>::toArray);
+    return arbList(aa).map(List::toArray);
   }
 
   /**
@@ -1029,8 +979,8 @@ public final class Arbitrary {
    */
   public static <A> Gen<ArrayBlockingQueue<A>> arbArrayBlockingQueue(final Gen<A> aa) {
     return arbArray(aa).bind(arbInteger, arbBoolean,
-        a -> capacity -> fair -> new ArrayBlockingQueue<A>(a.length() + abs(capacity),
-                                         fair, a.asJavaList()));
+        a -> capacity -> fair -> new ArrayBlockingQueue<>(a.length() + abs(capacity),
+            fair, a.asJavaList()));
   }
 
   /**

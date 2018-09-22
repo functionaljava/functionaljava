@@ -22,9 +22,7 @@ public final class GenTest {
   @Test
   public void testCombinationOf_none() {
     Gen<List<Character>> instance = combinationOf(0, AS);
-    testPick(100, instance, actual -> {
-      assertTrue(actual.isEmpty());
-    });
+    testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
@@ -59,9 +57,7 @@ public final class GenTest {
   @Test
   public void testSelectionOf_none() {
     Gen<List<Character>> instance = selectionOf(0, AS);
-    testPick(100, instance, actual -> {
-      assertTrue(actual.isEmpty());
-    });
+    testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
@@ -106,9 +102,7 @@ public final class GenTest {
   @Test
   public void testPermutationOf_none() {
     Gen<List<Character>> instance = permutationOf(0, AS);
-    testPick(100, instance, actual -> {
-      assertTrue(actual.isEmpty());
-    });
+    testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
@@ -142,9 +136,7 @@ public final class GenTest {
   @Test
   public void testWordOf_none() {
     Gen<List<Character>> instance = wordOf(0, AS);
-    testPick(100, instance, actual -> {
-      assertTrue(actual.isEmpty());
-    });
+    testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
@@ -184,7 +176,7 @@ public final class GenTest {
   }
 
   private static <A> void testPick(int n, Gen<List<A>> instance, Effect1<List<A>> test) {
-    range(0, n).map(ignore -> instance.gen(0, standard)).foreachDoEffect(test::f);
+    range(0, n).map(ignore -> instance.gen(0, standard)).foreachDoEffect(test);
   }
 
 }
