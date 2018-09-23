@@ -1,9 +1,7 @@
 package fj.data;
 
 import fj.Equal;
-import fj.Ord;
 import fj.P2;
-import fj.control.parallel.Strategy;
 import org.junit.Test;
 
 import java.util.ConcurrentModificationException;
@@ -104,19 +102,5 @@ public class StreamTest {
         Stream<Character> s2 = stream(a2);
         assertThat(s1.minus(Equal.charEqual, s2),
                 is(stream(new Character[]{'a', 'c', 'd'})));
-    }
-
-    @Test
-    public void testSortSeq() {
-        Stream<Integer> s = range(Enumerator.intEnumerator, 99, -99, -1);
-        assertThat(s.sort(Ord.intOrd, Strategy.seqStrategy()),
-                is(s.sort(Ord.intOrd)));
-    }
-
-    @Test
-    public void testSortThread() {
-        Stream<Integer> s = range(Enumerator.intEnumerator, 99, -99, -1);
-        assertThat(s.sort(Ord.intOrd, Strategy.simpleThreadStrategy()),
-                is(s.sort(Ord.intOrd)));
     }
 }
