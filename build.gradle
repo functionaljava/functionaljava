@@ -7,8 +7,6 @@ ext {
 buildscript {
     ext {
         uptodateVersion = "1.6.3"
-        retrolambdaPluginVersion = "3.7.0"
-        retrolambdaVersion = "2.5.4"
     }
 
     repositories {
@@ -19,7 +17,6 @@ buildscript {
 
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
-        classpath "me.tatarka:gradle-retrolambda:$retrolambdaPluginVersion"
     }
 }
 
@@ -43,14 +40,13 @@ allprojects {
 
     ext {
         isSnapshot = true
-        fjBaseVersion = "4.9"
+        fjBaseVersion = "5.0"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
         fjConsumeVersion = "4.8"
 
         signModule = false
-        useRetroLambda = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
@@ -71,10 +67,6 @@ allprojects {
         dependencyJunit = "org.junit.vintage:junit-vintage-engine:5.2.0"
 
         displayCompilerWarnings = true
-
-        newJdkEnvVar = "JAVA8_HOME"
-        oldJdkEnvVar = "JAVA7_HOME"
-        retroLambdaTarget = JavaVersion.VERSION_1_6
     }
 
     repositories {
@@ -111,11 +103,13 @@ subprojects {
 		}
 	}
 
-	if (displayCompilerWarnings) {
-		tasks.withType(JavaCompile) {
+
+	tasks.withType(JavaCompile) {
+        options.compilerArgs.addAll(['--release', '10'])
+        if (displayCompilerWarnings) {
 			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-		}
-	}
+       }
+    }
 
     jacocoTestReport {
         additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
@@ -136,7 +130,7 @@ task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     dependsOn = subprojects.coverage
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
     // We only care about coverage of:
-    def projectForFoverage = ["core", "java8", "quickcheck", "java-core"]
+    def projectForFoverage = ["core", "quickcheck", "java-core"]
     classDirectories = files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.output)
     sourceDirectories = files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.allSource.srcDirs)
 

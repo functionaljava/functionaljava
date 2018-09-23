@@ -15,5 +15,3 @@ performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)
 
 uploadArchives.enabled = true
-
-configureAllRetroLambda()

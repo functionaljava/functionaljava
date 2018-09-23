@@ -4,18 +4,23 @@ sudo: false
 language: java
 
 jdk:
- - openjdk11
+ - openjdk10
+ - openjdk-ea
 
 matrix:
 
   include:
-  - jdk: openjdk8
+  - jdk: openjdk11
     script:
       - ./gradlew build coverage -s -i
     after_success:
       - bash <(curl -s https://codecov.io/bash)
-      - '[ "$TRAVIS_BRANCH" = "series/4.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
+      - '[ "$TRAVIS_BRANCH" = "series/5.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
         && ./gradlew uploadArchives'
+
+  allow_failures:
+  - jdk: openjdk10
+  - jdk: openjdk-ea
 
 script:
   - ./gradlew clean test

@@ -5,8 +5,6 @@ mainClassName = "fj.demo.euler.Problem2"
 
 archivesBaseName = "${project.projectName}-${project.name}"
 
-configureAllRetroLambda()
-
 dependencies {
     compile project(":core")
     compile project(":quickcheck")

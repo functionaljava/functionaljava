@@ -1,6 +1,4 @@
 
-configureAllRetroLambda()
-
 dependencies {
     compile project(":core")
     testCompile dependencyJunit
