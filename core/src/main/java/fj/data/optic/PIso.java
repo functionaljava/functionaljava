@@ -21,18 +21,18 @@ import fj.data.vector.V2;
 /**
  * A {@link PIso} defines an isomorphism between types S, A and B, T:
  *
- * <pre>
+ * <pre>{@code
  *              get                           reverse.get
  *     -------------------->             -------------------->
  *   S                       A         T                       B
  *     <--------------------             <--------------------
  *       reverse.reverseGet                   reverseGet
- * </pre>
+ * }</pre>
  *
- * In addition, if f and g forms an isomorphism between `A` and `B`, i.e. if `f . g = id` and `g . f = id`, then a {@link PIso}
- * defines an isomorphism between `S` and `T`:
+ * In addition, if f and g forms an isomorphism between {@code A} and {@code B}, i.e. if {@code f . g = id} and {@code g . f = id}, then a {@link PIso}
+ * defines an isomorphism between {@code S} and {@code T}:
  *
- * <pre>
+ * <pre>{@code
  *     S           T                                   S           T
  *     |           |                                   |           |
  *     |           |                                   |           |
@@ -40,7 +40,7 @@ import fj.data.vector.V2;
  *     |           |                                   |           |
  *     |     f     |                                   |     g     |
  *     A --------> B                                   A <-------- B
- * </pre>
+ * }</pre>
  *
  * A {@link PIso} is also a valid {@link Getter}, {@link Fold}, {@link PLens}, {@link PPrism}, {@link POptional},
  * {@link PTraversal} and {@link PSetter}
@@ -552,10 +552,10 @@ public abstract class PIso<S, T, A, B> {
    * create a {@link PIso} between any type and itself. id is the zero element of optics composition, for all optics o of type O
    * (e.g. Lens, Iso, Prism, ...):
    *
-   * <pre>
+   * <pre>{@code
    *  o composeIso Iso.id == o
    *  Iso.id composeO o == o
-   * </pre>
+   * }</pre>
    *
    * (replace composeO by composeLens, composeIso, composePrism, ...)
    */

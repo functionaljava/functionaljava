@@ -246,7 +246,7 @@ public final class Monoid<A> {
   /**
    * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>).
    * The default definition uses peasant multiplication, exploiting
-   * associativity to only require `O(log n)` uses of
+   * associativity to only require {@code O(log n)} uses of
    * {@link #sum(Object, Object)}.
    *
    * @param n multiplier
