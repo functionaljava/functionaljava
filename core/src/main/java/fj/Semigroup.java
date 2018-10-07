@@ -172,29 +172,7 @@ public final class Semigroup<A> {
    * Lifts the semigroup to obtain a trivial monoid.
    */
   public Monoid<Option<A>> lift() {
-    Definition<A> def = this.def;
-    return monoidDef(new Monoid.Definition<Option<A>>() {
-      @Override
-      public Option<A> empty() {
-        return none();
-      }
-
-      @Override
-      public Option<A> append(Option<A> a1, Option<A> a2) {
-        return a1.liftM2(a1, def::append).orElse(a1).orElse(a2);
-      }
-
-      @Override
-      public Option<A> multiply(int n, Option<A> oa) {
-        return n > 0 ? oa.map(a -> def.multiply1p(n - 1, a)) : none();
-      }
-
-      @Override
-      public Option<A> sum(F0<Stream<Option<A>>> oas) {
-        Stream<A> as = oas.f().bind(Option::toStream);
-        return as.uncons(none(), h -> tail ->  some(def.sum(h, tail::_1)));
-      }
-    });
+    return Monoid.optionMonoid(this);
   }
 
   /**
