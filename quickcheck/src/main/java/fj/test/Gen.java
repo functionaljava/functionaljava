@@ -16,7 +16,6 @@ import static fj.Function.curry;
 import static fj.Function.flip;
 import static fj.Monoid.intAdditionMonoid;
 import static fj.Ord.intOrd;
-import static fj.P.lazy;
 import static fj.P2.__1;
 import static fj.control.Trampoline.pure;
 import static fj.control.Trampoline.suspend;
@@ -551,7 +550,7 @@ public final class Gen<A> {
 
             // Picks elements in constant stack space
             private Trampoline<List<A>> tramp(List<A> remainAs, int remainN, int remainALength) {
-              return suspend(lazy(() ->
+              return suspend(() ->
                   (remainN == 0) ?
                       // We have picked N elements; stop
                       pure(nil()) :
@@ -559,7 +558,7 @@ public final class Gen<A> {
                       (r.choose(0, remainALength - 1) < remainN) ?
                           tramp(remainAs.tail(), remainN - 1, remainALength - 1)
                               .map(pickedTail -> cons(remainAs.head(), pickedTail)) :
-                          tramp(remainAs.tail(), remainN, remainALength - 1)));
+                          tramp(remainAs.tail(), remainN, remainALength - 1));
             }
 
           }
