@@ -1420,6 +1420,7 @@ public final class Java {
    *
    * @return A function that converts Java lists to lists.
    */
+  @Deprecated
   public static <A> F<java.util.List<A>, List<A>> JUList_List() {
     return Java::JavaList_List;
   }

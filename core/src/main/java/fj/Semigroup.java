@@ -527,8 +527,9 @@ public final class Semigroup<A> {
    * A semigroup for optional values.
    * @deprecated since 4.7. Use {@link #firstOptionSemigroup()}.
    *
-   ** @return A semigroup for optional values.
+   * @return A semigroup for optional values.
    */
+  @Deprecated
   public static <A> Semigroup<Option<A>> optionSemigroup() {
     return firstOptionSemigroup();
   }
