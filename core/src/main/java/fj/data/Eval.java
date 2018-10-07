@@ -204,7 +204,7 @@ public abstract class Eval<A> {
 
     @Override
     protected final Trampoline<A> trampoline() {
-      return Trampoline.suspend(P.lazy(() -> Trampoline.pure(start.value())));
+      return Trampoline.suspend(() -> Trampoline.pure(start.value()));
     }
   }
 
@@ -219,7 +219,7 @@ public abstract class Eval<A> {
 
     @Override
     protected final Trampoline<B> trampoline() {
-      return Trampoline.suspend(P.lazy(() -> next.trampoline().bind(v -> f.f(v).asTrampoline().trampoline())));
+      return Trampoline.suspend(() -> next.trampoline().bind(v -> f.f(v).asTrampoline().trampoline()));
     }
   }
 
@@ -232,7 +232,7 @@ public abstract class Eval<A> {
 
     @Override
     protected final Trampoline<A> trampoline() {
-      return Trampoline.suspend(P.lazy(() -> memo._1().asTrampoline().trampoline()));
+      return Trampoline.suspend(() -> memo._1().asTrampoline().trampoline());
     }
   }
 }

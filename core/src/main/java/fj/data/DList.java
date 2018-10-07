@@ -126,6 +126,6 @@ public final class DList<A> {
     }
     
     private static <A,B,C> F<A,Trampoline<C>> kleisliTrampCompose(F<B,Trampoline<C>> bc, F<A,Trampoline<B>> ab) {
-        return (A a) -> ab.f(a).bind((B b) -> Trampoline.suspend(P.lazy(() -> bc.f(b))));
+        return (A a) -> ab.f(a).bind((B b) -> Trampoline.suspend(() -> bc.f(b)));
     }
 }

@@ -46,7 +46,7 @@ public abstract class Trampoline<A> {
     // The monadic bind constructs a new Codense whose subcomputation is still `sub`, and Kleisli-composes the
     // continuations.
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
-      return codense(sub, o -> suspend(P.lazy(() -> cont.f(o).bind(f))));
+      return codense(sub, o -> suspend(() -> cont.f(o).bind(f)));
     }
 
     // The resumption of a Codense is the resumption of its subcomputation. If that computation is done, its result
@@ -132,9 +132,20 @@ public abstract class Trampoline<A> {
    * @param a A trampoline suspended in a thunk.
    * @return A trampoline whose next step runs the given thunk.
    */
+  public static <A> Trampoline<A> suspend(final F0<Trampoline<A>> a) {
+    return new Suspend<>(P.lazy(a));
+  }
+
+  /**
+   * Suspends the given computation in a thunk.
+   *
+   * @param a A trampoline suspended in a thunk.
+   * @return A trampoline whose next step runs the given thunk.
+   */
   public static <A> Trampoline<A> suspend(final P1<Trampoline<A>> a) {
     return new Suspend<>(a);
   }
+
 
   /**
    * @return The first-class version of `suspend`.
@@ -255,7 +266,7 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(P.lazy(() -> ta.zipWith(tb, f))))));
+        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(() -> ta.zipWith(tb, f)))));
       }
       for (final B y : eb.right()) {
         return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));
@@ -263,7 +274,7 @@ public abstract class Trampoline<A> {
     }
     for (final A x : ea.right()) {
       for (final B y : eb.right()) {
-        return suspend(P.lazy(() -> pure(f.f(x, y))));
+        return suspend(() -> pure(f.f(x, y)));
       }
       for (final P1<Trampoline<B>> y : eb.left()) {
         return suspend(y.map(liftM2(F2Functions.curry(f)).f(pure(x))));
