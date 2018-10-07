@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static fj.test.Arbitrary.arbInteger;
+import static fj.test.Arbitrary.arbString;
 import static fj.test.CheckResult.summary;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
@@ -25,16 +26,16 @@ public class MemoisationTest {
     }
 
     public Property test1_hardMemo() {
-        return property(arbInteger, a -> {
-            P1<Integer> t = P.hardMemo(() -> new Integer(a));
+        return property(arbString, a -> {
+            P1<String> t = P.hardMemo(() -> new String(a));
             return prop(t._1() == t._1()).and(prop(t._1().equals(a)));
         });
     }
 
     @Test
     public Property test2() {
-        return property(arbInteger, arbInteger, (a, b) -> {
-            P2<Integer, Integer> t = P.lazy(u -> new Integer(a), u -> new Integer(b)).memo();
+        return property(arbString, arbString, (a, b) -> {
+            P2<String, String> t = P.lazy(u ->  new String(a), u -> new String(b)).memo();
             return prop(t._1().equals(t._1()) && t._1().equals(a) && t._2().equals(t._2()) && t._2().equals(b) );
         });
     }

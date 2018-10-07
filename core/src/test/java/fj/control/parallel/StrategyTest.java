@@ -3,6 +3,7 @@ package fj.control.parallel;
 import fj.Ord;
 import fj.P;
 import fj.P1;
+import fj.Unit;
 import fj.data.Enumerator;
 import fj.data.List;
 import fj.data.Stream;
@@ -41,7 +42,7 @@ public class StrategyTest {
     public void testStrategyCompletion() {
         final Stream<Integer> s = range(Enumerator.intEnumerator, 99, -99, -1);
         final ExecutorService es = Executors.newFixedThreadPool(10);
-        final CompletionService cs = new ExecutorCompletionService(es);
+        final CompletionService<Unit> cs = new ExecutorCompletionService<>(es);
         assertThat(s.sort(Ord.intOrd, completionStrategy(cs)), is(s.sort(Ord.intOrd)));
     }
 
