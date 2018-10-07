@@ -5,7 +5,6 @@ import fj.P2;
 import fj.Unit;
 import fj.control.Trampoline;
 
-import static fj.P.lazy;
 import static fj.P.p;
 import static fj.control.Trampoline.suspend;
 import static fj.data.List.cons;
@@ -75,7 +74,7 @@ public final class State<S, A> {
   }
 
   private static <S, A> State<S, A> suspended(F<S, Trampoline<P2<S, A>>> runF) {
-    return new State<>(s -> suspend(lazy(() -> runF.f(s))));
+    return new State<>(s -> suspend(() -> runF.f(s)));
   }
 
   private final F<S, Trampoline<P2<S, A>>> runF;
