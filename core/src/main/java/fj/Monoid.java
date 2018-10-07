@@ -17,6 +17,7 @@ import static fj.Unit.unit;
 import static fj.data.List.nil;
 import static fj.data.Natural.natural;
 import static fj.data.Option.none;
+import static fj.data.Option.some;
 import static fj.data.Stream.iterableStream;
 
 import java.math.BigInteger;
@@ -863,6 +864,36 @@ public final class Monoid<A> {
       @Override
       public List<A> sum(F0<Stream<List<A>>> as) {
         return as.f().map(DList::listDList).foldLeft(DList::append, DList.<A>nil()).run();
+      }
+    });
+  }
+
+  /**
+   * Lift a {@code Semigroup<A>} for A to a {@code Monoid<Option<A>>}, using Option.none() as zero.
+   *
+   * @return A monoid for option.
+   */
+  public static <A> Monoid<Option<A>> optionMonoid(Semigroup<A> aSemigroup) {
+    return monoidDef(new Monoid.Definition<Option<A>>() {
+      @Override
+      public Option<A> empty() {
+        return none();
+      }
+
+      @Override
+      public Option<A> append(Option<A> a1, Option<A> a2) {
+        return a1.liftM2(a2, aSemigroup::sum).orElse(a1).orElse(a2);
+      }
+
+      @Override
+      public Option<A> multiply(int n, Option<A> oa) {
+        return n > 0 ? oa.map(a -> aSemigroup.multiply1p(n - 1, a)) : none();
+      }
+
+      @Override
+      public Option<A> sum(F0<Stream<Option<A>>> oas) {
+        Stream<A> as = oas.f().bind(Option::toStream);
+        return as.uncons(none(), h -> tail ->  some(aSemigroup.sumStream(h, tail::_1)));
       }
     });
   }
