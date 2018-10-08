@@ -20,13 +20,15 @@ import fj.data.Validation;
 import fj.data.vector.V2;
 
 /**
- * A {@link POptional} can be seen as a pair of functions: - `getOrModify: S => T \/ A` - `set : (B, S) => T`
- *
- * A {@link POptional} could also be defined as a weaker {@link PLens} and weaker {@link PPrism}
- *
- * {@link POptional} stands for Polymorphic Optional as it set and modify methods change a type `A` to `B` and `S` to `T`.
- * {@link Optional} is a {@link POptional} restricted to monomoprhic updates: {{{ type Optional[S, A] = POptional[S, S, A, A]
- * }}}
+ * A {@link POptional} can be seen as a pair of functions:<ul>
+ *  <li>{@code getOrModify: S => T \/ A}</li>
+ *  <li>{@code set : (B, S) => T}</li>
+ *  </ul>
+ * <p>
+ * A {@link POptional} could also be defined as a weaker {@link PLens} and weaker {@link PPrism}</p>
+ * <p>
+ * {@link POptional} stands for Polymorphic Optional as it set and modify methods change a type {@code A} to {@code B} and {@code S} to {@code T}.
+ * {@link Optional} is a {@link POptional} restricted to monomoprhic updates: {@code type Optional[S, A] = POptional[S, S, A, A]}</p>
  *
  * @param <S> the source of a {@link POptional}
  * @param <T> the modified source of a {@link POptional}

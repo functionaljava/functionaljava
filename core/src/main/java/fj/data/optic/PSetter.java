@@ -5,12 +5,14 @@ import fj.Function;
 import fj.data.Either;
 
 /**
- * A {@link PSetter} is a generalisation of Functor map: - `map: (A => B) => F[A] => F[B]` - `modify: (A => B) => S =>
- * T`
- *
- * {@link PSetter} stands for Polymorphic Setter as it set and modify methods change a type `A` to `B` and `S` to `T`.
- *
- * {@link PTraversal}, {@link POptional}, {@link PPrism}, {@link PLens} and {@link PIso} are valid {@link PSetter}
+ * A {@link PSetter} is a generalisation of Functor map:<ul>
+ * <li>{@code map: (A => B) => F[A] => F[B]}</li>
+ * <li>{@code modify: (A => B) => S => T}</li>
+ * </ul>
+ * <p>
+ * {@link PSetter} stands for Polymorphic Setter as it set and modify methods change a type {@code A} to {@code B} and {@code S} to {@code T}.</p>
+ * <p>
+ * {@link PTraversal}, {@link POptional}, {@link PPrism}, {@link PLens} and {@link PIso} are valid {@link PSetter}</p>
  *
  * @param <S> the source of a {@link PSetter}
  * @param <T> the modified source of a {@link PSetter}

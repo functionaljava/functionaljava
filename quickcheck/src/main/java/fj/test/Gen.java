@@ -33,7 +33,7 @@ import static java.lang.Math.min;
  * allowing various forms of composition of generators. </p> <p> A user typically creates an {@link
  * Arbitrary arbitrary} to return a generator using the 'combinator methods' below. For example,
  * suppose a <code>class Person</code>:
-<pre>
+<pre>{@code
 class Person {
   final int age;
   final String name;
@@ -45,23 +45,23 @@ class Person {
     this.male = male;
   }
 }
-</pre>
+}</pre>
  * </p> <p> In a case like this one, a user may create a generator over <code>Person</code> by
  * invoking the {@link #bind(F)}  methods &mdash; in this case, {@link #bind(Gen , Gen , F)} the one
  * that takes two generator arguments}, since the class has one more than two fields (the bind
  * method is invoked on a generator adding the extra one to the count as they are composed). The
  * class fields are of types for which there exist generators (on {@link Gen} so those can be
  * used to compose a generator for <code>Person</code>: </p>
-<pre>
+<pre>{@code
 static Gen&lt;Person&gt; personArbitrary() {
   return arbInteger.bind(arbString(), arbBoolean(),
       // compose the generators
       {int age =&gt; {String name =&gt; {boolean male =&gt; new Person(age, name, male)}}};
 }
-</pre>
+}</pre>
  * <p/>
  * The example above uses Java 7 closure syntax. Here is the same example using objects instead:
-<pre>
+<pre>{@code
 static Gen&lt;Person&gt; personArbitrary() {
   return arbInteger.bind(arbString, arbBoolean,
       // compose the generators
@@ -79,7 +79,7 @@ static Gen&lt;Person&gt; personArbitrary() {
         }
       });
 }
-</pre>
+}</pre>
  *
  * @version %build.number%
  */

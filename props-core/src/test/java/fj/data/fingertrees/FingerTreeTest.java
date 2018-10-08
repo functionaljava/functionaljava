@@ -42,14 +42,16 @@ public class FingerTreeTest {
     @Test
     public void testHeadOption() {
         assertThat(Empty.emptyIntAddition().headOption(), is(Option.none()));
-        FingerTree<Integer, Integer> ft = new MakeTree(measured(intAdditionMonoid, Function.constant(1))).single(1);
+        FingerTree<Integer, Integer> ft = new MakeTree<Integer, Integer>(measured(intAdditionMonoid, Function.constant(1)))
+            .single(1);
         assertThat(ft.headOption(), is(Option.some(1)));
     }
 
     @Test
     public void testUncons() {
         assertThat(Empty.emptyIntAddition().uncons(0, (h, t) -> h), is(0));
-        FingerTree<Integer, Integer> ft = new MakeTree(measured(intAdditionMonoid, Function.constant(1))).single(1);
+        FingerTree<Integer, Integer> ft = new MakeTree<Integer, Integer>(measured(intAdditionMonoid, Function.constant(1)))
+            .single(1);
         assertThat(ft.uncons(0, (h, t) -> h), is(1));
     }
 

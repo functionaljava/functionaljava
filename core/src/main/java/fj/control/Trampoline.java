@@ -43,7 +43,7 @@ public abstract class Trampoline<A> {
       return gs.f(this);
     }
 
-    // The monadic bind constructs a new Codense whose subcomputation is still `sub`, and Kleisli-composes the
+    // The monadic bind constructs a new Codense whose subcomputation is still {@code sub}, and Kleisli-composes the
     // continuations.
     public <B> Trampoline<B> bind(final F<A, Trampoline<B>> f) {
       return codense(sub, o -> suspend(() -> cont.f(o).bind(f)));
@@ -110,7 +110,7 @@ public abstract class Trampoline<A> {
   }
 
   /**
-   * @return The first-class version of `pure`.
+   * @return The first-class version of {@code pure}.
    */
   public static <A> F<A, Trampoline<A>> pure() {
     return Trampoline::pure;
@@ -148,7 +148,7 @@ public abstract class Trampoline<A> {
 
 
   /**
-   * @return The first-class version of `suspend`.
+   * @return The first-class version of {@code suspend}.
    */
   public static <A> F<P1<Trampoline<A>>, Trampoline<A>> suspend_() {
     return Trampoline::suspend;
@@ -175,21 +175,21 @@ public abstract class Trampoline<A> {
   }
 
   /**
-   * @return The first-class version of `bind`.
+   * @return The first-class version of {@code bind}.
    */
   public static <A, B> F<F<A, Trampoline<B>>, F<Trampoline<A>, Trampoline<B>>> bind_() {
     return f -> a -> a.bind(f);
   }
 
   /**
-   * @return The first-class version of `map`.
+   * @return The first-class version of {@code map}.
    */
   public static <A, B> F<F<A, B>, F<Trampoline<A>, Trampoline<B>>> map_() {
     return f -> a -> a.map(f);
   }
 
   /**
-   * @return The first-class version of `resume`.
+   * @return The first-class version of {@code resume}.
    */
   public static <A> F<Trampoline<A>, Either<P1<Trampoline<A>>, A>> resume_() {
     return Trampoline::resume;
