@@ -57,7 +57,7 @@ public final class HPre {
   }
 
   /**
-   * Type-level boolean conjunction. A value of this type represents evidence that AB -> C
+   * Type-level boolean conjunction. A value of this type represents evidence that {@code AB -> C}
    *
    * @param <A> A boolean
    * @param <B> A boolean
@@ -92,7 +92,7 @@ public final class HPre {
   }
 
   /**
-   * Type-level boolean disjunction. A value of this type represents evidence that A+B -> C
+   * Type-level boolean disjunction. A value of this type represents evidence that {@code A+B -> C}
    *
    * @param <A> A boolean
    * @param <B> A boolean

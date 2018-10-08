@@ -18,6 +18,11 @@ buildscript {
     dependencies {
         classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
     }
+
+    wrapper {
+        gradleVersion = "4.10.2"
+        distributionType = Wrapper.DistributionType.ALL
+    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -111,23 +116,10 @@ subprojects {
        }
     }
 
-    jacocoTestReport {
-        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(sourceSets.main.output)
-        reports {
-            html.enabled = true
-            xml.enabled = true
-            csv.enabled = false
-        }
-    }
-
-    task coverage(dependsOn: ["test", "jacocoTestReport"]) << {}
-
 }
 
 task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
-    dependsOn = subprojects.coverage
+    dependsOn = subprojects*.test
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
     // We only care about coverage of:
     def projectForFoverage = ["core", "quickcheck", "java-core"]
@@ -186,7 +178,7 @@ configure(subprojects.findAll { it.name != "props-core" }) {
     }
 
     // Output MANIFEST.MF statically so eclipse can see it for plugin development
-    task eclipsePluginManifest(dependsOn: jar) << {
+    task eclipsePluginManifest(dependsOn: jar) doLast {
       file("META-INF").mkdirs()
       jar.manifest.writeTo(file("META-INF/MANIFEST.MF"))
     }
@@ -194,6 +186,6 @@ configure(subprojects.findAll { it.name != "props-core" }) {
     eclipseProject.dependsOn eclipsePluginManifest
 }
 
-task env << {
+task env doLast {
 	println System.getenv()
 }

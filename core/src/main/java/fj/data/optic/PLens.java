@@ -17,18 +17,20 @@ import fj.data.Validation;
 import fj.data.vector.V2;
 
 /**
- * A {@link PLens} can be seen as a pair of functions: - `get: S => A` i.e. from an `S`, we can extract an `A` - `set: (B, S) =>
- * T` i.e. if we replace an `A` by a `B` in an `S`, we obtain a `T`
- *
- * A {@link PLens} could also be defined as a weaker {@link PIso} where set requires an additional parameter than reverseGet.
- *
- * {@link PLens} stands for Polymorphic Lens as it set and modify methods change a type `A` to `B` and `S` to `T`. {@link Lens}
- * is a {@link PLens} restricted to monomoprhic updates.
- *
- * A {@link PLens} is also a valid {@link Getter}, {@link Fold}, {@link POptional}, {@link PTraversal} and {@link PSetter}
- *
+ * A {@link PLens} can be seen as a pair of functions:<ul>
+ *  <li>{@code get: S => A} i.e. from an {@code S}, we can extract an {@code A}</li>
+ *  <li>{@code set: (B, S) => T} i.e. if we replace an {@code A} by a {@code B} in an {@code S}, we obtain a {@code T}</li>
+ *  </ul>
+ * <p>
+ * A {@link PLens} could also be defined as a weaker {@link PIso} where set requires an additional parameter than reverseGet.</p>
+ * <p>
+ * {@link PLens} stands for Polymorphic Lens as it set and modify methods change a type {@code A} to {@code B} and {@code S} to {@code T}. {@link Lens}
+ * is a {@link PLens} restricted to monomoprhic updates.</p>
+ * <p>
+ * A {@link PLens} is also a valid {@link Getter}, {@link Fold}, {@link POptional}, {@link PTraversal} and {@link PSetter}</p>
+ * <p>
  * Typically a {@link PLens} or {@link Lens} can be defined between a Product (e.g. case class, tuple, HList) and one of it is
- * component.
+ * component.</p>
  *
  * @param <S> the source of a {@link PLens}
  * @param <T> the modified source of a {@link PLens}

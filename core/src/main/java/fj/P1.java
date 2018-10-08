@@ -42,10 +42,11 @@ public abstract class P1<A> implements F0<A> {
     /**
      * Promote any function to a transformation between P1s.
      *
-	 * @deprecated As of release 4.5, use {@link #map_}
+     * @deprecated As of release 4.5, use {@link #map_}
      * @param f A function to promote to a transformation between P1s.
      * @return A function promoted to operate on P1s.
      */
+    @Deprecated
     public static <A, B> F<P1<A>, P1<B>> fmap(final F<A, B> f) {
         return map_(f);
     }

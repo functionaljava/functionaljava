@@ -134,8 +134,10 @@ public final class Tree<A> implements Iterable<A> {
   }
 
   /**
+   * <pre>{@code
    * flatten :: Tree a -> [a]
    * flatten t = squish t []
+   * }</pre>
    * where squish (Node x ts) xs = x:Prelude.foldr squish xs ts
    * Puts the elements of the tree into a Stream, in pre-order.
    *

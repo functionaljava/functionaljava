@@ -24,9 +24,9 @@ import fj.data.vector.V2;
 
 /**
  * A {@link PTraversal} can be seen as a {@link POptional} generalised to 0 to n targets where n can be infinite.
- *
- * {@link PTraversal} stands for Polymorphic Traversal as it set and modify methods change a type `A` to `B` and `S` to `T`.
- * {@link Traversal} is a {@link PTraversal} restricted to monomoprhic updates.
+ * <p>
+ * {@link PTraversal} stands for Polymorphic Traversal as it set and modify methods change a type {@code A} to {@code B} and {@code S} to {@code T}.
+ * {@link Traversal} is a {@link PTraversal} restricted to monomoprhic updates.</p>
  *
  * @param <S> the source of a {@link PTraversal}
  * @param <T> the modified source of a {@link PTraversal}

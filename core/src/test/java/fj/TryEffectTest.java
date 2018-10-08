@@ -11,8 +11,7 @@ public class TryEffectTest {
 
     @Test
     public void testTryEffect0Success() {
-        F<TryEffect0, Validation<TryEffectException, Unit>> f =
-                TryEffect.f(TryEffect0<TryEffectException>::f);
+        F<TryEffect0<TryEffectException>, Validation<TryEffectException, Unit>> f = TryEffect.f(TryEffect0::f);
         Validation<TryEffectException, Unit> v = f.f(new AlwaysSucceed0());
         assertThat(v.isSuccess(), is(true));
         assertThat(v.success(), is(Unit.unit()));
@@ -20,8 +19,7 @@ public class TryEffectTest {
 
     @Test
     public void testTryEffect0Fail() {
-        F<TryEffect0, Validation<TryEffectException, Unit>> f =
-                TryEffect.f(TryEffect0<TryEffectException>::f);
+        F<TryEffect0<TryEffectException>, Validation<TryEffectException, Unit>> f = TryEffect.f(TryEffect0::f);
         Validation<TryEffectException, Unit> v = f.f(new AlwaysFail0());
         assertThat(v.isFail(), is(true));
         assertThat(v.fail(), is(new TryEffectException()));
