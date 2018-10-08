@@ -1,3 +1,23 @@
+4.8.1
+-----
+
+### Enhancements
+
+- Add Trampoline.suspend(final F0<Trampoline<A>> a). (see [#367](https://github.com/functionaljava/functionaljava/pull/367));
+
+### Fixes
+
+- Fix regression in lifted semigroup sum. Fix #365 (see [#366](https://github.com/functionaljava/functionaljava/pull/366));
+
+### Internal
+
+- Fix compile under jdk11. Enable jdk11 travis build. (see [#361](https://github.com/functionaljava/functionaljava/pull/361));
+- Fix warnings (see [#369](https://github.com/functionaljava/functionaljava/pull/369));
+- Add P tests (see [#360](https://github.com/functionaljava/functionaljava/pull/360));
+- Exclude consume/ from coverage (see [#357](https://github.com/functionaljava/functionaljava/pull/357));
+- Add DList tests (see [#356](https://github.com/functionaljava/functionaljava/pull/356));
+- Add Visitor tests (see [#354](https://github.com/functionaljava/functionaljava/pull/354));
+
 4.8
 ---
 
@@ -20,7 +40,6 @@
 - Added Scalacheck Arbitrary implementations for Natural and NonEmptyList. (see [`405c3ec`](https://github.com/functionaljava/functionaljava/commit/405c3ec));
 - Added unit test coverage for Semigroup implementations.  The StringBuffer and StringBuilder tests fail because both of those types are mutable.  The IO test fails because the ArbitraryIO implementation does not implement equals. (see [`ef81130`](https://github.com/functionaljava/functionaljava/commit/ef81130));
 - Fixed the ArbitraryIO implementation and created a Properties object for testing the IO semigroup. (see [`a8e979f`](https://github.com/functionaljava/functionaljava/commit/a8e979f));
-- Added working tests coverage for the StringBuffer and StringBuilder semigroup implementations.  Added the Semigroup tests to the list of Scalacheck test suite. (see [`aa4de33`](https://github.com/functionaljava/functionaljava/commit/aa4de33));
 - Equal: remove reference to static field of LazyString. Fix #321 (see [`6c6dabd`](https://github.com/functionaljava/functionaljava/commit/6c6dabd));
 - Add IOFunctions tests (see [#340](https://github.com/functionaljava/functionaljava/pull/340));
 - Add Stream tests (see [#341](https://github.com/functionaljava/functionaljava/pull/341));
