@@ -134,7 +134,7 @@ public final class Semigroup<A> {
   /**
    * Returns a value summed <code>n + 1</code> times (
    * <code>a + a + ... + a</code>) The default definition uses peasant
-   * multiplication, exploiting associativity to only require `O(log n)` uses of
+   * multiplication, exploiting associativity to only require {@code O(log n)} uses of
    * {@link #sum(Object, Object)}.
    *
    * @param n multiplier
@@ -527,8 +527,9 @@ public final class Semigroup<A> {
    * A semigroup for optional values.
    * @deprecated since 4.7. Use {@link #firstOptionSemigroup()}.
    *
-   ** @return A semigroup for optional values.
+   * @return A semigroup for optional values.
    */
+  @Deprecated
   public static <A> Semigroup<Option<A>> optionSemigroup() {
     return firstOptionSemigroup();
   }

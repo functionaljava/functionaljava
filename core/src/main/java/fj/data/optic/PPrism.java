@@ -19,14 +19,17 @@ import fj.data.Validation;
 import fj.data.vector.V2;
 
 /**
- * A {@link PPrism} can be seen as a pair of functions: - `getOrModify: S => T \/ A` - `reverseGet : B => T`
- *
- * A {@link PPrism} could also be defined as a weaker {@link PIso} where get can fail.
- *
+ * A {@link PPrism} can be seen as a pair of functions:<ul>
+ *  <li>{@code getOrModify: S => T \/ A}</li>
+ *  <li>{@code reverseGet : B => T}</li>
+ * </ul>
+ * <p>
+ * A {@link PPrism} could also be defined as a weaker {@link PIso} where get can fail.</p>
+ * <p>
  * Typically a {@link PPrism} or {@link Prism} encodes the relation between a Sum or CoProduct type (e.g. sealed trait) and one
- * of it is element.
+ * of it is element.</p>
  *
- * {@link PPrism} stands for Polymorphic Prism as it set and modify methods change a type `A` to `B` and `S` to `T`.
+ * {@link PPrism} stands for Polymorphic Prism as it set and modify methods change a type {@code A} to {@code B} and {@code S} to {@code T}.
  * {@link Prism} is a {@link PPrism} where the type of target cannot be modified.
  *
  * A {@link PPrism} is also a valid {@link Fold}, {@link POptional}, {@link PTraversal} and {@link PSetter}

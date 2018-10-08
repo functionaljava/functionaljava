@@ -778,11 +778,11 @@ public final class Function {
 
   /**
    * Partial application of the second argument to the supplied function to get a function of type
-   * <tt>A -> C</tt>. Same as <tt>flip(f).f(b)</tt>.
+   * {@code A -> C}. Same as {@code flip(f).f(b)}.
    *
    * @param f The function to partially apply.
    * @param b The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its second argument applied.
+   * @return A new function based on {@code f} with its second argument applied.
    */
   public static <A, B, C> F<A, C> partialApply2(final F<A, F<B, C>> f, final B b) {
     return a -> uncurryF2(f).f(a, b);
@@ -790,11 +790,11 @@ public final class Function {
 
   /**
    * Partial application of the third argument to the supplied function to get a function of type
-   * <tt>A -> B -> D</tt>.
+   * {@code A -> B -> D}.
    *
    * @param f The function to partially apply.
    * @param c The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its third argument applied.
+   * @return A new function based on {@code f} with its third argument applied.
    */
   public static <A, B, C, D> F<A, F<B, D>> partialApply3(final F<A, F<B, F<C, D>>> f, final C c) {
     return a -> b -> uncurryF3(f).f(a, b, c);
@@ -802,11 +802,11 @@ public final class Function {
 
   /**
    * Partial application of the fourth argument to the supplied function to get a function of type
-   * <tt>A -> B -> C -> E</tt>.
+   * {@code A -> B -> C -> E}.
    *
    * @param f The function to partially apply.
    * @param d The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its fourth argument applied.
+   * @return A new function based on {@code f} with its fourth argument applied.
    */
   public static <A, B, C, D, E> F<A, F<B, F<C, E>>> partialApply4(final F<A, F<B, F<C, F<D, E>>>> f, final D d) {
     return a -> b -> c -> uncurryF4(f).f(a, b, c, d);
@@ -814,11 +814,11 @@ public final class Function {
 
   /**
    * Partial application of the fifth argument to the supplied function to get a function of type
-   * <tt>A -> B -> C -> D -> F$</tt>.
+   * {@code A -> B -> C -> D -> F$}.
    *
    * @param f The function to partially apply.
    * @param e The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its fifth argument applied.
+   * @return A new function based on {@code f} with its fifth argument applied.
    */
   public static <A, B, C, D, E, F$> F<A, F<B, F<C, F<D, F$>>>> partialApply5(final F<A, F<B, F<C, F<D, F<E, F$>>>>> f,
                                                                              final E e) {
@@ -827,11 +827,11 @@ public final class Function {
 
   /**
    * Partial application of the sixth argument to the supplied function to get a function of type
-   * <tt>A -> B -> C -> D -> E -> G</tt>.
+   * {@code A -> B -> C -> D -> E -> G}.
    *
    * @param f  The function to partially apply.
    * @param f$ The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its sixth argument applied.
+   * @return A new function based on {@code f} with its sixth argument applied.
    */
   public static <A, B, C, D, E, F$, G> F<A, F<B, F<C, F<D, F<E, G>>>>> partialApply6(
       final F<A, F<B, F<C, F<D, F<E, F<F$, G>>>>>> f, final F$ f$) {
@@ -840,11 +840,11 @@ public final class Function {
 
   /**
    * Partial application of the seventh argument to the supplied function to get a function of type
-   * <tt>A -> B -> C -> D -> E -> F$ -> H</tt>.
+   * {@code A -> B -> C -> D -> E -> F$ -> H}.
    *
    * @param f The function to partially apply.
    * @param g The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its seventh argument applied.
+   * @return A new function based on {@code f} with its seventh argument applied.
    */
   public static <A, B, C, D, E, F$, G, H> F<A, F<B, F<C, F<D, F<E, F<F$, H>>>>>> partialApply7(
       final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, H>>>>>>> f, final G g) {
@@ -853,11 +853,11 @@ public final class Function {
 
   /**
    * Partial application of the eigth argument to the supplied function to get a function of type
-   * <tt>A -> B -> C -> D -> E -> F$ -> G -> I</tt>.
+   * {@code A -> B -> C -> D -> E -> F$ -> G -> I}.
    *
    * @param f The function to partially apply.
    * @param h The value to apply to the function.
-   * @return A new function based on <tt>f</tt> with its eigth argument applied.
+   * @return A new function based on {@code f} with its eigth argument applied.
    */
   public static <A, B, C, D, E, F$, G, H, I> F<A, F<B, F<C, F<D, F<E, F<F$, F<G, I>>>>>>> partialApply8(
       final F<A, F<B, F<C, F<D, F<E, F<F$, F<G, F<H, I>>>>>>>> f, final H h) {

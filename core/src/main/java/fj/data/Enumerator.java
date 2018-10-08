@@ -18,18 +18,18 @@ import java.math.BigInteger;
 
 /**
  * Abstracts over a type that may have a successor and/or predecessor value. This implies ordering for that type. A user
- * may construct an enumerator with an optimised version for <code>plus</code>, otherwise a default is implemented using
+ * may construct an enumerator with an optimised version for {@code plus}, otherwise a default is implemented using
  * the given successor/predecessor implementations.
  * <p/>
  * For any enumerator e, the following laws must satisfy:
  * <ul>
- * <li>forall a. e.successor(a).forall(\t -> e.predecessor(t).forall(\z -> z == a))</li>
- * <li>forall a. e.predecessor(a).forall(\t -> e.successor(t).forall(\z -> z == a))</li>
- * <li>e.max().forall(\t -> e.successor(t).isNone)</li>
- * <li>e.min().forall(\t -> e.predecessor(t).isNone)</li>
- * <li>forall a n. e.plus(a, 0) == Some(a)</li>
- * <li>forall a n | n > 0. e.plus(a, n) == e.plus(a, n - 1)</li>
- * <li>forall a n | n < 0. e.plus(a, n) == e.plus(a, n + 1)</li>
+ * <li>{@code forall a. e.successor(a).forall(\t -> e.predecessor(t).forall(\z -> z == a))}</li>
+ * <li>{@code forall a. e.predecessor(a).forall(\t -> e.successor(t).forall(\z -> z == a))}</li>
+ * <li>{@code e.max().forall(\t -> e.successor(t).isNone)}</li>
+ * <li>{@code e.min().forall(\t -> e.predecessor(t).isNone)}</li>
+ * <li>{@code forall a n. e.plus(a, 0) == Some(a)}</li>
+ * <li>{@code forall a n | n > 0. e.plus(a, n) == e.plus(a, n - 1)}</li>
+ * <li>{@code forall a n | n < 0. e.plus(a, n) == e.plus(a, n + 1)}</li>
  * </ul>
  *
  * @version %build.number%
