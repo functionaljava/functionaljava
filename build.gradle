@@ -140,6 +140,10 @@ configure(subprojects.findAll { it.name != "props-core" }) {
 
     sourceCompatibility = "1.8"
 
+    javadoc {
+        options.addBooleanOption('html5', true)
+    }
+
     task javadocJar(type: Jar, dependsOn: "javadoc") {
         classifier = 'javadoc'
         from "build/docs/javadoc"
