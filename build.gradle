@@ -47,8 +47,8 @@ allprojects {
 	defaultTasks "build"
 
     ext {
-        isSnapshot = true
-        fjBaseVersion = "4.9"
+        isSnapshot = false
+        fjBaseVersion = "4.8.1"
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
