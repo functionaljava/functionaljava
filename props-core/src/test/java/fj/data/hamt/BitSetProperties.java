@@ -156,15 +156,19 @@ public class BitSetProperties {
             int h = list.index(2);
             int m = Math.max(l, Math.min(list.index(1), h - 1));
             int vh = list.index(3);
-
+            
             BitSet bs1 = longBitSet(x);
             BitSet bs2 = bs1.range(l, h);
+            if(l==h){
+            	return prop(true);
+            }
             boolean b =
-                bs1.isSet(m) == bs2.isSet(m - l) &&
+            	bs1.isSet(m) == bs2.isSet(m - l) &&
                 bs2.isSet(vh - l) == false;
             return prop(b);
         });
     }
+    
 
     Property setTest() {
         return property(arbNaturalLong, arbBitSetSize, (l, i) -> prop(longBitSet(l).set(i).isSet(i)));
