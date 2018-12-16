@@ -783,7 +783,7 @@ public class Validation<E, T> implements Iterable<T> {
 
 
     public final <B, C, D, $E, $F, G> Validation<List<E>, G> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, F6<T, B, C, D, $E, $F, G> f) {
-        List<E> list = fails(list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5, v6));
         if (!list.isEmpty()) {
             return fail(list);
         } else {
@@ -792,7 +792,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
     public final <B, C, D, $E, $F, G, H> Validation<List<E>, H> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, F7<T, B, C, D, $E, $F, G, H> f) {
-        List<E> list = fails(list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5, v6, v7));
         if (!list.isEmpty()) {
             return fail(list);
         } else {
@@ -801,7 +801,7 @@ public class Validation<E, T> implements Iterable<T> {
     }
 
     public final <B, C, D, $E, $F, G, H, I> Validation<List<E>, I> accumulate(Validation<E, B> v2, Validation<E, C> v3, Validation<E, D> v4, Validation<E, $E> v5, Validation<E, $F> v6, Validation<E, G> v7, Validation<E, H> v8, F8<T, B, C, D, $E, $F, G, H, I> f) {
-        List<E> list = fails(list(this, v2, v3, v4, v5));
+        List<E> list = fails(list(this, v2, v3, v4, v5, v6, v7, v8));
         if (!list.isEmpty()) {
             return fail(list);
         } else {
@@ -860,7 +860,7 @@ public class Validation<E, T> implements Iterable<T> {
         return list.filter(Validation::isFail).map(v -> v.fail());
     }
 
-    public static <A, E> List<A> successes(List<Validation<?, A>> list) {
+    public static <A, E> List<A> successes(List<Validation<E, A>> list) {
         return list.filter(Validation::isSuccess).map(v -> v.success());
     }
 
