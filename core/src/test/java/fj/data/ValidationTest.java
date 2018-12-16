@@ -1,11 +1,12 @@
 package fj.data;
 
+import fj.P2;
 import org.junit.Test;
 
+import static fj.Semigroup.firstSemigroup;
 import static fj.data.Validation.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import fj.*;
 
 public class ValidationTest {
     @Test
@@ -232,6 +233,47 @@ public class ValidationTest {
         assertThat(v.fail().length(), is(2));
     }
 
+    @Test
+    public void testAccumulate8s() {
+        final Validation<NumberFormatException, Integer> v1 = parseInt("1");
+        final Validation<NumberFormatException, Integer> v2 = parseInt("2");
+        final Validation<NumberFormatException, Integer> v3 = parseInt("3");
+        final Validation<NumberFormatException, Integer> v4 = parseInt("4");
+        final Validation<NumberFormatException, Integer> v5 = parseInt("5");
+        final Validation<NumberFormatException, Integer> v6 = parseInt("6");
+        final Validation<NumberFormatException, Integer> v7 = parseInt("7");
+        final Validation<NumberFormatException, Integer> v8 = parseInt("8");
+        final Option<NumberFormatException> on2 = v1.accumulate(firstSemigroup(), v2);
+        assertThat(on2, is(Option.none()));
+        final Option<NumberFormatException> on3 = v1.accumulate(firstSemigroup(), v2, v3);
+        assertThat(on3, is(Option.none()));
+        final Option<NumberFormatException> on4 = v1.accumulate(firstSemigroup(), v2, v3, v4);
+        assertThat(on4, is(Option.none()));
+        final Option<NumberFormatException> on5 = v1.accumulate(firstSemigroup(), v2, v3, v4, v5);
+        assertThat(on5, is(Option.none()));
+        final Option<NumberFormatException> on6 = v1.accumulate(firstSemigroup(), v2, v3, v4, v5, v6);
+        assertThat(on6, is(Option.none()));
+        final Option<NumberFormatException> on7 = v1.accumulate(firstSemigroup(), v2, v3, v4, v5, v6, v7);
+        assertThat(on7, is(Option.none()));
+        final Option<NumberFormatException> on8 = v1.accumulate(firstSemigroup(), v2, v3, v4, v5, v6, v7, v8);
+        assertThat(on8, is(Option.none()));
+    }
+
+    @Test
+    public void testAccumulate8sFail() {
+        final Option<NumberFormatException> on =
+                parseInt("x").accumulate(
+                        firstSemigroup(),
+                        parseInt("2"),
+                        parseInt("3"),
+                        parseInt("4"),
+                        parseInt("5"),
+                        parseInt("6"),
+                        parseInt("7"),
+                        parseInt("y"));
+        assertThat(on.some().getMessage(), is("For input string: \"x\""));
+    }
+
     @Test(expected = Error.class)
     public void testSuccess() {
         parseShort("x").success();
@@ -240,5 +282,37 @@ public class ValidationTest {
     @Test(expected = Error.class)
     public void testFail() {
         parseShort("12").fail();
+    }
+
+    @Test
+    public void testCondition() {
+        final Validation<String, String> one = condition(true, "not 1", "one");
+        assertThat(one.success(), is("one"));
+        final Validation<String, String> fail = condition(false, "not 1", "one");
+        assertThat(fail.fail(), is("not 1"));
+    }
+
+    @Test
+    public void testNel() {
+        assertThat(Validation.success("success").nel().success(), is("success"));
+        assertThat(Validation.fail("fail").nel().fail().head(), is("fail"));
+    }
+
+    @Test
+    public void testFailNEL() {
+        Validation<NonEmptyList<Exception>, Integer> v = failNEL(new Exception("failed"));
+        assertThat(v.isFail(), is(true));
+    }
+
+    @Test
+    public void testEither() {
+        assertThat(either().f(Validation.success("success")).right().value(), is("success"));
+        assertThat(either().f(Validation.fail("fail")).left().value(), is("fail"));
+    }
+
+    @Test
+    public void testValidation() {
+        assertThat(validation().f(Either.right("success")).success(), is("success"));
+        assertThat(validation().f(Either.left("fail")).fail(), is("fail"));
     }
 }
