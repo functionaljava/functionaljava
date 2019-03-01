@@ -1,5 +1,6 @@
 
 dependencies {
     compile project(":core")
-    testCompile dependencyJunit
+    testCompile junitCompile
+    testRuntime junitRuntime
 }

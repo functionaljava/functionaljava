@@ -20,7 +20,7 @@ buildscript {
     }
 
     wrapper {
-        gradleVersion = "4.10.3"
+        gradleVersion = "5.2.1"
         distributionType = Wrapper.DistributionType.ALL
     }
 }
@@ -69,7 +69,8 @@ allprojects {
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
         primaryEmail = "functionaljava@googlegroups.com"
 
-        dependencyJunit = "org.junit.vintage:junit-vintage-engine:5.3.2"
+        junitCompile = "junit:junit:4.12"
+        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.3.2"
 
         displayCompilerWarnings = true
     }

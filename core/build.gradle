@@ -6,7 +6,8 @@ ext {
 archivesBaseName = project.projectName
 
 dependencies {
-    testCompile dependencyJunit
+    testCompile junitCompile
+    testRuntime junitRuntime
     testCompile 'com.h2database:h2:1.4.197'
     testCompile 'commons-dbutils:commons-dbutils:1.7'
 }
