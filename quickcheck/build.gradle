@@ -7,7 +7,7 @@ archivesBaseName = "${project.projectName}-${project.name}"
 
 dependencies {
 	compile project(":core")
-    compile dependencyJunit
+    compile junitCompile
 }
 
 performSigning(signingEnabled, signModule)

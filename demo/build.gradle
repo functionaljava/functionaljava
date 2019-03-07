@@ -8,7 +8,8 @@ archivesBaseName = "${project.projectName}-${project.name}"
 dependencies {
     compile project(":core")
     compile project(":quickcheck")
-    testCompile dependencyJunit
+    testCompile junitCompile
+    testRuntime junitRuntime
 }
 
 test {

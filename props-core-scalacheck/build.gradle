@@ -15,7 +15,8 @@ dependencies {
     compile "org.scala-lang:scala-library:$scalaVersion"
     compile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
 
-    testCompile dependencyJunit
+    testCompile junitCompile
+    testRuntime junitRuntime
 }
 
 performSigning(signingEnabled, signModule)

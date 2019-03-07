@@ -7,7 +7,8 @@ ext {
 
 dependencies {
     compile project(":core")
-    testCompile dependencyJunit
+    testCompile junitCompile
+    testRuntime junitRuntime
 }
 
 performSigning(signingEnabled, signModule)
