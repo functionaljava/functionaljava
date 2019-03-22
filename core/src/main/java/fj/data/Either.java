@@ -898,7 +898,7 @@ public abstract class Either<A, B> {
   }
 
   /**
-   * If the condition satisfies, return the given A in left, otherwise, return the given B in right.
+   * If the condition satisfies, return the given B in right, otherwise, return the given A in left.
    *
    * @param c     The condition to test.
    * @param right The right value to use if the condition satisfies.
