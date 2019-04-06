@@ -5,12 +5,13 @@ language: java
 
 jdk:
  - openjdk10
+ - openjdk11
  - openjdk-ea
 
 matrix:
 
   include:
-  - jdk: openjdk11
+  - jdk: openjdk12
     script:
       - ./gradlew build coverage -s -i
     after_success:
