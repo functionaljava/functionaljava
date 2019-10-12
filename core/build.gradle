@@ -8,7 +8,7 @@ archivesBaseName = project.projectName
 dependencies {
     testCompile junitCompile
     testRuntime junitRuntime
-    testCompile 'com.h2database:h2:1.4.197'
+    testCompile 'com.h2database:h2:1.4.199'
     testCompile 'commons-dbutils:commons-dbutils:1.7'
 }
 
