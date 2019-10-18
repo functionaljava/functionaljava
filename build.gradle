@@ -20,7 +20,7 @@ buildscript {
     }
 
     wrapper {
-        gradleVersion = "5.2.1"
+        gradleVersion = "5.6.2"
         distributionType = Wrapper.DistributionType.ALL
     }
 }
@@ -49,7 +49,7 @@ allprojects {
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "4.8"
+        fjConsumeVersion = "4.8.1"
 
         signModule = false
 
@@ -70,7 +70,7 @@ allprojects {
         primaryEmail = "functionaljava@googlegroups.com"
 
         junitCompile = "junit:junit:4.12"
-        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.3.2"
+        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.5.2"
 
         displayCompilerWarnings = true
     }
