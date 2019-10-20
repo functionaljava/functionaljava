@@ -32,11 +32,11 @@ public class MonoidTest {
 
   @Test
   public void union_monoid_test() {
-    Monoid<Set<Integer>> intersectionMonoid = Monoid.setMonoid(Ord.intOrd);
+    Monoid<Set<Integer>> unionMonoid = Monoid.setMonoid(Ord.intOrd);
     Set<Integer> first = Set.set(Ord.intOrd, 1, 2, 3, 4);
     Set<Integer> second = Set.set(Ord.intOrd, 3, 4, 5, 6);
-    Set<Integer> zero = intersectionMonoid.zero();
-    Set<Integer> actual = intersectionMonoid.sum(intersectionMonoid.sum(zero, first), second);
+    Set<Integer> zero = unionMonoid.zero();
+    Set<Integer> actual = unionMonoid.sum(unionMonoid.sum(zero, first), second);
     assertThat(actual, is(Set.set(Ord.intOrd, 1, 2, 3, 4, 5, 6)));
   }
 
