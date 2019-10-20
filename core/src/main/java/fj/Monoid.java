@@ -1102,6 +1102,14 @@ public final class Monoid<A> {
     });
   }
 
+  /**
+   * A intersection monoid for sets.
+   *
+   * @param bounded A bound for all possible elements
+   * @param enumerator An enumerator for all possible elements
+   * @param o An order for set elements.
+   * @return A monoid for sets whose elements have the given order.
+   */
   public static <A> Monoid<Set<A>> setIntersectionMonoid(final Bounded<A> bounded, final Enumerator<A> enumerator, final Ord<A> o) {
     return monoidDef(new Definition<Set<A>>() {
       @Override
