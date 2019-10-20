@@ -39,4 +39,7 @@ public class Bounded<A> {
             }
         });
     }
+
+    public static final Bounded<Integer> integerBounded = bounded(Integer.MIN_VALUE, Integer.MAX_VALUE);
+
 }
