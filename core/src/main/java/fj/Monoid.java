@@ -1083,7 +1083,7 @@ public final class Monoid<A> {
   });
 
   /**
-   * A monoid for sets.
+   * A union monoid for sets.
    *
    * @param o An order for set elements.
    * @return A monoid for sets whose elements have the given order.
