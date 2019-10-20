@@ -629,4 +629,8 @@ public final class Semigroup<A> {
     return semigroupDef(Set::union);
   }
 
+  public static <A> Semigroup<Set<A>> setIntersectionSemigroup() {
+    return semigroupDef(Set::intersect);
+  }
+
 }
