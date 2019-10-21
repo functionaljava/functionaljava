@@ -40,4 +40,21 @@ public class MonoidTest {
     assertThat(actual, is(Set.set(Ord.intOrd, 1, 2, 3, 4, 5, 6)));
   }
 
+  @Test
+  public void intersection_monoid_zero_test() {
+    Bounded<Integer> integersBounded = Bounded.bounded(0, 10);
+    Monoid<Set<Integer>> monoid = Monoid.setIntersectionMonoid(integersBounded, Enumerator.intEnumerator, Ord.intOrd);
+    Set<Integer> set = Set.set(Ord.intOrd, 1, 2, 3, 4);
+    Set<Integer> zero = monoid.zero();
+    assertThat(monoid.sum(zero, set), is(set));
+  }
+
+  @Test
+  public void union_monoid_zero_test() {
+    Monoid<Set<Integer>> monoid = Monoid.setMonoid(Ord.intOrd);
+    Set<Integer> set = Set.set(Ord.intOrd, 1, 2, 3, 4);
+    Set<Integer> zero = monoid.zero();
+    assertThat(monoid.sum(zero, set), is(set));
+  }
+
 }
