@@ -25,8 +25,7 @@ public class MonoidTest {
     Monoid<Set<Integer>> intersectionMonoid = Monoid.setIntersectionMonoid(integersBounded, Enumerator.intEnumerator, Ord.intOrd);
     Set<Integer> first = Set.set(Ord.intOrd, 1, 2, 3, 4);
     Set<Integer> second = Set.set(Ord.intOrd, 3, 4, 5, 6);
-    Set<Integer> zero = intersectionMonoid.zero();
-    Set<Integer> actual = intersectionMonoid.sum(intersectionMonoid.sum(zero, first), second);
+    Set<Integer> actual = intersectionMonoid.sum(first, second);
     assertThat(actual, is(Set.set(Ord.intOrd, 3, 4)));
   }
 
@@ -35,8 +34,7 @@ public class MonoidTest {
     Monoid<Set<Integer>> unionMonoid = Monoid.setMonoid(Ord.intOrd);
     Set<Integer> first = Set.set(Ord.intOrd, 1, 2, 3, 4);
     Set<Integer> second = Set.set(Ord.intOrd, 3, 4, 5, 6);
-    Set<Integer> zero = unionMonoid.zero();
-    Set<Integer> actual = unionMonoid.sum(unionMonoid.sum(zero, first), second);
+    Set<Integer> actual = unionMonoid.sum(first, second);
     assertThat(actual, is(Set.set(Ord.intOrd, 1, 2, 3, 4, 5, 6)));
   }
 
