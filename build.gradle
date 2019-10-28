@@ -181,6 +181,7 @@ configure(subprojects.findAll { it.name != "props-core" }) {
         buildCommand 'org.eclipse.pde.ManifestBuilder'
         buildCommand 'org.eclipse.pde.SchemaBuilder'
       }
+      instruction 'Automatic-Module-Name', "functionaljava${project.name == 'core' ? '' : "-$project.name"}"
     }
 
     // Output MANIFEST.MF statically so eclipse can see it for plugin development
