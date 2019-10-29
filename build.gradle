@@ -172,7 +172,7 @@ configure(subprojects.findAll { it.name != "props-core" }) {
             if(project.name != "core") {
                 instruction 'Require-Bundle', 'org.functionaljava;bundle-version="'+project.fjBaseVersion+'"'
             }
-            instruction 'Automatic-Module-Name', "functionaljava${project.name == 'core' ? '' : "-$project.name"}"
+            instruction 'Automatic-Module-Name', "functionaljava${project.name == 'core' ? '' : ".$project.name"}"
         }
     }
 
