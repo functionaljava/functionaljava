@@ -190,7 +190,7 @@ public final class Enumerator<A> {
    */
   public Stream<A> toStream(final Bounded<A> bounded) {
     final F<A, A> id = identity();
-    return Stream.fromFunction(this, id, bounded.min()).takeWhile(item -> !item.equals(bounded.max()));
+    return Stream.fromFunction(this, id, bounded.min()).takeWhile(item -> order.isLessThanOrEqualTo(item, bounded.max()));
   }
 
   /**
