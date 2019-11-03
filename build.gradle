@@ -169,9 +169,10 @@ configure(subprojects.findAll { it.name != "props-core" }) {
             instruction 'Signature-Version', project.fjVersion
             instruction 'Bundle-ActivationPolicy', 'lazy'
             instruction 'Bundle-Vendor', 'functionaljava.org'
-			if(project.name != "core") {
-				instruction 'Require-Bundle', 'org.functionaljava;bundle-version="'+project.fjBaseVersion+'"'
-			}
+            if(project.name != "core") {
+                instruction 'Require-Bundle', 'org.functionaljava;bundle-version="'+project.fjBaseVersion+'"'
+            }
+            instruction 'Automatic-Module-Name', "functionaljava${project.name == 'core' ? '' : ".$project.name"}"
         }
     }
 
