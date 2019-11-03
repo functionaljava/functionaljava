@@ -2,14 +2,7 @@ package fj;
 
 import static fj.F1Functions.dimap;
 
-import fj.data.Array;
-import fj.data.DList;
-import fj.data.List;
-import fj.data.IO;
-import fj.data.Natural;
-import fj.data.Option;
-import fj.data.Set;
-import fj.data.Stream;
+import fj.data.*;
 
 import static fj.Function.*;
 import static fj.Semigroup.semigroupDef;
@@ -1090,7 +1083,7 @@ public final class Monoid<A> {
   });
 
   /**
-   * A monoid for sets.
+   * A union monoid for sets.
    *
    * @param o An order for set elements.
    * @return A monoid for sets whose elements have the given order.
@@ -1105,6 +1098,27 @@ public final class Monoid<A> {
       @Override
       public Set<A> append(Set<A> a1, Set<A> a2) {
         return a1.union(a2);
+      }
+    });
+  }
+
+  /**
+   * A intersection monoid for sets.
+   *
+   * @param bounded A bound for all possible elements
+   * @param enumerator An enumerator for all possible elements
+   * @return A monoid for sets whose elements have the given order.
+   */
+  public static <A> Monoid<Set<A>> setIntersectionMonoid(final Bounded<A> bounded, final Enumerator<A> enumerator) {
+    return monoidDef(new Definition<Set<A>>() {
+      @Override
+      public Set<A> empty() {
+        return Set.iteratorSet(enumerator.order(), enumerator.toStream(bounded).iterator());
+      }
+
+      @Override
+      public Set<A> append(Set<A> a1, Set<A> a2) {
+        return a1.intersect(a2);
       }
     });
   }

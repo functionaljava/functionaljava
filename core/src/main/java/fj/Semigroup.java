@@ -621,12 +621,21 @@ public final class Semigroup<A> {
   public static final Semigroup<Unit> unitSemigroup = unitMonoid.semigroup();
 
   /**
-   * A semigroup for sets.
+   * A union semigroup for sets.
    *
    * @return a semigroup for sets.
    */
   public static <A> Semigroup<Set<A>> setSemigroup() {
     return semigroupDef(Set::union);
+  }
+
+  /**
+   * A intersection semigroup for sets.
+   *
+   * @return a semigroup for sets.
+   */
+  public static <A> Semigroup<Set<A>> setIntersectionSemigroup() {
+    return semigroupDef(Set::intersect);
   }
 
 }

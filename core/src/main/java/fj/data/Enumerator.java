@@ -1,16 +1,12 @@
 package fj.data;
 
-import fj.F;
+import fj.*;
 
 import static fj.Function.*;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 
-import fj.Function;
-import fj.Ord;
-
 import static fj.Ord.*;
-import fj.Ordering;
 import static fj.Ordering.*;
 
 import java.math.BigDecimal;
@@ -183,6 +179,18 @@ public final class Enumerator<A> {
   public Stream<A> toStream(final A a) {
     final F<A, A> id = identity();
     return Stream.fromFunction(this, id, a);
+  }
+
+  /**
+   * Returns a stream of the values from this enumerator,
+   * starting at the min of given Bounded, ending at the max, counting up.
+   *
+   * @param bounded A value at which to begin the stream.
+   * @return a stream of the values from this enumerator, cut by bounded, counting up.
+   */
+  public Stream<A> toStream(final Bounded<A> bounded) {
+    final F<A, A> id = identity();
+    return Stream.fromFunction(this, id, bounded.min()).takeWhile(item -> order.isLessThanOrEqualTo(item, bounded.max()));
   }
 
   /**
