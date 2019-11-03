@@ -29,7 +29,7 @@ public class MonoidTest {
     assertThat(actual, is(Set.set(Ord.intOrd, 3, 4)));
   }
 
-    @Test
+  @Test
   public void union_monoid_test() {
     Monoid<Set<Integer>> unionMonoid = Monoid.setMonoid(Ord.intOrd);
     Set<Integer> first = Set.set(Ord.intOrd, 1, 2, 3, 4);
