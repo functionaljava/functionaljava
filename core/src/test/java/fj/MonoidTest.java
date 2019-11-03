@@ -22,7 +22,7 @@ public class MonoidTest {
   @Test
   public void intersection_monoid_test() {
     Bounded<Integer> integersBounded = Bounded.bounded(0, 10);
-    Monoid<Set<Integer>> intersectionMonoid = Monoid.setIntersectionMonoid(integersBounded, Enumerator.intEnumerator, Ord.intOrd);
+    Monoid<Set<Integer>> intersectionMonoid = Monoid.setIntersectionMonoid(integersBounded, Enumerator.intEnumerator);
     Set<Integer> first = Set.set(Ord.intOrd, 1, 2, 3, 4);
     Set<Integer> second = Set.set(Ord.intOrd, 3, 4, 5, 6);
     Set<Integer> actual = intersectionMonoid.sum(first, second);
@@ -41,7 +41,7 @@ public class MonoidTest {
   @Test
   public void intersection_monoid_zero_test() {
     Bounded<Integer> integersBounded = Bounded.bounded(0, 10);
-    Monoid<Set<Integer>> monoid = Monoid.setIntersectionMonoid(integersBounded, Enumerator.intEnumerator, Ord.intOrd);
+    Monoid<Set<Integer>> monoid = Monoid.setIntersectionMonoid(integersBounded, Enumerator.intEnumerator);
     Set<Integer> set = Set.set(Ord.intOrd, 1, 2, 3, 4);
     Set<Integer> zero = monoid.zero();
     assertThat(monoid.sum(zero, set), is(set));
