@@ -1,14 +1,9 @@
 
 defaultTasks 'build'
 
-ext {
-}
+apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
-    ext {
-        uptodateVersion = "1.6.3"
-    }
-
     repositories {
         mavenLocal()
         jcenter()
@@ -16,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.ofg:uptodate-gradle-plugin:$uptodateVersion"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.27.0"
     }
 
     wrapper {
@@ -98,7 +93,6 @@ subprojects {
     apply from: "$rootDir/lib.gradle"
 	apply plugin: "java"
 	apply plugin: "eclipse"
-    apply plugin: "com.ofg.uptodate"
 
 	repositories {
         mavenLocal()
