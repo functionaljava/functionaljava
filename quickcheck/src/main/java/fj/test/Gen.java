@@ -9,6 +9,7 @@ import fj.control.Trampoline;
 import fj.data.Array;
 import fj.data.List;
 import fj.data.Option;
+import fj.data.Stream;
 import fj.function.Effect1;
 
 import static fj.Bottom.error;
@@ -495,6 +496,18 @@ public final class Gen<A> {
    */
   public static <A> Gen<List<A>> listOf1(final Gen<A> g) {
     return listOf(g, 1);
+  }
+
+  /**
+   * Returns a generator of streams whose values come from the given generator.
+   *
+   * @param g   the generator to produce values from for the returned generator
+   * @param <A> the type of the generator
+   *
+   * @return A generator of streams whose values come from the given generator.
+   */
+  public static <A> Gen<Stream<A>> streamOf(final Gen<A> g) {
+    return gen(i -> r -> Stream.cons(g.gen(i, r), () -> streamOf(g).gen(i, r)));
   }
 
   /**
