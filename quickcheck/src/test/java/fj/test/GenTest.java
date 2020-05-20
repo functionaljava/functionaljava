@@ -1,16 +1,19 @@
 package fj.test;
 
 import fj.data.List;
+import fj.data.Stream;
 import fj.function.Effect1;
 import org.junit.Test;
 
 import static fj.Ord.charOrd;
 import static fj.data.List.list;
 import static fj.data.List.range;
-import static fj.test.Gen.selectionOf;
 import static fj.test.Gen.combinationOf;
-import static fj.test.Gen.wordOf;
 import static fj.test.Gen.permutationOf;
+import static fj.test.Gen.pickOne;
+import static fj.test.Gen.selectionOf;
+import static fj.test.Gen.streamOf;
+import static fj.test.Gen.wordOf;
 import static fj.test.Rand.standard;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -170,6 +173,15 @@ public final class GenTest {
   public void testWordOf_four() {
     Gen<List<Character>> instance = wordOf(4, AS);
     testPick(100, instance, actual -> {
+      assertEquals(4, actual.length());
+      assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
+    });
+  }
+
+  @Test
+  public void testStreamOf() {
+    final Gen<Stream<Character>> instance = streamOf(pickOne(AS));
+    testPick(100, instance.map(stream -> stream.take(4).toList()), actual -> {
       assertEquals(4, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
     });
