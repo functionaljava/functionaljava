@@ -372,11 +372,11 @@ public abstract class Option<A> implements Iterable<A> {
   public final <B, C> Option<P3<A,B,C>> bindProduct(final Option<B> ob, final Option<C> oc) {
     return bind(ob, oc, P.p3());
   }
-  
+
   public final <B, C, D> Option<P4<A,B,C,D>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od) {
     return bind(ob, oc, od, P.p4());
   }
-  
+
   public final <B,C,D,E> Option<P5<A,B,C,D,E>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od,
                                                      final Option<E> oe) {
     return bind(ob, oc, od, oe, P.p5());
@@ -712,7 +712,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   /**
-   * Sequence through the option monad.
+   * Sequence a list through the option monad.
    *
    * @param a The list of option to sequence.
    * @return The option of list after sequencing.
@@ -721,6 +721,16 @@ public abstract class Option<A> implements Iterable<A> {
     return a.isEmpty() ?
            some(List.nil()) :
            a.head().bind(aa -> sequence(a.tail()).map(cons_(aa)));
+  }
+
+  /**
+   * Sequence a validation through the option monad.
+   *
+   * @param a The validation of option to sequence.
+   * @return The option of validation after sequencing.
+   */
+  public static <E, A> Option<Validation<E, A>> sequence(final Validation<E, Option<A>> a) {
+    return a.traverseOption(identity());
   }
 
   /**
