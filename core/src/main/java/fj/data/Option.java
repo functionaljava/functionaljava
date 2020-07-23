@@ -393,7 +393,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   /**
-   * Sequence the given option and collect the output on the right side of an either.
+   * Sequence the given option and collect the output on the left side of an either.
    *
    * @param option the given option
    * @param <R>    the type of the right value
@@ -405,7 +405,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   /**
-   * Sequence the given option and collect the output on the left side of an either.
+   * Sequence the given option and collect the output on the right side of an either.
    *
    * @param option the given option
    * @param <B>    the type of the right value
