@@ -1,5 +1,6 @@
 package fj.data;
 
+import fj.P;
 import fj.control.Trampoline;
 import org.junit.Test;
 
@@ -7,22 +8,11 @@ import java.io.IOException;
 
 import static fj.Function.constant;
 import static fj.Ord.*;
-import static fj.P.p;
+import static fj.P.*;
 import static fj.data.Either.*;
 import static fj.data.List.*;
+import static fj.data.Option.iif;
 import static fj.data.Option.sequence;
-import static fj.data.Option.sequenceEitherLeft;
-import static fj.data.Option.sequenceEitherRight;
-import static fj.data.Option.sequenceF;
-import static fj.data.Option.sequenceIO;
-import static fj.data.Option.sequenceList;
-import static fj.data.Option.sequenceOption;
-import static fj.data.Option.sequenceP1;
-import static fj.data.Option.sequenceSeq;
-import static fj.data.Option.sequenceSet;
-import static fj.data.Option.sequenceStream;
-import static fj.data.Option.sequenceTrampoline;
-import static fj.data.Option.sequenceValidation;
 import static fj.data.Option.*;
 import static fj.data.Validation.fail;
 import static fj.data.Validation.*;
@@ -65,6 +55,177 @@ public final class OptionTest {
     assertEquals(none(), sequence(Validation.<Integer, Option<String>>success(none())));
     assertEquals(some(success("string")), sequence(Validation.<Integer, Option<String>>success(some("string"))));
   }
+
+  @Test
+  public void testBind1() {
+    range(0, 1).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), 0), list.index(0).bind(Option::some));
+        });
+
+  }
+
+  @Test
+  public void testBind2() {
+    range(0, 2).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1)), list.index(0).bind(list.index(1), p2()));
+        });
+  }
+
+  @Test
+  public void testBind3() {
+    range(0, 3).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2)), list.index(0).bind(list.index(1), list.index(2), p3()));
+        });
+
+  }
+
+  @Test
+  public void testBind4() {
+    range(0, 4).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3)), list.index(0).bind(list.index(1), list.index(2), list.index(3), p4()));
+        });
+
+  }
+
+  @Test
+  public void testBind5() {
+    range(0, 5).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), p5()));
+        });
+  }
+
+  @Test
+  public void testBind6() {
+    range(0, 6).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), p6()));
+        });
+  }
+
+  @Test
+  public void testBind7() {
+    range(0, 7).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), p7()));
+        });
+  }
+
+  @Test
+  public void testBind8() {
+    range(0, 8).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), P.<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>p8()));
+        });
+  }
+
+  @Test
+  public void testBindProduct2() {
+    range(0, 2).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1)), list.index(0).bindProduct(list.index(1)));
+        });
+  }
+
+  @Test
+  public void testBindProduct3() {
+    range(0, 3).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2)), list.index(0).bindProduct(list.index(1), list.index(2)));
+        });
+
+  }
+
+  @Test
+  public void testBindProduct4() {
+    range(0, 4).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3)));
+        });
+
+  }
+
+  @Test
+  public void testBindProduct5() {
+    range(0, 5).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4)));
+        });
+  }
+
+  @Test
+  public void testBindProduct6() {
+    range(0, 6).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5)));
+        });
+  }
+
+  @Test
+  public void testBindProduct7() {
+    range(0, 7).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6)));
+        });
+  }
+
+  @Test
+  public void testBindProduct8() {
+    range(0, 8).map(i -> arrayList(Option.<Integer>none(), some(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7)));
+        });
+  }
+
 
   @Test
   public void testSequenceEitherLeft() {
