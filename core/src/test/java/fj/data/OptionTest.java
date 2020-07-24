@@ -13,6 +13,19 @@ import static fj.data.Either.*;
 import static fj.data.List.*;
 import static fj.data.Option.iif;
 import static fj.data.Option.sequence;
+import static fj.data.Option.sequenceEither;
+import static fj.data.Option.sequenceEitherLeft;
+import static fj.data.Option.sequenceEitherRight;
+import static fj.data.Option.sequenceF;
+import static fj.data.Option.sequenceIO;
+import static fj.data.Option.sequenceList;
+import static fj.data.Option.sequenceOption;
+import static fj.data.Option.sequenceP1;
+import static fj.data.Option.sequenceSeq;
+import static fj.data.Option.sequenceSet;
+import static fj.data.Option.sequenceStream;
+import static fj.data.Option.sequenceTrampoline;
+import static fj.data.Option.sequenceValidation;
 import static fj.data.Option.*;
 import static fj.data.Validation.fail;
 import static fj.data.Validation.*;
@@ -226,6 +239,12 @@ public final class OptionTest {
         });
   }
 
+  @Test
+  public void testSequenceEither() {
+    assertEquals(right(none()), sequenceEither(none()));
+    assertEquals(right(some("zero")), sequenceEither(some(right("zero"))));
+    assertEquals(left("zero"), sequenceEither(some(left("zero"))));
+  }
 
   @Test
   public void testSequenceEitherLeft() {
@@ -309,6 +328,14 @@ public final class OptionTest {
     assertEquals(Validation.success(none()), sequenceValidation(none()));
     assertEquals(Validation.fail(0), sequenceValidation(some(Validation.fail(0))));
     assertEquals(Validation.success(some(0)), sequenceValidation(some(Validation.success(0))));
+  }
+
+  @Test
+  public void testTraverseEither() {
+    assertEquals(right(none()), none().traverseEither(constant(right(0))));
+    assertEquals(right(some(0)), some("zero").traverseEither(constant(right(0))));
+    assertEquals(right(none()), none().traverseEither(constant(left(0))));
+    assertEquals(left(0), some("zero").traverseEither(constant(left(0))));
   }
 
   @Test

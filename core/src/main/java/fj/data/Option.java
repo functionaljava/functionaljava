@@ -393,6 +393,18 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   /**
+   * Sequence the given option and collect the output on the right side of an either.
+   *
+   * @param option the given option
+   * @param <B>    the type of the right value
+   * @param <L>    the type of the left value
+   * @return the either
+   */
+  public static final <L, B> Either<L, Option<B>> sequenceEither(final Option<Either<L, B>> option) {
+    return option.traverseEitherRight(identity());
+  }
+
+  /**
    * Sequence the given option and collect the output on the left side of an either.
    *
    * @param option the given option
@@ -527,6 +539,18 @@ public abstract class Option<A> implements Iterable<A> {
    */
   public static final <E, B> Validation<E, Option<B>> sequenceValidation(final Option<Validation<E, B>> option) {
     return option.traverseValidation(identity());
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public final <L, B> Either<L, Option<B>> traverseEither(final F<A, Either<L, B>> f) {
+    return traverseEitherRight(f);
   }
 
   /**
