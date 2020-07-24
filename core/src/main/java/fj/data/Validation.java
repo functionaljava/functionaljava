@@ -1,16 +1,17 @@
 package fj.data;
 
 import fj.*;
+import fj.control.Trampoline;
 import fj.function.Effect1;
 
-import static fj.Function.curry;
-import static fj.P.p;
-
-import static fj.Unit.unit;
-import static fj.Bottom.error;
-import static fj.data.List.list;
-
 import java.util.Iterator;
+
+import static fj.Bottom.error;
+import static fj.Function.*;
+import static fj.P.p;
+import static fj.Unit.unit;
+import static fj.data.Either.*;
+import static fj.data.List.list;
 
 /**
  * Isomorphic to {@link Either} but has renamed functions and represents failure on the left and success on the right.
@@ -825,44 +826,327 @@ public class Validation<E, T> implements Iterable<T> {
       }
     }
 
-    public final <C> List<Validation<E, C>> traverseList(F<T, List<C>> f){
-        return isSuccess() ?
-            f.f(success()).map(Validation::success) :
-            List.iterableList(fail(e.left().value()));
-    }
+  /**
+   * Sequence the given validation and collect the output on the left side of an either.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <R>        the type of the right value
+   * @param <C>        the type of the left value
+   * @return the either
+   */
+  public static final <E, R, C> Either<Validation<E, C>, R> sequenceEitherLeft(final Validation<E, Either<C, R>> validation) {
+    return validation.traverseEitherLeft(identity());
+  }
 
-    public final <C> Stream<Validation<E, C>> traverseStream(F<T, Stream<C>> f){
-        return isSuccess() ?
-            f.f(success()).map(Validation::success) :
-            Stream.iterableStream(fail(e.left().value()));
-    }
+  /**
+   * Sequence the given validation and collect the output on the right side of an either.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the right value
+   * @param <L>        the type of the left value
+   * @return the either
+   */
+  public static final <E, L, C> Either<L, Validation<E, C>> sequenceEitherRight(final Validation<E, Either<L, C>> validation) {
+    return validation.traverseEitherRight(identity());
+  }
 
-    public final <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f){
-        return isSuccess() ?
-            f.f(success()).map(Validation::success) :
-            Option.some(fail(e.left().value()));
-    }
+  /**
+   * Sequence the given validation and collect the output as a function.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of input value
+   * @param <B>        the type of output value
+   * @return the function
+   */
+  public static final <E, C, B> F<C, Validation<E, B>> sequenceF(final Validation<E, F<C, B>> validation) {
+    return validation.traverseF(identity());
+  }
 
-    public final <C> IO<Validation<E, C>> traverseIO(F<T, IO<C>> f){
-        return isSuccess() ?
-            IOFunctions.map(f.f(success()), Validation::success) :
-            IOFunctions.unit(fail(e.left().value()));
-    }
+  /**
+   * Sequence the given validation and collect the output as an IO.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the IO value
+   * @return the IO
+   */
+  public static final <E, C> IO<Validation<E, C>> sequenceIO(final Validation<E, IO<C>> validation) {
+    return validation.traverseIO(identity());
+  }
 
-    public final <C> P1<Validation<E, C>> traverseP1(F<T, P1<C>> f){
-        return isSuccess() ?
-                f.f(success()).map(Validation::success) :
-                p(fail(e.left().value()));
-    }
+  /**
+   * Sequence the given validation and collect the output as a list.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the list value
+   * @return the list
+   */
+  public static final <E, C> List<Validation<E, C>> sequenceList(final Validation<E, List<C>> validation) {
+    return validation.traverseList(identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as an option.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the option value
+   * @return the option
+   */
+  public static final <E, C> Option<Validation<E, C>> sequenceOption(final Validation<E, Option<C>> validation) {
+    return validation.traverseOption(identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as a P1.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the P1 value
+   * @return the P1
+   */
+  public static final <E, C> P1<Validation<E, C>> sequenceP1(final Validation<E, P1<C>> validation) {
+    return validation.traverseP1(identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as a seq.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the seq value
+   * @return the seq
+   */
+  public static final <E, C> Seq<Validation<E, C>> sequenceSeq(final Validation<E, Seq<C>> validation) {
+    return validation.traverseSeq(identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as a set.
+   *
+   * @param ordE       the given failure value ord
+   * @param ordC       the given success value ord
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the set value
+   * @return the set
+   */
+  public static final <E, C> Set<Validation<E, C>> sequenceSet(final Ord<E> ordE, final Ord<C> ordC, final Validation<E, Set<C>> validation) {
+    return validation.traverseSet(ordE, ordC, identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as a stream.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the stream value
+   * @return the stream
+   */
+  public static final <E, C> Stream<Validation<E, C>> sequenceStream(final Validation<E, Stream<C>> validation) {
+    return validation.traverseStream(identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as a trampoline.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <C>        the type of the trampoline value
+   * @return the trampoline
+   */
+  public static final <E, C> Trampoline<Validation<E, C>> sequenceTrampoline(final Validation<E, Trampoline<C>> validation) {
+    return validation.traverseTrampoline(identity());
+  }
+
+  /**
+   * Sequence the given validation and collect the output as a validation.
+   *
+   * @param validation the given validation
+   * @param <E>        the type of the failure value
+   * @param <E1>       the type of the failure value
+   * @param <C>        the type of the success value
+   * @return the validation
+   */
+  public static final <E, E1, C> Validation<E1, Validation<E, C>> sequenceValidation(final Validation<E, Validation<E1, C>> validation) {
+    return validation.traverseValidation(identity());
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output on the left side of an either.
+   *
+   * @param f   the given function
+   * @param <C> the type of the left value
+   * @param <R> the type of the right value
+   * @return the list
+   */
+  public final <R, C> Either<Validation<E, C>, R> traverseEitherLeft(final F<T, Either<C, R>> f) {
+    return validation(
+        failure -> left(fail(failure)),
+        success -> f.f(success).left().map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <C> the type of the right value
+   * @return the list
+   */
+  public final <L, C> Either<L, Validation<E, C>> traverseEitherRight(final F<T, Either<L, C>> f) {
+    return validation(
+        failure -> right(fail(failure)),
+        success -> f.f(success).right().map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a function.
+   *
+   * @param f   the given function
+   * @param <C> the type of the input value
+   * @param <B> the type of the output value
+   * @return the function
+   */
+  public final <C, B> F<C, Validation<E, B>> traverseF(final F<T, F<C, B>> f) {
+    return validation(
+        failure -> constant(fail(failure)),
+        success -> andThen(f.f(success), Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as an IO.
+   *
+   * @param f   the given function
+   * @param <C> the type of the IO value
+   * @return the IO
+   */
+  public final <C> IO<Validation<E, C>> traverseIO(final F<T, IO<C>> f) {
+    return validation(
+        failure -> IOFunctions.unit(fail(failure)),
+        success -> IOFunctions.map(f.f(success), Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a list.
+   *
+   * @param f   the given function
+   * @param <C> the type of the list value
+   * @return the list
+   */
+  public final <C> List<Validation<E, C>> traverseList(final F<T, List<C>> f) {
+    return validation(
+        failure -> List.single(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as an option.
+   *
+   * @param f   the given function
+   * @param <C> the type of the option value
+   * @return the option
+   */
+  public final <C> Option<Validation<E, C>> traverseOption(F<T, Option<C>> f) {
+    return validation(
+        failure -> Option.some(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a P1.
+   *
+   * @param f   the given function
+   * @param <C> the type of the P1 value
+   * @return the P1
+   */
+  public final <C> P1<Validation<E, C>> traverseP1(final F<T, P1<C>> f) {
+    return validation(
+        failure -> p(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a seq.
+   *
+   * @param f   the given function
+   * @param <C> the type of the seq value
+   * @return the seq
+   */
+  public final <C> Seq<Validation<E, C>> traverseSeq(final F<T, Seq<C>> f) {
+    return validation(
+        failure -> Seq.single(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a set; use the given success and failure value ords to order the set.
+   *
+   * @param ordE the given failure value ord
+   * @param ordC the given success value ord
+   * @param f    the given function
+   * @param <C>  the type of the set value
+   * @return the set
+   */
+  public final <C> Set<Validation<E, C>> traverseSet(final Ord<E> ordE, final Ord<C> ordC, final F<T, Set<C>> f) {
+    final Ord<Validation<E, C>> ord = Ord.validationOrd(ordE, ordC);
+    return validation(
+        failure -> Set.single(ord, fail(failure)),
+        success -> f.f(success).map(ord, Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a stream.
+   *
+   * @param f   the given function
+   * @param <C> the type of the stream value
+   * @return the stream
+   */
+  public final <C> Stream<Validation<E, C>> traverseStream(final F<T, Stream<C>> f) {
+    return validation(
+        failure -> Stream.single(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a trampoline.
+   *
+   * @param f   the given function
+   * @param <C> the type of the trampoline value
+   * @return the trampoline
+   */
+  public final <C> Trampoline<Validation<E, C>> traverseTrampoline(final F<T, Trampoline<C>> f) {
+    return validation(
+        failure -> Trampoline.pure(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
+
+  /**
+   * Traverse this validation with the given function and collect the output as a validation.
+   *
+   * @param f    the given function
+   * @param <E1> the type of the failure value
+   * @param <C>  the type of the seq value
+   * @return the validation
+   */
+  public final <E1, C> Validation<E1, Validation<E, C>> traverseValidation(final F<T, Validation<E1, C>> f) {
+    return validation(
+        failure -> success(fail(failure)),
+        success -> f.f(success).map(Validation::success));
+  }
 
 
-    public static <A, E> List<E> fails(List<Validation<E, ?>> list) {
-        return list.filter(Validation::isFail).map(v -> v.fail());
-    }
+  public static <A, E> List<E> fails(List<Validation<E, ?>> list) {
+    return list.filter(Validation::isFail).map(v -> v.fail());
+  }
 
-    public static <A, E> List<A> successes(List<Validation<?, A>> list) {
-        return list.filter(Validation::isSuccess).map(v -> v.success());
-    }
+  public static <A, E> List<A> successes(List<Validation<?, A>> list) {
+    return list.filter(Validation::isSuccess).map(v -> v.success());
+  }
 
   /**
    * A failing projection of a validation.
@@ -1268,7 +1552,7 @@ public class Validation<E, T> implements Iterable<T> {
   }
 
   /**
-   * A function that parses a string into a short. 
+   * A function that parses a string into a short.
    */
   public static final F<String, Validation<NumberFormatException, Short>> parseShort = Validation::parseShort;
 
