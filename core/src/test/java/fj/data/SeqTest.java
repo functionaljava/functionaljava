@@ -3,11 +3,10 @@ package fj.data;
 import fj.P2;
 import org.junit.Test;
 
+import static fj.Function.constant;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by MarkPerry on 16/01/2015.
@@ -46,4 +45,16 @@ public class SeqTest {
         assertThat(p2._2(), is(Seq.empty()));
     }
 
+  @Test
+  public void testBind() {
+    assertEquals(Seq.empty(), Seq.empty().bind(constant(Seq.empty())));
+    assertEquals(Seq.empty(), Seq.empty().bind(constant(Seq.single(0))));
+    assertEquals(Seq.empty(), Seq.empty().bind(constant(Seq.arraySeq(0, 1))));
+    assertEquals(Seq.empty(), Seq.single("zero").bind(constant(Seq.empty())));
+    assertEquals(Seq.single(0), Seq.single("zero").bind(constant(Seq.single(0))));
+    assertEquals(Seq.arraySeq(0, 1), Seq.single("zero").bind(constant(Seq.arraySeq(0, 1))));
+    assertEquals(Seq.empty(), Seq.arraySeq("zero", "one").bind(constant(Seq.empty())));
+    assertEquals(Seq.arraySeq(0, 0), Seq.arraySeq("zero", "one").bind(constant(Seq.single(0))));
+    assertEquals(Seq.arraySeq(0, 1, 0, 1), Seq.arraySeq("zero", "one").bind(constant(Seq.arraySeq(0, 1))));
+  }
 }
