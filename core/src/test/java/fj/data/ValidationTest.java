@@ -1,14 +1,16 @@
 package fj.data;
 
+import fj.*;
 import fj.control.Trampoline;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static fj.Function.constant;
+import static fj.Function.*;
 import static fj.Ord.*;
-import static fj.P.p;
+import static fj.P.*;
 import static fj.data.Either.*;
+import static fj.data.List.*;
 import static fj.data.Option.*;
 import static fj.data.Validation.sequenceEitherLeft;
 import static fj.data.Validation.sequenceEitherRight;
@@ -26,6 +28,223 @@ import static fj.data.Validation.*;
 import static org.junit.Assert.assertEquals;
 
 public class ValidationTest {
+
+  @Test
+  public void testAccumulateSemigroup2() {
+    range(0, 2).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(), list.index(1)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1)), list.index(0).accumulate(Semigroup.listSemigroup(), list.index(1), p2()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1)), list.index(0).accumulate(Semigroup.listSemigroup(), list.index(1), uncurryF2(p2())));
+        });
+  }
+
+  @Test
+  public void testAccumulateSemigroup3() {
+    range(0, 3).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list ->
+            accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), p3()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), uncurryF3(p3())));
+        });
+
+  }
+
+  @Test
+  public void testAccumulateSemigroup4() {
+    range(0, 4).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list ->
+            accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), p4()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), uncurryF4(p4())));
+        });
+
+  }
+
+  @Test
+  public void testAccumulateSemigroup5() {
+    range(0, 5).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list ->
+            accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), p5()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), uncurryF5(p5())));
+        });
+  }
+
+  @Test
+  public void testAccumulateSemigroup6() {
+    range(0, 6).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list ->
+            accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), p6()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), uncurryF6(p6())));
+        });
+  }
+
+  @Test
+  public void testAccumulateSemigroup7() {
+    range(0, 7).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> 
+            accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), p7()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), uncurryF7(p7())));
+        });
+  }
+
+  @Test
+  public void testAccumulateSemigroup8() {
+    range(0, 8).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list ->
+            accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7)));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), P.<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>p8()));
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), uncurryF8(P.<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>p8())));
+        });
+  }
+
+  @Test
+  public void testAccumulate0() {
+    range(0, 1).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), 0), list.index(0).accumulate());
+        });
+  }
+
+  @Test
+  public void testAccumulate1() {
+    range(0, 1).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), 0), list.index(0).accumulate(identity()));
+        });
+
+  }
+
+  @Test
+  public void testAccumulate2() {
+    range(0, 2).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1)), list.index(0).accumulate(list.index(1), P::p));
+        });
+  }
+
+  @Test
+  public void testAccumulate3() {
+    range(0, 3).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2)), list.index(0).accumulate(list.index(1), list.index(2), P::p));
+        });
+
+  }
+
+  @Test
+  public void testAccumulate4() {
+    range(0, 4).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), P::p));
+        });
+
+  }
+
+  @Test
+  public void testAccumulate5() {
+    range(0, 5).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), P::p));
+        });
+  }
+
+  @Test
+  public void testAccumulate6() {
+    range(0, 6).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), P::p));
+        });
+  }
+
+  @Test
+  public void testAccumulate7() {
+    range(0, 7).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), P::p));
+        });
+  }
+
+  @Test
+  public void testAccumulate8() {
+    range(0, 8).map(i -> List.<Validation<List<String>, Integer>>arrayList(fail(arrayList(String.valueOf(i))), success(i)))
+        .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
+            list.map(List::single) :
+            accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
+        .forEach(list -> {
+          assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), P::p));
+        });
+  }
+
+  @Test
+  public void testMap() {
+    assertEquals(Validation.<String, Integer>fail("zero"), Validation.<String, String>fail("zero").map(constant(0)));
+    assertEquals(Validation.<String, Integer>success(0), Validation.<String, String>success("zero").map(constant(0)));
+    assertEquals(Validation.<String, Integer>fail("zero"), Validation.<String, String>fail("zero").map(constant(0)));
+    assertEquals(Validation.<String, Integer>success(0), Validation.<String, String>success("zero").map(constant(0)));
+  }
+
+  @Test
+  public void testBind() {
+    assertEquals(Validation.<String, Integer>fail("zero"), Validation.<String, String>fail("zero").bind(constant(Validation.<String, Integer>fail("zero"))));
+    assertEquals(Validation.<String, Integer>fail("zero"), Validation.<String, String>success("zero").bind(constant(Validation.<String, Integer>fail("zero"))));
+    assertEquals(Validation.<String, Integer>fail("zero"), Validation.<String, String>fail("zero").bind(constant(Validation.<String, Integer>success(0))));
+    assertEquals(Validation.<String, Integer>success(0), Validation.<String, String>success("zero").bind(constant(Validation.<String, Integer>success(0))));
+  }
 
   @Test
   public void testSequenceEitherLeft() {
@@ -55,10 +274,10 @@ public class ValidationTest {
 
   @Test
   public void testSequenceList() {
-    assertEquals(List.single(fail("zero")), sequenceList(fail("zero")));
-    assertEquals(List.nil(), sequenceList(success(List.nil())));
-    assertEquals(List.single(success("zero")), sequenceList(success(List.single("zero"))));
-    assertEquals(List.arrayList(success("zero"), success("one")), sequenceList(success(List.arrayList("zero", "one"))));
+    assertEquals(single(fail("zero")), sequenceList(fail("zero")));
+    assertEquals(nil(), sequenceList(success(nil())));
+    assertEquals(single(success("zero")), sequenceList(success(single("zero"))));
+    assertEquals(arrayList(success("zero"), success("one")), sequenceList(success(arrayList("zero", "one"))));
   }
 
   @Test
@@ -87,7 +306,7 @@ public class ValidationTest {
     assertEquals(Set.single(validationOrd(stringOrd, intOrd), fail("zero")), sequenceSet(stringOrd, intOrd, fail("zero")));
     assertEquals(Set.empty(validationOrd(stringOrd, intOrd)), sequenceSet(stringOrd, intOrd, success(Set.empty(intOrd))));
     assertEquals(Set.single(validationOrd(intOrd, stringOrd), success("zero")), sequenceSet(intOrd, stringOrd, success(Set.single(stringOrd, "zero"))));
-    assertEquals(Set.arraySet(validationOrd(intOrd, stringOrd), success("zero"), success("one")), sequenceSet(intOrd, stringOrd, Validation.success(Set.arraySet(stringOrd, "zero", "one"))));
+    assertEquals(Set.arraySet(validationOrd(intOrd, stringOrd), success("zero"), success("one")), sequenceSet(intOrd, stringOrd, success(Set.arraySet(stringOrd, "zero", "one"))));
   }
 
   @Test
@@ -141,12 +360,12 @@ public class ValidationTest {
 
   @Test
   public void testTraverseList() {
-    assertEquals(List.single(fail("zero")), fail("zero").traverseList(constant(List.nil())));
-    assertEquals(List.nil(), success("zero").traverseList(constant(List.nil())));
-    assertEquals(List.single(fail("zero")), fail("zero").traverseList(constant(List.single(0))));
-    assertEquals(List.single(success(0)), success("zero").traverseList(constant(List.single(0))));
-    assertEquals(List.single(fail("zero")), fail("zero").traverseList(constant(List.arrayList(0, 1))));
-    assertEquals(List.arrayList(success(0), success(1)), success("zero").traverseList(constant(List.arrayList(0, 1))));
+    assertEquals(single(fail("zero")), fail("zero").traverseList(constant(nil())));
+    assertEquals(nil(), success("zero").traverseList(constant(nil())));
+    assertEquals(single(fail("zero")), fail("zero").traverseList(constant(single(0))));
+    assertEquals(single(success(0)), success("zero").traverseList(constant(single(0))));
+    assertEquals(single(fail("zero")), fail("zero").traverseList(constant(arrayList(0, 1))));
+    assertEquals(arrayList(success(0), success(1)), success("zero").traverseList(constant(arrayList(0, 1))));
   }
 
   @Test
