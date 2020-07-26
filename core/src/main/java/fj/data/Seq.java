@@ -1,19 +1,14 @@
 package fj.data;
 
 import fj.*;
+import fj.data.List.Buffer;
+import fj.data.fingertrees.*;
+
+import java.util.*;
 
 import static fj.Bottom.error;
 import static fj.Monoid.intAdditionMonoid;
 import static fj.data.fingertrees.FingerTree.measured;
-
-import fj.data.List.Buffer;
-import fj.data.fingertrees.FingerTree;
-import fj.data.fingertrees.MakeTree;
-import fj.data.fingertrees.Measured;
-
-import java.util.AbstractList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Provides an immutable finite sequence, implemented as a finger tree. This structure gives O(1) access to
@@ -396,4 +391,16 @@ public final class Seq<A> implements Iterable<A> {
         return new Seq<>(ftree.map(f, Seq.elemMeasured()));
     }
 
+  /**
+   * Bind the given function across this seq.
+   *
+   * @param f   the given function
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public <B> Seq<B> bind(final F<A, Seq<B>> f) {
+    return foldRight(
+        (element, accumulator) -> f.f(element).append(accumulator),
+        empty());
+  }
 }
