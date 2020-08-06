@@ -111,6 +111,24 @@ public final class State<S, A> {
     return suspended(s -> runF.f(f.f(s)));
   }
 
+  /**
+   * Bind the given function across this state.
+   *
+   * @param f   the given function
+   * @param <B> the type of the output value
+   * @return the state
+   */
+  public <B> State<S, B> bind(F<A, State<S, B>> f) {
+    return flatMap(f);
+  }
+
+  /**
+   * Bind the given function across this state.
+   *
+   * @param f   the given function
+   * @param <B> the type of the output value
+   * @return the state
+   */
   public <B> State<S, B> flatMap(F<A, State<S, B>> f) {
     return suspended(s -> runF.f(s).bind(result -> Trampoline.pure(f.f(result._2()).run(result._1()))));
   }
