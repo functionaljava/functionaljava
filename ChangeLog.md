@@ -1,3 +1,23 @@
+4.8.2
+-----
+
+### Enhancements
+
+- Add fj.data.State.bind(F<A, State<S, B>>). See [#418](https://github.com/functionaljava/functionaljava/pull/418).
+- Add fj.data.Either.leftMap, rightMap. See [#415](https://github.com/functionaljava/functionaljava/pull/415).
+- Add fj.data.Seq.sequence*, fj.data.Seq.traverse* functions. See [#413](https://github.com/functionaljava/functionaljava/pull/413).
+- Add fj.data.List.sequence* function, fj.data.List.traverse* functions. See [#411](https://github.com/functionaljava/functionaljava/pull/411).
+- Add fj.data.Seq.bind(F<A, Seq<B\>\> f). See [#410](https://github.com/functionaljava/functionaljava/pull/410).
+- Add fj.data.Validation.sequence.*, fj.data.Validation.traverse\*. See [#405](https://github.com/functionaljava/functionaljava/pull/405).
+- Add fj.data.Option.sequence*, fj.data.Option.traverse*. See [#404](https://github.com/functionaljava/functionaljava/pull/404).
+- Add fj.test.Gen.sequence(Validation<E, Gen<A>>). See [#402](https://github.com/functionaljava/functionaljava/pull/402).
+- Add fj.data.Option.sequence(Validation<E, Option<A>>). See [#400](https://github.com/functionaljava/functionaljava/pull/400).
+- Add fj.test.Gen.streamOf(Gen<A>). See [#399](https://github.com/functionaljava/functionaljava/pull/399).
+
+## Fixes
+
+- Several fj.data.Validation.accumulate functions construct unexpected or incorrect failures. See [#409](https://github.com/functionaljava/functionaljava/pull/409).
+
 4.8.1
 -----
 
