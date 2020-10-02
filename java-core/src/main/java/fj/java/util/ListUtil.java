@@ -1,7 +1,8 @@
 package fj.java.util;
-
+//Sir, these
 import fj.F;
 import fj.F2;
+//are not working intellij
 
 import java.util.List;
 
