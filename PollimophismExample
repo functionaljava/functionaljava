@@ -1,0 +1,32 @@
+package Pollimophism;
+
+public class dynamicpol {
+	public static void main(String[] args) {
+		Cat c=new Cat();
+		Animal a = new Animal();
+		//System.out.println(a);
+		a.speak();
+	}
+
+} 
+//static poly-method overloading
+class Animal{
+	String name;
+	void speak() {
+		System.out.println("Animal is speaking");
+	}
+}
+class Cat extends Animal{
+	@Override // an annotation- java compiler 1 check krnwa oya actually eka override krnwd kiyla
+	void speak() {
+		System.out.println("cat is speaking");
+	}
+}
+class dog extends Animal{
+	int age;
+	@Override
+	void speak() {
+		System.out.println("dog is speaking");
+	}
+}
+
