@@ -5,6 +5,7 @@ import fj.P;
 import fj.P1;
 import fj.Unit;
 import fj.data.Enumerator;
+import fj.data.Java;
 import fj.data.List;
 import fj.data.Stream;
 import org.junit.Test;
@@ -49,8 +50,14 @@ public class StrategyTest {
     @Test
     public void testStrategyMergeAll() {
         final List<Integer> l = List.range(0, 100);
-        final List<P1<Integer>> p1s = mergeAll(l.map(x -> CompletableFuture.supplyAsync(() -> x)));
+        final List<P1<Integer>> p1s = mergeAll(l.map(x -> future(x)));
         assertThat(P1.sequence(p1s)._1(), is(l));
+    }
+
+    public static <A> Future<A> future(A a) {
+        FutureTask<A> ft = new FutureTask<>(() -> a);
+        new Thread(ft).start();
+        return ft;
     }
 
     @Test

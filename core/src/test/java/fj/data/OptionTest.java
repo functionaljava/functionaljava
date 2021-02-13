@@ -75,7 +75,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), 0), list.index(0).bind(Option::some));
         });
 
@@ -87,7 +87,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1)), list.index(0).bind(list.index(1), p2()));
         });
   }
@@ -98,7 +98,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2)), list.index(0).bind(list.index(1), list.index(2), p3()));
         });
 
@@ -110,7 +110,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3)), list.index(0).bind(list.index(1), list.index(2), list.index(3), p4()));
         });
 
@@ -122,7 +122,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), p5()));
         });
   }
@@ -133,7 +133,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), p6()));
         });
   }
@@ -144,7 +144,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), p7()));
         });
   }
@@ -155,7 +155,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).bind(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), P.<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>p8()));
         });
   }
@@ -166,7 +166,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1)), list.index(0).bindProduct(list.index(1)));
         });
   }
@@ -177,7 +177,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2)), list.index(0).bindProduct(list.index(1), list.index(2)));
         });
 
@@ -189,7 +189,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3)));
         });
 
@@ -201,7 +201,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4)));
         });
   }
@@ -212,7 +212,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5)));
         });
   }
@@ -223,7 +223,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6)));
         });
   }
@@ -234,7 +234,7 @@ public final class OptionTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Option<Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.forall(Option::isSome), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).bindProduct(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7)));
         });
   }

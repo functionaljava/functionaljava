@@ -35,7 +35,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(), list.index(1)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1)), list.index(0).accumulate(Semigroup.listSemigroup(), list.index(1), p2()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1)), list.index(0).accumulate(Semigroup.listSemigroup(), list.index(1), uncurryF2(p2())));
@@ -49,7 +49,7 @@ public class ValidationTest {
             accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), p3()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), uncurryF3(p3())));
@@ -64,7 +64,7 @@ public class ValidationTest {
             accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), p4()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), uncurryF4(p4())));
@@ -79,7 +79,7 @@ public class ValidationTest {
             accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), p5()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), uncurryF5(p5())));
@@ -93,7 +93,7 @@ public class ValidationTest {
             accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), p6()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), uncurryF6(p6())));
@@ -107,7 +107,7 @@ public class ValidationTest {
             accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), p7()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), uncurryF7(p7())));
@@ -121,7 +121,7 @@ public class ValidationTest {
             accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(iif(list.exists(Validation::isFail), list.filter(Validation::isFail).bind(validation -> validation.fail())), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7)));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), P.<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>p8()));
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).bind(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).accumulate(Semigroup.listSemigroup(),list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), uncurryF8(P.<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>p8())));
@@ -134,7 +134,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), 0), list.index(0).accumulate());
         });
   }
@@ -145,7 +145,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), 0), list.index(0).accumulate(identity()));
         });
 
@@ -157,7 +157,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1)), list.index(0).accumulate(list.index(1), P::p));
         });
   }
@@ -168,7 +168,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2)), list.index(0).accumulate(list.index(1), list.index(2), P::p));
         });
 
@@ -180,7 +180,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), P::p));
         });
 
@@ -192,7 +192,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), P::p));
         });
   }
@@ -203,7 +203,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), P::p));
         });
   }
@@ -214,7 +214,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), P::p));
         });
   }
@@ -225,7 +225,7 @@ public class ValidationTest {
         .foldLeft(accumulator -> list -> accumulator.isEmpty() ?
             list.map(List::single) :
             accumulator.bind(accumulatorElement -> list.map(accumulatorElement::snoc)), List.<List<Validation<List<String>, Integer>>>nil())
-        .forEach(list -> {
+        .foreachDoEffect(list -> {
           assertEquals(condition(list.forall(Validation::isSuccess), list.filter(Validation::isFail).map(validation -> validation.fail()), p(0, 1, 2, 3, 4, 5, 6, 7)), list.index(0).accumulate(list.index(1), list.index(2), list.index(3), list.index(4), list.index(5), list.index(6), list.index(7), P::p));
         });
   }
