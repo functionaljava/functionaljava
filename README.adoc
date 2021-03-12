@@ -122,3 +122,7 @@ A more complete description of the features mentioned above are:
 == License
 
 link:etc/LICENCE[The Functional Java license] uses the BSD 3 license (3-clause license) available at https://en.wikipedia.org/wiki/BSD_licenses[].
+
+== Release Notes
+
+For release notes for each version, see the directory etc/release-notes.
