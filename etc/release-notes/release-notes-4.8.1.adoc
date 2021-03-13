@@ -1,0 +1,34 @@
+
+= Release 4.8.1
+
+Released: 8 Oct 2018
+
+== Enhancements
+
+- Add Trampoline.suspend(final F0<Trampoline<A>> a).  See #367 https://github.com/functionaljava/functionaljava/pull/367.
+
+== Fixes
+
+- Fix regression in lifted semigroup sum. Fix #365, see #366 https://github.com/functionaljava/functionaljava/pull/366.
+
+== Internal
+
+- Fix compile under jdk11. Enable jdk11 travis build, see #361 https://github.com/functionaljava/functionaljava/pull/361.
+- Fix warnings, see  #369 https://github.com/functionaljava/functionaljava/pull/369.
+- Add P tests, see #360 https://github.com/functionaljava/functionaljava/pull/360.
+- Exclude consume/ from coverage, see #357 https://github.com/functionaljava/functionaljava/pull/357.
+- Add DList tests, see #356 https://github.com/functionaljava/functionaljava/pull/356
+- Add Visitor tests, see #354 https://github.com/functionaljava/functionaljava/pull/354.
+
+== Breaking Changes
+
+* None.
+
+== Documentation
+
+* None.
+
+== Contributors
+
+* Jean Baptiste Giraudeau
+* Gabor Liptak

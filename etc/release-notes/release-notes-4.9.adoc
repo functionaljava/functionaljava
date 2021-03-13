@@ -1,0 +1,42 @@
+
+= Release 4.9
+
+Released: 14 March 2021
+
+== Enhancements
+
+* Added Gen.streamOf(Gen<A>)
+* Added Option.sequence(Validation<E, Option<A>>)
+* Added Gen.sequence(Validation<E, Gen<A>>)
+* Added Validation sequence and traverse functions to support various types.  Added success and fails functions.
+* Added Option sequence and traverse functions for various types.
+* Added Seq.bind.
+* Added List sequence and traverse functions for various types.
+* Added Ord.seqOrd
+* Added Seq sequence and traverse functions for various types.
+* Added functions to Either.
+* Added State bind synonym for flatMap.
+* Added Steam sequence and traverse functions for various types.
+
+== Fixes
+
+* Fixed Validation.accumulate functions.
+
+== Internal
+
+* Support JPMS modules through 'Automatic-Module-Name'.
+
+== Breaking Changes
+
+* None.
+
+== Documentation
+
+* None.
+
+== Contributors
+
+* Jean Baptiste Giraudeau
+* Gregoire Neuville
+* Drew Taylor
+* Mark Perry

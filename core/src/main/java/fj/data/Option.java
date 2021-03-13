@@ -1,43 +1,24 @@
 package fj.data;
 
-import static fj.Bottom.error;
-import fj.F;
-import fj.F0;
-import fj.F2;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.P3;
-import fj.P4;
-import fj.P5;
-import fj.P6;
-import fj.P7;
-import fj.P8;
-import fj.Unit;
-import fj.Show;
+import fj.*;
+import fj.control.Trampoline;
+import fj.data.optic.*;
 import fj.function.Effect1;
-import fj.Equal;
-import fj.Ord;
-import fj.Hash;
-import fj.data.optic.Prism;
-import fj.data.optic.PPrism;
+
+import java.lang.Class;
+import java.util.*;
+
+import static fj.Bottom.error;
 import static fj.Function.*;
 import static fj.P.p;
-import static fj.Unit.unit;
-import static fj.data.List.cons;
-import static fj.data.List.cons_;
-import static fj.data.Validation.parseByte;
-import static fj.data.Validation.parseDouble;
-import static fj.data.Validation.parseFloat;
-import static fj.data.Validation.parseInt;
-import static fj.data.Validation.parseLong;
-import static fj.data.Validation.parseShort;
-import static fj.data.optic.Prism.prism;
-import static fj.data.optic.PPrism.pPrism;
 import static fj.Show.optionShow;
-
-import java.util.Collection;
-import java.util.Iterator;
+import static fj.Unit.unit;
+import static fj.control.Trampoline.pure;
+import static fj.data.Either.*;
+import static fj.data.List.*;
+import static fj.data.Validation.*;
+import static fj.data.optic.PPrism.pPrism;
+import static fj.data.optic.Prism.prism;
 
 /**
  * An optional value that may be none (no value) or some (a value). This type is a replacement for
@@ -372,11 +353,11 @@ public abstract class Option<A> implements Iterable<A> {
   public final <B, C> Option<P3<A,B,C>> bindProduct(final Option<B> ob, final Option<C> oc) {
     return bind(ob, oc, P.p3());
   }
-  
+
   public final <B, C, D> Option<P4<A,B,C,D>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od) {
     return bind(ob, oc, od, P.p4());
   }
-  
+
   public final <B,C,D,E> Option<P5<A,B,C,D,E>> bindProduct(final Option<B> ob, final Option<C> oc, final Option<D> od,
                                                      final Option<E> oe) {
     return bind(ob, oc, od, oe, P.p5());
@@ -411,45 +392,331 @@ public abstract class Option<A> implements Iterable<A> {
     return bind(c);
   }
 
-  public final <L, B> Either<L, Option<B>> traverseEither(F<A, Either<L, B>> f) {
-    return map(a -> f.f(a).right().map(Option::some)).orSome(Either.right(none()));
+  /**
+   * Sequence the given option and collect the output on the right side of an either.
+   *
+   * @param option the given option
+   * @param <B>    the type of the right value
+   * @param <L>    the type of the left value
+   * @return the either
+   */
+  public static final <L, B> Either<L, Option<B>> sequenceEither(final Option<Either<L, B>> option) {
+    return option.traverseEitherRight(identity());
   }
 
-  public final <B> IO<Option<B>> traverseIO(F<A, IO<B>> f) {
-    return map(a -> IOFunctions.map(f.f(a), Option::some)).orSome(IOFunctions.lazy(Option::none));
+  /**
+   * Sequence the given option and collect the output on the left side of an either.
+   *
+   * @param option the given option
+   * @param <R>    the type of the right value
+   * @param <B>    the type of the left value
+   * @return the either
+   */
+  public static final <R, B> Either<Option<B>, R> sequenceEitherLeft(final Option<Either<B, R>> option) {
+    return option.traverseEitherLeft(identity());
   }
 
-  public final <B> List<Option<B>> traverseList(F<A, List<B>> f) {
-    return map(a -> f.f(a).map(Option::some)).orSome(List.list());
+  /**
+   * Sequence the given option and collect the output on the right side of an either.
+   *
+   * @param option the given option
+   * @param <B>    the type of the right value
+   * @param <L>    the type of the left value
+   * @return the either
+   */
+  public static final <L, B> Either<L, Option<B>> sequenceEitherRight(final Option<Either<L, B>> option) {
+    return option.traverseEitherRight(identity());
   }
 
-  public final <B> Option<Option<B>> traverseOption(F<A, Option<B>> f) {
-    return map(f);
+  /**
+   * Sequence the given option and collect the output as a function.
+   *
+   * @param option the given option
+   * @param <C>    the type of the input value
+   * @param <B>    the type of the output value
+   * @return the either
+   */
+  public static final <C, B> F<C, Option<B>> sequenceF(final Option<F<C, B>> option) {
+    return option.traverseF(identity());
   }
 
-  public final <B> Stream<Option<B>> traverseStream(F<A, Stream<B>> f) {
-    return map(a -> f.f(a).map(Option::some)).orSome(Stream.nil());
+  /**
+   * Sequence the given option and collect the output as an IO.
+   *
+   * @param option the given option
+   * @param <B>    the type of the IO value
+   * @return the IO
+   */
+  public static final <B> IO<Option<B>> sequenceIO(final Option<IO<B>> option) {
+    return option.traverseIO(identity());
   }
 
-  public final <B> P1<Option<B>> traverseP1(F<A, P1<B>> f) {
-    return map(a -> f.f(a).map(Option::some)).orSome(p(none()));
+  /**
+   * Sequence the given option and collect the output as an list.
+   *
+   * @param option the given option
+   * @param <B>    the type of the list value
+   * @return the list
+   */
+  public static final <B> List<Option<B>> sequenceList(final Option<List<B>> option) {
+    return option.traverseList(identity());
   }
 
-  public final <B> Seq<Option<B>> traverseSeq(F<A, Seq<B>> f) {
-    return map(a -> f.f(a).map(Option::some)).orSome(Seq.empty());
+  /**
+   * Sequence the given option and collect the output as an option.
+   *
+   * @param option the given option
+   * @param <B>    the type of the option value
+   * @return the option
+   */
+  public static final <B> Option<Option<B>> sequenceOption(final Option<Option<B>> option) {
+    return option.traverseOption(identity());
   }
 
-  public final <B> Set<Option<B>> traverseSet(Ord<B> ord, F<A, Set<B>> f) {
-    Ord<Option<B>> optOrd = Ord.optionOrd(ord);
-    return map(a -> f.f(a).map(optOrd, Option::some)).orSome(Set.empty(optOrd));
+  /**
+   * Sequence the given option and collect the output as a P1.
+   *
+   * @param option the given option
+   * @param <B>    the type of the P1 value
+   * @return the P1
+   */
+  public static final <B> P1<Option<B>> sequenceP1(final Option<P1<B>> option) {
+    return option.traverseP1(identity());
+  }
+
+  /**
+   * Sequence the given option and collect the output as a seq.
+   *
+   * @param option the given option
+   * @param <B>    the type of the seq value
+   * @return the seq
+   */
+  public static final <B> Seq<Option<B>> sequenceSeq(final Option<Seq<B>> option) {
+    return option.traverseSeq(identity());
+  }
+
+  /**
+   * Sequence the given option and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord    the given ord
+   * @param option the given option
+   * @param <B>    the type of the set value
+   * @return the either
+   */
+  public static final <B> Set<Option<B>> sequenceSet(final Ord<B> ord, final Option<Set<B>> option) {
+    return option.traverseSet(ord, identity());
+  }
+
+  /**
+   * Sequence the given option and collect the output as a stream.
+   *
+   * @param option the given option
+   * @param <B>    the type of the stream value
+   * @return the stream
+   */
+  public static final <B> Stream<Option<B>> sequenceStream(final Option<Stream<B>> option) {
+    return option.traverseStream(identity());
+  }
+
+  /**
+   * Sequence the given option and collect the output as a trampoline.
+   *
+   * @param option the given trampoline
+   * @param <B>    the type of the stream value
+   * @return the stream
+   */
+  public static final <B> Trampoline<Option<B>> sequenceTrampoline(final Option<Trampoline<B>> option) {
+    return option.traverseTrampoline(identity());
+  }
+
+  /**
+   * Sequence the given option and collect the output as a validation.
+   *
+   * @param option the given option
+   * @param <E>    the type of the failure value
+   * @param <B>    the type of the success value
+   * @return the validation
+   */
+  public static final <E, B> Validation<E, Option<B>> sequenceValidation(final Option<Validation<E, B>> option) {
+    return option.traverseValidation(identity());
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public final <L, B> Either<L, Option<B>> traverseEither(final F<A, Either<L, B>> f) {
+    return traverseEitherRight(f);
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output on the left side of an either.
+   *
+   * @param f   the given function
+   * @param <R> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public final <R, B> Either<Option<B>, R> traverseEitherLeft(final F<A, Either<B, R>> f) {
+    return option(
+        left(none()),
+        a -> f.f(a).left().map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public final <L, B> Either<L, Option<B>> traverseEitherRight(final F<A, Either<L, B>> f) {
+    return option(
+        right(none()),
+        a -> f.f(a).right().map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a function.
+   *
+   * @param f   the given function
+   * @param <C> the type of the input value
+   * @param <B> the type of the output value
+   * @return the function
+   */
+  public final <C, B> F<C, Option<B>> traverseF(final F<A, F<C, B>> f) {
+    return option(
+        constant(none()),
+        a -> andThen(f.f(a), Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as an IO.
+   *
+   * @param f   the given function
+   * @param <B> the type of the IO value
+   * @return the IO
+   */
+  public final <B> IO<Option<B>> traverseIO(final F<A, IO<B>> f) {
+    return option(
+        IOFunctions.lazy(Option::none),
+        a -> IOFunctions.map(f.f(a), Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a list.
+   *
+   * @param f   the given function
+   * @param <B> the type of the list value
+   * @return the list
+   */
+  public final <B> List<Option<B>> traverseList(final F<A, List<B>> f) {
+    return option(
+        List.single(none()),
+        a -> f.f(a).map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as an option.
+   *
+   * @param f   the given function
+   * @param <B> the type of the option value
+   * @return the option
+   */
+  public final <B> Option<Option<B>> traverseOption(final F<A, Option<B>> f) {
+    return option(
+        some(none()),
+        a -> f.f(a).map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a P1.
+   *
+   * @param f   the given function
+   * @param <B> the type of the P1 value
+   * @return the P1
+   */
+  public final <B> P1<Option<B>> traverseP1(final F<A, P1<B>> f) {
+    return option(
+        p(none()),
+        (F<A, P1<Option<B>>>) a -> f.f(a).map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output a seq.
+   *
+   * @param f   the given function
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public final <B> Seq<Option<B>> traverseSeq(final F<A, Seq<B>> f) {
+    return option(
+        Seq.single(none()),
+        a -> f.f(a).map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord the given ord
+   * @param f   the given function
+   * @param <B> the type of the set value
+   * @return the set
+   */
+  public final <B> Set<Option<B>> traverseSet(final Ord<B> ord, final F<A, Set<B>> f) {
+    final Ord<Option<B>> ordOption = Ord.optionOrd(ord);
+    return option(
+        Set.single(ordOption, none()),
+        a -> f.f(a).map(ordOption, Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a stream.
+   *
+   * @param f   the given function
+   * @param <B> the type of the stream value
+   * @return the stream
+   */
+  public final <B> Stream<Option<B>> traverseStream(final F<A, Stream<B>> f) {
+    return option(
+        Stream.single(none()),
+        a -> f.f(a).map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a trampoline.
+   *
+   * @param f   the given function
+   * @param <B> the type of the trampoline value
+   * @return the trampoline
+   */
+  public final <B> Trampoline<Option<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
+    return option(
+        pure(none()),
+        a -> f.f(a).map(Option::some));
+  }
+
+  /**
+   * Traverse this option with the given function and collect the output as a validation.
+   *
+   * @param f   the given function
+   * @param <E> the type of the failure value
+   * @param <B> the type of the success value
+   * @return the validation
+   */
+  public final <E, B> Validation<E, Option<B>> traverseValidation(final F<A, Validation<E, B>> f) {
+    return option(
+        success(none()),
+        a -> f.f(a).map(Option::some));
   }
 
   public final <B> F2<Ord<B>, F<A, Set<B>>, Set<Option<B>>> traverseSet() {
     return this::traverseSet;
-  }
-
-  public final <E, B> Validation<E, Option<B>> traverseValidation(F<A, Validation<E, B>> f) {
-    return map(a -> f.f(a).map(Option::some)).orSome(Validation.success(none()));
   }
 
   /**
@@ -712,7 +979,7 @@ public abstract class Option<A> implements Iterable<A> {
   }
 
   /**
-   * Sequence through the option monad.
+   * Sequence a list through the option monad.
    *
    * @param a The list of option to sequence.
    * @return The option of list after sequencing.
@@ -721,6 +988,16 @@ public abstract class Option<A> implements Iterable<A> {
     return a.isEmpty() ?
            some(List.nil()) :
            a.head().bind(aa -> sequence(a.tail()).map(cons_(aa)));
+  }
+
+  /**
+   * Sequence a validation through the option monad.
+   *
+   * @param a The validation of option to sequence.
+   * @return The option of validation after sequencing.
+   */
+  public static <E, A> Option<Validation<E, A>> sequence(final Validation<E, Option<A>> a) {
+    return a.traverseOption(identity());
   }
 
   /**

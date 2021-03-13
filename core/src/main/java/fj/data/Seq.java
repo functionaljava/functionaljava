@@ -1,19 +1,20 @@
 package fj.data;
 
 import fj.*;
+import fj.control.Trampoline;
+import fj.data.List.Buffer;
+import fj.data.fingertrees.*;
+
+import java.util.*;
 
 import static fj.Bottom.error;
+import static fj.Function.*;
 import static fj.Monoid.intAdditionMonoid;
+import static fj.P.p;
+import static fj.data.Either.*;
+import static fj.data.Option.some;
+import static fj.data.Validation.success;
 import static fj.data.fingertrees.FingerTree.measured;
-
-import fj.data.List.Buffer;
-import fj.data.fingertrees.FingerTree;
-import fj.data.fingertrees.MakeTree;
-import fj.data.fingertrees.Measured;
-
-import java.util.AbstractList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Provides an immutable finite sequence, implemented as a finger tree. This structure gives O(1) access to
@@ -396,4 +397,371 @@ public final class Seq<A> implements Iterable<A> {
         return new Seq<>(ftree.map(f, Seq.elemMeasured()));
     }
 
+  /**
+   * Bind the given function across this seq.
+   *
+   * @param f   the given function
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public <B> Seq<B> bind(final F<A, Seq<B>> f) {
+    return foldRight(
+        (element, accumulator) -> f.f(element).append(accumulator),
+        empty());
+  }
+
+  /**
+   * Sequence the given seq and collect the output on the right side of an either.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the right value
+   * @param <L> the type of the left value
+   * @return the either
+   */
+  public static <L, B> Either<L, Seq<B>> sequenceEither(final Seq<Either<L, B>> seq) {
+    return seq.traverseEither(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output on the left side of an either.
+   *
+   * @param seq the given seq
+   * @param <R> the type of the right value
+   * @param <B> the type of the left value
+   * @return the either
+   */
+  public static <R, B> Either<Seq<B>, R> sequenceEitherLeft(final Seq<Either<B, R>> seq) {
+    return seq.traverseEitherLeft(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output on the right side of an either.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the right value
+   * @param <L> the type of the left value
+   * @return the either
+   */
+  public static <L, B> Either<L, Seq<B>> sequenceEitherRight(final Seq<Either<L, B>> seq) {
+    return seq.traverseEitherRight(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a function.
+   *
+   * @param seq the given seq
+   * @param <C> the type of the input value
+   * @param <B> the type of the output value
+   * @return the either
+   */
+  public static <C, B> F<C, Seq<B>> sequenceF(final Seq<F<C, B>> seq) {
+    return seq.traverseF(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as an IO.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the IO value
+   * @return the IO
+   */
+  public static <B> IO<Seq<B>> sequenceIO(final Seq<IO<B>> seq) {
+    return seq.traverseIO(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a list.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the seq value
+   * @return the list
+   */
+  public static <B> List<Seq<B>> sequenceList(final Seq<List<B>> seq) {
+    return seq.traverseList(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as an seq.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public static <B> Option<Seq<B>> sequenceOption(final Seq<Option<B>> seq) {
+    return seq.traverseOption(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a P1.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the P1 value
+   * @return the P1
+   */
+  public static <B> P1<Seq<B>> sequenceP1(final Seq<P1<B>> seq) {
+    return seq.traverseP1(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a seq.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public static <B> Seq<Seq<B>> sequenceSeq(final Seq<Seq<B>> seq) {
+    return seq.traverseSeq(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord the given ord
+   * @param seq the given seq
+   * @param <B> the type of the set value
+   * @return the either
+   */
+  public static <B> Set<Seq<B>> sequenceSet(final Ord<B> ord, final Seq<Set<B>> seq) {
+    return seq.traverseSet(ord, identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a stream.
+   *
+   * @param seq the given seq
+   * @param <B> the type of the stream value
+   * @return the stream
+   */
+  public static <B> Stream<Seq<B>> sequenceStream(final Seq<Stream<B>> seq) {
+    return seq.traverseStream(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a trampoline.
+   *
+   * @param seq the given trampoline
+   * @param <B> the type of the stream value
+   * @return the stream
+   */
+  public static <B> Trampoline<Seq<B>> sequenceTrampoline(final Seq<Trampoline<B>> seq) {
+    return seq.traverseTrampoline(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a validation.
+   *
+   * @param seq the given seq
+   * @param <E> the type of the failure value
+   * @param <B> the type of the success value
+   * @return the validation
+   */
+  public static <E, B> Validation<E, Seq<B>> sequenceValidation(final Seq<Validation<E, B>> seq) {
+    return seq.traverseValidation(identity());
+  }
+
+  /**
+   * Sequence the given seq and collect the output as a validation; use the given semigroup to reduce the errors.
+   *
+   * @param semigroup the given semigroup
+   * @param seq       the given seq
+   * @param <E>       the type of the failure value
+   * @param <B>       the type of the success value
+   * @return the validation
+   */
+  public static <E, B> Validation<E, Seq<B>> sequenceValidation(final Semigroup<E> semigroup, final Seq<Validation<E, B>> seq) {
+    return seq.traverseValidation(semigroup, identity());
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <B, L> Either<L, Seq<B>> traverseEither(final F<A, Either<L, B>> f) {
+    return traverseEitherRight(f);
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output on the left side of an either.
+   *
+   * @param f   the given function
+   * @param <R> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <R, B> Either<Seq<B>, R> traverseEitherLeft(final F<A, Either<B, R>> f) {
+    return foldRight(
+        (element, either) -> f.f(element).left().bind(elementInner -> either.left().map(seq -> seq.cons(elementInner))),
+        left(empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <L, B> Either<L, Seq<B>> traverseEitherRight(final F<A, Either<L, B>> f) {
+    return foldRight(
+        (element, either) -> f.f(element).right().bind(elementInner -> either.right().map(seq -> seq.cons(elementInner))),
+        right(empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a function.
+   *
+   * @param f   the given function
+   * @param <C> the type of the input value
+   * @param <B> the type of the output value
+   * @return the function
+   */
+  public <C, B> F<C, Seq<B>> traverseF(final F<A, F<C, B>> f) {
+    return foldRight(
+        (element, fInner) -> Function.bind(f.f(element), elementInner -> andThen(fInner, seq -> seq.cons(elementInner))),
+        constant(empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as an IO.
+   *
+   * @param f   the given function
+   * @param <B> the type of the IO value
+   * @return the IO
+   */
+  public <B> IO<Seq<B>> traverseIO(final F<A, IO<B>> f) {
+    return foldRight(
+        (element, io) -> IOFunctions.bind(f.f(element), elementInner -> IOFunctions.map(io, seq -> seq.cons(elementInner))),
+        IOFunctions.unit(empty())
+    );
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a list.
+   *
+   * @param f   the given function
+   * @param <B> the type of the list value
+   * @return the list
+   */
+  public <B> List<Seq<B>> traverseList(final F<A, List<B>> f) {
+    return foldRight(
+        (element, list) -> f.f(element).bind(elementInner -> list.map(seq -> seq.cons(elementInner))),
+        List.single(empty()));
+  }
+
+  /**
+   * Traverses through the Seq with the given function
+   *
+   * @param f The function that produces Option value
+   * @return none if applying f returns none to any element of the seq or f mapped seq in some .
+   */
+  public <B> Option<Seq<B>> traverseOption(final F<A, Option<B>> f) {
+    return foldRight(
+        (element, option) -> f.f(element).bind(elementInner -> option.map(seq -> seq.cons(elementInner))),
+        some(empty())
+    );
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a p1.
+   *
+   * @param f   the given function
+   * @param <B> the type of the p1 value
+   * @return the p1
+   */
+  public <B> P1<Seq<B>> traverseP1(final F<A, P1<B>> f) {
+    return foldRight(
+        (element, p1) -> f.f(element).bind(elementInner -> p1.map(seq -> seq.cons(elementInner))),
+        p(empty())
+    );
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a seq.
+   *
+   * @param f   the given function
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public <B> Seq<Seq<B>> traverseSeq(final F<A, Seq<B>> f) {
+    return foldRight(
+        (element, seq) -> f.f(element).bind(elementInner -> seq.map(seqInner -> seqInner.cons(elementInner))),
+        single(empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord the given ord
+   * @param f   the given function
+   * @param <B> the type of the set value
+   * @return the set
+   */
+  public <B> Set<Seq<B>> traverseSet(final Ord<B> ord, final F<A, Set<B>> f) {
+    final Ord<Seq<B>> seqOrd = Ord.seqOrd(ord);
+    return foldRight(
+        (element, set) -> f.f(element).bind(seqOrd, elementInner -> set.map(seqOrd, seq -> seq.cons(elementInner))),
+        Set.single(seqOrd, empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a stream.
+   *
+   * @param f   the given function
+   * @param <B> the type of the stream value
+   * @return the stream
+   */
+  public <B> Stream<Seq<B>> traverseStream(final F<A, Stream<B>> f) {
+    return foldRight(
+        (element, stream) -> f.f(element).bind(elementInner -> stream.map(seq -> seq.cons(elementInner))),
+        Stream.single(empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a trampoline.
+   *
+   * @param f   the given function
+   * @param <B> the type of the trampoline value
+   * @return the trampoline
+   */
+  public <B> Trampoline<Seq<B>> traverseTrampoline(final F<A, Trampoline<B>> f) {
+    return foldRight(
+        (element, trampoline) -> f.f(element).bind(elementInner -> trampoline.map(seq -> seq.cons(elementInner))),
+        Trampoline.pure(empty()));
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a validation.
+   *
+   * @param f   the given function
+   * @param <E> the type of the failure value
+   * @param <B> the type of the success value
+   * @return the validation
+   */
+  public <E, B> Validation<E, Seq<B>> traverseValidation(final F<A, Validation<E, B>> f) {
+    return foldRight(
+        (element, validation) -> f.f(element).bind(elementInner -> validation.map(seq -> seq.cons(elementInner))),
+        success(empty())
+    );
+  }
+
+  /**
+   * Traverse this seq with the given function and collect the output as a validation; use the given semigroup to reduce the errors.
+   *
+   * @param semigroup the given semigroup
+   * @param f         the given function
+   * @param <E>       the type of the failure value
+   * @param <B>       the type of the success value
+   * @return the validation
+   */
+  public <E, B> Validation<E, Seq<B>> traverseValidation(final Semigroup<E> semigroup, final F<A, Validation<E, B>> f) {
+    return foldRight(
+        (element, validation) -> f.f(element).map(Seq::single).accumulate(semigroup, validation, Seq::append),
+        success(empty())
+    );
+  }
 }

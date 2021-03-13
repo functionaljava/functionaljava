@@ -4,6 +4,7 @@ import fj.Equal;
 import fj.F0;
 import fj.F3;
 import fj.Hash;
+import fj.Semigroup;
 import fj.Show;
 import fj.F;
 import fj.F2;
@@ -14,6 +15,7 @@ import fj.P;
 import fj.P1;
 import fj.P2;
 import fj.Unit;
+import fj.control.Trampoline;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.Ordering;
@@ -1095,27 +1097,6 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
-   * Traversable instance of Stream for IO.
-   *
-   * @return traversed value
-   */
-  public final <B> IO<Stream<B>> traverseIO(F<A, IO<B>> f) {
-    return this.foldRight1((a, acc) ->
-            IOFunctions.bind(acc, (Stream<B> bs) ->
-                    IOFunctions.map(f.f(a), bs::cons)), IOFunctions.unit(Stream.nil()));
-
-  }
-
-  /**
-   * Traversable instance of Stream for Option.
-   *
-   * @return traversed value
-   */
-  public final <B> Option<Stream<B>> traverseOption(F<A, Option<B>> f) {
-    return this.foldRight1((a, acc) -> acc.bind(bs -> f.f(a).map(bs::cons)), some(Stream.nil()));
-  }
-
-  /**
    * Removes elements from the head of this stream that do not match the given predicate function
    * until an element is found that does match or the stream is exhausted.
    *
@@ -1668,5 +1649,414 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public static <A, B> F<F<A, F<P1<B>, B>>, F<B, F<Stream<A>, B>>> foldRight() {
     return curry((f, b, as) -> as.foldRight(f, b));
+  }
+
+  /**
+   * Sequence the given stream and collect the output on the right side of an either.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the right value
+   * @param <L>    the type of the left value
+   * @return the either
+   */
+  public static <L, B> Either<L, Stream<B>> sequenceEither(
+      final Stream<Either<L, B>> stream) {
+    return stream.traverseEither(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output on the left side of an either.
+   *
+   * @param stream the given stream
+   * @param <R>    the type of the right value
+   * @param <B>    the type of the left value
+   * @return the either
+   */
+  public static <R, B> Either<Stream<B>, R> sequenceEitherLeft(
+      final Stream<Either<B, R>> stream) {
+    return stream.traverseEitherLeft(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output on the right side of an either.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the right value
+   * @param <L>    the type of the left value
+   * @return the either
+   */
+  public static <L, B> Either<L, Stream<B>> sequenceEitherRight(
+      final Stream<Either<L, B>> stream) {
+    return stream.traverseEitherRight(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a function.
+   *
+   * @param stream the given stream
+   * @param <C>    the type of the input value
+   * @param <B>    the type of the output value
+   * @return the either
+   */
+  public static <C, B> F<C, Stream<B>> sequenceF(
+      final Stream<F<C, B>> stream) {
+    return stream.traverseF(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as an IO.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the IO value
+   * @return the IO
+   */
+  public static <B> IO<Stream<B>> sequenceIO(
+      final Stream<IO<B>> stream) {
+    return stream.traverseIO(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a list.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the list value
+   * @return the list
+   */
+  public static <B> List<Stream<B>> sequenceList(
+      final Stream<List<B>> stream) {
+    return stream.traverseList(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as an stream.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the option value
+   * @return the stream
+   */
+  public static <B> Option<Stream<B>> sequenceOption(
+      final Stream<Option<B>> stream) {
+    return stream.traverseOption(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a P1.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the P1 value
+   * @return the P1
+   */
+  public static <B> P1<Stream<B>> sequenceP1(
+      final Stream<P1<B>> stream) {
+    return stream.traverseP1(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a seq.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the stream value
+   * @return the seq
+   */
+  public static <B> Seq<Stream<B>> sequenceSeq(
+      final Stream<Seq<B>> stream) {
+    return stream.traverseSeq(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord    the given ord
+   * @param stream the given stream
+   * @param <B>    the type of the set value
+   * @return the either
+   */
+  public static <B> Set<Stream<B>> sequenceSet(
+      final Ord<B> ord,
+      final Stream<Set<B>> stream) {
+    return stream.traverseSet(ord, identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a stream.
+   *
+   * @param stream the given stream
+   * @param <B>    the type of the stream value
+   * @return the stream
+   */
+  public static <B> Stream<Stream<B>> sequenceStream(
+      final Stream<Stream<B>> stream) {
+    return stream.traverseStream(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a trampoline.
+   *
+   * @param stream the given trampoline
+   * @param <B>    the type of the stream value
+   * @return the stream
+   */
+  public static <B> Trampoline<Stream<B>> sequenceTrampoline(
+      final Stream<Trampoline<B>> stream) {
+    return stream.traverseTrampoline(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a validation.
+   *
+   * @param stream the given stream
+   * @param <E>    the type of the failure value
+   * @param <B>    the type of the success value
+   * @return the validation
+   */
+  public static <E, B> Validation<E, Stream<B>> sequenceValidation(
+      final Stream<Validation<E, B>> stream) {
+    return stream.traverseValidation(identity());
+  }
+
+  /**
+   * Sequence the given stream and collect the output as a validation; use the given semigroup to reduce the errors.
+   *
+   * @param semigroup the given semigroup
+   * @param stream    the given stream
+   * @param <E>       the type of the failure value
+   * @param <B>       the type of the success value
+   * @return the validation
+   */
+  public static <E, B> Validation<E, Stream<B>> sequenceValidation(
+      final Semigroup<E> semigroup,
+      final Stream<Validation<E, B>> stream) {
+    return stream.traverseValidation(semigroup, identity());
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <B, L> Either<L, Stream<B>> traverseEither(
+      final F<A, Either<L, B>> f) {
+    return traverseEitherRight(f);
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output on the left side of an either.
+   *
+   * @param f   the given function
+   * @param <R> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <R, B> Either<Stream<B>, R> traverseEitherLeft(
+      final F<A, Either<B, R>> f) {
+    return foldRight1(
+        (
+            element,
+            either) -> f.f(element).left().bind(elementInner -> either.left().map(stream -> stream.cons(elementInner))),
+        Either.left(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <L, B> Either<L, Stream<B>> traverseEitherRight(
+      final F<A, Either<L, B>> f) {
+    return foldRight1(
+        (
+            element,
+            either) -> f.f(element).right().bind(elementInner -> either.right().map(stream -> stream.cons(elementInner))),
+        Either.right(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a function.
+   *
+   * @param f   the given function
+   * @param <C> the type of the input value
+   * @param <B> the type of the output value
+   * @return the function
+   */
+  public <C, B> F<C, Stream<B>> traverseF(
+      final F<A, F<C, B>> f) {
+    return foldRight1(
+        (
+            element,
+            fInner) -> Function.bind(f.f(element), elementInner -> andThen(fInner, stream -> stream.cons(elementInner))),
+        Function.constant(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as an IO.
+   *
+   * @param f   the given function
+   * @param <B> the type of the IO value
+   * @return the IO
+   */
+  public <B> IO<Stream<B>> traverseIO(
+      final F<A, IO<B>> f) {
+    return foldRight1(
+        (
+            element,
+            io) -> IOFunctions.bind(f.f(element), elementInner -> IOFunctions.map(io, stream -> stream.cons(elementInner))),
+        IOFunctions.unit(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a list.
+   *
+   * @param f   the given function
+   * @param <B> the type of the list value
+   * @return the list
+   */
+  public <B> List<Stream<B>> traverseList(
+      final F<A, List<B>> f) {
+    return foldRight1(
+        (
+            element,
+            list) -> f.f(element).bind(elementInner -> list.map(stream -> stream.cons(elementInner))),
+        List.single(nil()));
+  }
+
+  /**
+   * Traverses through the Seq with the given function
+   *
+   * @param f The function that produces Option value
+   * @return none if applying f returns none to any element of the seq or f mapped seq in some .
+   */
+  public <B> Option<Stream<B>> traverseOption(
+      final F<A, Option<B>> f) {
+    return foldRight1(
+        (
+            element,
+            option) -> f.f(element).bind(elementInner -> option.map(stream -> stream.cons(elementInner))),
+        Option.some(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a p1.
+   *
+   * @param f   the given function
+   * @param <B> the type of the p1 value
+   * @return the p1
+   */
+  public <B> P1<Stream<B>> traverseP1(
+      final F<A, P1<B>> f) {
+    return foldRight1(
+        (
+            element,
+            p1) -> f.f(element).bind(elementInner -> p1.map(stream -> stream.cons(elementInner))),
+        P.p(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a seq.
+   *
+   * @param f   the given function
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public <B> Seq<Stream<B>> traverseSeq(
+      final F<A, Seq<B>> f) {
+    return foldRight1(
+        (
+            element,
+            seq) -> f.f(element).bind(elementInner -> seq.map(stream -> stream.cons(elementInner))),
+        Seq.single(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord the given ord
+   * @param f   the given function
+   * @param <B> the type of the set value
+   * @return the set
+   */
+  public <B> Set<Stream<B>> traverseSet(
+      final Ord<B> ord,
+      final F<A, Set<B>> f) {
+    final Ord<Stream<B>> seqOrd = Ord.streamOrd(ord);
+    return foldRight1(
+        (
+            element,
+            set) -> f.f(element).bind(seqOrd, elementInner -> set.map(seqOrd, seq -> seq.cons(elementInner))),
+        Set.single(seqOrd, nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a stream.
+   *
+   * @param f   the given function
+   * @param <B> the type of the stream value
+   * @return the stream
+   */
+  public <B> Stream<Stream<B>> traverseStream(
+      final F<A, Stream<B>> f) {
+    return foldRight1(
+        (
+            element,
+            stream) -> f.f(element).bind(elementInner -> stream.map(seq -> seq.cons(elementInner))),
+        Stream.single(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a trampoline.
+   *
+   * @param f   the given function
+   * @param <B> the type of the trampoline value
+   * @return the trampoline
+   */
+  public <B> Trampoline<Stream<B>> traverseTrampoline(
+      final F<A, Trampoline<B>> f) {
+    return foldRight1(
+        (
+            element,
+            trampoline) -> f.f(element).bind(elementInner -> trampoline.map(seq -> seq.cons(elementInner))),
+        Trampoline.pure(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a validation.
+   *
+   * @param f   the given function
+   * @param <E> the type of the failure value
+   * @param <B> the type of the success value
+   * @return the validation
+   */
+  public final <E, B> Validation<E, Stream<B>> traverseValidation(
+      final F<A, Validation<E, B>> f) {
+    return foldRight1(
+        (
+            element,
+            validation) -> f.f(element).bind(elementInner -> validation.map(stream -> stream.cons(elementInner))),
+        Validation.success(nil()));
+  }
+
+  /**
+   * Traverse this stream with the given function and collect the output as a validation; use the given semigroup to
+   * reduce the errors.
+   *
+   * @param semigroup the given semigroup
+   * @param f         the given function
+   * @param <E>       the type of the failure value
+   * @param <B>       the type of the success value
+   * @return the validation
+   */
+  public final <E, B> Validation<E, Stream<B>> traverseValidation(
+      final Semigroup<E> semigroup,
+      final F<A, Validation<E, B>> f) {
+    return foldRight1(
+        (
+            element,
+            validation) -> f.f(element).map(Stream::single).accumulate(semigroup, validation, (stream1, stream2) -> stream1.append(stream2)),
+        Validation.success(nil()));
   }
 }

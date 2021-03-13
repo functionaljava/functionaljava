@@ -1,23 +1,11 @@
 package fj;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.List;
-import fj.data.Natural;
-import fj.data.NonEmptyList;
-import fj.data.Option;
-import fj.data.Set;
-import fj.data.Stream;
-import fj.data.Validation;
+import fj.data.*;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.*;
 import java.util.Comparator;
 
-import static fj.Function.apply;
-import static fj.Function.compose;
-import static fj.Function.curry;
-import static fj.Semigroup.semigroup;
+import static fj.Function.*;
 import static fj.Semigroup.semigroupDef;
 
 /**
@@ -524,6 +512,37 @@ public final class Ord<A> {
 
       while (x1.isNotEmpty() && x2.isNotEmpty()) {
         final Ordering o = oa.compare(x1.head(), x2.head());
+        if (o == Ordering.LT || o == Ordering.GT) {
+          return o;
+        }
+        x1 = x1.tail();
+        x2 = x2.tail();
+      }
+
+      if (x1.isEmpty() && x2.isEmpty()) {
+        return Ordering.EQ;
+      } else if (x1.isEmpty()) {
+        return Ordering.LT;
+      } else {
+        return Ordering.GT;
+      }
+    });
+  }
+
+  /**
+   * Return a seq ord using the given value ord.
+   *
+   * @param ord the given value ord
+   * @param <A> the type of the seq value
+   * @return the seq ord
+   */
+  public static <A> Ord<Seq<A>> seqOrd(final Ord<A> ord) {
+    return ordDef((l1, l2) -> {
+      Seq<A> x1 = l1;
+      Seq<A> x2 = l2;
+
+      while (x1.isNotEmpty() && x2.isNotEmpty()) {
+        final Ordering o = ord.compare(x1.head(), x2.head());
         if (o == Ordering.LT || o == Ordering.GT) {
           return o;
         }

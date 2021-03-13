@@ -73,7 +73,7 @@ public class IOFunctionsTest {
     System.setOut(new PrintStream(outContent));
     stream.traverseIO(IOFunctions::stdoutPrint).run();
     System.setOut(originalOut);
-    assertThat(outContent.toString(), is("foobar3bar2foo1"));
+    assertThat(outContent.toString(), is("foo1bar2foobar3"));
   }
 
   @Test

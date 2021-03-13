@@ -1,16 +1,29 @@
 package fj.test;
 
+import fj.Equal;
 import fj.data.List;
+import fj.data.NonEmptyList;
+import fj.data.Option;
+import fj.data.Stream;
+import fj.data.Validation;
 import fj.function.Effect1;
 import org.junit.Test;
 
 import static fj.Ord.charOrd;
 import static fj.data.List.list;
 import static fj.data.List.range;
-import static fj.test.Gen.selectionOf;
+import static fj.data.NonEmptyList.nel;
+import static fj.data.Option.somes;
+import static fj.data.Validation.fail;
+import static fj.data.Validation.success;
 import static fj.test.Gen.combinationOf;
-import static fj.test.Gen.wordOf;
+import static fj.test.Gen.listOf;
 import static fj.test.Gen.permutationOf;
+import static fj.test.Gen.pickOne;
+import static fj.test.Gen.selectionOf;
+import static fj.test.Gen.sequence;
+import static fj.test.Gen.streamOf;
+import static fj.test.Gen.wordOf;
 import static fj.test.Rand.standard;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -173,6 +186,24 @@ public final class GenTest {
       assertEquals(4, actual.length());
       assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
     });
+  }
+
+  @Test
+  public void testStreamOf() {
+    final Gen<Stream<Character>> instance = streamOf(pickOne(AS));
+    testPick(100, instance.map(stream -> stream.take(4).toList()), actual -> {
+      assertEquals(4, actual.length());
+      assertTrue(actual.forall(actualA -> AS.exists(a -> a.equals(actualA))));
+    });
+  }
+
+  @Test
+  public void testSequenceValidation() {
+    final Gen<List<Validation<NonEmptyList<Exception>, Character>>> success = listOf(sequence(success(pickOne(AS))), 4);
+    testPick(100, success, list -> assertEquals(list.length(),somes(list.map(v -> Option.sequence(v.map(c -> AS.elementIndex(Equal.anyEqual(), c))))).length()));
+
+    final Gen<List<Validation<NonEmptyList<Exception>, Gen<Character>>>> failure = listOf(sequence(fail(nel(new Exception()))), 4);
+    testPick(100, failure, list -> assertTrue(list.forall(a -> a.isFail())));
   }
 
   private static <A> void testPick(int n, Gen<List<A>> instance, Effect1<List<A>> test) {
