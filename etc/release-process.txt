@@ -76,3 +76,20 @@ signing.keyId=XXXXXXXX
 signing.password=mypassword
 signing.secretKeyRingFile=path/to/secring.gpg
 
+Upload your key
+
+C:\repos\functionaljava>gpg --list-key
+C:/Users/maper/AppData/Roaming/gnupg/pubring.kbx
+------------------------------------------------
+pub   rsa3072 2021-02-12 [SC] [expires: 2023-02-12]
+      E86A4EC34F25A9CF6118582A7985AAE03F41B2F9
+uid           [ultimate] Mark Perry <maperry78@yahoo.com.au>
+sub   rsa3072 2021-02-12 [E] [expires: 2023-02-12]
+
+
+C:\repos\functionaljava>gpg --keyserver hkp://keyserver.ubuntu.com --send-keys E86A4EC34F25A9CF6118582A7985AAE03F41B2F9
+gpg: sending key 7985AAE03F41B2F9 to hkp://keyserver.ubuntu.com
+
+gradle upload (takes about 3 mins)
+
+
