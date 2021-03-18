@@ -1,14 +1,12 @@
 package fj.data;
 
 import fj.*;
-import fj.function.Effect1;
+import fj.control.Trampoline;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import static fj.Function.flip;
-import static fj.Function.identity;
-import static fj.Function.uncurryF2;
+import static fj.Function.*;
 import static fj.data.Option.some;
 import static fj.data.Option.somes;
 
@@ -35,12 +33,26 @@ public final class NonEmptyList<A> implements Iterable<A> {
   /**
    * The first element of this linked list.
    */
-  public A head() { return head; }
+  public A head() {
+    return head;
+  }
 
   /**
    * This list without the first element.
    */
-  public List<A> tail() { return tail; }
+  public List<A> tail() {
+    return tail;
+  }
+
+  public List<A> init()
+  {
+    return toList().init();
+  }
+
+  public A last()
+  {
+    return toList().last();
+  }
 
   private NonEmptyList(final A head, final List<A> tail) {
     this.head = head;
@@ -72,7 +84,9 @@ public final class NonEmptyList<A> implements Iterable<A> {
    *
    * @return The length of this list.
    */
-  public int length() { return 1 + tail.length(); }
+  public int length() {
+    return 1 + tail.length();
+  }
 
   /**
    * Appends the given list to this list.
@@ -100,40 +114,6 @@ public final class NonEmptyList<A> implements Iterable<A> {
   }
 
   /**
-   * Performs a right-fold reduction across this list. This function uses O(length) stack space.
-   */
-  public final A foldRight1(final F<A, F<A, A>> f) {
-    return reverse().foldLeft1(flip(f));
-  }
-
-  /**
-   * Performs a right-fold reduction across this list. This function uses O(length) stack space.
-   */
-  public final A foldRight1(final F2<A, A, A> f) {
-    return reverse().foldLeft1(flip(f));
-  }
-
-  /**
-   * Performs a left-fold reduction across this list. This function runs in constant space.
-   */
-  public final A foldLeft1(final F<A, F<A, A>> f) {
-    return foldLeft1(uncurryF2(f));
-  }
-
-  /**
-   * Performs a left-fold reduction across this list. This function runs in constant space.
-   */
-  public final A foldLeft1(final F2<A, A, A> f) {
-    A x = head;
-
-    for (List<A> xs = tail; !xs.isEmpty(); xs = xs.tail()) {
-      x = f.f(x, xs.head());
-    }
-
-    return x;
-  }
-
-  /**
    * Maps the given function across this list.
    *
    * @param f The function to map across this list.
@@ -155,9 +135,9 @@ public final class NonEmptyList<A> implements Iterable<A> {
     b.snoc(p.head);
     b.append(p.tail);
     tail.foreachDoEffect(a -> {
-        final NonEmptyList<B> p1 = f.f(a);
-        b.snoc(p1.head);
-        b.append(p1.tail);
+      final NonEmptyList<B> p1 = f.f(a);
+      b.snoc(p1.head);
+      b.append(p1.tail);
     });
     final List<B> bb = b.toList();
     return nel(bb.head(), bb.tail());
@@ -170,8 +150,8 @@ public final class NonEmptyList<A> implements Iterable<A> {
    */
   public NonEmptyList<NonEmptyList<A>> sublists() {
     return fromList(
-        somes(toList().toStream().substreams()
-            .map(F1Functions.o(NonEmptyList::fromList, Conversions.Stream_List())).toList())).some();
+            somes(toList().toStream().substreams()
+                    .map(F1Functions.o(NonEmptyList::fromList, Conversions.Stream_List())).toList())).some();
   }
 
   /**
@@ -226,7 +206,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
     return nel(list.head(), list.tail());
   }
 
-  
+
   /**
    * Returns the minimum element in this non empty list according to the given ordering.
    *
@@ -236,7 +216,7 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public final A minimum(final Ord<A> o) {
     return foldLeft1(o::min);
   }
-  
+
   /**
    * Returns the maximum element in this non empty list according to the given ordering.
    *
@@ -246,8 +226,8 @@ public final class NonEmptyList<A> implements Iterable<A> {
   public final A maximum(final Ord<A> o) {
     return foldLeft1(o::max);
   }
-  
-  
+
+
   /**
    * Zips this non empty list with the given non empty list to produce a list of pairs. If this list and the given list
    * have different lengths, then the longer list is normalised so this function never fails.
@@ -355,7 +335,8 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @param tail The elements to construct a list's tail with.
    * @return A non-empty list with the given elements.
    */
-  @SafeVarargs public static <A> NonEmptyList<A> nel(final A head, final A... tail) {
+  @SafeVarargs
+  public static <A> NonEmptyList<A> nel(final A head, final A... tail) {
     return nel(head, List.list(tail));
   }
 
@@ -376,8 +357,8 @@ public final class NonEmptyList<A> implements Iterable<A> {
    */
   public static <A> Option<NonEmptyList<A>> fromList(final List<A> as) {
     return as.isEmpty() ?
-           Option.none() :
-           some(nel(as.head(), as.tail()));
+            Option.none() :
+            some(nel(as.head(), as.tail()));
   }
 
   /**
@@ -386,7 +367,9 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @param o The non empty list of non empty lists to join.
    * @return A new non empty list that is the concatenation of the given lists.
    */
-  public static <A> NonEmptyList<A> join(final NonEmptyList<NonEmptyList<A>> o) { return o.bind(identity()); }
+  public static <A> NonEmptyList<A> join(final NonEmptyList<NonEmptyList<A>> o) {
+    return o.bind(identity());
+  }
 
   /**
    * Perform an equality test on this list which delegates to the .equals() method of the member instances.
@@ -395,13 +378,540 @@ public final class NonEmptyList<A> implements Iterable<A> {
    * @param obj the other object to check for equality against.
    * @return true if this list is equal to the provided argument
    */
-  @Override public boolean equals( final Object obj ) {
+  @Override
+  public boolean equals(final Object obj) {
     return Equal.equals0(NonEmptyList.class, this, obj, () -> Equal.nonEmptyListEqual(Equal.anyEqual()));
   }
 
-  @Override public int hashCode() {
+  @Override
+  public int hashCode() {
     return Hash.nonEmptyListHash(Hash.<A>anyHash()).hash(this);
   }
 
-  @Override public String toString() { return Show.nonEmptyListShow(Show.<A>anyShow()).showS(this); }
+  @Override
+  public String toString() {
+    return Show.nonEmptyListShow(Show.<A>anyShow()).showS(this);
+  }
+
+  /**
+   * Fold the list, from right to left.
+   *
+   * @param combine the combine function
+   * @return the output
+   */
+  public final A foldRight1(
+          final F<A, F<A, A>> combine) {
+    return foldRightN(combine, identity());
+  }
+
+  /**
+   * Fold the list, from right to left.
+   *
+   * @param combine the combine function
+   * @return the output
+   */
+  public final A foldRight1(
+          final F2<A, A, A> combine) {
+    return foldRightN(combine, identity());
+  }
+
+  /**
+   * Fold the list, from left to right.
+   *
+   * @param combine the combine function
+   * @return the output
+   */
+  public final A foldLeft1(
+          final F<A, F<A, A>> combine) {
+    return foldLeftN(combine, identity());
+  }
+
+  /**
+   * Fold the list, from left to right.
+   *
+   * @param combine   the combine function
+   * @return the output
+   */
+  public final A foldLeft1(
+          final F2<A, A, A> combine) {
+    return foldLeftN(combine, identity());
+  }
+
+  /**
+   * Fold the list, from right to left, using one function to transform the last and another function to combine the
+   * output.
+   *
+   * @param combine   the combine function
+   * @param transform the transform function
+   * @param <B>       the type of the output
+   * @return the output
+   */
+  public final <B> B foldRightN(
+          final F<A, F<B, B>> combine,
+          final F<A, B> transform) {
+    return tail().isEmpty() ?
+            transform.f(head()) :
+            init().foldRight(combine, transform.f(last()));
+  }
+
+  /**
+   * Fold the list, from right to left, using one function to transform the last and another function to combine the
+   * output.
+   *
+   * @param combine   the combine function
+   * @param transform the transform function
+   * @param <B>       the type of the output
+   * @return the output
+   */
+  public final <B> B foldRightN(
+          final F2<A, B, B> combine,
+          final F<A, B> transform) {
+    return tail().isEmpty() ?
+            transform.f(head()) :
+            init().foldRight(combine, transform.f(last()));
+  }
+
+  /**
+   * Fold the list, from left to right, using one function to transform the head and another function to combine the
+   * output.
+   *
+   * @param combine   the combine function
+   * @param transform the transform function
+   * @param <B>       the type of the output
+   * @return the output
+   */
+  public final <B> B foldLeftN(
+          final F<B, F<A, B>> combine,
+          final F<A, B> transform) {
+    return tail().isEmpty() ?
+            transform.f(head()) :
+            tail().foldLeft(combine, transform.f(head()));
+  }
+
+  /**
+   * Fold the list, from left to right, using one function to transform the head and another function to combine the
+   * output.
+   *
+   * @param combine   the combine function
+   * @param transform the transform function
+   * @param <B>       the type of the output
+   * @return the output
+   */
+  public final <B> B foldLeftN(
+          final F2<B, A, B> combine,
+          final F<A, B> transform) {
+    return tail().isEmpty() ?
+            transform.f(head()) :
+            tail().foldLeft(combine, transform.f(head()));
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output on the right side of an either.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the right value
+   * @param <L>          the type of the left value
+   * @return the either
+   */
+  public static <L, B> Either<L, NonEmptyList<B>> sequenceEither(
+          final NonEmptyList<Either<L, B>> nonEmptyList) {
+    return nonEmptyList.traverseEither(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output on the left side of an either.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <R>          the type of the right value
+   * @param <B>          the type of the left value
+   * @return the either
+   */
+  public static <R, B> Either<NonEmptyList<B>, R> sequenceEitherLeft(
+          final NonEmptyList<Either<B, R>> nonEmptyList) {
+    return nonEmptyList.traverseEitherLeft(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output on the right side of an either.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the right value
+   * @param <L>          the type of the left value
+   * @return the either
+   */
+  public static <L, B> Either<L, NonEmptyList<B>> sequenceEitherRight(
+          final NonEmptyList<Either<L, B>> nonEmptyList) {
+    return nonEmptyList.traverseEitherRight(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a function.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <C>          the type of the input value
+   * @param <B>          the type of the output value
+   * @return the either
+   */
+  public static <C, B> F<C, NonEmptyList<B>> sequenceF(
+          final NonEmptyList<F<C, B>> nonEmptyList) {
+    return nonEmptyList.traverseF(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as an IO.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the IO value
+   * @return the IO
+   */
+  public static <B> IO<NonEmptyList<B>> sequenceIO(
+          final NonEmptyList<IO<B>> nonEmptyList) {
+    return nonEmptyList.traverseIO(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a list.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the list value
+   * @return the list
+   */
+  public static <B> List<NonEmptyList<B>> sequenceList(
+          final NonEmptyList<List<B>> nonEmptyList) {
+    return nonEmptyList.traverseList(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a nonEmptyList.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the nonEmptyList value
+   * @return the nonEmptyList
+   */
+  public static <B> NonEmptyList<NonEmptyList<B>> sequenceNonEmptyList(
+          final NonEmptyList<NonEmptyList<B>> nonEmptyList) {
+    return nonEmptyList.traverseNonEmptyList(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as an nonEmptyList.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the option value
+   * @return the nonEmptyList
+   */
+  public static <B> Option<NonEmptyList<B>> sequenceOption(
+          final NonEmptyList<Option<B>> nonEmptyList) {
+    return nonEmptyList.traverseOption(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a P1.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the P1 value
+   * @return the P1
+   */
+  public static <B> P1<NonEmptyList<B>> sequenceP1(
+          final NonEmptyList<P1<B>> nonEmptyList) {
+    return nonEmptyList.traverseP1(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a seq.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the nonEmptyList value
+   * @return the seq
+   */
+  public static <B> Seq<NonEmptyList<B>> sequenceSeq(
+          final NonEmptyList<Seq<B>> nonEmptyList) {
+    return nonEmptyList.traverseSeq(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a set; use the given ord to order the set.
+   *
+   * @param ord          the given ord
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the set value
+   * @return the either
+   */
+  public static <B> Set<NonEmptyList<B>> sequenceSet(
+          final Ord<B> ord,
+          final NonEmptyList<Set<B>> nonEmptyList) {
+    return nonEmptyList.traverseSet(ord, identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a stream.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <B>          the type of the nonEmptyList value
+   * @return the stream
+   */
+  public static <B> Stream<NonEmptyList<B>> sequenceStream(
+          final NonEmptyList<Stream<B>> nonEmptyList) {
+    return nonEmptyList.traverseStream(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a trampoline.
+   *
+   * @param nonEmptyList the given trampoline
+   * @param <B>          the type of the nonEmptyList value
+   * @return the nonEmptyList
+   */
+  public static <B> Trampoline<NonEmptyList<B>> sequenceTrampoline(
+          final NonEmptyList<Trampoline<B>> nonEmptyList) {
+    return nonEmptyList.traverseTrampoline(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a validation.
+   *
+   * @param nonEmptyList the given nonEmptyList
+   * @param <E>          the type of the failure value
+   * @param <B>          the type of the success value
+   * @return the validation
+   */
+  public static <E, B> Validation<E, NonEmptyList<B>> sequenceValidation(
+          final NonEmptyList<Validation<E, B>> nonEmptyList) {
+    return nonEmptyList.traverseValidation(identity());
+  }
+
+  /**
+   * Sequence the given nonEmptyList and collect the output as a validation; use the given semigroup to reduce the errors.
+   *
+   * @param semigroup    the given semigroup
+   * @param nonEmptyList the given nonEmptyList
+   * @param <E>          the type of the failure value
+   * @param <B>          the type of the success value
+   * @return the validation
+   */
+  public static <E, B> Validation<E, NonEmptyList<B>> sequenceValidation(
+          final Semigroup<E> semigroup,
+          final NonEmptyList<Validation<E, B>> nonEmptyList) {
+    return nonEmptyList.traverseValidation(semigroup, identity());
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <B, L> Either<L, NonEmptyList<B>> traverseEither(
+          final F<A, Either<L, B>> f) {
+    return traverseEitherRight(f);
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output on the left side of an either.
+   *
+   * @param f   the given function
+   * @param <R> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <R, B> Either<NonEmptyList<B>, R> traverseEitherLeft(
+          final F<A, Either<B, R>> f) {
+    return foldRightN(
+            element -> either -> f.f(element).left().bind(elementInner -> either.left().map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).left().map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output on the right side of an either.
+   *
+   * @param f   the given function
+   * @param <L> the type of the left value
+   * @param <B> the type of the right value
+   * @return the either
+   */
+  public <L, B> Either<L, NonEmptyList<B>> traverseEitherRight(
+          final F<A, Either<L, B>> f) {
+    return foldRightN(
+            element -> either -> f.f(element).right().bind(elementInner -> either.right().map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).right().map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a function.
+   *
+   * @param f   the given function
+   * @param <C> the type of the input value
+   * @param <B> the type of the output value
+   * @return the function
+   */
+  public <C, B> F<C, NonEmptyList<B>> traverseF(
+          final F<A, F<C, B>> f) {
+    return foldRightN(
+            element -> fInner -> Function.bind(f.f(element), elementInner -> andThen(fInner, nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> F1Functions.map(f.f(element), elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as an IO.
+   *
+   * @param f   the given function
+   * @param <B> the type of the IO value
+   * @return the IO
+   */
+  public <B> IO<NonEmptyList<B>> traverseIO(
+          final F<A, IO<B>> f) {
+    return foldRightN(
+            element -> io -> IOFunctions.bind(f.f(element), elementInner -> IOFunctions.map(io, nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> IOFunctions.map(f.f(element), elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a list.
+   *
+   * @param f   the given function
+   * @param <B> the type of the list value
+   * @return the list
+   */
+  public <B> List<NonEmptyList<B>> traverseList(
+          final F<A, List<B>> f) {
+    return foldRightN(
+            element -> list -> f.f(element).bind(elementInner -> list.map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a nonEmptyList.
+   *
+   * @param f   the given function
+   * @param <B> the type of the nonEmptyList value
+   * @return the nonEmptyList
+   */
+  public <B> NonEmptyList<NonEmptyList<B>> traverseNonEmptyList(
+          final F<A, NonEmptyList<B>> f) {
+    return foldRightN(
+            element -> nonEmptyList -> f.f(element).bind(elementInner -> nonEmptyList.map(nonEmptyListInner -> nonEmptyListInner.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverses through the Seq with the given function
+   *
+   * @param f The function that produces Option value
+   * @return none if applying f returns none to any element of the seq or f mapped seq in some .
+   */
+  public <B> Option<NonEmptyList<B>> traverseOption(
+          final F<A, Option<B>> f) {
+    return foldRightN(
+            element -> option -> f.f(element).bind(elementInner -> option.map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a p1.
+   *
+   * @param f   the given function
+   * @param <B> the type of the p1 value
+   * @return the p1
+   */
+  public <B> P1<NonEmptyList<B>> traverseP1(
+          final F<A, P1<B>> f) {
+    return foldRightN(
+            element -> p1 -> f.f(element).bind(elementInner -> p1.map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a seq.
+   *
+   * @param f   the given function
+   * @param <B> the type of the seq value
+   * @return the seq
+   */
+  public <B> Seq<NonEmptyList<B>> traverseSeq(
+          final F<A, Seq<B>> f) {
+    return foldRightN(
+            element -> seq -> f.f(element).bind(elementInner -> seq.map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a set; use the given ord to order the
+   * set.
+   *
+   * @param ord the given ord
+   * @param f   the given function
+   * @param <B> the type of the set value
+   * @return the set
+   */
+  public <B> Set<NonEmptyList<B>> traverseSet(
+          final Ord<B> ord,
+          final F<A, Set<B>> f) {
+    final Ord<NonEmptyList<B>> seqOrd = Ord.nonEmptyListOrd(ord);
+    return foldRightN(
+            element -> set -> f.f(element).bind(seqOrd, elementInner -> set.map(seqOrd, seq -> seq.cons(elementInner))),
+            element -> f.f(element).map(seqOrd, elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a stream.
+   *
+   * @param f   the given function
+   * @param <B> the type of the nonEmptyList value
+   * @return the stream
+   */
+  public <B> Stream<NonEmptyList<B>> traverseStream(
+          final F<A, Stream<B>> f) {
+    return foldRightN(
+            element -> stream -> f.f(element).bind(elementInner -> stream.map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a trampoline.
+   *
+   * @param f   the given function
+   * @param <B> the type of the trampoline value
+   * @return the trampoline
+   */
+  public <B> Trampoline<NonEmptyList<B>> traverseTrampoline(
+          final F<A, Trampoline<B>> f) {
+    return foldRightN(
+            element -> trampoline -> f.f(element).bind(elementInner -> trampoline.map(seq -> seq.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a validation.
+   *
+   * @param f   the given function
+   * @param <E> the type of the failure value
+   * @param <B> the type of the success value
+   * @return the validation
+   */
+  public final <E, B> Validation<E, NonEmptyList<B>> traverseValidation(
+          final F<A, Validation<E, B>> f) {
+    return foldRightN(
+            element -> validation -> f.f(element).bind(elementInner -> validation.map(nonEmptyList -> nonEmptyList.cons(elementInner))),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
+
+  /**
+   * Traverse this nonEmptyList with the given function and collect the output as a validation; use the given semigroup to
+   * reduce the errors.
+   *
+   * @param semigroup the given semigroup
+   * @param f         the given function
+   * @param <E>       the type of the failure value
+   * @param <B>       the type of the success value
+   * @return the validation
+   */
+  public final <E, B> Validation<E, NonEmptyList<B>> traverseValidation(
+          final Semigroup<E> semigroup,
+          final F<A, Validation<E, B>> f) {
+    return foldRightN(
+            element -> validation -> f.f(element).map(NonEmptyList::nel).accumulate(semigroup, validation, (nel1, nel2) -> nel1.append(nel2)),
+            element -> f.f(element).map(elementInner -> nel(elementInner)));
+  }
 }
