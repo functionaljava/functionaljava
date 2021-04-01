@@ -19,5 +19,9 @@ dependencies {
     testRuntime junitRuntime
 }
 
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = ["-feature", "-language:implicitConversions", "-language:postfixOps"]
+}
+
 performSigning(signingEnabled, signModule)
 configureUpload(signingEnabled, signModule)

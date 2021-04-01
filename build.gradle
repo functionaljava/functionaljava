@@ -12,6 +12,7 @@ buildscript {
 
     dependencies {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.27.0"
+        classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:5.3.0"
     }
 
     wrapper {
@@ -19,6 +20,7 @@ buildscript {
         distributionType = Wrapper.DistributionType.ALL
     }
 }
+
 
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
@@ -117,8 +119,8 @@ task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
     // We only care about coverage of:
     def projectForFoverage = ["core", "quickcheck", "java-core"]
-    classDirectories = files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.output)
-    sourceDirectories = files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.allSource.srcDirs)
+    getClassDirectories().from(files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.output))
+    getSourceDirectories().from(files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.allSource.srcDirs))
 
     reports {
         html.enabled = true
@@ -130,8 +132,7 @@ configure(subprojects.findAll { it.name != "props-core" }) {
 
     apply plugin: "maven"
     apply plugin: "signing"
-    apply plugin: "osgi"
-
+    apply plugin: "biz.aQute.bnd.builder"
     sourceCompatibility = "1.8"
 
     javadoc {
@@ -156,16 +157,13 @@ configure(subprojects.findAll { it.name != "props-core" }) {
 
     jar {
         version project.fjVersion
-        manifest {
-            name = 'Functional Java'
-            instruction 'Signature-Version', project.fjVersion
-            instruction 'Bundle-ActivationPolicy', 'lazy'
-            instruction 'Bundle-Vendor', 'functionaljava.org'
-            if(project.name != "core") {
-                instruction 'Require-Bundle', 'org.functionaljava;bundle-version="'+project.fjBaseVersion+'"'
-            }
-            instruction 'Automatic-Module-Name', "functionaljava${project.name == 'core' ? '' : ".$project.name"}"
-        }
+        bnd (
+                'Bundle-Name': 'Functional Java',
+                'Signature-Version': project.fjVersion,
+                'Bundle-ActivationPolicy': 'lazy',
+                'Bundle-Vendor': 'functionaljava.org',
+                'Automatic-Module-Name': "functionaljava${project.name == 'core' ? '' : ".$project.name"}",
+        )
     }
 
     eclipse {
