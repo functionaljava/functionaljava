@@ -5,8 +5,6 @@ import fj.data.test.PropertyAssert;
 import fj.test.*;
 import org.junit.Test;
 
-import static fj.F1Functions.bind;
-import static fj.F1Functions.map;
 import static fj.test.Arbitrary.*;
 import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
@@ -44,7 +42,7 @@ public class ReaderTest {
                 arbF(cogenInteger, arbInteger),
                 arbInteger,
                 (f, g, i) -> {
-                    int expected = map(f, g).f(i);
+                    int expected = f.map(g).f(i);
 //                    System.out.println(String.format("input: %d, result: %d", i, expected));
                     return prop(expected == Reader.unit(f).map(g).f(i));
                 });
@@ -59,7 +57,7 @@ public class ReaderTest {
                 a,
                 arbInteger,
                 (f, g, i) -> {
-                    int expected = bind(f, j -> g.f(j).getFunction()).f(i);
+                    int expected = f.bind(j -> g.f(j).getFunction()).f(i);
 //              System.out.println(String.format("input: %d, result: %d", i, expected));
                     return prop(expected == Reader.unit(f).flatMap(g).f(i));
                 }

@@ -35,14 +35,15 @@ public class MapReduce {
 
   // Main program does the requisite IO gymnastics
   public static void main(final String[] args) {
+      F<String, BufferedReader> z = fileName -> {
+          try {
+              return new BufferedReader(new FileReader(new File(fileName)));
+          } catch (FileNotFoundException e) {
+              throw new Error(e);
+          }
+      };
     final List<Stream<Character>> documents = list(args).map(
-        F1Functions.andThen(fileName -> {
-                try {
-                    return new BufferedReader(new FileReader(new File(fileName)));
-                } catch (FileNotFoundException e) {
-                    throw new Error(e);
-                }
-        }, new F<BufferedReader, Stream<Character>>() {
+        z.andThen(new F<BufferedReader, Stream<Character>>() {
             public Stream<Character> f(final BufferedReader reader) {
                 final Option<String> s;
                 try {

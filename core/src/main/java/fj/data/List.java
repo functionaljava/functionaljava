@@ -969,7 +969,7 @@ public abstract class List<A> implements Iterable<A> {
    * @return A Trampoline containing the final result after the right-fold reduction.
    */
   public final <B> Trampoline<B> foldRightC(final F2<A, B, B> f, final B b) {
-    return Trampoline.suspend(() -> isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(F2Functions.f(f, head())));
+    return Trampoline.suspend(() -> isEmpty() ? Trampoline.pure(b) : tail().foldRightC(f, b).map(f.f(head())));
   }
 
   /**

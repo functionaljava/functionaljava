@@ -261,7 +261,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return the 1-product projection over the first element.
    */
   public final P1<A> _1_() {
-    return F1Functions.lazy(P6.<A, B, C, D, E, F>__1()).f(this);
+    return P6.<A, B, C, D, E, F>__1().lazy().f(this);
   }
 
   /**
@@ -270,7 +270,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return the 1-product projection over the second element.
    */
   public final P1<B> _2_() {
-    return F1Functions.lazy(P6.<A, B, C, D, E, F>__2()).f(this);
+    return P6.<A, B, C, D, E, F>__2().lazy().f(this);
   }
 
   /**
@@ -279,7 +279,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return the 1-product projection over the third element.
    */
   public final P1<C> _3_() {
-    return F1Functions.lazy(P6.<A, B, C, D, E, F>__3()).f(this);
+    return P6.<A, B, C, D, E, F>__3().lazy().f(this);
   }
 
   /**
@@ -288,7 +288,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return the 1-product projection over the fourth element.
    */
   public final P1<D> _4_() {
-    return F1Functions.lazy(P6.<A, B, C, D, E, F>__4()).f(this);
+    return P6.<A, B, C, D, E, F>__4().lazy().f(this);
   }
 
   /**
@@ -297,7 +297,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return the 1-product projection over the fifth element.
    */
   public final P1<E> _5_() {
-    return F1Functions.lazy(P6.<A, B, C, D, E, F>__5()).f(this);
+    return P6.<A, B, C, D, E, F>__5().lazy().f(this);
   }
 
   /**
@@ -306,7 +306,7 @@ public abstract class P6<A, B, C, D, E, F> {
    * @return the 1-product projection over the sixth element.
    */
   public final P1<F> _6_() {
-    return F1Functions.lazy(P6.<A, B, C, D, E, F>__6()).f(this);
+    return P6.<A, B, C, D, E, F>__6().lazy().f(this);
   }
 
   /**

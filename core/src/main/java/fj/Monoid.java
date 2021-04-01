@@ -1,7 +1,5 @@
 package fj;
 
-import static fj.F1Functions.dimap;
-
 import fj.data.*;
 
 import static fj.Function.*;
@@ -146,7 +144,7 @@ public final class Monoid<A> {
 
       @Override
       public F<B, B> prepend(B b) {
-        return dimap(def.prepend(g.f(b)), g, f);
+        return def.prepend(g.f(b)).dimap(g, f);
       }
 
       @Override

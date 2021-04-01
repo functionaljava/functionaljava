@@ -2,7 +2,6 @@ package fj.data;
 
 import fj.F;
 import fj.F0;
-import fj.F1Functions;
 import fj.Function;
 import fj.P;
 import fj.P2;
@@ -82,7 +81,7 @@ public final class Iteratee {
     public final A run() {
       final F<IterV<E, A>, Option<A>> runCont =
         new F<IterV<E, A>, Option<A>>() {
-          final F<P2<A, Input<E>>, Option<A>> done = F1Functions.andThen(P2.__1(), Option.some_());
+          final F<P2<A, Input<E>>, Option<A>> done = P2.<A, Input<E>>__1().andThen(Option.some_());
           final F<F<Input<E>, IterV<E, A>>, Option<A>> cont = Function.constant(Option.none());
 
           @Override

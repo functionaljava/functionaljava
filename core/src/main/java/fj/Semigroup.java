@@ -13,13 +13,10 @@ import fj.data.Stream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static fj.F1Functions.dimap;
 import static fj.Function.constant;
 import static fj.Function.identity;
 import static fj.Monoid.*;
 import static fj.data.DList.listDList;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
 
 /**
  * Implementations must satisfy the law of associativity:
@@ -193,7 +190,7 @@ public final class Semigroup<A> {
 
       @Override
       public F<B, B> prepend(B b) {
-        return dimap(def.prepend(g.f(b)), g, f);
+        return def.prepend(g.f(b)).dimap(g, f);
       }
 
       @Override

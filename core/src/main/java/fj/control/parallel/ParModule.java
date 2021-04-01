@@ -67,7 +67,7 @@ public final class ParModule {
    *         that can be claimed in the future.
    */
   public <A, B> F<A, Promise<B>> promise(final F<A, B> f) {
-    return F1Functions.promiseK(f, strategy);
+    return f.promiseK(strategy);
   }
 
   /**
@@ -88,7 +88,7 @@ public final class ParModule {
    *         that can be claimed in the future.
    */
   public <A, B, C> F2<A, B, Promise<C>> promise(final F2<A, B, C> f) {
-    return P2.untuple(F1Functions.promiseK(F2Functions.tuple(f), strategy));
+    return P2.untuple(f.tuple().promiseK(strategy));
   }
 
 

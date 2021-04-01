@@ -3,7 +3,6 @@ package fj.function;
 import fj.Function;
 import org.junit.Test;
 
-import static fj.F1Functions.o;
 import static fj.Function.compose;
 import static fj.function.Strings.*;
 import static org.junit.Assert.*;
@@ -17,7 +16,7 @@ public class StringsTest {
 
     @Test
     public void testLinesEmpty() {
-        assertThat(o(unlines(), lines()).f(""), is(""));
+        assertThat(unlines().o(lines()).f(""), is(""));
     }
 
     @Test

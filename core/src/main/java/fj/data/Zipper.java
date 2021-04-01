@@ -560,7 +560,7 @@ public final class Zipper<A> implements Iterable<Zipper<A>> {
    * @return The result of applying the given function over this Zipper and the given Zipper, location-wise.
    */
   public <B, C> Zipper<C> zipWith(final Zipper<B> bs, final F2<A, B, C> f) {
-    return F2Functions.zipZipperM(f).f(this, bs);
+    return f.zipZipperM().f(this, bs);
   }
 
 

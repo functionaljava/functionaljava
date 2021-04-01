@@ -1,8 +1,6 @@
 package fj.demo;
 
 import fj.F;
-import fj.F1Functions;
-import fj.F1W;
 import fj.Unit;
 import fj.data.IO;
 import fj.data.IOFunctions;
@@ -49,7 +47,7 @@ public class IOWalkthrough {
 
         // now we create a function which takes a string, upper cases it and creates an IO value that would print the upper cased string if executed
 
-        final F<String, IO<Unit>> upperCaseAndPrint = F1Functions.<String, IO<Unit>, String>o(IOFunctions::stdoutPrintln).f(String::toUpperCase);
+        final F<String, IO<Unit>> upperCaseAndPrint = s -> stdoutPrintln(s.toUpperCase());
 
         // we now want to compose reading the name with printing it, for that we need to have access to the runtime value that is returned when the
         // IO value for read is executed, hence we use fj.data.IOFunctions.bind instead of fj.data.IOFunctions.append
@@ -73,10 +71,11 @@ public class IOWalkthrough {
         // assigning the functions to variables like above, but you can use the fj.F1W syntax wrapper for composing single-argument functions and fj.data.IOW
         // for composing IO values instead, the entire program can be written like so:
 
+        F<String, String> f = String::toUpperCase;
         IOW.lift(stdoutPrintln("What's your name again?"))
                 .append(stdoutPrint("Name: "))
                 .append(stdinReadLine())
-                .bind(F1W.lift((String s) -> s.toUpperCase()).andThen(IOFunctions::stdoutPrintln))
+                .bind(f.andThen(IOFunctions::stdoutPrintln))
                 .safe().run().on((IOException e) -> { e.printStackTrace(); return Unit.unit(); });
     }
 }

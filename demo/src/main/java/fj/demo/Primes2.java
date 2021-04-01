@@ -1,7 +1,5 @@
 package fj.demo;
 
-import fj.F1Functions;
-
 import static fj.data.Enumerator.naturalEnumerator;
 
 import fj.Show;
@@ -21,7 +19,7 @@ import java.math.BigInteger;
 public class Primes2 {
   // Finds primes in a given stream.
   public static Stream<Natural> sieve(final Stream<Natural> xs) {
-    return cons(xs.head(), () -> sieve(xs.tail()._1().removeAll(F1Functions.o(naturalOrd.equal().eq(ZERO), mod.f(xs.head())))));
+    return cons(xs.head(), () -> sieve(xs.tail()._1().removeAll(naturalOrd.equal().eq(ZERO).o(mod.f(xs.head())))));
   }
 
   // A stream of all primes less than n.

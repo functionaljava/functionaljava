@@ -105,15 +105,15 @@ object CheckHashMap extends Properties("HashMap") {
     keysAreEqual && valuesAreEqual
   })
 
-  property("No null values") = forAll((m: List[Int]) => {
-    val map = HashMap.hashMap[Int, Int]()
-    m.foreachDoEffect(new Effect1[Int] {
+  property("No null values") = forAll((list: List[Int]) => {
+    val m = HashMap.hashMap[Int, Int]()
+    list.foreachDoEffect(new Effect1[Int] {
       def f(a: Int) {
-        map.set(a, null.asInstanceOf[Int])
+        m.set(a, null.asInstanceOf[Int])
       }
     })
-    m.forall(new F[Int, java.lang.Boolean]() {
-      def f(a: Int) = map.contains(a) == false
+    list.forall(new F[Int, java.lang.Boolean]() {
+      def f(a: Int) = m.contains(a) == false
     })
   })
 }

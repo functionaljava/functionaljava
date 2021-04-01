@@ -166,7 +166,7 @@ public abstract class P2<A, B> {
    * @return the 1-product projection over the first element.
    */
   public final P1<A> _1_() {
-    return F1Functions.lazy(P2.<A, B>__1()).f(this);
+    return P2.<A, B>__1().lazy().f(this);
   }
 
   /**
@@ -175,7 +175,7 @@ public abstract class P2<A, B> {
    * @return the 1-product projection over the second element.
    */
   public final P1<B> _2_() {
-    return F1Functions.lazy(P2.<A, B>__2()).f(this);
+    return P2.<A, B>__2().lazy().f(this);
   }
 
   /**

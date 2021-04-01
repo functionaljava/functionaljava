@@ -171,7 +171,7 @@ public abstract class Trampoline<A> {
    * @return A new trampoline that runs this trampoline, then applies the given function to the result.
    */
   public final <B> Trampoline<B> map(final F<A, B> f) {
-    return bind(F1Functions.o(Trampoline.pure(), f));
+    return bind(Trampoline.<B>pure().o(f));
   }
 
   /**
@@ -266,10 +266,11 @@ public abstract class Trampoline<A> {
     final Either<P1<Trampoline<B>>, B> eb = b.resume();
     for (final P1<Trampoline<A>> x : ea.left()) {
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(x.bind(y, F2Functions.curry((ta, tb) -> suspend(() -> ta.zipWith(tb, f)))));
+        F<Trampoline<A>, F<Trampoline<B>, Trampoline<C>>> z = ta -> tb -> suspend(() -> ta.zipWith(tb, f));
+        return suspend(x.bind(y, z));
       }
       for (final B y : eb.right()) {
-        return suspend(x.map(ta -> ta.map(F2Functions.f(F2Functions.flip(f), y))));
+        return suspend(x.map(ta -> ta.map(f.flip().f(y))));
       }
     }
     for (final A x : ea.right()) {
@@ -277,7 +278,7 @@ public abstract class Trampoline<A> {
         return suspend(() -> pure(f.f(x, y)));
       }
       for (final P1<Trampoline<B>> y : eb.left()) {
-        return suspend(y.map(liftM2(F2Functions.curry(f)).f(pure(x))));
+        return suspend(y.map(liftM2(f.curry()).f(pure(x))));
       }
     }
     throw Bottom.error("Match error: Trampoline is neither done nor suspended.");

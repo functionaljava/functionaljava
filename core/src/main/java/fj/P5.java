@@ -199,7 +199,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return the 1-product projection over the first element.
    */
   public final P1<A> _1_() {
-    return F1Functions.lazy(P5.<A, B, C, D, E>__1()).f(this);
+    return P5.<A, B, C, D, E>__1().lazy().f(this);
   }
 
   /**
@@ -208,7 +208,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return the 1-product projection over the second element.
    */
   public final P1<B> _2_() {
-    return F1Functions.lazy(P5.<A, B, C, D, E>__2()).f(this);
+    return P5.<A, B, C, D, E>__2().lazy().f(this);
   }
 
   /**
@@ -217,7 +217,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return the 1-product projection over the third element.
    */
   public final P1<C> _3_() {
-    return F1Functions.lazy(P5.<A, B, C, D, E>__3()).f(this);
+    return P5.<A, B, C, D, E>__3().lazy().f(this);
   }
 
   /**
@@ -226,7 +226,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return the 1-product projection over the fourth element.
    */
   public final P1<D> _4_() {
-    return F1Functions.lazy(P5.<A, B, C, D, E>__4()).f(this);
+    return P5.<A, B, C, D, E>__4().lazy().f(this);
   }
 
   /**
@@ -235,7 +235,7 @@ public abstract class P5<A, B, C, D, E> {
    * @return the 1-product projection over the fifth element.
    */
   public final P1<E> _5_() {
-    return F1Functions.lazy(P5.<A, B, C, D, E>__5()).f(this);
+    return P5.<A, B, C, D, E>__5().lazy().f(this);
   }
 
   /**

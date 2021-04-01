@@ -108,7 +108,7 @@ public abstract class P1<A> implements F0<A> {
 	 * Binds the given function to the values in the given P1s with a final join.
 	 */
 	public final <B, C> P1<C> bind(final P1<B> cb, final F2<A, B, C> f) {
-		return bind(cb, F2W.lift(f).curry());
+		return bind(cb, f.curry());
 	}
 
     /**

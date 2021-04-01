@@ -2,7 +2,6 @@ package fj.data;
 
 import fj.F;
 import fj.F0;
-import fj.F1Functions;
 import fj.F2;
 import fj.Function;
 import fj.P;
@@ -204,7 +203,7 @@ public final class IOFunctions {
                         return i;
                     }
                     final Input<String> input = Input.el(s);
-                    final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = F1Functions.lazy(Function.apply(input));
+                    final F<F<Input<String>, IterV<String, A>>, P1<IterV<String, A>>> cont = Function.<Input<String>, IterV<String, A>>apply(input).lazy();
                     i = i.fold(done, cont)._1();
                 }
                 return i;
@@ -248,7 +247,7 @@ public final class IOFunctions {
                     }
                     final Input<char[]> input = Input.el(buffer);
                     final F<F<Input<char[]>, IterV<char[], A>>, P1<IterV<char[], A>>> cont =
-                        F1Functions.lazy(Function.apply(input));
+                            Function.<Input<char[]>, IterV<char[], A>>apply(input).lazy();
                     i = i.fold(done, cont)._1();
                 }
                 return i;

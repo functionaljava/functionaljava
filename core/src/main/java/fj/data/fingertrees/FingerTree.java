@@ -37,7 +37,7 @@ public abstract class FingerTree<V, A> {
   public abstract <B> B foldRight(final F<A, F<B, B>> f, final B z);
 
     public final <B> B foldRight(final F2<A, B, B> f, final B z) {
-        return foldRight(F2Functions.curry(f), z);
+        return foldRight(f.curry(), z);
     }
 
   /**
@@ -58,7 +58,7 @@ public abstract class FingerTree<V, A> {
   public abstract <B> B foldLeft(final F<B, F<A, B>> f, final B z);
 
     public final <B> B foldLeft(final F2<B, A, B> f, final B z) {
-        return foldLeft(F2Functions.curry(f), z);
+        return foldLeft(f.curry(), z);
     }
 
   /**

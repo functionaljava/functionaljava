@@ -7,7 +7,6 @@ import Unit.unit
 import List.{list, nil}
 import Option.{some, none}
 import fj.Function._
-import fj.F1Functions
 import fj.data.Iteratee._
 
 import org.scalacheck.Prop._
@@ -50,7 +49,7 @@ object CheckIteratee extends Properties("Iteratee") {
       var tail = l
       while(!isDone(i) && !tail.isEmpty) {
         val input = Input.el(tail.head)
-        val cont: F[F[Input[E], IterV[E, A]], P1[IterV[E, A]]] = F1Functions.`lazy`(Function.apply(input))
+        val cont: F[F[Input[E], IterV[E, A]], P1[IterV[E, A]]] = Function.apply(input).`lazy`()
         i = i.fold(done, cont)._1
         tail = tail.tail
       }

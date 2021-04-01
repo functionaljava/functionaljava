@@ -107,7 +107,8 @@ public class IOFunctionsTest {
   @Test
   public void testLift() throws IOException {
     final IO<String> readName = () -> new BufferedReader(new StringReader("foo")).readLine();
-    final F<String, IO<String>> upperCaseAndPrint = F1Functions.<String, IO<String>, String>o(this::println).f(String::toUpperCase);
+    F<String, IO<String>> f = this::println;
+    final F<String, IO<String>> upperCaseAndPrint = f.<String>o().f(String::toUpperCase);
     final IO<String> readAndPrintUpperCasedName = IOFunctions.bind(readName, upperCaseAndPrint);
     assertThat(readAndPrintUpperCasedName.run(), is("FOO"));
   }

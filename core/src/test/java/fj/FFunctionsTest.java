@@ -21,23 +21,27 @@ public class FFunctionsTest {
         F4<Integer, Integer, Integer, Integer, Integer> f4 = F5Functions.f(f5, 5);
         F3<Integer, Integer, Integer, Integer> f3 = F4Functions.f(f4, 4);
         F2<Integer, Integer, Integer> f2 = F3Functions.f(f3, 3);
-        F<Integer, Integer> f1 = F2Functions.f(f2, 2);
-        assertThat(F1Functions.f(f1, 1).f(), is(36));
+        F<Integer, Integer> f1 = f2.f(2);
+        assertThat(f1.f(1), is(36));
     }
 
     @Test
     public void testTreeK() {
-        final Tree<Integer> t1 = F1Functions.<Integer, Integer>treeK(Function.identity()).f(1);
-        final Tree<Integer> t2 = F1Functions.<Integer, Integer>treeK(Function.identity()).f(2);
-        assertThat(F1Functions.<Integer, Integer>mapTree(i -> i + 1).f(t1),
-                is(F1Functions.<Integer, Integer>mapTree(i -> i * 1).f(t2)));
+        final Tree<Integer> t1 = Function.<Integer>identity().treeK().f(1);
+        final Tree<Integer> t2 = Function.<Integer>identity().treeK().f(2);
+        F<Integer, Integer> f = i -> i + 1;
+        F<Integer, Integer> g = i -> i * 1;
+        assertThat(f.mapTree().f(t1),
+                is(g.mapTree().f(t2)));
     }
 
     @Test
     public void testTreeZipperK() {
-        final TreeZipper<Integer> tz1 = F1Functions.<Integer, Integer>treeZipperK(Function.identity()).f(1);
-        final TreeZipper<Integer> tz2 = F1Functions.<Integer, Integer>treeZipperK(Function.identity()).f(2);
-        assertThat(F1Functions.<Integer, Integer>mapTreeZipper(i -> i + 1).f(tz1),
-                is(F1Functions.<Integer, Integer>mapTreeZipper(i -> i * 1).f(tz2)));
+        final TreeZipper<Integer> tz1 = Function.<Integer>identity().treeZipperK().f(1);
+        final TreeZipper<Integer> tz2 = Function.<Integer>identity().treeZipperK().f(2);
+        F<Integer, Integer> f = i -> i + 1;
+        F<Integer, Integer> g = i -> i * 1;
+        assertThat(f.mapTreeZipper().f(tz1),
+                is(g.mapTreeZipper().f(tz2)));
     }
 }
