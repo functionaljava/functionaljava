@@ -4,7 +4,6 @@ import fj.F;
 import fj.Unit;
 import fj.data.IO;
 import fj.data.IOFunctions;
-import fj.data.IOW;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class IOWalkthrough {
         // for composing IO values instead, the entire program can be written like so:
 
         F<String, String> f = String::toUpperCase;
-        IOW.lift(stdoutPrintln("What's your name again?"))
+        stdoutPrintln("What's your name again?")
                 .append(stdoutPrint("Name: "))
                 .append(stdinReadLine())
                 .bind(f.andThen(IOFunctions::stdoutPrintln))
