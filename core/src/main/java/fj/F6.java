@@ -7,6 +7,7 @@ package fj;
  *
  * @version %build.number%
  */
+@FunctionalInterface
 public interface F6<A, B, C, D, E, F$, G> {
   /**
    * Transform <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code> and

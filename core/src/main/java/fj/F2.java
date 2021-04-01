@@ -18,6 +18,7 @@ import static fj.data.Zipper.zipper;
  *
  * @version %build.number%
  */
+@FunctionalInterface
 public interface F2<A, B, C> extends BiFunction<A, B, C> {
   /**
    * Transform <code>A</code> and <code>B</code> to <code>C</code>.

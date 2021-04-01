@@ -21,6 +21,7 @@ import static fj.data.Zipper.fromStream;
  *
  * @version %build.number%
  */
+@FunctionalInterface
 public interface F<A, B> extends Function<A, B> {
   /**
    * Transform <code>A</code> to <code>B</code>.

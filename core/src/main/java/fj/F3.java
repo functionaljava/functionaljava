@@ -6,6 +6,7 @@ package fj;
  *
  * @version %build.number%
  */
+@FunctionalInterface
 public interface F3<A, B, C, D> {
   /**
    * Transform <code>A</code>, <code>B</code> and <code>C</code> to <code>D</code>.
