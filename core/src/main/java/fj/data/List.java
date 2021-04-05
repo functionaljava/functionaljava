@@ -86,19 +86,6 @@ public abstract class List<A> implements Iterable<A> {
     return this instanceof Cons;
   }
 
-  /**
-   * Performs a reduction on this list using the given arguments.
-   * @deprecated As of release 4.5, use {@link #uncons}
-   *
-   * @param nil  The value to return if this list is empty.
-   * @param cons The function to apply to the head and tail of this list if it is not empty.
-   * @return A reduction on this list.
-   */
-  @Deprecated
-  public final <B> B list(final B nil, final F<A, F<List<A>, B>> cons) {
-    return uncons(uncurryF2(cons), nil);
-  }
-
   public final <B> B uncons(final F2<A, List<A>, B> cons, final B nil) {
     return isEmpty() ? nil : cons.f(head(), tail());
   }
@@ -121,18 +108,6 @@ public abstract class List<A> implements Iterable<A> {
    */
   public final List<A> orTail(final F0<List<A>> as) {
     return isEmpty() ? as.f() : tail();
-  }
-
-  /**
-   * Returns an option projection of this list; <code>None</code> if empty, or the first element in
-   * <code>Some</code>.  Equivalent to {@link #headOption()}.
-   * @deprecated As of release 4.5, use {@link #headOption()}
-   * @return An option projection of this list.
-   */
-  @Deprecated
-  public final Option<A> toOption() {
-    return headOption();
-
   }
 
   /**
@@ -183,19 +158,6 @@ public abstract class List<A> implements Iterable<A> {
       x = x.tail();
     }
     return a;
-  }
-
-  /**
-   * To be removed in future release:
-   * affectation of the result of this method to a non generic array
-   * will result in runtime error (ClassCastException).
-   *
-   * @deprecated As of release 4.6, use {@link #array(Class)}.
-   */
-  @SuppressWarnings("unchecked")
-  @Deprecated
-  public final A[] toJavaArray() {
-    return (A[]) toArrayObject();
   }
 
   /**
@@ -1531,21 +1493,6 @@ public abstract class List<A> implements Iterable<A> {
 
   /**
    * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
-   * The ordering of the keys is determined by {@link fj.Ord#hashOrd()} (ie. Object#hasCode).
-   * This is not safe and therefore this method is deprecated.
-   *
-   * @param keyFunction The function to select the keys for the map.
-   * @return A TreeMap containing the keys with the accumulated list of matched elements.
-   *
-   * @deprecated As of release 4.7, use {@link #groupBy(F, Ord)}
-   */
-  @Deprecated
-  public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction) {
-    return groupBy(keyFunction, Ord.hashOrd());
-  }
-
-  /**
-   * Groups the elements of this list by a given keyFunction into a {@link TreeMap}.
    *
    * @param keyFunction The function to select the keys for the map.
    * @param keyOrd An order for the keys of the tree map.
@@ -1553,25 +1500,6 @@ public abstract class List<A> implements Iterable<A> {
    */
   public final <B> TreeMap<B, List<A>> groupBy(final F<A, B> keyFunction, final Ord<B> keyOrd) {
     return groupBy(keyFunction, identity(), keyOrd);
-  }
-
-  /**
-   * Groups the elements of this list by a given keyFunction into a {@link TreeMap} and transforms
-   * the matching elements with the given valueFunction. The ordering of the keys is determined by
-   * {@link fj.Ord#hashOrd()} (ie. Object#hasCode).
-   * This is not safe and therefore this method is deprecated.
-   *
-   * @param keyFunction The function to select the keys for the map.
-   * @param valueFunction The function to apply on each matching value.
-   * @return A TreeMap containing the keys with the accumulated list of matched and mapped elements.
-   *
-   * @deprecated As of release 4.7, use {@link #groupBy(F, F, Ord)}
-   */
-  @Deprecated
-  public final <B, C> TreeMap<B, List<C>> groupBy(
-      final F<A, B> keyFunction,
-      final F<A, C> valueFunction) {
-    return this.groupBy(keyFunction, valueFunction, Ord.hashOrd());
   }
 
   /**
@@ -1819,24 +1747,6 @@ public abstract class List<A> implements Iterable<A> {
   @SafeVarargs
   public static <A> List<A> arrayList(final A... as) {
     return Array.array(as).toList();
-  }
-
-  /**
-   * Constructs a list from the given Iterable.
-   * @deprecated As of release 4.5, use {@link #iterableList(Iterable)}
-   */
-  @Deprecated
-  public static <A> List<A> list(final Iterable<A> i) {
-    return iterableList(i);
-  }
-
-  /**
-   * Constructs a list from the given Iterator.
-   * @deprecated As of release 4.5, use {@link #iteratorList(Iterator)}
-   */
-  @Deprecated
-  public static <A> List<A> list(final Iterator<A> it) {
-    return iteratorList(it);
   }
 
   /**

@@ -72,20 +72,6 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   /**
    * Constructs a tree map from the given elements.
    *
-   * @deprecated As of release 4.5, use {@link #iterableTreeMap(Ord, Iterable)}
-   *
-   * @param keyOrd An order for the keys of the tree map.
-   * @param list The elements to construct the tree map with.
-   * @return a TreeMap with the given elements.
-   */
-  @Deprecated
-  public static <K, V> TreeMap<K, V> treeMap(final Ord<K> keyOrd, final List<P2<K, V>> list) {
-    return iterableTreeMap(keyOrd, list);
-  }
-
-  /**
-   * Constructs a tree map from the given elements.
-   *
    * @param keyOrd An order for the keys of the tree map.
    * @param it The elements to construct the tree map with.
    * @return A TreeMap with the given elements.
@@ -313,12 +299,12 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   }
 
   /**
-   * Internal construction of a TreeMap from the given set.
+   * Constructs a TreeMap from the given set.
    * @param ord An order for the keys of the tree map.
    * @param s The elements to construct the tree map with.
    * @return a TreeMap with the given elements.
    */
-  private static <K, V> TreeMap<K, V> treeMap(Ord<K> ord, Set<P2<K, Option<V>>> s) {
+  public static <K, V> TreeMap<K, V> setTreeMap(Ord<K> ord, Set<P2<K, Option<V>>> s) {
     TreeMap<K, V> empty = TreeMap.empty(ord);
     TreeMap<K, V> tree = s.toList().foldLeft((tm, p2) -> {
       Option<V> opt = p2._2();
@@ -347,7 +333,7 @@ public final class TreeMap<K, V> implements Iterable<P2<K, V>> {
   public P3<TreeMap<K, V>, Option<V>, TreeMap<K, V>> splitLookup(final K k) {
     P3<Set<P2<K, Option<V>>>, Option<P2<K, Option<V>>>, Set<P2<K, Option<V>>>> p3 = tree.split(p(k, get(k)));
     Ord<K> o = tree.ord().contramap(k2 -> p(k2, Option.none()));
-    return p(treeMap(o, p3._1()), get(k), treeMap(o, p3._3()));
+    return p(setTreeMap(o, p3._1()), get(k), setTreeMap(o, p3._3()));
   }
 
   /**

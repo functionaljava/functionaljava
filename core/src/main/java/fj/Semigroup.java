@@ -293,21 +293,9 @@ public final class Semigroup<A> {
   public static final Semigroup<Integer> intAdditionSemigroup = intAdditionMonoid.semigroup();
 
   /**
-   * @deprecated Since 4.7. Due to rounding errors, addition of doubles does not comply with monoid laws
-   */
-  @Deprecated
-  public static final Semigroup<Double> doubleAdditionSemigroup = semigroupDef((d1, d2) -> d1 + d2);
-
-  /**
    * A semigroup that multiplies integers.
    */
   public static final Semigroup<Integer> intMultiplicationSemigroup = intMultiplicationMonoid.semigroup();
-
-  /**
-   * @deprecated Since 4.7. Due to rounding errors, addition of doubles does not comply with monoid laws
-   */
-  @Deprecated
-  public static final Semigroup<Double> doubleMultiplicationSemigroup = semigroupDef((d1, d2) -> d1 * d2);
 
   /**
    * A semigroup that yields the maximum of integers.
@@ -518,17 +506,6 @@ public final class Semigroup<A> {
         return nea.append(tail);
       }
     });
-  }
-
-  /**
-   * A semigroup for optional values.
-   * @deprecated since 4.7. Use {@link #firstOptionSemigroup()}.
-   *
-   * @return A semigroup for optional values.
-   */
-  @Deprecated
-  public static <A> Semigroup<Option<A>> optionSemigroup() {
-    return firstOptionSemigroup();
   }
 
   /**

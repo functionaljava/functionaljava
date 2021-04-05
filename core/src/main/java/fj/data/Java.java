@@ -1414,17 +1414,6 @@ public final class Java {
 
   // END ArrayList ->
 
-  /**
-   * A function that converts Java lists to lists.
-   * @deprecated As of 4.3, use {@link #JavaList_List}
-   *
-   * @return A function that converts Java lists to lists.
-   */
-  @Deprecated
-  public static <A> F<java.util.List<A>, List<A>> JUList_List() {
-    return Java::JavaList_List;
-  }
-
   public static <A> F<java.util.List<A>, List<A>> JavaList_List() {
     return Java::JavaList_List;
   }

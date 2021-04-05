@@ -65,6 +65,13 @@ public final class P {
     return new P1.SoftReferenceMemo<>(f);
   }
 
+    /**
+     * Convert a F0 into a P1, using weak call-by-need semantic using {@link #weakMemo(F0)}.
+     */
+    public static <A> P1<A> memo(F0<A> f) {
+        return weakMemo(f);
+    }
+
   /**
    * Convert a F0 into a P1, using call-by-name semantic:
    * function f is evaluated at each call to {@link P1#_1()}.

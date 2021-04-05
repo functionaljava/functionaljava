@@ -131,19 +131,6 @@ public final class Array<A> implements Iterable<A> {
   }
 
   /**
-   * To be removed in future release:
-   * affectation of the result of this method to a non generic array
-   * will result in runtime error (ClassCastException).
-   *
-   * @deprecated As of release 4.6, use {@link #array(Class)}.
-   */
-  @SuppressWarnings("unchecked")
-  @Deprecated
-  public A[] toJavaArray() {
-    return (A[]) array();
-  }
-
-  /**
    * Returns an option projection of this array; <code>None</code> if empty, or the first element in
    * <code>Some</code>.
    *

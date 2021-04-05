@@ -514,7 +514,7 @@ public final class Monoid<A> {
       return n <= 0 ? 1 : (int) StrictMath.pow(integer.doubleValue(), n);
     }
   });
-  
+
   /**
    * A monoid that adds big integers.
    */

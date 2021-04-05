@@ -90,20 +90,6 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
-   * Performs a reduction on this stream using the given arguments.  Equivalent to {@link #uncons}.
-   *
-   * @deprecated As of release 4.5, use {@link #uncons}
-   *
-   * @param nil  The value to return if this stream is empty.
-   * @param cons The function to apply to the head and tail of this stream if it is not empty.
-   * @return A reduction on this stream.
-   */
-  @Deprecated
-  public final <B> B stream(final B nil, final F<A, F<P1<Stream<A>>, B>> cons) {
-    return uncons(nil, cons);
-  }
-
-  /**
    * Performs a reduction on this stream using the given arguments.
    *
    * @param nil  The value to return if this stream is empty.
@@ -713,26 +699,6 @@ public abstract class Stream<A> implements Iterable<A> {
   }
 
   /**
-   * Constructs a stream with the given elements in the Iterable.  Equivalent to {@link #iterableStream(Iterable)} .
-   *
-   * @deprecated As of release 4.5, use {@link #iterableStream(Iterable)}
-   */
-  @Deprecated
-  public static <A> Stream<A> stream(Iterable<A> it) {
-    return iterableStream(it);
-  }
-
-  /**
-   * Constructs a stream with the given elements in the Iterator.  Equivalent to {@link #iteratorStream(Iterator)} .
-   *
-   * @deprecated As of release 4.5, use {@link #iteratorStream(Iterator)}
-   */
-  @Deprecated
-  public static <A> Stream<A> stream(final Iterator<A> it) {
-    return iteratorStream(it);
-  }
-
-  /**
    * Constructs a stream with the given elements in the Iterator.
    */
   public static <A> Stream<A> iteratorStream(final Iterator<A> it) {
@@ -914,25 +880,6 @@ public abstract class Stream<A> implements Iterable<A> {
    */
   public final Option<A> toOption() {
     return isEmpty() ? Option.none() : some(head());
-  }
-
-  /**
-   * To be removed in future release:
-   * affectation of the result of this method to a non generic array
-   * will result in runtime error (ClassCastException).
-   *
-   * @deprecated As of release 4.6, use {@link #array(Class)}.
-   */
-  @Deprecated
-  public final A[] toJavaArray() {
-    @SuppressWarnings("unchecked")
-    final A[] array = (A[]) new Object[length()];
-    int i = 0;
-    for (A a: this) {
-      array[i] = a;
-      i++;
-    }
-    return array;
   }
 
   /**

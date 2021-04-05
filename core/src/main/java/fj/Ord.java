@@ -687,44 +687,6 @@ public final class Ord<A> {
     return ordDef((a1, a2) -> Ordering.fromInt(a1.compareTo(a2)));
   }
 
-  /**
-   * An order instance that uses {@link Object#hashCode()} for computing the order and equality,
-   * thus objects returning the same hashCode are considered to be equals.
-   * This is not safe and therefore this method is deprecated.
-   *
-   * @return An order instance that is based on {@link Object#hashCode()}.
-   *
-   * @deprecated As of release 4.7.
-   */
-  @Deprecated
-  public static <A> Ord<A> hashOrd() {
-    return ordDef(a -> {
-      int aHash = a.hashCode();
-      return a2 -> Ordering.fromInt(Integer.valueOf(aHash).compareTo(a2.hashCode()));
-    });
-  }
-
-  /**
-   * An order instance that uses {@link Object#hashCode()} and {@link Object#equals} for computing
-   * the order and equality. First the hashCode is compared, if this is equal, objects are compared
-   * using {@link Object#equals}.
-   * WARNING: This ordering violate antisymmetry on hash collisions.
-   *
-   * @return An order instance that is based on {@link Object#hashCode()} and {@link Object#equals}.
-   *
-   * @deprecated As of release 4.7.
-   */
-  @Deprecated
-  public static <A> Ord<A> hashEqualsOrd() {
-    return ordDef(a -> {
-      int aHash = a.hashCode();
-      return a2 -> {
-        final int a2Hash = a2.hashCode();
-        return aHash < a2Hash ? Ordering.LT : aHash == a2Hash && a.equals(a2) ? Ordering.EQ : Ordering.GT;
-      };
-    });
-  }
-
   class OrdComparator implements Comparator<A> {
 	@Override
     public final int compare(A o1, A o2) {

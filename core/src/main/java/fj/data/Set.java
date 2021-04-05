@@ -713,28 +713,4 @@ public abstract class Set<A> implements Iterable<A> {
     return arraySet(o, as);
   }
 
-  /**
-   * Constructs a set from the list.
-   *
-   * @deprecated As of release 4.5, use {@link #iterableSet}
-   *
-   * @param o  An order for the elements of the new set.
-   * @param list The elements to add to a set.
-   * @return A new set containing the elements of the given list.
-   */
-  @Deprecated
-  public static <A> Set<A> set(final Ord<A> o, List<A> list) {
-    return iterableSet(o, list);
-  }
-
-  /**
-   * Constructs a set from the list.
-   *
-   * @deprecated As of release 4.5, use {@link #iterableSet}
-   */
-  @Deprecated
-  public static <A> Set<A> fromList(final Ord<A> o, List<A> list) {
-    return iterableSet(o, list);
-  }
-
 }

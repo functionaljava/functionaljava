@@ -325,16 +325,6 @@ public final class HashMap<K, V> implements Iterable<K> {
     return result;
   }
 
-  /**
-   * Converts the Iterable to a HashMap
-   *
-   * @deprecated As of release 4.5, use {@link #iterableHashMap(Iterable)}
-   */
-  @Deprecated
-  public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries) {
-    return iterableHashMap(entries);
-  }
-
   public static <K, V> HashMap<K, V> fromMap(java.util.Map<K, V> map) {
     return fromMap(Equal.anyEqual(), Hash.anyHash(), map);
   }
@@ -345,16 +335,6 @@ public final class HashMap<K, V> implements Iterable<K> {
       m.set(e.getKey(), e.getValue());
     }
     return m;
-  }
-
-  /**
-   * Converts the Iterable to a HashMap
-   *
-   * @deprecated As of release 4.5, use {@link #iterableHashMap}
-   */
-  @Deprecated
-  public static <K, V> HashMap<K, V> from(final Iterable<P2<K, V>> entries, final Equal<K> equal, final Hash<K> hash) {
-    return iterableHashMap(equal, hash, entries);
   }
 
   /**
