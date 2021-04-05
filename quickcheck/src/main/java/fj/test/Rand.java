@@ -5,7 +5,6 @@ import fj.data.Option;
 
 import java.util.Random;
 
-import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -18,18 +17,16 @@ import static java.lang.Math.min;
 public final class Rand {
   private final F<Option<Long>, F<Integer, F<Integer, Integer>>> f;
   private final F<Option<Long>, F<Double, F<Double, Double>>> g;
-
-  // TODO Change to F<Long,Rand> when rand(f,g) is removed
-  private final Option<F<Long, Rand>> optOnReseed;
+  private final F<Long, Rand> onReseed;
 
   private Rand(
       F<Option<Long>, F<Integer, F<Integer, Integer>>> f,
       F<Option<Long>, F<Double, F<Double, Double>>> g,
-      Option<F<Long, Rand>> optOnReseed) {
+      F<Long, Rand> onReseed) {
 
     this.f = f;
     this.g = g;
-    this.optOnReseed = optOnReseed;
+    this.onReseed = onReseed;
   }
 
   /**
@@ -88,33 +85,7 @@ public final class Rand {
    * @return A random generator with the given seed.
    */
   public Rand reseed(long seed) {
-    return optOnReseed.<Rand>option(
-        () -> {
-          throw new IllegalStateException("reseed() called on a Rand created with deprecated rand() method");
-        },
-        onReseed -> onReseed.f(seed));
-  }
-
-  /**
-   * Constructs a random generator from the given functions that supply a range to produce a
-   * result.
-   * <p>
-   * Calling {@link #reseed(long)} on an instance returned from this method will
-   * result in an exception being thrown.
-   *
-   * @deprecated As of release 4.6, use {@link #rand(F, F, F)}.
-   *
-   * @param f The integer random generator.
-   * @param g The floating-point random generator.
-   * @return A random generator from the given functions that supply a range to produce a result.
-   */
-  // TODO Change Option<F<Long,Rand>> optOnReseed to F<Long,Road> onReseed when removing this method
-  @Deprecated
-  public static Rand rand(
-      F<Option<Long>, F<Integer, F<Integer, Integer>>> f,
-      F<Option<Long>, F<Double, F<Double, Double>>> g) {
-
-    return new Rand(f, g, none());
+    return onReseed.f(seed);
   }
 
   /**
@@ -131,7 +102,7 @@ public final class Rand {
       F<Option<Long>, F<Double, F<Double, Double>>> g,
       F<Long, Rand> onReseed) {
 
-    return new Rand(f, g, some(onReseed));
+    return new Rand(f, g, onReseed);
   }
 
   /**

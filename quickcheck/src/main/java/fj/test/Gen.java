@@ -537,24 +537,6 @@ public final class Gen<A> {
   }
 
   /**
-   * Returns a generator of lists that picks the given number of elements from the given list. If
-   * the given number is less than zero or greater than the length of the given list, then the
-   * returned generator will never produce a value.
-   * <p>
-   * Note: pick is synonymous with combinationOf
-   *
-   * @deprecated As of release 4.6, use {@link #combinationOf}
-   *
-   * @param n  The number of elements to pick from the given list.
-   * @param as The list from which to pick elements.
-   * @return A generator of lists that picks the given number of elements from the given list.
-   */
-  @Deprecated
-  public static <A> Gen<List<A>> pick(int n, List<A> as) {
-    return combinationOf(n, as);
-  }
-
-  /**
    * Returns a generator of lists that picks the given number of elements from the given list. The selection is
    * a combination without replacement of elements from the given list, i.e.
    * <ul>
@@ -676,21 +658,6 @@ public final class Gen<A> {
   private static <A> Gen<List<A>> pick(Gen<List<Integer>> indexesGen, Array<A> as) {
     return indexesGen.map(indexes ->
         indexes.foldLeft((acc, index) -> cons(as.get(index), acc), List.<A>nil()).reverse());
-  }
-
-  /**
-   * Returns a generator of lists that produces some of the values of the given list.
-   * <p>
-   * Note: someOf is synonymous with someCombinationOf
-   *
-   * @deprecated As of release 4.6, use {@link #someCombinationOf}
-   *
-   * @param as The list from which to pick values.
-   * @return A generator of lists that produces some of the values of the given list.
-   */
-  @Deprecated
-  public static <A> Gen<List<A>> someOf(List<A> as) {
-    return someCombinationOf(as);
   }
 
   /**
