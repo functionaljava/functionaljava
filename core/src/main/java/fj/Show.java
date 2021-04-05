@@ -256,6 +256,16 @@ public final class Show<A> {
            fromString("Right(").append(sb.f.f(e.right().value())).append(single(')')));
   }
 
+  public static <A, B, C> Show<Either3<A, B, C>> eitherShow(final Show<A> sa, final Show<B> sb, final Show<C> sc) {
+    return show(e ->
+      e.either(
+        a -> fromString("Left(").append(sa.f.f(a)).append(single(')')),
+        b -> fromString("Middle(").append(sb.f.f(b)).append(single(')')),
+        c -> fromString("Right(").append(sc.f.f(c)).append(single(')'))
+      )
+    );
+  }
+
   /**
    * A show instance for the {@link Result} type.
    *
