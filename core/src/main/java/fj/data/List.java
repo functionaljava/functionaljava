@@ -111,7 +111,7 @@ public abstract class List<A> implements Iterable<A> {
   }
 
   /**
-   * Returns the head of the list, if any.  Equivalent to {@link #toOption()} .
+   * Returns the head of the list, if any.
    *
    * @return The optional head of the list.
    */
