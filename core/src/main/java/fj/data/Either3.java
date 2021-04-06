@@ -2,7 +2,6 @@ package fj.data;
 
 import fj.Equal;
 import fj.F;
-import fj.F0;
 import fj.Hash;
 
 import static fj.data.Option.none;
@@ -13,51 +12,24 @@ public abstract class Either3<A, B, C> {
     private Either3() {}
 
     private static final class Left<A, B, C> extends Either3<A, B, C> {
-        A a;
+        private final A a;
+
         Left(A a) {
             this.a = a;
-        }
-
-        @Override
-        public boolean isLeft() {
-            return true;
-        }
-
-        @Override
-        public boolean isMiddle() {
-            return false;
-        }
-
-        @Override
-        public boolean isRight() {
-            return false;
         }
 
         @Override
         public <D> D either(F<A, D> fa, F<B, D> fb, F<C, D> fc) {
             return fa.f(a);
         }
+
     }
 
     private static final class Middle<A, B, C> extends Either3<A, B, C> {
-        B b;
+        private final B b;
+
         Middle(B b) {
             this.b = b;
-        }
-
-        @Override
-        public boolean isLeft() {
-            return false;
-        }
-
-        @Override
-        public boolean isMiddle() {
-            return true;
-        }
-
-        @Override
-        public boolean isRight() {
-            return false;
         }
 
         @Override
@@ -67,24 +39,9 @@ public abstract class Either3<A, B, C> {
     }
 
     private static final class Right<A, B, C> extends Either3<A, B, C> {
-        C c;
+        private final C c;
         Right(C c) {
             this.c = c;
-        }
-
-        @Override
-        public boolean isLeft() {
-            return false;
-        }
-
-        @Override
-        public boolean isMiddle() {
-            return false;
-        }
-
-        @Override
-        public boolean isRight() {
-            return true;
         }
 
         @Override
@@ -161,11 +118,17 @@ public abstract class Either3<A, B, C> {
         return new Right<>(c);
     }
 
-    public abstract boolean isLeft();
+    public boolean isLeft() {
+        return either(a -> true, b -> false, c -> false);
+    }
 
-    public abstract boolean isMiddle();
+    public boolean isMiddle() {
+        return either(a -> false, b -> true, c -> false);
+    }
 
-    public abstract boolean isRight();
+    public boolean isRight() {
+        return either(a -> false, b -> false, c -> true);
+    }
 
     public <X, Y, Z> Either3<X, Y, Z> map3(F<A, X> fl, F<B, Y> fm, F<C, Z> fr) {
         return either(
@@ -187,6 +150,14 @@ public abstract class Either3<A, B, C> {
 
     public Either3<C, B, A> swap() {
         return either(a -> right(a), b -> middle(b), c -> left(c));
+    }
+
+    public Either3<B, A, C> swapLefts() {
+        return either(a -> middle(a), b -> left(b), c -> right(c));
+    }
+
+    public Either3<A, C, B> swapRights() {
+        return either(a -> left(a), b -> right(b), c -> middle(c));
     }
 
     public Option<A> leftOption() {
