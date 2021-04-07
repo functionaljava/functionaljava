@@ -6,6 +6,7 @@ package fj.data;
 
 import fj.F;
 import fj.Unit;
+import fj.function.Try0;
 
 import java.io.IOException;
 
@@ -17,9 +18,13 @@ import java.io.IOException;
  * @param <A> the type of the result produced by the IO
  */
 @FunctionalInterface
-public interface IO<A> {
+public interface IO<A> extends Try0<A, IOException> {
 
 	A run() throws IOException;
+
+	default A f() throws IOException {
+		return run();
+	}
 
 	default SafeIO<Validation<IOException, A>> safe() {
 		return IOFunctions.toSafeValidation(this);

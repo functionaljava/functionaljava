@@ -1,5 +1,7 @@
 package fj.function;
 
+import fj.F0;
+
 /**
  * Created by mperry on 28/08/2014.
  */
