@@ -347,14 +347,125 @@ public abstract class Either3<A, B, C> {
         private RightProjection(final Either3<A, B, C> e) {
             this.e = e;
         }
+        public <X> Either3<A, B, X> apply(final Either3<A, B, F<C, X>> e) {
+            return e.right().bind(this::map);
+        }
 
         public <X> Either3<A, B, X> bind(F<C, Either3<A, B, X>> f) {
             return e.either(a -> left(a), b -> middle(b), c -> f.f(c));
         }
 
+        public Either3<A, B, C> either() {
+            return e;
+        }
+
+        public boolean exists(final F<C, Boolean> f) {
+            return e.either(a -> false, b -> false, c -> f.f(c));
+        }
+
+        public <X, Y> Option<Either3<X, Y, C>> filter(final F<C, Boolean> f) {
+            return e.either(a -> none(), b -> none(), c -> f.f(c) ? some(right(c)) : none());
+        }
+
+        public boolean forall(final F<C, Boolean> f) {
+            return e.either(a -> true, b -> true, c -> f.f(c));
+        }
+
+        public Unit foreach(final F<C, Unit> f) {
+            return e.either(a -> unit(), b -> unit(), c -> f.f(c));
+        }
+
+        public void foreachDoEffect(final Effect1<C> f) {
+            e.either(a -> unit(), b -> unit(), c -> f.toF().f(c));
+        }
+
+        public Iterator<C> iterator() {
+            return toList().iterator();
+        }
+
         public <X> Either3<A, B, X> map(final F<C, X> f) {
             return e.either(a -> left(a), b -> middle(b), c -> right(f.f(c)));
         }
+
+        public C orValue(final C value) {
+            return orValue(() -> value);
+        }
+
+        public C orValue(final F0<C> f) {
+            return e.either(a -> f.f(), b -> f.f(), c -> c);
+        }
+
+        public <X> Either3<A, B, X> sequence(final Either3<A, B, X> e) {
+            return bind(Function.constant(e));
+        }
+
+        public Array<C> toArray() {
+            return e.either(
+                    a -> Array.empty(),
+                    b -> Array.empty(),
+                    c -> Array.single(c)
+            );
+        }
+
+        public Collection<C> toCollection() {
+            return toList().toCollection();
+        }
+
+        public List<C> toList() {
+            return e.either(a -> nil(), b -> nil(), c -> single(c));
+        }
+
+        public Option<C> toOption() {
+            return e.either(a -> none(), b -> none(), c -> some(c));
+        }
+
+        public Stream<C> toStream() {
+            return e.either(a -> Stream.nil(), b -> Stream.nil(), c -> Stream.single(c));
+        }
+
+        public <X> IO<Either3<A, B, X>> traverseIO(final F<C, IO<X>> f) {
+            return e.either(
+                    a -> IOFunctions.unit(left(a)),
+                    b -> IOFunctions.unit(middle(b)),
+                    c -> f.f(c).map(Either3::right)
+            );
+        }
+
+        public <X> List<Either3<A, B, X>> traverseList1(final F<C, List<X>> f) {
+            return e.either(
+                    a -> single(left(a)),
+                    b -> single(middle(b)),
+                    c -> f.f(c).map(Either3::right)
+            );
+        }
+
+        public <X> Option<Either3<A, B, X>> traverseOption(final F<C, Option<X>> f) {
+            return e.either(
+                    a -> some(left(a)),
+                    b -> some(middle(b)),
+                    c -> f.f(c).map(Either3::right)
+            );
+
+        }
+
+        public <X> P1<Either3<A, B, X>> traverseP1(final F<C, P1<X>> f) {
+            return e.either(
+                    a -> p(left(a)),
+                    b -> p(middle(b)),
+                    c -> f.f(c).map(Either3::right)
+            );
+
+        }
+
+        public <X> Stream<Either3<A, B, X>> traverseStream(final F<C, Stream<X>> f) {
+            return e.either(
+                    a -> Stream.single(left(a)),
+                    b -> Stream.single(middle(b)),
+                    c -> f.f(c).map(Either3::right)
+            );
+
+        }
+
 
     }
 
