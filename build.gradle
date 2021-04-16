@@ -70,6 +70,7 @@ allprojects {
         junitRuntime = "org.junit.vintage:junit-vintage-engine:5.5.2"
 
         displayCompilerWarnings = true
+        generateTestReports = false
     }
 
     repositories {
@@ -111,6 +112,15 @@ subprojects {
 			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
        }
     }
+
+    tasks.withType(Test).configureEach {
+        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+        if (!generateTestReports) {
+            reports.html.enabled = false
+            reports.junitXml.enabled = false
+        }
+    }
+
 
 }
 
