@@ -53,6 +53,15 @@ public interface Effect1<A> extends Consumer<A> {
 		};
 	}
 
+	default <Z extends Exception> TryEffect1<A, Z> toTryEffect1() {
+		return a -> f(a);
+	}
+
+
+	default <Z extends Exception> Try1<A, Unit, Z> toTry1() {
+		return a -> toF().f(a);
+	}
+
 	static <A> Effect1<A> fromF(F<A, Unit> f) {
 		return a -> f.f(a);
 	}
@@ -64,5 +73,7 @@ public interface Effect1<A> extends Consumer<A> {
 	default P1<Unit> partial(final A a) {
 		return P.lazy(() -> toF().f(a));
 	}
+
+
 
 }
