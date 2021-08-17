@@ -1,4 +1,4 @@
-# Use faster, Docker-based container (instead of OpenVZ)
+# Use faster, Docker-based container
 sudo: false
 
 language: java
