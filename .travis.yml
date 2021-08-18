@@ -27,7 +27,6 @@ matrix:
 script:
   - ./gradlew clean test
 
-
 env:
   global:
     - secure: Bun+1FZ29Q3dR9gZ/5brxcSf+zcY5tWrsqOA4GUb5bYCMyORuXQB0FYXuhKR4wB1pFrk1a9EYwRwSu3GwRJVWb+UzF0CNOWF/QG5tGPx32IOXScwlL/KonI4Vhs7Oc0fF4Wdb7euNrT27BU61jbUugjJ642b3n0VBYFYDdquprU=
