@@ -37,6 +37,7 @@ allprojects {
             reports.html.required = false
             reports.junitXml.required = false
         }
+	forkEvery = 100
     }
     apply plugin: "jacoco"
 
