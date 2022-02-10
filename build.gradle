@@ -107,7 +107,6 @@ subprojects {
 	}
 
     tasks.withType(JavaCompile) {
-        options.compilerArgs.addAll(['--release', '8'])
         if (displayCompilerWarnings) {
 			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
        }
@@ -146,7 +145,6 @@ configure(subprojects.findAll { it.name != "props-core" }) {
     sourceCompatibility = "1.8"
 
     javadoc {
-        options.addBooleanOption('html5', true)
     }
 
     task javadocJar(type: Jar, dependsOn: "javadoc") {
