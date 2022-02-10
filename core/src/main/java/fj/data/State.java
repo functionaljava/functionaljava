@@ -9,9 +9,6 @@ import static fj.P.p;
 import static fj.control.Trampoline.suspend;
 import static fj.data.List.cons;
 
-/**
- * Created by MarkPerry on 7/07/2014.
- */
 public final class State<S, A> {
 
   public static <S, A> State<S, A> unit(F<S, P2<S, A>> runF) {

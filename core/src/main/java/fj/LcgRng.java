@@ -1,8 +1,6 @@
 package fj;
 
 /**
- * Created by MarkPerry on 7/07/2014.
- *
  * https://en.wikipedia.org/wiki/Linear_congruential_generator
  */
 public class LcgRng extends Rng {

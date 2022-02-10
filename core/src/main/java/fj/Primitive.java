@@ -2,8 +2,6 @@ package fj;
 
 /**
  * Functions that convert between Java primitive types.
- *
- * @version %build.number%
  */
 public final class Primitive {
   private Primitive() {

@@ -14,8 +14,6 @@ import static fj.data.Option.somes;
 
 /**
  * Provides an in-memory, immutable, singly linked list with total <code>head</code> and <code>tail</code>.
- *
- * @version %build.number%
  */
 public final class NonEmptyList<A> implements Iterable<A> {
   /**

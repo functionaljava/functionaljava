@@ -12,8 +12,6 @@ import java.util.NoSuchElementException;
 
 /**
  * A parse result made up of a value (A) and the remainder of the parse input (I).
- *
- * @version %build.number%
  */
 public final class Result<I, A> implements Iterable<A> {
   private final I i;

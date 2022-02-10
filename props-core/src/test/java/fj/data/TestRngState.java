@@ -17,9 +17,6 @@ import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static fj.test.Variant.variant;
 
-/**
- * Created by mperry on 4/08/2014.
- */
 public class TestRngState {
 
 	static List<Integer> expected1 = List.list(4,4,2,2,2,5,3,3,1,5);

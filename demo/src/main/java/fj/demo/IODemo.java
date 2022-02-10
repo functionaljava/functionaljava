@@ -10,9 +10,6 @@ import static fj.data.LazyString.lines_;
 import static fj.data.LazyString.unlines_;
 import static java.lang.System.out;
 
-/**
- * Created by MarkPerry on 13/06/2015.
- */
 public class IODemo {
 
     public static void main(String[] args) {

@@ -11,8 +11,6 @@ import static fj.data.Option.some;
 
 /**
  * Curried functions over Doubles.
- *
- * @version %build.number%
  */
 public final class Doubles {
   private Doubles() {

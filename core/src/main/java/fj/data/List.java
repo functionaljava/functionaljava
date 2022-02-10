@@ -28,8 +28,6 @@ import static fj.function.Booleans.not;
 
 /**
  * Provides an in-memory, immutable, singly linked list.
- *
- * @version %build.number%
  */
 public abstract class List<A> implements Iterable<A> {
   private List() {

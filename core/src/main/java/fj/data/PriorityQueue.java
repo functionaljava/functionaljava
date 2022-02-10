@@ -20,8 +20,6 @@ import static fj.data.Option.some;
  * annotated with type K, are combined using a monoid of K and both the
  * key and value are stored in the leaf.  Priorities of the same value
  * are returned FIFO (first in, first out).
- *
- * Created by MarkPerry on 31 May 16.
  */
 public final class PriorityQueue<K, A> {
 

@@ -40,8 +40,6 @@ import static fj.Ordering.LT;
 
 /**
  * A lazy (not yet evaluated), immutable, singly linked list.
- *
- * @version %build.number%
  */
 public abstract class Stream<A> implements Iterable<A> {
   private Stream() {

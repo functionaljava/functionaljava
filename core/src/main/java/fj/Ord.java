@@ -10,8 +10,6 @@ import static fj.Semigroup.semigroupDef;
 
 /**
  * Tests for ordering between two objects.
- *
- * @version %build.number%
  */
 public final class Ord<A> {
 

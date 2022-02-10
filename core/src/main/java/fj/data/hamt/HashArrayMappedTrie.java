@@ -22,8 +22,6 @@ import static fj.data.hamt.BitSet.longBitSet;
  * mapped trie.  It is a refined version of the more general notion of
  * a hash tree.
  *
- * @author Mark Perry
- *
  * Based on "Ideal Hash Trees" by Phil Bagwell, available from
  * http://lampwww.epfl.ch/papers/idealhashtrees.pdf
  */

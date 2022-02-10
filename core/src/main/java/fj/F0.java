@@ -6,9 +6,6 @@ import fj.function.TryEffect0;
 
 import java.util.function.Supplier;
 
-/**
- * Created by MarkPerry on 21/01/2015.
- */
 @FunctionalInterface
 public interface F0<A> extends Supplier<A> {
 

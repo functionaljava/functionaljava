@@ -10,8 +10,6 @@ import java.math.BigInteger;
 
 /**
  * Curried functions over Integers.
- *
- * @version %build.number%
  */
 public final class BigIntegers {
   private BigIntegers() {

@@ -6,9 +6,6 @@ import fj.data.State;
 import static fj.demo.StateDemo_VendingMachine.Input.COIN;
 import static fj.demo.StateDemo_VendingMachine.Input.TURN;
 
-/**
- * Created by MarkPerry on 20/07/2014.
- */
 public class StateDemo_VendingMachine {
 
 	public enum Input { COIN, TURN }

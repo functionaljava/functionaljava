@@ -13,8 +13,6 @@ import fj.data.Stream;
  * For example, the BitSet("1011") represents the decimal number 11 and has
  * indices [3, 0] inclusive where the bit with the lowest value has the lowest
  * index and is the rightmost bit.
- *
- * Created by maperr on 31/05/2016.
  */
 public final class BitSet {
 

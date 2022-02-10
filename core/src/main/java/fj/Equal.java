@@ -22,8 +22,6 @@ import static fj.Function.curry;
 
 /**
  * Tests for equality between two objects.
- *
- * @version %build.number%
  */
 public final class Equal<A> {
 

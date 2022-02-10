@@ -8,9 +8,6 @@ import static fj.Ord.intOrd;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by MarkPerry on 18/08/2015.
- */
 public class SetTest {
 
 	@Test

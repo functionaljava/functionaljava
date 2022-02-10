@@ -15,9 +15,6 @@ import org.junit.runner.RunWith;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
-/**
- * Created by MarkPerry on 18/08/2015.
- */
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 10000)
 public class SetProperties {

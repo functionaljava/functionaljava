@@ -15,8 +15,6 @@ import static java.lang.Math.abs;
 
 /**
  * Curried functions over Longs.
- *
- * @version %build.number%
  */
 public final class Longs {
   private Longs() {

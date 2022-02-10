@@ -3,9 +3,6 @@ package fj;
 import fj.data.Validation;
 import fj.function.*;
 
-/**
- * Created by mperry on 29/08/2014.
- */
 public final class TryEffect {
 
     private TryEffect(){}

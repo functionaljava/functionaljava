@@ -27,8 +27,6 @@ import static fj.data.Stream.single;
 
 /**
  * Renders an object for display.
- *
- * @version %build.number%
  */
 public final class Show<A> {
   private final F<A, Stream<Character>> f;

@@ -31,9 +31,6 @@ import static fj.data.Validation.fail;
 import static fj.data.Validation.*;
 import static org.junit.Assert.*;
 
-/**
- * Created by MarkPerry on 15/01/2015.
- */
 public final class OptionTest {
 
     @Test

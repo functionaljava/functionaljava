@@ -1,6 +1,5 @@
 package fj.data.fingertrees;
 
-import fj.P2;
 import fj.data.Stream;
 import fj.test.Property;
 import fj.test.reflect.CheckParams;
@@ -12,9 +11,6 @@ import static fj.test.Arbitrary.arbList;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
-/**
- * Created by MarkPerry on 10/10/2015.
- */
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 10000)
 public class FingerTreeProperties {

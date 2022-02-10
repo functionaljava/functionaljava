@@ -17,8 +17,6 @@ import java.math.BigInteger;
 
 /**
  * Produces a hash code for an object which should attempt uniqueness.
- *
- * @version %build.number%
  */
 public final class Hash<A> {
   private final F<A, Integer> f;

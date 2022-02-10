@@ -6,9 +6,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by MarkPerry on 23/06/2015.
- */
 public class LensPerson {
 
     static final class Person {

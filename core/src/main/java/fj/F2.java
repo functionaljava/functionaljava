@@ -14,9 +14,6 @@ import static fj.data.Zipper.zipper;
 
 /**
  * A transformation function of arity-2 from <code>A</code> and <code>B</code> to <code>C</code>.
- * This type can be represented using the Java 7 closure syntax.
- *
- * @version %build.number%
  */
 @FunctionalInterface
 public interface F2<A, B, C> extends BiFunction<A, B, C> {

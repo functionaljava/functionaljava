@@ -1,15 +1,11 @@
 package fj.data;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static fj.data.Tree.leaf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
-/**
- * Created by MarkPerry on 29/08/2015.
- */
 public class TreeTest {
 
     @Test

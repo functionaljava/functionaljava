@@ -14,8 +14,6 @@ import static fj.parser.Result.result;
 /**
  * A parser is a function that takes some input (I) and produces either an error (E) or a parse result (A) and the
  * remainder of the input.
- *
- * @version %build.number%
  */
 public final class Parser<I, A, E> {
   private final F<I, Validation<E, Result<I, A>>> f;

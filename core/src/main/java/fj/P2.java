@@ -9,8 +9,6 @@ import fj.data.optic.PLens;
 
 /**
  * A product-2.
- *
- * @version %build.number%
  */
 public abstract class P2<A, B> {
   /**

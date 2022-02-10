@@ -7,9 +7,6 @@ import fj.P;
 import fj.P2;
 import fj.Unit;
 
-/**
- * 
- */
 public final class Iteratee {
 
   /** The input to an iteratee. */

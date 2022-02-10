@@ -23,8 +23,6 @@ import static fj.data.optic.Prism.prism;
 /**
  * An optional value that may be none (no value) or some (a value). This type is a replacement for
  * the use of <code>null</code> with better type checks.
- *
- * @version %build.number%
  */
 public abstract class Option<A> implements Iterable<A> {
   private Option() {

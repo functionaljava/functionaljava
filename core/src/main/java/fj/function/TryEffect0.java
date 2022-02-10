@@ -10,9 +10,6 @@ import static fj.Unit.unit;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 
-/**
- * Created by mperry on 28/08/2014.
- */
 public interface TryEffect0<Z extends Exception> {
 
 	void f() throws Z;

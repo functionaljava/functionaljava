@@ -4,8 +4,6 @@ import static fj.P.weakMemo;
 
 /**
  * A product-6.
- *
- * @version %build.number%
  */
 @SuppressWarnings("UnnecessaryFullyQualifiedName")
 public abstract class P6<A, B, C, D, E, F> {

@@ -4,8 +4,6 @@ import static fj.P.weakMemo;
 
 /**
  * A product-3.
- *
- * @version %build.number%
  */
 public abstract class P3<A, B, C> {
   /**

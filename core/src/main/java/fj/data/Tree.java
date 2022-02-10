@@ -10,8 +10,6 @@ import java.util.Iterator;
 
 /**
  * Provides a lazy, immutable, non-empty, multi-way tree (a rose tree).
- *
- * @version %build.number%
  */
 public final class Tree<A> implements Iterable<A> {
   /**

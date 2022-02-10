@@ -3,9 +3,6 @@ package fj.demo;
 import fj.P;
 import fj.data.State;
 
-/**
- * Created by mperry on 4/08/2014.
- */
 public class StateDemo_Greeter {
 
     public static void main(String args[]) {

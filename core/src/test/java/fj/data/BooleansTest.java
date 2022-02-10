@@ -10,9 +10,6 @@ import static fj.data.List.list;
 import static fj.function.Booleans.isnot;
 import static org.hamcrest.core.Is.is;
 
-/**
- * Created by amar on 28/01/15.
- */
 public class BooleansTest {
 
     @Test

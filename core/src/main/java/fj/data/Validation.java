@@ -17,8 +17,6 @@ import static fj.data.List.list;
  * Isomorphic to {@link Either} but has renamed functions and represents failure on the left and success on the right.
  * This type also has accumulating functions that accept a {@link Semigroup} for binding computation while keeping error
  * values
- *
- * @version %build.number%
  */
 public class Validation<E, T> implements Iterable<T> {
   private final Either<E, T> e;

@@ -19,9 +19,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-/**
- * Created by mperry on 3/06/2014.
- */
 public final class Java8 {
 
     private Java8() {

@@ -35,8 +35,6 @@ import java.util.concurrent.SynchronousQueue;
 
 /**
  * Functions that convert between types from the core Java API.
- *
- * @version %build.number%
  */
 public final class Java {
   private Java() {

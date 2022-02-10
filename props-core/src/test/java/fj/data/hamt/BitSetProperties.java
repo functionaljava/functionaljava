@@ -31,10 +31,6 @@ import static fj.test.Property.impliesBoolean;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
-/**
- * Created by maperr on 31/05/2016.
- */
-
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 10000)
 public class BitSetProperties {

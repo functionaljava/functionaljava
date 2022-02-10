@@ -7,9 +7,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by MarkPerry on 14 Feb 16.
- */
 public class ArrayTest {
 
     @Test

@@ -4,8 +4,6 @@ import fj.data.Option;
 
 /**
  * Transformations on functions.
- *
- * @version %build.number%
  */
 public final class Function {
   private Function() {

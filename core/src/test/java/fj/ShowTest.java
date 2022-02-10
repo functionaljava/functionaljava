@@ -6,9 +6,6 @@ import org.junit.Test;
 import static fj.data.Array.array;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by MarkPerry on 4/06/2015.
- */
 public class ShowTest {
     @Test
     public void arrayShow() {

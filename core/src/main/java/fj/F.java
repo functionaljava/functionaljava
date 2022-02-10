@@ -16,10 +16,7 @@ import static fj.data.Stream.iterableStream;
 import static fj.data.Zipper.fromStream;
 
 /**
- * A transformation or function from <code>A</code> to <code>B</code>. This type can be represented
- * using the Java 7 closure syntax.
- *
- * @version %build.number%
+ * A transformation or function from <code>A</code> to <code>B</code>.
  */
 @FunctionalInterface
 public interface F<A, B> extends Function<A, B> {

@@ -9,9 +9,6 @@ import static fj.data.Option.some;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by amar on 28/12/14.
- */
 public class List_Traverse_Tests {
 
     @Test

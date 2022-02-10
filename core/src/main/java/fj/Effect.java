@@ -14,8 +14,6 @@ import static fj.Unit.unit;
 
 /**
  * Represents a side-effect.
- *
- * @version %build.number%
  */
 public final class Effect {
 

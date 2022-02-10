@@ -25,9 +25,6 @@ import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static java.lang.Math.min;
 
-/**
- * Created by Zheka Kozlov on 02.06.2015.
- */
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 10000)
 public class NonEmptyListProperties {

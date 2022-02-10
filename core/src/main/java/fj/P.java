@@ -4,8 +4,6 @@ import static fj.Unit.unit;
 
 /**
  * Functions across products.
- *
- * @version %build.number%
  */
 public final class P {
   private P() {

@@ -23,8 +23,6 @@ import static fj.data.DList.listDList;
  * <ul>
  * <li><em>Associativity</em>; forall x. forall y. forall z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
- *
- * @version %build.number%
  */
 public final class Semigroup<A> {
 

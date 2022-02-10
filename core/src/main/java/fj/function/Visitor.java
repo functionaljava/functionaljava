@@ -15,8 +15,6 @@ import static fj.data.List.lookup;
 
 /**
  * The essence of the visitor design pattern expressed polymorphically.
- *
- * @version %build.number%
  */
 public final class Visitor {
   private Visitor() {

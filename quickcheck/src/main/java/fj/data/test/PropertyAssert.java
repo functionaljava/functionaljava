@@ -5,9 +5,6 @@ import fj.test.CheckResult;
 import fj.test.Property;
 import org.junit.Assert;
 
-/**
- * Created by MarkPerry on 18/12/2014.
- */
 public final class PropertyAssert {
 
     private PropertyAssert(){}

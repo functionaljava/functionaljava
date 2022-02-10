@@ -9,9 +9,6 @@ import static fj.Show.listShow;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-/**
- * Created by MarkPerry on 14/07/2014.
- */
 public class JavaTest {
 
 	@Test

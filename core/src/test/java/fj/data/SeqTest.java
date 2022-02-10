@@ -33,9 +33,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-/**
- * Created by MarkPerry on 16/01/2015.
- */
 public class SeqTest {
 
     @Test

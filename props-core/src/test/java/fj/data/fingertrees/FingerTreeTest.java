@@ -14,10 +14,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-
-/**
- * Created by MarkPerry on 10/10/2015.
- */
 public class FingerTreeTest {
 
     public static final int SIZE = 10;

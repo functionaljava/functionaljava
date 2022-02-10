@@ -6,9 +6,6 @@ import fj.data.Writer;
 
 import static fj.Monoid.stringMonoid;
 
-/**
- * Created by mperry on 4/08/2014.
- */
 public class WriterDemo_Halver {
 
     public static void main(String args[]) {

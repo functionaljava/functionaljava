@@ -9,9 +9,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by MarkPerry on 4/06/2015.
- */
 public class TestRand {
 
     @Test

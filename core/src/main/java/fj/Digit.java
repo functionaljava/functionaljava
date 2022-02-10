@@ -6,8 +6,6 @@ import static fj.data.Option.none;
 
 /**
  * The digits zero to nine.
- *
- * @version %build.number%
  */
 public enum Digit {
   /**

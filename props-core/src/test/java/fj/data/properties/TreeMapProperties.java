@@ -23,9 +23,6 @@ import static fj.test.Arbitrary.arbString;
 import static fj.test.Arbitrary.arbTreeMap;
 import static fj.test.Property.*;
 
-/**
- * Created by MarkPerry on 29/08/2015.
- */
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 10000)
 public class TreeMapProperties {

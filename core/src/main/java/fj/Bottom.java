@@ -2,8 +2,6 @@ package fj;
 
 /**
  * Represents the bottom _|_ value.
- *
- * @version %build.number%
  */
 public final class Bottom {
   private Bottom() {

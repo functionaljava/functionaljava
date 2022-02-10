@@ -16,8 +16,6 @@ import static java.lang.Math.abs;
 
 /**
  * Curried functions over Integers.
- *
- * @version %build.number%
  */
 public final class Integers {
   private Integers() {

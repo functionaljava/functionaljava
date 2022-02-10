@@ -10,9 +10,6 @@ import java.io.IOException;
 import static fj.data.Validation.fail;
 import static fj.data.Validation.success;
 
-/**
- * Created by mperry on 24/07/2014.
- */
 public final class Try {
 
     private Try() {

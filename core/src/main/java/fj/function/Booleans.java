@@ -15,8 +15,6 @@ import static fj.Semigroup.exclusiveDisjunctionSemiGroup;
 
 /**
  * Curried logical functions.
- *
- * @version %build.number%
  */
 public final class Booleans {
   private Booleans() {

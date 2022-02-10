@@ -8,8 +8,6 @@ import fj.data.Stream;
 import static fj.data.IOFunctions.*;
 
 /**
- * Created by MarkPerry on 11/06/2015.
- *
  * Examples from Chapter 7 of Real World Haskell, http://book.realworldhaskell.org/.
  *
  * Currently just ch07/toupper-lazy4.hs.

@@ -1,9 +1,5 @@
 package fj.data;
 
-/**
- * Created by MarkPerry on 19/06/2014.
- */
-
 import fj.F;
 import fj.Unit;
 import fj.function.Try0;

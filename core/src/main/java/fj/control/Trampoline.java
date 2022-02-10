@@ -9,7 +9,7 @@ import static fj.data.Either.right;
 
 /**
  * A Trampoline is a potentially branching computation that can be stepped through and executed in constant stack.
- * It represent suspendable coroutines with subroutine calls, reified as a data structure.
+ * It represents suspendable coroutines with subroutine calls, reified as a data structure.
  */
 public abstract class Trampoline<A> {
 

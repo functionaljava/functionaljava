@@ -5,9 +5,6 @@ import org.junit.Test;
 import static fj.P.p;
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by MarkPerry on 18/12/2014.
- */
 public class StateTest {
 
   @Test

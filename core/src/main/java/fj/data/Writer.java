@@ -2,9 +2,6 @@ package fj.data;
 
 import fj.*;
 
-/**
- * Created by MarkPerry on 7/07/2014.
- */
 public final class Writer<W, A> {
 
 	private final A val;

@@ -13,9 +13,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by MarkPerry on 4/12/2014.
- */
 public class ReaderTest {
 
     @Test

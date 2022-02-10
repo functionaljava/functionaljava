@@ -12,9 +12,6 @@ import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by mperry on 14/07/2014.
- */
 @RunWith(PropertyTestRunner.class)
 public class MemoisationTest {
 

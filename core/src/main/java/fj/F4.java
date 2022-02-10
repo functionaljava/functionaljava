@@ -2,9 +2,7 @@ package fj;
 
 /**
  * A transformation function of arity-4 from <code>A</code>, <code>B</code>, <code>C</code> and
- * <code>D</code> to <code>E</code>. This type can be represented using the Java 7 closure syntax.
- *
- * @version %build.number%
+ * <code>D</code> to <code>E</code>.
  */
 @FunctionalInterface
 public interface F4<A, B, C, D, E> {

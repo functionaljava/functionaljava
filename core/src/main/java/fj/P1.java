@@ -1,20 +1,12 @@
 package fj;
 
-import fj.data.Array;
-import fj.data.Either;
-import fj.data.List;
-import fj.data.Option;
-import fj.data.Stream;
-import fj.data.Validation;
+import fj.data.*;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 import static fj.P.p;
-import static fj.Unit.unit;
-//import fj.data.*;
-
 
 public abstract class P1<A> implements F0<A> {
 

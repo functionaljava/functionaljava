@@ -6,7 +6,6 @@ package fj.function;
  * Used to instantiate a lambda that may throw an <code>Exception</code> before converting to an <code>F2</code>.
  *
  * @see fj.Try#f(Try2)
- * @version %build.number%
  */
 
 public interface Try2<A, B, C, Z extends Exception> {

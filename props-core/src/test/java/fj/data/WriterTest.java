@@ -16,9 +16,6 @@ import static fj.test.Property.property;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-/**
- * Created by MarkPerry on 17/12/2014.
- */
 public class WriterTest {
 
     @Test

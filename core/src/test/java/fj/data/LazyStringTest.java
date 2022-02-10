@@ -6,9 +6,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by MarkPerry on 11/06/2015.
- */
 public class LazyStringTest {
 
     @Test

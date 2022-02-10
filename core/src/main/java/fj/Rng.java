@@ -1,8 +1,5 @@
 package fj;
 
-/**
- * Created by MarkPerry on 7/07/2014.
- */
 public abstract class Rng {
 
 	public abstract P2<Rng, Integer> nextInt();

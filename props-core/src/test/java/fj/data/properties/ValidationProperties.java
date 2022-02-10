@@ -13,9 +13,6 @@ import static fj.test.Arbitrary.*;
 import static fj.test.Property.implies;
 import static fj.test.Property.prop;
 
-/**
- * Created by MarkPerry on 3/07/2015.
- */
 @RunWith(PropertyTestRunner.class)
 public class ValidationProperties {
 

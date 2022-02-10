@@ -22,8 +22,6 @@ import java.math.BigDecimal;
  * <li><em>Right Identity</em>; forall x. sum(x, zero()) == x</li>
  * <li><em>Associativity</em>; forall x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
- *
- * @version %build.number%
  */
 public final class Monoid<A> {
 

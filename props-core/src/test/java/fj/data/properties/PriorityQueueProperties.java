@@ -26,9 +26,6 @@ import static fj.test.Property.property;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by MarkPerry on 18 Jun 16.
- */
 @RunWith(PropertyTestRunner.class)
 @CheckParams(maxSize = 100)
 public class PriorityQueueProperties {

@@ -3,9 +3,7 @@ package fj;
 /**
  * A transformation function of arity-8 from <code>A</code>, <code>B</code>, <code>C</code>,
  * <code>D</code>, <code>E</code>, <code>F$</code>, <code>G</code> and <code>H</code> to
- * <code>I</code>. This type can be represented using the Java 7 closure syntax.
- *
- * @version %build.number%
+ * <code>I</code>.
  */
 @FunctionalInterface
 public interface F8<A, B, C, D, E, F$, G, H, I> {

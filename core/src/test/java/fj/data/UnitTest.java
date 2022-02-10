@@ -4,9 +4,6 @@ import fj.Unit;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * Created by MarkPerry on 17/01/2015.
- */
 public class UnitTest {
 
     @Test

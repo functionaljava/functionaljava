@@ -8,9 +8,6 @@ import org.junit.Test;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 
-/**
- * Created by MarkPerry on 3/07/2014.
- */
 public class TestNull {
 
 	@Test

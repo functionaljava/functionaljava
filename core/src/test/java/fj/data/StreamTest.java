@@ -38,9 +38,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by Zheka Kozlov on 27.05.2015.
- */
 public class StreamTest {
 
   @Test

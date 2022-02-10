@@ -11,8 +11,6 @@ import java.lang.reflect.Type;
 
 /**
  * A wrapper for a {@link java.lang.Class} that provides additional methods.
- *
- * @version %build.number%
  */
 public final class Class<T> {
   private final java.lang.Class<T> c;

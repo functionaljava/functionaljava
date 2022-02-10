@@ -10,8 +10,6 @@ import fj.data.Stream;
 /**
  * A Hash Array Mapped Trie node that is either a key-value pair or a
  * Hash Array Mapped Trie.
- *
- * Created by maperr on 31/05/2016.
  */
 public final class Node<K, V> {
 

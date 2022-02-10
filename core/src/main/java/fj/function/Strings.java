@@ -12,8 +12,6 @@ import static fj.function.Characters.isWhitespace;
 
 /**
  * Curried string functions.
- *
- * @version %build.number%
  */
 public final class Strings {
   private Strings() {

@@ -32,9 +32,6 @@ import static fj.data.Validation.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
-/**
- * Created by MarkPerry on 16/01/2015.
- */
 public class ListTest {
 
     @Test
