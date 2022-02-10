@@ -4,19 +4,46 @@
 Released: TODO
 
 == Enhancements
+* The functions classes F, F2, F0, Effect1 and Effect2 extend the corresponding Java 8 function interface.  Removed the corresponding classes F1W, F1Functions, F2W and F2Functions.  Similarly for IO and IOW.
+* Moved the function wrapper classes F1W and F2W into F and F2 as default functions.
+* Added lifting a semigroup to an option monoid, using none as zero.
+* Added Trampoline.suspend(F0<Trampoline<A>>)
+* Added sum, product and fromString to Longs.
+* Added Bounded definition.
+* Added toStream of Bounded in Enumerator.
+* Added intersection monoid for sets.
+* Added set intersection semigroup.
+* Added FunctionalInterface annotations for interfaces F0, F, F2 to F8, IO and SafeIO.
+* Added functions to IO.
+* Added Either3.
+* Updated IO and SafeIO inheritance.
+* Added conversion functions for Effect, F, Try and TryEffect for low arities.
 
 == Fixes
-
+* Fixed BitSet properties test.
 
 == Internal
-
+* Upgraded to Gradle 6.8.3.
+* Added Strategy, Validation, Integers, monoid, semigroup and monoid tests.
+* Switch from the uptodate-gradle-plugin to gradle-versions-plugin.
+* Speed up Gradle tests by running in parallel and not generating reports.
 
 == Breaking Changes
-
+* Removed Ord parameter from Monoid's setIntersectionMonoid function.
+* Removed the classes F1W, F1Functions, F2W, F2Functions, F3W, F3Functions, F4W, F4Functions, F5W, F5Functions, F6W, F6Functions, F7W, F7Functions, F8W and F8Functions.
+* Removed deprecated Monoid, Ord, P, P1, Semigroup, Array, HashMap, Java, List, Seq, Set, Stream, Gen, Rand and TreeMap functions.
 
 == Documentation
-
-
+* Fixed the javadoc on Either's iif function.
+* Fixed doc for union and intersection monoid for sets.
+* Fixed semigroup docs.
+* Fixed List.headOption.
 
 == Contributors
+* Gabor Liptak
+* Jean-Baptiste Giraudeau
+* Soundharya Kamaraj
+* Yaroslav Atroshenko
+* Mark Perry
+* Chen Zhang
 
