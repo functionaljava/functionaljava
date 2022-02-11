@@ -16,7 +16,7 @@ import static fj.control.parallel.Callables.callable;
 import static fj.control.parallel.Strategy.*;
 import static fj.data.Stream.range;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class StrategyTest {
 

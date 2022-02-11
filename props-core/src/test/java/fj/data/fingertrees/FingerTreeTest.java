@@ -11,8 +11,8 @@ import static fj.Monoid.intAdditionMonoid;
 import static fj.Monoid.intMinMonoid;
 import static fj.data.fingertrees.FingerTree.measured;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FingerTreeTest {
 

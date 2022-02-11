@@ -10,8 +10,8 @@ import static fj.test.Cogen.cogenInteger;
 import static fj.test.Property.prop;
 import static fj.test.Property.property;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ReaderTest {
 

@@ -11,8 +11,8 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.27.0"
-        classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:5.3.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.36.0"
+        classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.1.0"
     }
 
     wrapper {
@@ -46,7 +46,7 @@ allprojects {
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "5.0"
+        fjConsumeVersion = "4.9"
 
         signModule = false
 
@@ -66,8 +66,8 @@ allprojects {
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
         primaryEmail = "functionaljava@googlegroups.com"
 
-        junitCompile = "junit:junit:4.12"
-        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.5.2"
+        junitCompile = "junit:junit:4.13.2"
+        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.8.2"
 
         displayCompilerWarnings = true
         generateTestReports = false

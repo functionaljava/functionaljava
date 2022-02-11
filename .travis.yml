@@ -11,12 +11,12 @@ matrix:
   fast_finish: true
 
   include:
-  - jdk: openjdk12
+  - jdk: openjdk11
     script:
       - ./gradlew build coverage -s -i
     after_success:
       - bash <(curl -s https://codecov.io/bash)
-      - '[ "$TRAVIS_BRANCH" = "series/5.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
+      - '[ "$TRAVIS_BRANCH" = "series/6.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
         && ./gradlew uploadArchives'
 
   allow_failures:

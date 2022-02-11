@@ -7,7 +7,8 @@ import org.junit.Test;
 import static fj.data.List.list;
 import static fj.data.Option.some;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class List_Traverse_Tests {
 
