@@ -6,10 +6,10 @@ mainClassName = "fj.demo.euler.Problem2"
 archivesBaseName = "${project.projectName}-${project.name}"
 
 dependencies {
-    compile project(":core")
-    compile project(":quickcheck")
-    testCompile junitCompile
-    testRuntime junitRuntime
+    api project(":core")
+    api project(":quickcheck")
+    api junitCompile
+    testImplementation junitRuntime
 }
 
 test {

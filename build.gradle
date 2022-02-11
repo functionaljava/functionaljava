@@ -16,7 +16,7 @@ buildscript {
     }
 
     wrapper {
-        gradleVersion = "7.4"
+        gradleVersion = "6.8.3"
         distributionType = Wrapper.DistributionType.ALL
     }
 }
@@ -94,7 +94,7 @@ subprojects {
     }
 
     apply from: "$rootDir/lib.gradle"
-	apply plugin: "java"
+	apply plugin: "java-library"
 	apply plugin: "eclipse"
 
 	repositories {
