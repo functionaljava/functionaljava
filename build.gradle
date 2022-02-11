@@ -164,7 +164,7 @@ configure(subprojects.findAll { it.name != "props-core" }) {
     }
 
     jar {
-        version project.fjVersion
+        archiveVersion = project.fjVersion
         bnd (
                 'Bundle-Name': 'Functional Java',
                 'Signature-Version': project.fjVersion,
