@@ -45,12 +45,10 @@ Setup Artifact Signing
 ======================
 The below text is a summary from https://gist.github.com/phit/bd3c6d156a2fa5f3b1bc15fa94b3256c.
 
-As of 2021-02-12, for Windows download Gpg4win 3.1.15 at https://gpg4win.org/index.html.  You need to provide 3 things:
-- the public key id
-- the path to the secret key ring file for your private key
-- the passphrase for your private key
+As of 2022-02-11, for Windows download Gpg4win 3.1.16 from https://files.gpg4win.org/.
 
 Open a command prompt and run "gpg --gen-key" and follow the prompts.
+
 Get your key id by running: "gpg --list-key"
 
 Example output:
@@ -68,9 +66,9 @@ sub   rsa2048 2017-06-17 [E] [expires: 2019-06-17]
 
 In this case we only have one key, 77273D57FA5140E5A91905087A1B92B81840D019 or short* 1840D019 which is basically just the last 8 characters of the long ID.
 
-Export the key using "gpg --export-secret-key <key> > %UserProfile%\secring.gpg"
+Export the key using "gpg --export-secret-key <key> >%UserProfile%\secring.gpg"
 
-In %UserProfile%\.gradle\gradle.properties, set the values below:
+Create the file %UserProfile%\.gradle\gradle.properties, set the values below:
 
 signing.keyId=XXXXXXXX
 signing.password=mypassword
@@ -89,6 +87,7 @@ sub   rsa3072 2021-02-12 [E] [expires: 2023-02-12]
 
 C:\repos\functionaljava>gpg --keyserver hkp://keyserver.ubuntu.com --send-keys E86A4EC34F25A9CF6118582A7985AAE03F41B2F9
 gpg: sending key 7985AAE03F41B2F9 to hkp://keyserver.ubuntu.com
+
 
 gradle upload (takes about 3 mins)
 
