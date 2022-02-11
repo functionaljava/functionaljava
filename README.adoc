@@ -22,8 +22,9 @@ Important URLs for the project are:
 
 * Website, http://www.functionaljava.org
 * Website repository, http://github.com/functionaljava/functionaljava.github.io
-* Travis continuous integration build, https://travis-ci.org/functionaljava/functionaljava
-* Sonatype Repository, https://oss.sonatype.org/content/groups/public/org/functionaljava/
+* Travis continuous integration build, https://app.travis-ci.com/github/functionaljava/functionaljava
+* Sonatype repository, https://oss.sonatype.org/content/groups/public/org/functionaljava/
+* Maven Central repository, https://mvnrepository.com/artifact/org.functionaljava/functionaljava
 
 == Downloading
 
@@ -35,12 +36,12 @@ The Functional Java artifact is published to Maven Central using the group `org.
 * Java 8 specific support (`functionaljava-java8`)
 * property based testing (`functionaljava-quickcheck` or `functionaljava-quickcheck_1.8` if you use Java 8+)
 
-The latest stable version is `4.8.1`.  This can be added to your Gradle project by adding the dependencies:
+The latest stable version is `4.9`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.8.1"
-compile "org.functionaljava:functionaljava-java8:4.8.1"
-compile "org.functionaljava:functionaljava-quickcheck:4.8.1"
-compile "org.functionaljava:functionaljava-java-core:4.8.1"
+compile "org.functionaljava:functionaljava:4.9"
+compile "org.functionaljava:functionaljava-java8:4.9"
+compile "org.functionaljava:functionaljava-quickcheck:4.9"
+compile "org.functionaljava:functionaljava-java-core:4.9"
 ----
 
 and in Maven:
@@ -48,22 +49,22 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.8.1</version>
+    <version>4.9</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java8</artifactId>
-    <version>4.8.1</version>
+    <version>4.9</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-quickcheck</artifactId>
-    <version>4.8.1</version>
+    <version>4.9</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-java-core</artifactId>
-    <version>4.8.1</version>
+    <version>4.9</version>
 </dependency>
 ----
 
@@ -71,7 +72,7 @@ and in Maven:
 
 FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 6 bytecode.  This requires access to both JDK 6 and 8.  The build system requires the environment variables `JAVA6_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
 
-Building is done using Gradle 2.13.  In the root directory run:
+Building is done using Gradle 6.8.3.  In the root directory run:
 ----
 ./gradlew
 ----
