@@ -3,6 +3,7 @@ archivesBaseName = "${project.projectName}-${project.name}"
 
 ext {
     signModule = true
+    uploadModule = true
 }
 
 dependencies {
@@ -12,7 +13,5 @@ dependencies {
 }
 
 performSigning(signingEnabled, signModule)
-configureUpload(signingEnabled, signModule)
+configureUpload(signingEnabled, signModule, uploadModule)
 
-
-uploadArchives.enabled = true

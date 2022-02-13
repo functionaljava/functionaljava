@@ -16,7 +16,7 @@ buildscript {
     }
 
     wrapper {
-        gradleVersion = "6.8.3"
+        gradleVersion = "7.3"
         distributionType = Wrapper.DistributionType.ALL
     }
 }
@@ -35,7 +35,7 @@ allprojects {
     apply plugin: "jacoco"
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.7"
     }
 
 	defaultTasks "build"
@@ -49,6 +49,7 @@ allprojects {
         fjConsumeVersion = "5.0"
 
         signModule = false
+        uploadModule = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"

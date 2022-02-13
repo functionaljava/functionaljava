@@ -67,80 +67,84 @@ def customisePom(pom, gradleProject) {
 }
 
 
-void configureUpload(String signingEnabled, Boolean signModule) {
-    publishing {
+void configureUpload(String signingEnabled, Boolean signModule, Boolean uploadModule) {
 
-        publications {
+    if (uploadModule) {
 
-            mavenJava(MavenPublication) {
-                groupId project.group
-                artifactId project.name
-                version project.version
+        publishing {
 
-                from components.java
+            publications {
 
-                customisePom(pom, rootProject)
+                mavenJava(MavenPublication) {
+                    groupId project.group
+                    artifactId project.name
+                    version project.version
 
-                artifact sourcesJar
-                artifact javadocJar
+                    from components.java
 
-                if (doSigning(signingEnabled, signModule)) {
-                    // sign the pom
-                    pom.withXml {
-                        def pomFile = file("${project.buildDir}/generated-pom.xml.asc")
-                        writeTo(pomFile)
-                        def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                        artifact(pomAscFile) {
-                            classifier = null
-                            extension = 'pom.asc'
-                        }
-                        pomFile.delete()
-                    }
+                    customisePom(pom, rootProject)
 
-                    // sign the artifacts
-                    project.tasks.signArchives.signatureFiles.each {
-                        artifact(it) {
-                            def matcher = it.file =~ /-(sources|javadoc|jre8|jre9)\.jar\.asc$/
-                            if (matcher.find()) {
-                                classifier = matcher.group(1)
-                            } else {
+                    artifact sourcesJar
+                    artifact javadocJar
+
+                    if (doSigning(signingEnabled, signModule)) {
+                        // sign the pom
+                        pom.withXml {
+                            def pomFile = file("${project.buildDir}/generated-pom.xml.asc")
+                            writeTo(pomFile)
+                            def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                            artifact(pomAscFile) {
                                 classifier = null
+                                extension = 'pom.asc'
                             }
-                            extension = 'jar.asc'
+                            pomFile.delete()
+                        }
+
+                        // sign the artifacts
+                        project.tasks.signArchives.signatureFiles.each {
+                            artifact(it) {
+                                def matcher = it.file =~ /-(sources|javadoc|jre8|jre9)\.jar\.asc$/
+                                if (matcher.find()) {
+                                    classifier = matcher.group(1)
+                                } else {
+                                    classifier = null
+                                }
+                                extension = 'jar.asc'
+                            }
                         }
                     }
+
                 }
 
             }
 
-        }
-
-        repositories {
-            maven {
-                url project.sonatypeUploadUrl
-                credentials {
-                    username sonatypeUsername
-                    password sonatypePassword
+            repositories {
+                maven {
+                    url project.sonatypeUploadUrl
+                    credentials {
+                        username sonatypeUsername
+                        password sonatypePassword
+                    }
                 }
             }
+
         }
 
-    }
-
-
-    model {
-        tasks.publishMavenJavaPublicationToMavenLocal {
-            dependsOn(project.tasks.signArchives)
-        }
-        tasks.publishMavenJavaPublicationToMavenRepository {
-            dependsOn(project.tasks.signArchives)
-        }
-        tasks.publish {
-            dependsOn(project.tasks.build)
-        }
+        model {
+            tasks.publishMavenJavaPublicationToMavenLocal {
+                dependsOn(project.tasks.signArchives)
+            }
+            tasks.publishMavenJavaPublicationToMavenRepository {
+                dependsOn(project.tasks.signArchives)
+            }
+            tasks.publish {
+                dependsOn(project.tasks.build)
+            }
 //        tasks.install {
 //            dependsOn(project.tasks.build)
 //        }
+        }
+
     }
 
 }

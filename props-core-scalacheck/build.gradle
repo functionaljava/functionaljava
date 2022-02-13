@@ -24,4 +24,4 @@ tasks.withType(ScalaCompile) {
 }
 
 performSigning(signingEnabled, signModule)
-configureUpload(signingEnabled, signModule)
+configureUpload(signingEnabled, signModule, project.uploadModule)
