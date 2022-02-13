@@ -15,8 +15,8 @@ matrix:
       - ./gradlew build coverage -s -i
     after_success:
       - bash <(curl -s https://codecov.io/bash)
-      - '[ "$TRAVIS_BRANCH" = "series/6.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
-        && ./gradlew uploadArchives'
+      - '[ "$TRAVIS_BRANCH" = "series/7.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
+        && ./gradlew publishMavenJavaPublicationToMavenRepository'
 
   allow_failures:
   - jdk: openjdk-ea
