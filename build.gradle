@@ -58,12 +58,20 @@ allprojects {
         projectUrl = "http://functionaljava.org/"
         scmUrl = "git://github.com/functionaljava/functionaljava.git"
         scmGitFile = "scm:git@github.com:functionaljava/functionaljava.git"
+        scmSshGitFile = "scm:git:ssh://git@github.com/functionaljava/functionaljava.git"
+        licenseUrl = "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
+        licenseName = "The BSD3 License"
+
+        issueUrl = "https://github.com/functionaljava/functionaljava/issues"
+        githubUrl = "https://github.com/functionaljava/functionaljava"
 
         sonatypeBaseUrl = "https://oss.sonatype.org"
         sonatypeSnapshotUrl = "$sonatypeBaseUrl/content/repositories/snapshots/"
         sonatypeRepositoryUrl = "$sonatypeBaseUrl/content/groups/public"
         sonatypeReleaseUrl = "$sonatypeBaseUrl/service/local/staging/deploy/maven2/"
+
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
+
         primaryEmail = "functionaljava@googlegroups.com"
 
         junitCompile = "junit:junit:4.13.2"
@@ -139,7 +147,7 @@ task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 
 configure(subprojects.findAll { it.name != "props-core" }) {
 
-    apply plugin: "maven"
+    apply plugin: "maven-publish"
     apply plugin: "signing"
     apply plugin: "biz.aQute.bnd.builder"
     sourceCompatibility = "1.8"
