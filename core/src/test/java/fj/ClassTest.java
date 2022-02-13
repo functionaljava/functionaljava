@@ -8,10 +8,9 @@ import org.junit.Test;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Iterator;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class ClassTest {
     @Test

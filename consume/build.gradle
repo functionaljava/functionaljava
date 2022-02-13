@@ -2,8 +2,8 @@
 archivesBaseName = "${project.projectName}-${project.name}"
 
 dependencies {
-    compile("$group:$projectName:$fjConsumeVersion")
+    api "$group:$projectName:$fjConsumeVersion"
 
-    testCompile junitCompile
-    testRuntime junitRuntime
+    testImplementation junitCompile
+    testRuntimeOnly junitRuntime
 }

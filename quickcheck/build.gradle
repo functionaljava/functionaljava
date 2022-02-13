@@ -6,8 +6,8 @@ ext {
 archivesBaseName = "${project.projectName}-${project.name}"
 
 dependencies {
-	compile project(":core")
-    compile junitCompile
+    api project(":core")
+    api junitCompile
 }
 
 performSigning(signingEnabled, signModule)

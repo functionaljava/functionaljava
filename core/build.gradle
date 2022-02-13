@@ -6,10 +6,10 @@ ext {
 archivesBaseName = project.projectName
 
 dependencies {
-    testCompile junitCompile
-    testRuntime junitRuntime
-    testCompile 'com.h2database:h2:1.4.199'
-    testCompile 'commons-dbutils:commons-dbutils:1.7'
+    testImplementation junitCompile
+    testRuntimeOnly junitRuntime
+    testImplementation 'com.h2database:h2:2.1.210'
+    testImplementation 'commons-dbutils:commons-dbutils:1.7'
 }
 
 performSigning(signingEnabled, signModule)

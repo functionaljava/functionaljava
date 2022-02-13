@@ -11,7 +11,8 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import static fj.function.Visitor.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class VisitorTest {
     @Test

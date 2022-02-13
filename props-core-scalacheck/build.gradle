@@ -11,12 +11,12 @@ ext {
 }
 
 dependencies {
-    compile project(":core")
-    compile "org.scala-lang:scala-library:$scalaVersion"
-    compile "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
+    api project(":core")
+    api "org.scala-lang:scala-library:$scalaVersion"
+    api "org.scalacheck:scalacheck_$scalacheckScalaVersion:$scalacheckVersion"
 
-    testCompile junitCompile
-    testRuntime junitRuntime
+    testImplementation junitCompile
+    testRuntimeOnly junitRuntime
 }
 
 tasks.withType(ScalaCompile) {

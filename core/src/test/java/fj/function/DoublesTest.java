@@ -12,6 +12,8 @@ import java.lang.reflect.Method;
 import static org.hamcrest.core.Is.is;
 
 import static fj.data.List.list;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class DoublesTest {
 

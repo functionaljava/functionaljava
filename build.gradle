@@ -11,8 +11,8 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.27.0"
-        classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:5.3.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.36.0"
+        classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.1.0"
     }
 
     wrapper {
@@ -58,16 +58,24 @@ allprojects {
         projectUrl = "http://functionaljava.org/"
         scmUrl = "git://github.com/functionaljava/functionaljava.git"
         scmGitFile = "scm:git@github.com:functionaljava/functionaljava.git"
+        scmSshGitFile = "scm:git:ssh://git@github.com/functionaljava/functionaljava.git"
+        licenseUrl = "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
+        licenseName = "The BSD3 License"
+
+        issueUrl = "https://github.com/functionaljava/functionaljava/issues"
+        githubUrl = "https://github.com/functionaljava/functionaljava"
 
         sonatypeBaseUrl = "https://oss.sonatype.org"
         sonatypeSnapshotUrl = "$sonatypeBaseUrl/content/repositories/snapshots/"
         sonatypeRepositoryUrl = "$sonatypeBaseUrl/content/groups/public"
         sonatypeReleaseUrl = "$sonatypeBaseUrl/service/local/staging/deploy/maven2/"
+
         sonatypeUploadUrl = isSnapshot ? sonatypeSnapshotUrl : sonatypeReleaseUrl
+
         primaryEmail = "functionaljava@googlegroups.com"
 
-        junitCompile = "junit:junit:4.12"
-        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.5.2"
+        junitCompile = "junit:junit:4.13.2"
+        junitRuntime = "org.junit.vintage:junit-vintage-engine:5.8.2"
 
         displayCompilerWarnings = true
         generateTestReports = false
@@ -94,7 +102,7 @@ subprojects {
     }
 
     apply from: "$rootDir/lib.gradle"
-	apply plugin: "java"
+	apply plugin: "java-library"
 	apply plugin: "eclipse"
 
 	repositories {
@@ -139,7 +147,7 @@ task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 
 configure(subprojects.findAll { it.name != "props-core" }) {
 
-    apply plugin: "maven"
+    apply plugin: "maven-publish"
     apply plugin: "signing"
     apply plugin: "biz.aQute.bnd.builder"
     sourceCompatibility = "1.8"
@@ -164,7 +172,7 @@ configure(subprojects.findAll { it.name != "props-core" }) {
     }
 
     jar {
-        version project.fjVersion
+        archiveVersion = project.fjVersion
         bnd (
                 'Bundle-Name': 'Functional Java',
                 'Signature-Version': project.fjVersion,
