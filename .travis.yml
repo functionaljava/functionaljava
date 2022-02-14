@@ -5,24 +5,13 @@ language: java
 
 jdk:
  - openjdk8
- - openjdk11
- - openjdk-ea
 
 matrix:
   fast_finish: true
 
   include:
-  - jdk: openjdk12
-    script:
-      - ./gradlew build coverage -s -i
-    after_success:
-      - bash <(curl -s https://codecov.io/bash)
-      - '[ "$TRAVIS_BRANCH" = "series/5.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
-        && ./gradlew uploadArchives'
 
   allow_failures:
-  - jdk: openjdk10
-  - jdk: openjdk-ea
 
 script:
   - ./gradlew clean test
