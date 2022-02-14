@@ -5,25 +5,22 @@ language: java
 
 jdk:
  - openjdk11
- - openjdk-ea
+
+script:
+  - ./gradlew clean build
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - '[ "$TRAVIS_BRANCH" = "series/6.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
+    && ./gradlew uploadArchives'
 
 matrix:
   fast_finish: true
 
   include:
-  - jdk: openjdk11
-    script:
-      - ./gradlew build coverage -s -i
-    after_success:
-      - bash <(curl -s https://codecov.io/bash)
-      - '[ "$TRAVIS_BRANCH" = "series/6.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
-        && ./gradlew uploadArchives'
 
   allow_failures:
-  - jdk: openjdk-ea
 
-script:
-  - ./gradlew clean test
 
 env:
   global:
