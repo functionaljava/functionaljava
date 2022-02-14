@@ -16,9 +16,8 @@ import static fj.data.Option.some;
 import static fj.data.TreeMap.iterableTreeMap;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.junit.Assert.assertTrue;
 
 public class TreeMapTest {
 

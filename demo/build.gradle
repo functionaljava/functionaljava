@@ -8,7 +8,7 @@ archivesBaseName = "${project.projectName}-${project.name}"
 dependencies {
     api project(":core")
     api project(":quickcheck")
-    api junitCompile
+    testImplementation junitCompile
     testImplementation junitRuntime
 }
 
