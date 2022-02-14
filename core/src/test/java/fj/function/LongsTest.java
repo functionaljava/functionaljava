@@ -8,7 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import static fj.data.List.list;
 import static fj.data.Option.none;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 
 public class LongsTest {
 

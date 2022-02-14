@@ -9,6 +9,7 @@ import static fj.P1.curry;
 import static fj.data.List.list;
 import static fj.function.Booleans.isnot;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BooleansTest {
 
@@ -70,7 +71,7 @@ public class BooleansTest {
         F<Integer, Boolean> f1 = a -> a == 4;
         List<String> result = list("some", "come", "done!").filter(isnot(String::length, f1));
 
-        Assert.assertThat(result.length(), is(1));
+        assertThat(result.length(), is(1));
         Assert.assertEquals(result, list("done!"));
 
     }

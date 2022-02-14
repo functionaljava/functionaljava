@@ -12,7 +12,8 @@ import static fj.data.IOFunctions.*;
 import static fj.data.Stream.cons;
 import static fj.data.Stream.nil_;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class IOFunctionsTest {
 
@@ -33,8 +34,8 @@ public class IOFunctionsTest {
         r -> () -> new BufferedReader(r).readLine()
     );
 
-    Assert.assertThat(bracketed.run(), is("Read OK"));
-    Assert.assertThat(closed.get(), is(true));
+    assertThat(bracketed.run(), is("Read OK"));
+    assertThat(closed.get(), is(true));
   }
 
   @Test
@@ -59,9 +60,9 @@ public class IOFunctionsTest {
       bracketed.run();
       fail("Exception expected");
     } catch (IllegalArgumentException e) {
-      Assert.assertThat(e.getMessage(), is("OoO"));
+      assertThat(e.getMessage(), is("OoO"));
     }
-    Assert.assertThat(closed.get(), is(true));
+    assertThat(closed.get(), is(true));
   }
 
   @Test

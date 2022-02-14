@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static fj.Function.compose;
 import static fj.function.Strings.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 public class StringsTest {

@@ -30,7 +30,10 @@ import static fj.data.Option.*;
 import static fj.data.Validation.fail;
 import static fj.data.Validation.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class ListTest {
 
