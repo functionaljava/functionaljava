@@ -20,7 +20,7 @@ String findJavaCommand(String command) {
 
 Boolean doSigning(String signingAllowed, Boolean doModule) {
     def b = signingAllowed.trim() == "true" && doModule
-//    println("signModule: ${project.name} signingEnabled: $signingAllowed module: $doModule")
+//    println("signModule: ${project.name} signingAllowed: $signingAllowed doModule: $doModule")
     b
 }
 
@@ -31,50 +31,122 @@ void performSigning(String signingAllowed, Boolean doModule) {
     }
 }
 
-void configureUpload(String signingEnabled, Boolean signModule) {
+def customisePom(pom, gradleProject) {
+    pom.withXml {
+        def root = asNode()
 
-    uploadArchives {
-        enabled = false
-        repositories {
-            mavenDeployer {
-                if (doSigning(signingEnabled, signModule)) {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                }
+        // add all items necessary for maven central publication
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
 
-                repository(url: sonatypeUploadUrl) {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+            name project.pomProjectName
+            description project.projectDescription
+            url project.projectUrl
+            organization {
+                name project.pomOrganisation
+                url project.projectUrl
+            }
+            issueManagement {
+                system 'GitHub'
+                url project.issueUrl
+            }
+            licenses {
+                license {
+                    name project.licenseName
+                    url project.licenseUrl
+                    distribution 'repo'
                 }
-                pom {
-                    groupId = project.group
-                    project {
-                        name pomProjectName
-                        packaging 'jar'
-                        description projectDescription
-                        url projectUrl
-                        organization {
-                            name pomOrganisation
-                            url projectUrl
-                        }
-                        scm {
-                            url scmUrl
-                        }
-                        licenses {
-                            license {
-                                name "The BSD3 License"
-                                url "https://github.com/functionaljava/functionaljava/blob/master/etc/LICENCE"
-                                distribution 'repo'
-                            }
-                        }
-                        developers {
-                            developer {
-                                email primaryEmail
-                            }
-                        }
-                    }
-                }
+            }
+            scm {
+                url project.githubUrl
+                connection project.scmGitFile
+                developerConnection project.scmSshGitFile
             }
         }
     }
+}
+
+
+void configureUpload(String signingEnabled, Boolean signModule, Boolean uploadModule) {
+
+    if (uploadModule) {
+
+        publishing {
+
+            publications {
+
+                mavenJava(MavenPublication) {
+                    groupId project.group
+                    artifactId project.name
+                    version project.version
+
+                    from components.java
+
+                    customisePom(pom, rootProject)
+
+                    artifact sourcesJar
+                    artifact javadocJar
+
+                    if (doSigning(signingEnabled, signModule)) {
+                        // sign the pom
+                        pom.withXml {
+                            def pomFile = file("${project.buildDir}/generated-pom.xml.asc")
+                            writeTo(pomFile)
+                            def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                            artifact(pomAscFile) {
+                                classifier = null
+                                extension = 'pom.asc'
+                            }
+                            pomFile.delete()
+                        }
+
+                        // sign the artifacts
+                        project.tasks.signArchives.signatureFiles.each {
+                            artifact(it) {
+                                def matcher = it.file =~ /-(sources|javadoc|jre8|jre9)\.jar\.asc$/
+                                if (matcher.find()) {
+                                    classifier = matcher.group(1)
+                                } else {
+                                    classifier = null
+                                }
+                                extension = 'jar.asc'
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            repositories {
+                maven {
+                    url project.sonatypeUploadUrl
+                    credentials {
+                        username sonatypeUsername
+                        password sonatypePassword
+                    }
+                }
+            }
+
+        }
+
+        model {
+            tasks.publishMavenJavaPublicationToMavenLocal {
+                dependsOn(project.tasks.signArchives)
+            }
+            tasks.publishMavenJavaPublicationToMavenRepository {
+                dependsOn(project.tasks.signArchives)
+            }
+            tasks.publish {
+                dependsOn(project.tasks.build)
+            }
+//        tasks.install {
+//            dependsOn(project.tasks.build)
+//        }
+        }
+
+    }
+
 }
 
 ext {

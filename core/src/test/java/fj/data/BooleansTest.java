@@ -11,6 +11,7 @@ import static fj.function.Booleans.isnot;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+
 public class BooleansTest {
 
     @Test

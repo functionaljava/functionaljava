@@ -14,6 +14,7 @@ import static fj.data.List.list;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+
 /**
  * @author Mark Perry
  */

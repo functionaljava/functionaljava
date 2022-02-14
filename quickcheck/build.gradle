@@ -1,16 +1,15 @@
 
 ext {
     signModule = true
+    uploadModule = true
 }
 
 archivesBaseName = "${project.projectName}-${project.name}"
 
 dependencies {
-	compile project(":core")
-    compile junitCompile
+    api project(":core")
+    api junitCompile
 }
 
 performSigning(signingEnabled, signModule)
-configureUpload(signingEnabled, signModule)
-
-uploadArchives.enabled = true
+configureUpload(signingEnabled, signModule, uploadModule)

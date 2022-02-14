@@ -6,6 +6,7 @@ import static fj.data.DList.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+
 public class DListTest {
     @Test
     public void testConsSnoc() {

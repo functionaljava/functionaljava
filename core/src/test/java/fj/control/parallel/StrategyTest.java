@@ -18,7 +18,6 @@ import static fj.data.Stream.range;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class StrategyTest {
 
     @Test
