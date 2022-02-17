@@ -8,7 +8,7 @@ image::http://www.functionaljava.org/img/logo-600x144.png[]
 
 Functional Java is an open source library facilitating functional programming in Java. The library implements numerous basic and advanced programming abstractions that assist composition oriented development. Functional Java also serves as a platform for learning functional programming concepts by introducing these concepts using a familiar language.
 
-The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck and Functional Java's quickcheck module. Functional Java is compiled with Java 8 targeting Java 7 bytecode. The use of lambdas within the project are back ported with the Retro Lambda library, supporting Java versions 6 to 8.
+The library is intended for use in production applications and is thoroughly tested using the technique of automated specification-based testing with ScalaCheck and Functional Java's quickcheck module.
 
 Functional Java provides abstractions for the following types:
 
@@ -32,16 +32,13 @@ The recommended way to download and use the project is through your build tool.
 
 The Functional Java artifact is published to Maven Central using the group `org.functionaljava` with three published artifacts:
 
-* the core library (`functionaljava` or `functionaljava_1.8` if you use Java 8+)
-* Java 8 specific support (`functionaljava-java8`)
-* property based testing (`functionaljava-quickcheck` or `functionaljava-quickcheck_1.8` if you use Java 8+)
+* the core library (`functionaljava`)
+* property based testing (`functionaljava-quickcheck`)
 
-The latest stable version is `4.9`.  This can be added to your Gradle project by adding the dependencies:
+The latest stable version is `5.0`.  This can be added to your Gradle project by adding the dependencies:
 ----
-compile "org.functionaljava:functionaljava:4.9"
-compile "org.functionaljava:functionaljava-java8:4.9"
-compile "org.functionaljava:functionaljava-quickcheck:4.9"
-compile "org.functionaljava:functionaljava-java-core:4.9"
+compile "org.functionaljava:functionaljava:5.0"
+compile "org.functionaljava:functionaljava-quickcheck:5.0"
 ----
 
 and in Maven:
@@ -49,34 +46,22 @@ and in Maven:
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava</artifactId>
-    <version>4.9</version>
-</dependency>
-<dependency>
-    <groupId>org.functionaljava</groupId>
-    <artifactId>functionaljava-java8</artifactId>
-    <version>4.9</version>
+    <version>5.0</version>
 </dependency>
 <dependency>
     <groupId>org.functionaljava</groupId>
     <artifactId>functionaljava-quickcheck</artifactId>
-    <version>4.9</version>
-</dependency>
-<dependency>
-    <groupId>org.functionaljava</groupId>
-    <artifactId>functionaljava-java-core</artifactId>
-    <version>4.9</version>
+    <version>5.0</version>
 </dependency>
 ----
 
 == Building
 
-FunctionalJava uses the Retro Lambda project to backport Java 8 lambdas to Java 6 bytecode.  This requires access to both JDK 6 and 8.  The build system requires the environment variables `JAVA6_HOME` and `JAVA8_HOME` to refer to the appropriate directories.
-
-Building is done using Gradle 6.8.3.  In the root directory run:
+Building is done using Gradle 7.4.  In the root directory run:
 ----
 ./gradlew
 ----
-This requires access to Java and will download the Gradle build tool and necessary dependencies and build FunctionalJava.
+This requires access to Java 8 and will download the Gradle build tool and necessary dependencies and build FunctionalJava.
 
 == Features
 
