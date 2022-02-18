@@ -63,7 +63,7 @@ object CheckArray extends Properties("Array") {
       a.reverse.foldRight((a: String, b: Array[String]) => array[String](scala.Array(a): _*).append(b), empty[String])))
 
   property("scans") = forAll((a: Array[Int], z: Int) => {
-    val add = (x: Int, y: Int) => x + y
+    val add: F2[Int, Int, Int] = (x: Int, y: Int) => x + y
     val left = a.scanLeft(add, z)
     val right = a.reverse().scanRight(add, z).reverse()
     
@@ -72,7 +72,7 @@ object CheckArray extends Properties("Array") {
 
   property("scans1") = forAll((a: Array[Int]) =>
     (a.length() > 0) ==> {
-      val add = (x: Int, y: Int) => x + y
+      val add: F2[Int, Int, Int] = (x: Int, y: Int) => x + y
       val left = a.scanLeft1(add)
       val right = a.reverse().scanRight1(add).reverse()
       

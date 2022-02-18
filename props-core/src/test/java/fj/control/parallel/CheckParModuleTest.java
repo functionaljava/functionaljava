@@ -7,6 +7,7 @@ import fj.P;
 import fj.P1;
 import fj.P2;
 import fj.data.Stream;
+import fj.function.Strings;
 import fj.test.Arbitrary;
 import fj.test.Property;
 import fj.test.runner.PropertyTestRunner;
@@ -28,19 +29,18 @@ public class CheckParModuleTest {
 
     public Property parFlatMap() {
         return property(arbStream(arbString), arbParModule(), (str, pm) -> {
-            F<String, Stream<String>> f = s3 -> Stream.stream(s3, reverse().f(s3));
+            F<String, Stream<String>> f = s3 -> Stream.stream(s3, Strings.reverse().f(s3));
             return prop(Equal.streamEqual(stringEqual).eq(str.bind(f), pm.parFlatMap(str, f).claim()));
         });
-    }
-
-    private F<String, String> reverse() {
-        return s2 -> new StringBuilder(s2).reverse().toString();
     }
 
     public Property parFoldMap() {
         return property(arbStream(arbString), arbParModule(), (str, pm) -> {
             F<Stream<String>, P2<Stream<String>, Stream<String>>> chunk = x -> P.p(Stream.stream(x.head()), x.tail()._1());
-            return prop(stringEqual.eq(stringMonoid.sumLeft(str.map(reverse())), pm.parFoldMap(str, reverse(), stringMonoid, chunk).claim()));
+            return prop(stringEqual.eq(
+                stringMonoid.sumLeft(str.map(Strings.reverse())),
+                pm.parFoldMap(str, Strings.reverse(), stringMonoid, chunk).claim()
+            ));
         });
     }
 
