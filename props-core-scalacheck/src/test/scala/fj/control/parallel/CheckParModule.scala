@@ -46,11 +46,4 @@ object CheckParModule extends Properties("ParModule") {
   property("parMapArray") = forAll((s: Array[String], p: ParModule) =>
     arrayEqual(stringEqual).eq(s.map(rev), p.parMap(s, rev).claim)) 
 
-  property("parFlatMap") = forAll((s: Stream[String], p: ParModule) => {
-    val f = (x: String) => Stream.stream(x, rev(x)) : Stream[String]
-    streamEqual(stringEqual).eq(s.bind(f), p.parFlatMap(s, f).claim)})
-
-  property("parFoldMap") = forAll((s: Stream[String], p: ParModule) => {
-    val chunk = (x: Stream[String]) => P.p(Stream.stream(x.head), x.tail._1)
-    stringEqual.eq(stringMonoid.sumLeft(s.map(rev)), p.parFoldMap(s, rev, stringMonoid, chunk).claim)})
 }
