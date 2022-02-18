@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.36.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
         classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.1.0"
     }
 

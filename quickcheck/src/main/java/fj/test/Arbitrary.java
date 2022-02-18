@@ -23,6 +23,9 @@ import fj.P5;
 import fj.P6;
 import fj.P7;
 import fj.P8;
+import fj.Unit;
+import fj.control.parallel.ParModule;
+import fj.control.parallel.Strategy;
 import fj.data.*;
 import fj.LcgRng;
 import fj.Ord;
@@ -65,9 +68,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Common Gen helper functions.
@@ -96,6 +102,24 @@ public final class Arbitrary {
      */
     public static <S, A> Gen<State<S, A>> arbState(Gen<S> as, Cogen<S> cs, Gen<A> aa) {
         return arbF(cs, arbP2(as, aa)).map(State::unit);
+    }
+
+    public static Gen<ParModule> arbParModule() {
+      return Arbitrary.<Unit>arbStrategy().map(s -> ParModule.parModule(s));
+    }
+
+    public static <A> Gen<Strategy<A>> arbStrategy() {
+      Strategy<A> s = Strategy.<A>executorStrategy(fixedThreadsExecutorService(2));
+      return Gen.elements(s);
+    }
+
+    private static ExecutorService fixedThreadsExecutorService(int n) {
+      return Executors.newFixedThreadPool(n, r -> {
+          ThreadFactory tf = Executors.defaultThreadFactory();
+          Thread t = tf.newThread(r);
+          t.setDaemon(true);
+          return t;
+      });
     }
 
     /**
