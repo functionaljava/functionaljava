@@ -10,7 +10,6 @@ import static fj.data.Option.some;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class MonoidTest {
 
   @Test

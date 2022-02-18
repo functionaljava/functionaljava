@@ -13,7 +13,6 @@ import static fj.function.Visitor.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class VisitorTest {
     @Test
     public void testFindFirst() {

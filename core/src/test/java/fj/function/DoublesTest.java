@@ -1,6 +1,8 @@
 package fj.function;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+
 
 import fj.F;
 import org.junit.Test;
@@ -9,6 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static org.junit.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 
 import static fj.data.List.list;

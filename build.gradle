@@ -6,17 +6,17 @@ apply plugin: "com.github.ben-manes.versions"
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
+        gradlePluginPortal()
     }
 
     dependencies {
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.36.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
         classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.1.0"
     }
 
     wrapper {
-        gradleVersion = "6.8.3"
+        gradleVersion = "7.4"
         distributionType = Wrapper.DistributionType.ALL
     }
 }
@@ -35,7 +35,7 @@ allprojects {
     apply plugin: "jacoco"
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.7"
     }
 
 	defaultTasks "build"
@@ -46,9 +46,10 @@ allprojects {
 
         snapshotAppendix = "-SNAPSHOT"
 		fjVersion = fjBaseVersion + (isSnapshot ? snapshotAppendix : "")
-        fjConsumeVersion = "4.9"
+        fjConsumeVersion = "5.0"
 
         signModule = false
+        uploadModule = false
 
         projectTitle = "Functional Java"
 		projectName = "functionaljava"
@@ -82,9 +83,8 @@ allprojects {
     }
 
     repositories {
-        jcenter()
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
     }
 
 	version = fjVersion
@@ -97,6 +97,7 @@ subprojects {
 
     buildscript {
         repositories {
+            mavenLocal()
             mavenCentral()
         }
     }
@@ -107,7 +108,6 @@ subprojects {
 
 	repositories {
         mavenLocal()
-        jcenter()
 		mavenCentral()
 		maven {
 			url sonatypeRepositoryUrl
@@ -123,8 +123,8 @@ subprojects {
     tasks.withType(Test).configureEach {
         maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
         if (!generateTestReports) {
-            reports.html.enabled = false
-            reports.junitXml.enabled = false
+            reports.html.required = false
+            reports.junitXml.required = false
         }
     }
 
@@ -140,8 +140,8 @@ task coverage(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     getSourceDirectories().from(files(subprojects.findAll {subproject -> subproject.name in projectForFoverage} .sourceSets.main.allSource.srcDirs))
 
     reports {
-        html.enabled = true
-        xml.enabled = true
+        html.required = true
+        xml.required = true
     }
 }
 

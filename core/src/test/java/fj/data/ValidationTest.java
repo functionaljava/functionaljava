@@ -39,8 +39,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
-
 public class ValidationTest {
     @Test
     public void testParseShort() {
