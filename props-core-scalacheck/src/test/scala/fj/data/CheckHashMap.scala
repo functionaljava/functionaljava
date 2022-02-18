@@ -9,6 +9,8 @@ import Hash._
 import Ord._
 import fj.data.Option._
 import scala.collection.JavaConversions._
+//import scala.collection.JavaConverters._
+
 import org.scalacheck.{Arbitrary, Properties}
 import data.ArbitraryList._
 import org.scalacheck.Arbitrary._
@@ -105,15 +107,4 @@ object CheckHashMap extends Properties("HashMap") {
     keysAreEqual && valuesAreEqual
   })
 
-  property("No null values") = forAll((list: List[Int]) => {
-    val m = HashMap.hashMap[Int, Int]()
-    list.foreachDoEffect(new Effect1[Int] {
-      def f(a: Int) {
-        m.set(a, null.asInstanceOf[Int])
-      }
-    })
-    list.forall(new F[Int, java.lang.Boolean]() {
-      def f(a: Int) = m.contains(a) == false
-    })
-  })
 }

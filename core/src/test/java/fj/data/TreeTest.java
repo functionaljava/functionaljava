@@ -6,7 +6,6 @@ import static fj.data.Tree.leaf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class TreeTest {
 
     @Test

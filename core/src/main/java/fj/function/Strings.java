@@ -96,4 +96,8 @@ public final class Strings {
     return Strings::unlines;
   }
 
+  public static F<String, String> reverse() {
+    return s -> new StringBuilder(s).reverse().toString();
+  }
+
 }

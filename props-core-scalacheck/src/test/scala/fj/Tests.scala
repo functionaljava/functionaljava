@@ -18,7 +18,7 @@ object Tests {
     fj.control.parallel.CheckParModule.properties
   ).flatten
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): scala.Unit = {
     run(tests)
     //    System.exit(0)
   }

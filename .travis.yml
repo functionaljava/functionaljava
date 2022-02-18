@@ -6,14 +6,6 @@ language: java
 jdk:
  - openjdk11
 
-script:
-  - ./gradlew clean build
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - '[ "$TRAVIS_BRANCH" = "series/6.x" -a "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]
-    && ./gradlew uploadArchives'
-
 matrix:
   fast_finish: true
 
@@ -21,11 +13,17 @@ matrix:
 
   allow_failures:
 
+script:
+  - ./gradlew build --no-daemon
 
 env:
   global:
     - secure: Bun+1FZ29Q3dR9gZ/5brxcSf+zcY5tWrsqOA4GUb5bYCMyORuXQB0FYXuhKR4wB1pFrk1a9EYwRwSu3GwRJVWb+UzF0CNOWF/QG5tGPx32IOXScwlL/KonI4Vhs7Oc0fF4Wdb7euNrT27BU61jbUugjJ642b3n0VBYFYDdquprU=
     - secure: QAxhjqLRa+WHKIzgIJPZ/rM5a5uzqG7E5rsC0YvB25cO712oYXmzsYPia/oSp0chXlYLYMfk2UnLeQCSx2e6ogXRRRa977Q+B33Nt0Hd9SGLtduv6DBrbA2ehLU12Ib4DWe5VhF5eueAunycYcllTvqA5h+pzTtEVbd68ZHncM4=
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:

@@ -6,7 +6,6 @@ import static fj.data.Option.none;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class TreeZipperTest {
     @Test
     public void testDelete() {
