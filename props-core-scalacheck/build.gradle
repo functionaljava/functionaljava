@@ -13,6 +13,7 @@ ext {
 
     scalacheckVersion = "1.12.6"
 //    scalacheckVersion = "1.13.5"
+//    scalacheckVersion = "1.14.0"
 //    scalacheckVersion = "1.15.2"
 
     signModule = true

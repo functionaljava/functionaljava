@@ -9,6 +9,8 @@ import Hash._
 import Ord._
 import fj.data.Option._
 import scala.collection.JavaConversions._
+//import scala.collection.JavaConverters._
+
 import org.scalacheck.{Arbitrary, Properties}
 import data.ArbitraryList._
 import org.scalacheck.Arbitrary._
