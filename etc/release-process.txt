@@ -1,6 +1,6 @@
 
-Current Release Process
-=======================
+Release Process
+===============
 
 Go through the issues and pull requests and set the Label and Milestone field.  Add information to /etc/release-notes/release-notes-<version>.adoc.
 
@@ -10,7 +10,7 @@ Update gradle.properties:
 
 
 Run the build command:
-gradlew clean build upload
+gradlew clean build publishAllPublicationsToMavenRepository
 
 Login to Sonatype and verify the release:
 * Login to https://oss.sonatype.org
@@ -18,6 +18,7 @@ Login to Sonatype and verify the release:
 * Tick the release and click Close
 * Wait until closed
 * Tick the release and click Release
+* It takes ~24 hours for Sonatype to sync to Maven Central where it should appear
 
 Commit changes
 
@@ -33,11 +34,26 @@ Create tag:
 
 Create the next version of the release notes with empty fields using the template.
 
-Copy the generated javadoc for each component to the website repositories' master branch under /javadoc/<version>.  Commit the javadoc and push.
+Copy the generated javadoc for each component to the website repositories' master branch, see https://github.com/functionaljava/functionaljava.github.io, under /javadoc/<version>.  Copy:
+- core to functionaljava
+- java-core to functionaljava-java-core
+- quickcheck to functionaljava-quickcheck
+
+Commit the javadoc and push.
 
 Update the website and Github README.adoc.  This includes adding any features to the home page and features page.  Updating the doc page with javadoc links.  Update the download page with a link to the latest release notes.
 
 Send a message to the group and social media about the release, TODO.
+
+Setup Sonatype
+======================
+You need to be able to login to https://oss.sonatype.org.  Register or check your login details.
+
+Create/edit the file %UserProfile%\.gradle\gradle.properties, set the values below:
+
+sonatypeUsername = <user>
+sonatypePassword = <pwd>
+
 
 Setup Artifact Signing
 ======================

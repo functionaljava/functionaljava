@@ -34,11 +34,13 @@ The Functional Java artifact is published to Maven Central using the group `org.
 
 * the core library (`functionaljava`)
 * property based testing (`functionaljava-quickcheck`)
+* a small amount of Java 8 support (`functionaljava-java-core`)
 
 The latest stable version is `5.0`.  This can be added to your Gradle project by adding the dependencies:
 ----
 compile "org.functionaljava:functionaljava:5.0"
 compile "org.functionaljava:functionaljava-quickcheck:5.0"
+compile "org.functionaljava:functionaljava-java-core:5.0"
 ----
 
 and in Maven:
@@ -53,11 +55,16 @@ and in Maven:
     <artifactId>functionaljava-quickcheck</artifactId>
     <version>5.0</version>
 </dependency>
+<dependency>
+    <groupId>org.functionaljava</groupId>
+    <artifactId>functionaljava-java-core</artifactId>
+    <version>5.0</version>
+</dependency>
 ----
 
 == Building
 
-Building is done using Gradle 7.4.  In the root directory run:
+Building is done using Java 8 and Gradle 7.4.  In the root directory run:
 ----
 ./gradlew
 ----
@@ -111,4 +118,4 @@ link:etc/LICENCE[The Functional Java license] uses the BSD 3 license (3-clause l
 
 == Release Notes
 
-For release notes for each version, see the directory etc/release-notes.
+For release notes for each version, see the directory link:etc/release-notes.
