@@ -1,10 +1,10 @@
 package fj.data;
 
 import fj.*;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.io.*;
+
+import org.junit.jupiter.api.Test;
 import java.io.Reader;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,12 +13,12 @@ import static fj.data.Stream.cons;
 import static fj.data.Stream.nil_;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class IOFunctionsTest {
 
   @Test
-  public void bracket_happy_path() throws Exception {
+  void bracket_happy_path() throws Exception {
     AtomicBoolean closed = new AtomicBoolean();
     Reader reader = new StringReader("Read OK") {
       @Override
@@ -39,7 +39,7 @@ public class IOFunctionsTest {
   }
 
   @Test
-  public void bracket_exception_path() throws Exception {
+  void bracket_exception_path() throws Exception {
     AtomicBoolean closed = new AtomicBoolean();
     Reader reader = new StringReader("Read OK") {
       @Override
@@ -53,7 +53,9 @@ public class IOFunctionsTest {
     IO<String> bracketed = IOFunctions.bracket(
         () -> reader,
         IOFunctions.closeReader,
-        r -> () -> {throw new IllegalArgumentException("OoO");}
+        r -> () -> {
+          throw new IllegalArgumentException("OoO");
+        }
     );
 
     try {
@@ -66,7 +68,7 @@ public class IOFunctionsTest {
   }
 
   @Test
-  public void testTraverseIO() throws IOException {
+  void testTraverseIO() throws IOException {
     String[] as = {"foo1", "bar2", "foobar3"};
     Stream<String> stream = Stream.arrayStream(as);
     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -78,7 +80,7 @@ public class IOFunctionsTest {
   }
 
   @Test
-  public void testSequenceWhile() throws IOException {
+  void testSequenceWhile() throws IOException {
     BufferedReader r = new BufferedReader(new StringReader("foo1\nbar2\nfoobar3"));
     Stream<IO<String>> s1 = Stream.repeat(() -> r.readLine());
     IO<Stream<String>> io = sequenceWhile(s1, s -> !s.equals("foobar3"));
@@ -86,7 +88,7 @@ public class IOFunctionsTest {
   }
 
   @Test
-  public void testForeach() throws IOException {
+  void testForeach() throws IOException {
     Stream<IO<String>> s1 = Stream.repeat(() -> "foo1");
     IO<Stream<String>> io = sequence(s1.take(2));
     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -99,14 +101,14 @@ public class IOFunctionsTest {
 
 
   @Test
-  public void testReplicateM() throws IOException {
+  void testReplicateM() throws IOException {
     final IO<String> is = () -> new BufferedReader(new StringReader("foo")).readLine();
     assertThat(replicateM(is, 3).run(), is(List.list("foo", "foo", "foo")));
   }
 
 
   @Test
-  public void testLift() throws IOException {
+  void testLift() throws IOException {
     final IO<String> readName = () -> new BufferedReader(new StringReader("foo")).readLine();
     F<String, IO<String>> f = this::println;
     final F<String, IO<String>> upperCaseAndPrint = f.<String>o().f(String::toUpperCase);

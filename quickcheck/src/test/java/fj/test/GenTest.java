@@ -7,7 +7,8 @@ import fj.data.Option;
 import fj.data.Stream;
 import fj.data.Validation;
 import fj.function.Effect1;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static fj.Ord.charOrd;
 import static fj.data.List.list;
@@ -25,21 +26,22 @@ import static fj.test.Gen.sequence;
 import static fj.test.Gen.streamOf;
 import static fj.test.Gen.wordOf;
 import static fj.test.Rand.standard;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class GenTest {
 
   private static final List<Character> AS = list('A', 'B', 'C');
 
   @Test
-  public void testCombinationOf_none() {
+  void testCombinationOf_none() {
     Gen<List<Character>> instance = combinationOf(0, AS);
     testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
-  public void testCombinationOf_one() {
+  void testCombinationOf_one() {
     Gen<List<Character>> instance = combinationOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
@@ -48,7 +50,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testCombinationOf_two() {
+  void testCombinationOf_two() {
     Gen<List<Character>> instance = combinationOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
@@ -58,7 +60,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testCombinationOf_three() {
+  void testCombinationOf_three() {
     Gen<List<Character>> instance = combinationOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
@@ -68,13 +70,13 @@ public final class GenTest {
   }
 
   @Test
-  public void testSelectionOf_none() {
+  void testSelectionOf_none() {
     Gen<List<Character>> instance = selectionOf(0, AS);
     testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
-  public void testSelectionOf_one() {
+  void testSelectionOf_one() {
     Gen<List<Character>> instance = selectionOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
@@ -83,7 +85,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testSelectionOf_two() {
+  void testSelectionOf_two() {
     Gen<List<Character>> instance = selectionOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
@@ -93,7 +95,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testSelectionOf_three() {
+  void testSelectionOf_three() {
     Gen<List<Character>> instance = selectionOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
@@ -103,7 +105,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testSelectionOf_four() {
+  void testSelectionOf_four() {
     Gen<List<Character>> instance = selectionOf(4, AS);
     testPick(100, instance, actual -> {
       assertEquals(4, actual.length());
@@ -113,13 +115,13 @@ public final class GenTest {
   }
 
   @Test
-  public void testPermutationOf_none() {
+  void testPermutationOf_none() {
     Gen<List<Character>> instance = permutationOf(0, AS);
     testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
-  public void testPermutationOf_one() {
+  void testPermutationOf_one() {
     Gen<List<Character>> instance = permutationOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
@@ -128,7 +130,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testPermutationOf_two() {
+  void testPermutationOf_two() {
     Gen<List<Character>> instance = combinationOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
@@ -137,7 +139,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testPermutationOf_three() {
+  void testPermutationOf_three() {
     Gen<List<Character>> instance = permutationOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
@@ -147,13 +149,13 @@ public final class GenTest {
   }
 
   @Test
-  public void testWordOf_none() {
+  void testWordOf_none() {
     Gen<List<Character>> instance = wordOf(0, AS);
     testPick(100, instance, actual -> assertTrue(actual.isEmpty()));
   }
 
   @Test
-  public void testWordOf_one() {
+  void testWordOf_one() {
     Gen<List<Character>> instance = wordOf(1, AS);
     testPick(100, instance, actual -> {
       assertEquals(1, actual.length());
@@ -162,7 +164,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testWordOf_two() {
+  void testWordOf_two() {
     Gen<List<Character>> instance = wordOf(2, AS);
     testPick(100, instance, actual -> {
       assertEquals(2, actual.length());
@@ -171,7 +173,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testWordOf_three() {
+  void testWordOf_three() {
     Gen<List<Character>> instance = wordOf(3, AS);
     testPick(100, instance, actual -> {
       assertEquals(3, actual.length());
@@ -180,7 +182,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testWordOf_four() {
+  void testWordOf_four() {
     Gen<List<Character>> instance = wordOf(4, AS);
     testPick(100, instance, actual -> {
       assertEquals(4, actual.length());
@@ -189,7 +191,7 @@ public final class GenTest {
   }
 
   @Test
-  public void testStreamOf() {
+  void testStreamOf() {
     final Gen<Stream<Character>> instance = streamOf(pickOne(AS));
     testPick(100, instance.map(stream -> stream.take(4).toList()), actual -> {
       assertEquals(4, actual.length());
@@ -198,9 +200,9 @@ public final class GenTest {
   }
 
   @Test
-  public void testSequenceValidation() {
+  void testSequenceValidation() {
     final Gen<List<Validation<NonEmptyList<Exception>, Character>>> success = listOf(sequence(success(pickOne(AS))), 4);
-    testPick(100, success, list -> assertEquals(list.length(),somes(list.map(v -> Option.sequence(v.map(c -> AS.elementIndex(Equal.anyEqual(), c))))).length()));
+    testPick(100, success, list -> assertEquals(list.length(), somes(list.map(v -> Option.sequence(v.map(c -> AS.elementIndex(Equal.anyEqual(), c))))).length()));
 
     final Gen<List<Validation<NonEmptyList<Exception>, Gen<Character>>>> failure = listOf(sequence(fail(nel(new Exception()))), 4);
     testPick(100, failure, list -> assertTrue(list.forall(a -> a.isFail())));

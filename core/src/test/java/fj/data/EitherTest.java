@@ -1,6 +1,7 @@
 package fj.data;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -8,25 +9,26 @@ import static fj.Function.constant;
 import static fj.P.p;
 import static fj.Unit.unit;
 import static fj.data.Either.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class EitherTest {
 
-  public static final class LeftProjectionTest {
+  @Nested
+  public final class LeftProjectionTest {
     @Test
-    public void testIterator() {
+    void testIterator() {
       assertEquals(0L, (long) left(0L).left().iterator().next());
       assertFalse(right(0).left().iterator().hasNext());
     }
 
     @Test
-    public void testEither() {
+    void testEither() {
       assertEquals(left(0), left(0).left().either());
       assertEquals(right(0), right(0).left().either());
     }
 
     @Test
-    public void testValueEString() {
+    void testValueEString() {
       assertEquals(0L, (long) left(0L).left().valueE("zero"));
 
       try {
@@ -38,7 +40,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testValueEF0() {
+    void testValueEF0() {
       assertEquals(0L, (long) left(0L).left().valueE(() -> "zero"));
 
       try {
@@ -50,7 +52,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testValue() {
+    void testValue() {
       assertEquals(0L, (long) left(0L).left().value());
 
       try {
@@ -62,25 +64,25 @@ public final class EitherTest {
     }
 
     @Test
-    public void testOrValue() {
+    void testOrValue() {
       assertEquals(0L, (long) left(0L).left().orValue(1L));
       assertEquals(1L, (long) right(0L).left().orValue(1L));
     }
 
     @Test
-    public void testOrValueF0() {
+    void testOrValueF0() {
       assertEquals(0L, (long) left(0L).left().orValue(() -> 1L));
       assertEquals(1L, (long) right(0L).left().orValue(() -> 1L));
     }
 
     @Test
-    public void testOn() {
+    void testOn() {
       assertEquals(0L, (long) Either.<Long, Long>left(0L).left().on(constant(1L)));
       assertEquals(1L, (long) Either.<Long, Long>right(0L).left().on(constant(1L)));
     }
 
     @Test
-    public void testForeach() {
+    void testForeach() {
       left(0).left().foreach(constant(unit()));
       right(0).left().foreach(ignore -> {
         fail();
@@ -89,26 +91,26 @@ public final class EitherTest {
     }
 
     @Test
-    public void testForeachDoEffect() {
+    void testForeachDoEffect() {
       left(0).left().foreachDoEffect(ignore -> {
       });
       right(0).left().foreachDoEffect(ignore -> fail());
     }
 
     @Test
-    public void testMap() {
+    void testMap() {
       assertEquals(left(0), left("zero").left().map(constant(0)));
       assertEquals(right("zero"), right("zero").left().map(constant(0)));
     }
 
     @Test
-    public void testBind() {
+    void testBind() {
       assertEquals(left(0), left("zero").left().bind(constant(left(0))));
       assertEquals(right("zero"), right("zero").left().bind(constant(left(0))));
     }
 
     @Test
-    public void testSequence() {
+    void testSequence() {
       assertEquals(left(0), left("zero").left().sequence(left(0)));
       assertEquals(right(0), left("zero").left().sequence(right(0)));
       assertEquals(right("zero"), right("zero").left().sequence(left(0)));
@@ -116,7 +118,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testTraverseList() {
+    void testTraverseList() {
       assertEquals(List.nil(), left("zero").left().traverseList(constant(List.nil())));
       assertEquals(List.single(left(0)), left("zero").left().traverseList(constant(List.single(0))));
       assertEquals(List.arrayList(left(0), left(1)), left("zero").left().traverseList(constant(List.arrayList(0, 1))));
@@ -126,19 +128,19 @@ public final class EitherTest {
     }
 
     @Test
-    public void testTraverseIO() throws IOException {
+    void testTraverseIO() throws IOException {
       assertEquals(left(0), left("zero").left().traverseIO(constant(IOFunctions.lazy(constant(0)))).run());
       assertEquals(right("zero"), right("zero").left().traverseIO(constant(IOFunctions.lazy(constant(0)))).run());
     }
 
     @Test
-    public void testTraverseP1() {
+    void testTraverseP1() {
       assertEquals(p(left(0)), left("zero").left().traverseP1(constant(p(0))));
       assertEquals(p(right("zero")), right("zero").left().traverseP1(constant(p(0))));
     }
 
     @Test
-    public void testFilter() {
+    void testFilter() {
       assertEquals(Option.none(), left(0).left().filter(constant(false)));
       assertEquals(Option.none(), right(0).left().filter(constant(false)));
       assertEquals(Option.some(left(0)), left(0).left().filter(constant(true)));
@@ -146,13 +148,13 @@ public final class EitherTest {
     }
 
     @Test
-    public void testApply() {
+    void testApply() {
       assertEquals(left(1), left("zero").left().apply(left(constant(1))));
       assertEquals(right("zero"), right("zero").left().apply(left(constant(1))));
     }
 
     @Test
-    public void testForAll() {
+    void testForAll() {
       assertFalse(left(0).left().forall(constant(false)));
       assertTrue(right(0).left().forall(constant(false)));
       assertTrue(left(0).left().forall(constant(true)));
@@ -160,7 +162,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testExists() {
+    void testExists() {
       assertFalse(left(0).left().exists(constant(false)));
       assertFalse(right(0).left().exists(constant(false)));
       assertTrue(left(0).left().exists(constant(true)));
@@ -168,38 +170,38 @@ public final class EitherTest {
     }
 
     @Test
-    public void testToList() {
+    void testToList() {
       assertEquals(List.single(0), left(0).left().toList());
       assertEquals(List.nil(), right(0).left().toList());
     }
 
     @Test
-    public void testToOption() {
+    void testToOption() {
       assertEquals(Option.some(0), left(0).left().toOption());
       assertEquals(Option.none(), right(0).left().toOption());
     }
 
     @Test
-    public void testToArray() {
+    void testToArray() {
       assertEquals(Array.single(0), left(0).left().toArray());
       assertEquals(Array.empty(), right(0).left().toArray());
     }
 
     @Test
-    public void testToStream() {
+    void testToStream() {
       assertEquals(Stream.single(0), left(0).left().toStream());
       assertEquals(Stream.nil(), right(0).left().toStream());
     }
 
     @Test
-    public void testToCollection() {
+    void testToCollection() {
       assertEquals(1L, left(0L).left().toCollection().size());
       assertEquals(0L, (long) left(0L).left().toCollection().iterator().next());
       assertTrue(right(0).left().toCollection().isEmpty());
     }
 
     @Test
-    public void testTraverseOption() {
+    void testTraverseOption() {
       assertEquals(Option.none(), left("zero").left().traverseOption(constant(Option.none())));
       assertEquals(Option.some(left(0)), left("zero").left().traverseOption(constant(Option.some(0))));
       assertEquals(Option.some(right("zero")), right("zero").left().traverseOption(constant(Option.none())));
@@ -207,7 +209,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testTraverseStream() {
+    void testTraverseStream() {
       assertEquals(Stream.nil(), left("zero").left().traverseStream(constant(Stream.nil())));
       assertEquals(Stream.single(left(0)), left("zero").left().traverseStream(constant(Stream.single(0))));
       assertEquals(Stream.arrayStream(left(0), left(1)), left("zero").left().traverseStream(constant(Stream.arrayStream(0, 1))));
@@ -217,21 +219,22 @@ public final class EitherTest {
     }
   }
 
-  public static final class RightProjectionTest {
+  @Nested
+  public final class RightProjectionTest {
     @Test
-    public void testIterator() {
+    void testIterator() {
       assertEquals(0L, (long) right(0L).right().iterator().next());
       assertFalse(left(0).right().iterator().hasNext());
     }
 
     @Test
-    public void testEither() {
+    void testEither() {
       assertEquals(right(0), right(0).right().either());
       assertEquals(left(0), left(0).right().either());
     }
 
     @Test
-    public void testValueEString() {
+    void testValueEString() {
       assertEquals(0L, (long) right(0L).right().valueE("zero"));
 
       try {
@@ -243,7 +246,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testValueEF0() {
+    void testValueEF0() {
       assertEquals(0L, (long) right(0L).right().valueE(() -> "zero"));
 
       try {
@@ -255,7 +258,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testValue() {
+    void testValue() {
       assertEquals(0L, (long) right(0L).right().value());
 
       try {
@@ -267,25 +270,25 @@ public final class EitherTest {
     }
 
     @Test
-    public void testOrValue() {
+    void testOrValue() {
       assertEquals(0L, (long) right(0L).right().orValue(1L));
       assertEquals(1L, (long) left(0L).right().orValue(1L));
     }
 
     @Test
-    public void testOrValueF0() {
+    void testOrValueF0() {
       assertEquals(0L, (long) right(0L).right().orValue(() -> 1L));
       assertEquals(1L, (long) left(0L).right().orValue(() -> 1L));
     }
 
     @Test
-    public void testOn() {
+    void testOn() {
       assertEquals(0L, (long) Either.<Long, Long>right(0L).right().on(constant(1L)));
       assertEquals(1L, (long) Either.<Long, Long>left(0L).right().on(constant(1L)));
     }
 
     @Test
-    public void testForeach() {
+    void testForeach() {
       right(0).right().foreach(constant(unit()));
       left(0).right().foreach(ignore -> {
         fail();
@@ -294,26 +297,26 @@ public final class EitherTest {
     }
 
     @Test
-    public void testForeachDoEffect() {
+    void testForeachDoEffect() {
       right(0).right().foreachDoEffect(ignore -> {
       });
       left(0).right().foreachDoEffect(ignore -> fail());
     }
 
     @Test
-    public void testMap() {
+    void testMap() {
       assertEquals(right(0), right("zero").right().map(constant(0)));
       assertEquals(left("zero"), left("zero").right().map(constant(0)));
     }
 
     @Test
-    public void testBind() {
+    void testBind() {
       assertEquals(right(0), right("zero").right().bind(constant(right(0))));
       assertEquals(left("zero"), left("zero").right().bind(constant(right(0))));
     }
 
     @Test
-    public void testSequence() {
+    void testSequence() {
       assertEquals(right(0), right("zero").right().sequence(right(0)));
       assertEquals(left(0), right("zero").right().sequence(left(0)));
       assertEquals(left("zero"), left("zero").right().sequence(right(0)));
@@ -321,7 +324,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testTraverseList() {
+    void testTraverseList() {
       assertEquals(List.nil(), right("zero").right().traverseList(constant(List.nil())));
       assertEquals(List.single(right(0)), right("zero").right().traverseList(constant(List.single(0))));
       assertEquals(List.arrayList(right(0), right(1)), right("zero").right().traverseList(constant(List.arrayList(0, 1))));
@@ -331,19 +334,19 @@ public final class EitherTest {
     }
 
     @Test
-    public void testTraverseIO() throws IOException {
+    void testTraverseIO() throws IOException {
       assertEquals(right(0), right("zero").right().traverseIO(constant(IOFunctions.lazy(constant(0)))).run());
       assertEquals(left("zero"), left("zero").right().traverseIO(constant(IOFunctions.lazy(constant(0)))).run());
     }
 
     @Test
-    public void testTraverseP1() {
+    void testTraverseP1() {
       assertEquals(p(right(0)), right("zero").right().traverseP1(constant(p(0))));
       assertEquals(p(left("zero")), left("zero").right().traverseP1(constant(p(0))));
     }
 
     @Test
-    public void testFilter() {
+    void testFilter() {
       assertEquals(Option.none(), right(0).right().filter(constant(false)));
       assertEquals(Option.none(), left(0).right().filter(constant(false)));
       assertEquals(Option.some(right(0)), right(0).right().filter(constant(true)));
@@ -351,13 +354,13 @@ public final class EitherTest {
     }
 
     @Test
-    public void testApply() {
+    void testApply() {
       assertEquals(right(1), right("zero").right().apply(right(constant(1))));
       assertEquals(left("zero"), left("zero").right().apply(right(constant(1))));
     }
 
     @Test
-    public void testForAll() {
+    void testForAll() {
       assertFalse(right(0).right().forall(constant(false)));
       assertTrue(left(0).right().forall(constant(false)));
       assertTrue(right(0).right().forall(constant(true)));
@@ -365,7 +368,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testExists() {
+    void testExists() {
       assertFalse(right(0).right().exists(constant(false)));
       assertFalse(left(0).right().exists(constant(false)));
       assertTrue(right(0).right().exists(constant(true)));
@@ -373,38 +376,38 @@ public final class EitherTest {
     }
 
     @Test
-    public void testToList() {
+    void testToList() {
       assertEquals(List.single(0), right(0).right().toList());
       assertEquals(List.nil(), left(0).right().toList());
     }
 
     @Test
-    public void testToOption() {
+    void testToOption() {
       assertEquals(Option.some(0), right(0).right().toOption());
       assertEquals(Option.none(), left(0).right().toOption());
     }
 
     @Test
-    public void testToArray() {
+    void testToArray() {
       assertEquals(Array.single(0), right(0).right().toArray());
       assertEquals(Array.empty(), left(0).right().toArray());
     }
 
     @Test
-    public void testToStream() {
+    void testToStream() {
       assertEquals(Stream.single(0), right(0).right().toStream());
       assertEquals(Stream.nil(), left(0).right().toStream());
     }
 
     @Test
-    public void testToCollection() {
+    void testToCollection() {
       assertEquals(1L, right(0L).right().toCollection().size());
       assertEquals(0L, (long) right(0L).right().toCollection().iterator().next());
       assertTrue(left(0).right().toCollection().isEmpty());
     }
 
     @Test
-    public void testTraverseOption() {
+    void testTraverseOption() {
       assertEquals(Option.none(), right("zero").right().traverseOption(constant(Option.none())));
       assertEquals(Option.some(right(0)), right("zero").right().traverseOption(constant(Option.some(0))));
       assertEquals(Option.some(left("zero")), left("zero").right().traverseOption(constant(Option.none())));
@@ -412,7 +415,7 @@ public final class EitherTest {
     }
 
     @Test
-    public void testTraverseStream() {
+    void testTraverseStream() {
       assertEquals(Stream.nil(), right("zero").right().traverseStream(constant(Stream.nil())));
       assertEquals(Stream.single(right(0)), right("zero").right().traverseStream(constant(Stream.single(0))));
       assertEquals(Stream.arrayStream(right(0), right(1)), right("zero").right().traverseStream(constant(Stream.arrayStream(0, 1))));
@@ -423,31 +426,31 @@ public final class EitherTest {
   }
 
   @Test
-  public void testIsLeft() {
+  void testIsLeft() {
     assertTrue(left(0).isLeft());
     assertFalse(right(0).isLeft());
   }
 
   @Test
-  public void testIsRight() {
+  void testIsRight() {
     assertFalse(left(0).isRight());
     assertTrue(right(0).isRight());
   }
 
   @Test
-  public void testEither() {
+  void testEither() {
     assertEquals(-1L, (long) left("zero").either(constant(-1L), constant(1L)));
     assertEquals(1L, (long) right("zero").either(constant(-1L), constant(1L)));
   }
 
   @Test
-  public void testBimap() {
+  void testBimap() {
     assertEquals(left(-1), left("zero").bimap(constant(-1), constant(1)));
     assertEquals(right(1), right("zero").bimap(constant(-1), constant(1)));
   }
 
   @Test
-  public void testTestEquals() {
+  void testTestEquals() {
     assertNotEquals(null, left(0));
     assertNotEquals(new Object(), left(0));
     assertNotEquals(left(0), right(0));
@@ -460,7 +463,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTestHashCode() {
+  void testTestHashCode() {
     assertEquals(left(0).hashCode(), left(0).hashCode());
     assertEquals(left(0).hashCode(), right(0).hashCode());
     assertEquals(right(0).hashCode(), left(0).hashCode());
@@ -468,53 +471,53 @@ public final class EitherTest {
   }
 
   @Test
-  public void testSwap() {
+  void testSwap() {
     assertEquals(right(0), left(0).swap());
     assertEquals(left(0), right(0).swap());
   }
 
   @Test
-  public void testLeft_() {
+  void testLeft_() {
     assertEquals(left(0), left_().f(0));
   }
 
   @Test
-  public void testRight_() {
+  void testRight_() {
     assertEquals(right(0), right_().f(0));
   }
 
   @Test
-  public void testEither_() {
+  void testEither_() {
     assertEquals(-1L, (long) either_(constant(-1L), constant(1L)).f(left("zero")));
     assertEquals(1L, (long) either_(constant(-1L), constant(1L)).f(right("zero")));
   }
 
   @Test
-  public void testLeftMap() {
+  void testLeftMap() {
     assertEquals(left(0), left("zero").leftMap(constant(0)));
     assertEquals(right("zero"), right("zero").leftMap(constant(0)));
   }
 
   @Test
-  public void testLeftMap_() {
+  void testLeftMap_() {
     assertEquals(left(0), leftMap_().f(constant(0)).f(left("zero")));
     assertEquals(right("zero"), leftMap_().f(constant(0)).f(right("zero")));
   }
 
   @Test
-  public void testRightMap() {
+  void testRightMap() {
     assertEquals(left("zero"), left("zero").rightMap(constant(0)));
     assertEquals(right(0), right("zero").rightMap(constant(0)));
   }
 
   @Test
-  public void testRightMap_() {
+  void testRightMap_() {
     assertEquals(left("zero"), rightMap_().f(constant(0)).f(left("zero")));
     assertEquals(right(0), rightMap_().f(constant(0)).f(right("zero")));
   }
 
   @Test
-  public void testJoinLeft() {
+  void testJoinLeft() {
     assertEquals(left(0), joinLeft(left(left(0))));
     assertEquals(right(0), joinLeft(left(right(0))));
     assertEquals(right(left(0)), joinLeft(right(left(0))));
@@ -522,7 +525,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testJoinRight() {
+  void testJoinRight() {
     assertEquals(left(left(0)), joinRight(left(left(0))));
     assertEquals(left(right(0)), joinRight(left(right(0))));
     assertEquals(left(0), joinRight(right(left(0))));
@@ -530,21 +533,21 @@ public final class EitherTest {
   }
 
   @Test
-  public void testSequenceLeft() {
+  void testSequenceLeft() {
     assertEquals(left(List.nil()), sequenceLeft(List.nil()));
     assertEquals(left(List.single("zero")), sequenceLeft(List.single(left("zero"))));
     assertEquals(right("zero"), sequenceLeft(List.single(right("zero"))));
   }
 
   @Test
-  public void testSequenceRight() {
+  void testSequenceRight() {
     assertEquals(right(List.nil()), sequenceRight(List.nil()));
     assertEquals(right(List.single("zero")), sequenceRight(List.single(right("zero"))));
     assertEquals(left("zero"), sequenceRight(List.single(left("zero"))));
   }
 
   @Test
-  public void testTraverseListRight() {
+  void testTraverseListRight() {
     assertEquals(List.single(left("zero")), left("zero").traverseListRight(constant(List.nil())));
     assertEquals(List.single(left("zero")), left("zero").traverseListRight(constant(List.single(0))));
     assertEquals(List.single(left("zero")), left("zero").traverseListRight(constant(List.arrayList(0, 1))));
@@ -554,7 +557,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTraverseListLeft() {
+  void testTraverseListLeft() {
     assertEquals(List.nil(), left("zero").traverseListLeft(constant(List.nil())));
     assertEquals(List.single(left(0)), left("zero").traverseListLeft(constant(List.single(0))));
     assertEquals(List.arrayList(left(0), left(1)), left("zero").traverseListLeft(constant(List.arrayList(0, 1))));
@@ -564,19 +567,19 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTraverseIORight() throws IOException {
+  void testTraverseIORight() throws IOException {
     assertEquals(left("zero"), left("zero").traverseIORight(constant(IOFunctions.lazy(constant(0)))).run());
     assertEquals(right(0), right("zero").traverseIORight(constant(IOFunctions.lazy(constant(0)))).run());
   }
 
   @Test
-  public void testTraverseIOLeft() throws IOException {
+  void testTraverseIOLeft() throws IOException {
     assertEquals(left(0), left("zero").traverseIOLeft(constant(IOFunctions.lazy(constant(0)))).run());
     assertEquals(right("zero"), right("zero").traverseIOLeft(constant(IOFunctions.lazy(constant(0)))).run());
   }
 
   @Test
-  public void testTraverseOptionRight() {
+  void testTraverseOptionRight() {
     assertEquals(Option.some(left("zero")), left("zero").traverseOptionRight(constant(Option.none())));
     assertEquals(Option.some(left("zero")), left("zero").traverseOptionRight(constant(Option.some(0))));
     assertEquals(Option.none(), right("zero").traverseOptionRight(constant(Option.none())));
@@ -584,7 +587,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTraverseOptionLeft() {
+  void testTraverseOptionLeft() {
     assertEquals(Option.none(), left("zero").traverseOptionLeft(constant(Option.none())));
     assertEquals(Option.some(left(0)), left("zero").traverseOptionLeft(constant(Option.some(0))));
     assertEquals(Option.some(right("zero")), right("zero").traverseOptionLeft(constant(Option.none())));
@@ -592,7 +595,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTraverseStreamRight() {
+  void testTraverseStreamRight() {
     assertEquals(Stream.single(left("zero")), left("zero").traverseStreamRight(constant(Stream.nil())));
     assertEquals(Stream.single(left("zero")), left("zero").traverseStreamRight(constant(Stream.single(0))));
     assertEquals(Stream.single(left("zero")), left("zero").traverseStreamRight(constant(Stream.arrayStream(0, 1))));
@@ -602,7 +605,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTraverseStreamLeft() {
+  void testTraverseStreamLeft() {
     assertEquals(Stream.nil(), left("zero").traverseStreamLeft(constant(Stream.nil())));
     assertEquals(Stream.single(left(0)), left("zero").traverseStreamLeft(constant(Stream.single(0))));
     assertEquals(Stream.arrayStream(left(0), left(1)), left("zero").traverseStreamLeft(constant(Stream.arrayStream(0, 1))));
@@ -612,19 +615,19 @@ public final class EitherTest {
   }
 
   @Test
-  public void testReduce() {
+  void testReduce() {
     assertEquals(0L, (long) reduce(left(0L)));
     assertEquals(0L, (long) reduce(right(0L)));
   }
 
   @Test
-  public void testIif() {
+  void testIif() {
     assertEquals(right(-1), iif(true, () -> -1, () -> 1));
     assertEquals(left(1), iif(false, () -> -1, () -> 1));
   }
 
   @Test
-  public void testLefts() {
+  void testLefts() {
     assertEquals(List.nil(), lefts(List.nil()));
     assertEquals(List.single(0), lefts(List.single(left(0))));
     assertEquals(List.nil(), lefts(List.single(right(0))));
@@ -635,7 +638,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testRights() {
+  void testRights() {
     assertEquals(List.nil(), rights(List.nil()));
     assertEquals(List.single(0), rights(List.single(right(0))));
     assertEquals(List.single(0), lefts(List.single(left(0))));
@@ -646,7 +649,7 @@ public final class EitherTest {
   }
 
   @Test
-  public void testTestToString() {
+  void testTestToString() {
     assertNotNull(left(0).toString());
     assertNotNull(right(0).toString());
   }

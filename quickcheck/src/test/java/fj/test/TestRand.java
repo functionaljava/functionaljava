@@ -4,25 +4,25 @@ import fj.Equal;
 import fj.Ord;
 import fj.data.List;
 import fj.data.Stream;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestRand {
 
-    @Test
-    public void testRandLowHighInclusive() {
-        int min = 5;
-        int max = 10;
-        int n = 100;
-        Stream<Integer> s = Stream.range(0, n).map(i -> Rand.standard.choose(min, max)).sort(Ord.intOrd);
+  @Test
+  void testRandLowHighInclusive() {
+    int min = 5;
+    int max = 10;
+    int n = 100;
+    Stream<Integer> s = Stream.range(0, n).map(i -> Rand.standard.choose(min, max)).sort(Ord.intOrd);
 //        System.out.println(s.toList());
-        assertTrue(s.head() == min && s.last() == max);
-    }
+    assertTrue(s.head() == min && s.last() == max);
+  }
 
   @Test
-  public void testReseed() {
+  void testReseed() {
     Rand rand1 = Rand.standard.reseed(42);
     List<Integer> s1 =
         List.range(0, 10).map(i -> rand1.choose(Integer.MIN_VALUE, Integer.MAX_VALUE));
@@ -32,7 +32,7 @@ public class TestRand {
         List.range(0, 10).map(i -> rand2.choose(Integer.MIN_VALUE, Integer.MAX_VALUE));
 
     assertTrue(s1.zip(s2).forall(p -> p._1().equals(p._2())));
-    Assert.assertFalse(s1.allEqual(Equal.intEqual));
+    Assertions.assertFalse(s1.allEqual(Equal.intEqual));
   }
 
 }

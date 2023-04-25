@@ -1,14 +1,15 @@
 package fj.data;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static fj.P.p;
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StateTest {
 
   @Test
-  public void testBind() {
+  void testBind() {
     assertEquals(p(2, "one"), state().run(1));
     assertEquals(p(3, "two"), state().run(2));
     assertEquals(p(4, "three"), state().run(3));
@@ -18,7 +19,7 @@ public class StateTest {
   }
 
   @Test
-  public void testFlatMap() {
+  void testFlatMap() {
     assertEquals(p(2, "one"), state().run(1));
     assertEquals(p(3, "two"), state().run(2));
     assertEquals(p(4, "three"), state().run(3));
