@@ -1,6 +1,7 @@
 package fj;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class P1Test {
 
   @Test
-  public void bug105() throws Exception {
+  void bug105() throws Exception {
     final P1<String> p1 = P.weakMemo(() -> "Foo");
     final AtomicInteger nullCounter = new AtomicInteger();
     ExecutorService executorService = Executors.newCachedThreadPool();
@@ -26,14 +27,14 @@ public final class P1Test {
     executorService.shutdown();
     executorService.awaitTermination(10, TimeUnit.DAYS);
 
-    org.junit.Assert.assertEquals("Race condition in P1.memo()", 0, nullCounter.get());
+    Assertions.assertEquals(0, nullCounter.get(), "Race condition in P1.memo()");
   }
-  
+
   @Test
-  public void bug122() throws Exception {
+  void bug122() throws Exception {
     final P1<Integer> p1a = P.lazy(() -> 1);
     final P1<Integer> p1b = P.lazy(() -> 1);
 
-    org.junit.Assert.assertTrue(p1a + " and " + p1b + " should be equal by Object.equals", p1a.equals(p1b));
+    Assertions.assertTrue(p1a.equals(p1b), p1a + " and " + p1b + " should be equal by Object.equals");
   }
 }

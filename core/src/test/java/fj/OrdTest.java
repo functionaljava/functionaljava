@@ -1,6 +1,6 @@
 package fj;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -8,7 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class OrdTest {
 
   @Test
-  public void isGreaterThan() {
+  void isGreaterThan() {
     F<Long, Boolean> pred = Ord.longOrd.isGreaterThan(1L);
 
     assertThat(pred.f(0L), is(false));
@@ -17,7 +17,7 @@ public class OrdTest {
   }
 
   @Test
-  public void isLessThan() {
+  void isLessThan() {
     F<Long, Boolean> pred = Ord.longOrd.isLessThan(1L);
 
     assertThat(pred.f(0L), is(true));
@@ -26,7 +26,7 @@ public class OrdTest {
   }
 
   @Test
-  public void contramapShouldWork() {
+  void contramapShouldWork() {
     Ord<String> lengthOrd = Ord.contramap(String::length, Ord.intOrd);
 
     assertThat(lengthOrd.compare("str", "rts"), is(Ordering.EQ));
@@ -34,9 +34,9 @@ public class OrdTest {
   }
 
   @Test
-  public void thenShouldWork() {
+  void thenShouldWork() {
     Ord<String> lengthThenLastDigitOrd = Ord.on(String::length, Ord.intOrd)
-                                            .then(s -> s.charAt(s.length() - 1), Ord.charOrd).ord();
+        .then(s -> s.charAt(s.length() - 1), Ord.charOrd).ord();
 
     assertThat(lengthThenLastDigitOrd.compare("str", "dyr"), is(Ordering.EQ));
     assertThat(lengthThenLastDigitOrd.compare("stt", "str"), is(Ordering.GT));

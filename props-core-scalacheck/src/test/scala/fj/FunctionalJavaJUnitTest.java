@@ -1,7 +1,7 @@
 package fj;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,12 +12,12 @@ import org.junit.Test;
  */
 public class FunctionalJavaJUnitTest {
 
-	@Test
-	public void runScalacheckTests() {
+  @Test
+  void runScalacheckTests() {
 //		System.out.println("Hello world");
-		Assert.assertTrue(true);
+    Assertions.assertTrue(true);
 //		new Tests$().main(null);
-		Tests.main(null);
-	}
+    Tests.main(null);
+  }
 
 }

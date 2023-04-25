@@ -1,14 +1,14 @@
 package fj.data.dummy;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class DummyTest {
 
-    @Test
-    @Ignore
-    public void test1() {
+  @Test
+  @Disabled
+  void test1() {
 
-    }
+  }
 
 }

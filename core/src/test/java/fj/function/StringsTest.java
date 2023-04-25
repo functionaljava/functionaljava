@@ -1,68 +1,71 @@
 package fj.function;
 
 import fj.Function;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static fj.Function.compose;
 import static fj.function.Strings.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class StringsTest {
-    @Test
-    public void testLines() {
-        assertThat(compose(unlines(), lines()).f("one two three"), is("one two three"));
-    }
+  @Test
+  void testLines() {
+    assertThat(compose(unlines(), lines()).f("one two three"), is("one two three"));
+  }
 
-    @Test
-    public void testLinesEmpty() {
-        assertThat(unlines().o(lines()).f(""), is(""));
-    }
+  @Test
+  void testLinesEmpty() {
+    assertThat(unlines().o(lines()).f(""), is(""));
+  }
 
-    @Test
-    public void testLength() {
-        assertThat(length.f("functionaljava"), is(14));
-    }
+  @Test
+  void testLength() {
+    assertThat(length.f("functionaljava"), is(14));
+  }
 
-    @Test
-    public void testMatches() {
-        assertThat(matches.f("foo").f("foo"), is(true));
-    }
+  @Test
+  void testMatches() {
+    assertThat(matches.f("foo").f("foo"), is(true));
+  }
 
-    @Test
-    public void testContains() {
-        assertThat(contains.f("bar").f("foobar1"), is(true));
-    }
+  @Test
+  void testContains() {
+    assertThat(contains.f("bar").f("foobar1"), is(true));
+  }
 
-    @Test(expected = NullPointerException.class)
-    public void testIsEmptyException() {
-        assertThat(isEmpty.f(null), is(true));
-    }
+  @Test
+  void testIsEmptyException() {
+    assertThrows(NullPointerException.class, () -> {
+      assertThat(isEmpty.f(null), is(true));
+    });
+  }
 
-    @Test
-    public void testIsEmpty() {
-        assertThat(isEmpty.f(""), is(true));
-    }
+  @Test
+  void testIsEmpty() {
+    assertThat(isEmpty.f(""), is(true));
+  }
 
-    @Test
-    public void testIsNotNullOrEmpty() {
-        assertThat(isNotNullOrEmpty.f("foo"), is(true));
-    }
+  @Test
+  void testIsNotNullOrEmpty() {
+    assertThat(isNotNullOrEmpty.f("foo"), is(true));
+  }
 
-    @Test
-    public void testIsNullOrEmpty() {
-        assertThat(isNullOrEmpty.f(null), is(true));
-    }
+  @Test
+  void testIsNullOrEmpty() {
+    assertThat(isNullOrEmpty.f(null), is(true));
+  }
 
-    @Test
-    public void testIsNotNullOrBlank() {
-        assertThat(isNotNullOrBlank.f("foo"), is(true));
-    }
+  @Test
+  void testIsNotNullOrBlank() {
+    assertThat(isNotNullOrBlank.f("foo"), is(true));
+  }
 
-    @Test
-    public void testIsNullOrBlank() {
-        assertThat(isNullOrBlank.f("  "), is(true));
-    }
+  @Test
+  void testIsNullOrBlank() {
+    assertThat(isNullOrBlank.f("  "), is(true));
+  }
 }
